@@ -1,0 +1,31 @@
+# Entorno Virtual Python
+.venv/
+venv/
+env/
+ENV/
+
+# Bytecode y Caché de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+.pytest_cache/
+
+# Compilados de PyInstaller / Ejecutables
+dist/
+build/
+*.spec
+
+# IDE y Sistema Operativo
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs y Archivos Temporales
+*.log
+scratch/*.tmp
