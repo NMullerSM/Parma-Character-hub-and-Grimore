@@ -212,6 +212,6 @@ class SpellPickerDialog:
 
     def _select_spell(self, entity_id: str):
         spell = self.okf.get_spell_item(entity_id)
+        self._close_dialog()
         if spell and self.on_spell_selected:
             self.on_spell_selected(spell)
-        self._close_dialog()

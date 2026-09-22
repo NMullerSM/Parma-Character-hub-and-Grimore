@@ -95,3 +95,6 @@ class SlotTracker(ft.Container):
         self._build_ui()
         if self.page:
             self.update()
+
+    def update_data(self, spell_slots: Dict[str, SpellSlotTier]):
+        self.update_slots(spell_slots)

@@ -53,7 +53,8 @@ class OkfCompendiumView(ft.Container):
             ("regla", "📖 Reglas & Mecánicas"),
         ]
 
-        cat_buttons = []
+        self.cat_buttons = {}
+        cat_button_list = []
         for cat_id, cat_label in categories:
             is_active = (self.current_category == cat_id)
             btn = ft.ElevatedButton(
@@ -69,10 +70,11 @@ class OkfCompendiumView(ft.Container):
                 ),
                 on_click=lambda e, cid=cat_id: self._select_category(cid)
             )
-            cat_buttons.append(btn)
+            self.cat_buttons[cat_id] = btn
+            cat_button_list.append(btn)
 
         self.category_row = ft.Row(
-            controls=cat_buttons,
+            controls=cat_button_list,
             wrap=True,
             spacing=8
         )
@@ -230,7 +232,26 @@ class OkfCompendiumView(ft.Container):
     def _select_category(self, cat_id: str):
         self.current_category = cat_id
         self.selected_item = None
-        self._build_ui()
+
+        # Actualizar estilos visuales de botones sin reconstruir la UI
+        for cid, btn in self.cat_buttons.items():
+            active = (cid == cat_id)
+            btn.color = "#000000" if active else GOLD_LIGHT
+            btn.bgcolor = GOLD_PRIMARY if active else BG_INPUT
+            btn.style = ft.ButtonStyle(
+                bgcolor=GOLD_PRIMARY if active else BG_INPUT,
+                color="#000000" if active else GOLD_LIGHT,
+                side=ft.BorderSide(1, BORDER_GOLD if active else BORDER_DIM),
+                shape=ft.RoundedRectangleBorder(radius=6),
+                padding=ft.padding.symmetric(horizontal=12, vertical=6)
+            )
+
+        # Mostrar filtros sólo para conjuros
+        is_conjuro = (cat_id == "conjuro")
+        self.class_dropdown.visible = is_conjuro
+        self.level_dropdown.visible = is_conjuro
+
+        self._refresh_results()
         if self.page:
             self.page.update()
 
@@ -259,22 +280,19 @@ class OkfCompendiumView(ft.Container):
         cls_filter = None if self.spell_class == "all" else self.spell_class
 
         target_type = self.current_category
-        extra_types = []
+        tipo_query = target_type
         if target_type == "especie":
-            extra_types = ["linaje"]
+            tipo_query = ["especie", "linaje"]
         elif target_type == "clase":
-            extra_types = ["subclase"]
+            tipo_query = ["clase", "subclase"]
 
         results = self.okf.search_entities(
             query=self.search_query,
-            tipo=target_type if not extra_types else None,
+            tipo=tipo_query,
             nivel=lvl if target_type == "conjuro" else None,
             clase=cls_filter if target_type == "conjuro" else None,
-            limit=120
+            limit=500
         )
-
-        if extra_types:
-            results = [r for r in results if r.get("tipo") in [target_type, *extra_types]]
 
         self.results_cache = results
         self.count_label.value = f"{len(results)} encontrados"
@@ -566,7 +584,10 @@ class OkfCompendiumView(ft.Container):
 
         self.detail_container.content = detail_content
         if self.page:
-            self.detail_container.update()
+            try:
+                self.detail_container.update()
+            except Exception:
+                pass
 
     def _add_spell_to_char(self, spell_id: str):
         spell = self.okf.get_spell_item(spell_id)

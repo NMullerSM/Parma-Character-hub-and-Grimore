@@ -6,7 +6,7 @@ import os
 import json
 import yaml
 from functools import lru_cache
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Union
 from .models import SpellItem
 
 
@@ -19,39 +19,48 @@ class OkfEngine:
         else:
             self.okf_dir = okf_root_path
 
-        self.index_path = os.path.join(self.okf_dir, "index_metadata.json")
         self._index: List[Dict[str, Any]] = []
-        self.load_index()
+        self._load_index()
 
-    def load_index(self):
-        """Carga el índice precalculado sin leer cientos de archivos individuales."""
-        if os.path.exists(self.index_path):
+    def _load_index(self):
+        """Carga el índice precalculado JSON en memoria para búsquedas instantáneas."""
+        idx_path = os.path.join(self.okf_dir, "index_metadata.json")
+        if os.path.exists(idx_path):
             try:
-                with open(self.index_path, "r", encoding="utf-8") as f:
+                with open(idx_path, "r", encoding="utf-8") as f:
                     data = json.load(f)
-                    self._index = data.get("entities", [])
+                    if isinstance(data, dict) and "entities" in data:
+                        self._index = data["entities"]
+                    elif isinstance(data, list):
+                        self._index = data
+                    else:
+                        self._index = []
             except Exception as e:
                 print(f"[OkfEngine] Error al cargar índice: {e}")
                 self._index = []
         else:
-            print(f"[OkfEngine] No se encontró el índice en {self.index_path}")
             self._index = []
 
     def search_entities(
         self,
         query: str = "",
-        tipo: Optional[str] = None,
+        tipo: Optional[Union[str, List[str]]] = None,
         nivel: Optional[int] = None,
         clase: Optional[str] = None,
-        limit: int = 50
+        limit: int = 500
     ) -> List[Dict[str, Any]]:
         """Búsqueda ultrarrápida en memoria sobre el índice precalculado."""
         q = query.lower().strip()
         results = []
 
         for item in self._index:
-            if tipo and item.get("tipo") != tipo:
-                continue
+            if tipo:
+                item_tipo = item.get("tipo")
+                if isinstance(tipo, list):
+                    if item_tipo not in tipo:
+                        continue
+                elif item_tipo != tipo:
+                    continue
 
             if nivel is not None:
                 item_lvl = item.get("nivel")

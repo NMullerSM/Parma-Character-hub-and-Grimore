@@ -464,7 +464,7 @@ class NetworkView(ft.Container):
         )
 
         def save_character(ev):
-            name = name_input.value.strip()
+            name = name_input.value.strip() if name_input.value else ""
             if not name:
                 return
             dialog.open = False
@@ -481,12 +481,14 @@ class NetworkView(ft.Container):
                 id=str(len(self.char.network_nodes) + 1),
                 name=name,
                 role=role_dropdown.value,
-                description=desc_input.value.strip(),
+                description=desc_input.value.strip() if desc_input.value else "",
                 x=new_x,
                 y=new_y
             )
             self.char.network_nodes.append(new_node)
             self.update_data(self.char)
+            if self.page:
+                self.page.update()
             if self.on_state_change:
                 self.on_state_change()
 
@@ -574,6 +576,8 @@ class NetworkView(ft.Container):
                     NetworkEdge(source_id=src_id, target_id=tgt_id, relation=rel_dropdown.value)
                 )
                 self.update_data(self.char)
+                if self.page:
+                    self.page.update()
                 if self.on_state_change:
                     self.on_state_change()
 

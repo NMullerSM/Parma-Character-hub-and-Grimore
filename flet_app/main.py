@@ -31,6 +31,7 @@ from .ui.theme import (
 )
 from .ui.components.dice_tray import DiceTray
 from .ui.components.rules_dialog import RulesDialog
+from .ui.components.character_wizard import CharacterCreatorWizard
 from .ui.views.combat_view import CombatView
 from .ui.views.sheet_view import SheetView
 from .ui.views.spells_view import SpellsView
@@ -59,23 +60,37 @@ def main(page: ft.Page):
     # 1. Inicialización de Motores
     okf = OkfEngine(os.path.join(base_dir, "okf_dnd5e"))
 
-    # Cargar personaje inicial
-    if os.path.exists(artanis_pdf_path):
+    autosave_path = os.path.join(base_dir, "autosave_character.json")
+
+    # Cargar personaje inicial (prioridad: autosave -> Artanis PDF -> en blanco)
+    if os.path.exists(autosave_path):
+        try:
+            with open(autosave_path, "r", encoding="utf-8") as f:
+                char = CharacterSheet.from_dict(json.load(f))
+        except Exception:
+            if os.path.exists(artanis_pdf_path):
+                char = UniversalAcroFormHandler.load_character_from_pdf(artanis_pdf_path)
+            else:
+                char = UniversalAcroFormHandler.get_blank_character()
+    elif os.path.exists(artanis_pdf_path):
         char = UniversalAcroFormHandler.load_character_from_pdf(artanis_pdf_path)
     else:
         char = UniversalAcroFormHandler.get_blank_character()
 
     # 2. Componentes de Interfaz
     dice_tray = DiceTray()
-    dice_tray.visible = False  # Oculto por defecto, alternable con botón 🎲 Dados
+    dice_container = ft.Container(
+        content=dice_tray,
+        width=320,
+        visible=False,
+    )
 
     def on_roll_request(sides: int, mod: int, reason: str):
-        # Desplegar bandeja si estaba oculta y tirar
-        dice_tray.visible = True
+        dice_container.visible = True
         page.update()
         dice_tray.do_roll(sides, custom_mod=mod, reason=reason)
 
-    # Vistas Modulares (CombatView contiene la cabecera operativa de combate de Artanis)
+    # Vistas Modulares
     combat_view = CombatView(char=char, on_roll_request=on_roll_request, on_state_change=lambda: notify_state_changed())
     sheet_view = SheetView(char=char, on_roll_request=on_roll_request, on_state_change=lambda: notify_state_changed())
     spells_view = SpellsView(char=char, okf_engine=okf, on_state_change=lambda: notify_state_changed())
@@ -86,7 +101,15 @@ def main(page: ft.Page):
     pdf_viewer = PdfViewerView(default_doc="Manual del Jugador 2024.pdf")
     rules_dialog = RulesDialog(page=page)
 
+    def _autosave():
+        try:
+            with open(autosave_path, "w", encoding="utf-8") as f:
+                json.dump(char.to_dict(), f, indent=2, ensure_ascii=False)
+        except Exception:
+            pass
+
     def notify_state_changed():
+        _autosave()
         combat_view.update_data(char)
         okf_view.update_data(char)
         page.update()
@@ -94,6 +117,7 @@ def main(page: ft.Page):
     def refresh_all_views(new_char: CharacterSheet):
         nonlocal char
         char = new_char
+        _autosave()
         combat_view.update_data(char)
         sheet_view.update_data(char)
         spells_view.update_data(char)
@@ -103,11 +127,25 @@ def main(page: ft.Page):
         network_view.update_data(char)
         page.update()
 
+    # Asistente de Creación de Personajes PHB 2024
+    def on_wizard_character_created(new_char: CharacterSheet):
+        refresh_all_views(new_char)
+        tabs.selected_index = 1  # Ir directamente a la Hoja Clásica
+        page.snack_bar = ft.SnackBar(ft.Text(f"¡Héroe {new_char.name} creado con éxito!"))
+        page.snack_bar.open = True
+        page.update()
+
+    wizard = CharacterCreatorWizard(
+        page=page,
+        okf_engine=okf,
+        on_character_created=on_wizard_character_created
+    )
+
     # 3. Acciones de Barra Superior
     def on_new_blank(e):
         new_char = UniversalAcroFormHandler.get_blank_character()
         refresh_all_views(new_char)
-        page.snack_bar = ft.SnackBar(ft.Text("Nueva hoja en blanco creada con éxito."))
+        page.snack_bar = ft.SnackBar(ft.Text("Nueva hoja limpia creada."))
         page.snack_bar.open = True
         page.update()
 
@@ -136,10 +174,10 @@ def main(page: ft.Page):
         page.update()
 
     def toggle_dice(e):
-        dice_tray.visible = not dice_tray.visible
+        dice_container.visible = not dice_container.visible
         page.update()
 
-    # File Pickers para PDF y JSON
+    # File Picker para PDF
     def on_file_picked(e: ft.FilePickerResultEvent):
         if e.files and len(e.files) > 0:
             file_path = e.files[0].path
@@ -155,43 +193,8 @@ def main(page: ft.Page):
                     page.snack_bar.open = True
                     page.update()
 
-    def on_json_save_result(e: ft.FilePickerResultEvent):
-        if e.path:
-            save_path = e.path
-            if not save_path.lower().endswith(".json"):
-                save_path += ".json"
-            try:
-                with open(save_path, "w", encoding="utf-8") as f:
-                    json.dump(char.to_dict(), f, indent=2, ensure_ascii=False)
-                page.snack_bar = ft.SnackBar(ft.Text(f"Ficha guardada con éxito en {os.path.basename(save_path)}"))
-                page.snack_bar.open = True
-                page.update()
-            except Exception as ex:
-                page.snack_bar = ft.SnackBar(ft.Text(f"Error al guardar JSON: {ex}"))
-                page.snack_bar.open = True
-                page.update()
-
-    def on_json_load_result(e: ft.FilePickerResultEvent):
-        if e.files and len(e.files) > 0:
-            fpath = e.files[0].path
-            if fpath:
-                try:
-                    with open(fpath, "r", encoding="utf-8") as f:
-                        data = json.load(f)
-                    loaded = CharacterSheet.from_dict(data)
-                    refresh_all_views(loaded)
-                    page.snack_bar = ft.SnackBar(ft.Text(f"Ficha cargada desde {os.path.basename(fpath)}"))
-                    page.snack_bar.open = True
-                    page.update()
-                except Exception as ex:
-                    page.snack_bar = ft.SnackBar(ft.Text(f"Error al cargar JSON: {ex}"))
-                    page.snack_bar.open = True
-                    page.update()
-
     file_picker = ft.FilePicker(on_result=on_file_picked)
-    save_json_picker = ft.FilePicker(on_result=on_json_save_result)
-    load_json_picker = ft.FilePicker(on_result=on_json_load_result)
-    page.overlay.extend([file_picker, save_json_picker, load_json_picker])
+    page.overlay.append(file_picker)
 
     def on_open_pdf_dialog(e):
         file_picker.pick_files(
@@ -200,25 +203,10 @@ def main(page: ft.Page):
             allow_multiple=False
         )
 
-    def on_save_json_click(e):
-        char_name = char.name.strip() if char.name else "personaje"
-        save_json_picker.save_file(
-            dialog_title="Guardar Hoja de Personaje (JSON)",
-            file_name=f"{char_name}.json",
-            allowed_extensions=["json"]
-        )
-
-    def on_load_json_click(e):
-        load_json_picker.pick_files(
-            dialog_title="Cargar Hoja de Personaje (JSON)",
-            allowed_extensions=["json"],
-            allow_multiple=False
-        )
-
     def on_open_rules_click(e):
         rules_dialog.show()
 
-    # Barra de Acciones Superior Completa
+    # Barra de Acciones Superior Optimizada y Limpia
     top_toolbar = ft.Container(
         content=ft.Row(
             controls=[
@@ -236,18 +224,18 @@ def main(page: ft.Page):
                 ),
                 ft.Row(
                     controls=[
-                        ft.OutlinedButton(
-                            text="Nueva Hoja",
-                            icon=ft.Icons.ADD,
-                            style=ft.ButtonStyle(color=GOLD_LIGHT, side=ft.BorderSide(1, BORDER_DIM)),
-                            on_click=on_new_blank,
-                            tooltip="Crear una ficha limpia en blanco"
-                        ),
                         ft.ElevatedButton(
-                            text="Ejemplo: Artanis 4",
-                            color="#000000",
+                            text="🧙 Crear Personaje",
+                            icon=ft.Icons.AUTO_AWESOME,
                             bgcolor=GOLD_PRIMARY,
+                            color="#000000",
                             style=ft.ButtonStyle(bgcolor=GOLD_PRIMARY, color="#000000"),
+                            on_click=lambda e: wizard.show(),
+                            tooltip="Asistente guiado paso a paso PHB 2024 / OKF"
+                        ),
+                        ft.OutlinedButton(
+                            text="Ejemplo: Artanis 4",
+                            style=ft.ButtonStyle(color=GOLD_LIGHT, side=ft.BorderSide(1, BORDER_DIM)),
                             on_click=on_load_artanis,
                             tooltip="Restaurar hoja de ejemplo Artanis LVL 4"
                         ),
@@ -257,20 +245,6 @@ def main(page: ft.Page):
                             style=ft.ButtonStyle(color=GOLD_LIGHT, side=ft.BorderSide(1, BORDER_DIM)),
                             on_click=on_open_pdf_dialog,
                             tooltip="Importar hoja oficial desde un PDF"
-                        ),
-                        ft.OutlinedButton(
-                            text="Guardar JSON",
-                            icon=ft.Icons.SAVE,
-                            style=ft.ButtonStyle(color=GOLD_LIGHT, side=ft.BorderSide(1, BORDER_DIM)),
-                            on_click=on_save_json_click,
-                            tooltip="Guardar cambios y progreso en archivo JSON"
-                        ),
-                        ft.OutlinedButton(
-                            text="Cargar JSON",
-                            icon=ft.Icons.UPLOAD_FILE,
-                            style=ft.ButtonStyle(color=GOLD_LIGHT, side=ft.BorderSide(1, BORDER_DIM)),
-                            on_click=on_load_json_click,
-                            tooltip="Cargar ficha guardada en formato JSON"
                         ),
                         ft.VerticalDivider(width=1, color=BORDER_DIM),
                         ft.OutlinedButton(
@@ -342,21 +316,11 @@ def main(page: ft.Page):
     main_layout = ft.Row(
         controls=[
             tabs,
-            ft.Container(
-                content=dice_tray,
-                width=320,
-                visible=False,
-                ref=ft.Ref[ft.Container]()
-            )
+            dice_container
         ],
         expand=True,
         spacing=10
     )
-
-    # Conectar visibilidad de bandeja de dados al layout lateral
-    def on_dice_visibility_toggle(e):
-        dice_tray.visible = not dice_tray.visible
-        page.update()
 
     page.add(
         top_toolbar,

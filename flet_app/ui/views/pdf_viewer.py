@@ -84,13 +84,21 @@ class PdfViewerView(ft.Container):
             on_click=self._zoom_fit
         )
 
+        self.btn_fullscreen = ft.IconButton(
+            icon=ft.Icons.FULLSCREEN,
+            icon_color=GOLD_LIGHT,
+            icon_size=20,
+            tooltip="Alternar Pantalla Completa",
+            on_click=self._toggle_fullscreen
+        )
+
         # Barra Superior del Lector
         toolbar = ft.Container(
             content=ft.Row(
                 controls=[
                     ft.Row(controls=[self.btn_outline, self.doc_dropdown], spacing=8),
                     ft.Row(controls=[self.btn_first, self.btn_prev, self.page_input, self.total_pages_label, self.btn_next, self.btn_last], spacing=4),
-                    ft.Row(controls=[self.btn_zoom_out, self.zoom_label, self.btn_zoom_in, self.btn_zoom_fit], spacing=4),
+                    ft.Row(controls=[self.btn_zoom_out, self.zoom_label, self.btn_zoom_in, self.btn_zoom_fit, self.btn_fullscreen], spacing=4),
                 ],
                 alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                 wrap=True
@@ -294,6 +302,13 @@ class PdfViewerView(ft.Container):
         if self.page:
             self.page.update()
 
+    def _toggle_fullscreen(self, e):
+        if self.page:
+            self.page.window.full_screen = not self.page.window.full_screen
+            self.btn_fullscreen.icon = ft.Icons.FULLSCREEN_EXIT if self.page.window.full_screen else ft.Icons.FULLSCREEN
+            self.page.update()
+
     def _on_doc_change(self, e):
         doc_name = e.control.value
         self.load_doc(doc_name)
+

@@ -58,6 +58,19 @@ def get_saving_throw_modifier(char: CharacterSheet, stat_name: str) -> int:
     return base_mod
 
 
+CLASS_CASTING_ABILITY = {
+    "Bardo": "CAR",
+    "Brujo": "CAR",
+    "Hechicero": "CAR",
+    "Paladín": "CAR",
+    "Clérigo": "SAB",
+    "Druida": "SAB",
+    "Explorador": "SAB",
+    "Mago": "INT",
+    "Artífice": "INT",
+}
+
+
 def get_spell_stats(char: CharacterSheet, casting_ability: str = "CAR") -> Dict[str, Any]:
     prof = calc_proficiency_bonus(char.level)
     mod = calc_modifier(char.abilities.get(casting_ability, 10))
@@ -68,6 +81,11 @@ def get_spell_stats(char: CharacterSheet, casting_ability: str = "CAR") -> Dict[
         "attack_bonus": f"+{prof + mod}" if (prof + mod) >= 0 else str(prof + mod),
         "prof_bonus": prof
     }
+
+
+def get_character_spell_stats(char: CharacterSheet) -> Dict[str, Any]:
+    ability = CLASS_CASTING_ABILITY.get(char.char_class, "CAR")
+    return get_spell_stats(char, casting_ability=ability)
 
 
 def perform_short_rest(char: CharacterSheet, hit_dice_spent: int = 1) -> Tuple[CharacterSheet, str]:
