@@ -70,9 +70,31 @@ def create_gold_button(
         icon=icon,
         on_click=on_click,
         tooltip=tooltip,
+        color="#000000",
+        bgcolor=GOLD_PRIMARY,
         style=ft.ButtonStyle(
             bgcolor=GOLD_PRIMARY,
-            color="#111111",
+            color="#000000",
+            shape=ft.RoundedRectangleBorder(radius=6)
+        )
+    )
+
+def create_success_button(
+    text: str,
+    icon: Optional[str] = None,
+    on_click = None,
+    tooltip: str = ""
+) -> ft.ElevatedButton:
+    return ft.ElevatedButton(
+        text=text,
+        icon=icon,
+        on_click=on_click,
+        tooltip=tooltip,
+        color="#ffffff",
+        bgcolor=COLOR_GREEN,
+        style=ft.ButtonStyle(
+            bgcolor=COLOR_GREEN,
+            color="#ffffff",
             shape=ft.RoundedRectangleBorder(radius=6)
         )
     )
@@ -84,7 +106,7 @@ def get_app_theme() -> ft.Theme:
         color_scheme_seed=GOLD_PRIMARY,
         color_scheme=ft.ColorScheme(
             primary=GOLD_PRIMARY,
-            on_primary="#111111",
+            on_primary="#000000",
             surface=BG_SURFACE,
             on_surface="#f0f2f5",
             background=BG_PRIMARY,

@@ -71,7 +71,7 @@ class SheetView(ft.Container):
                                             size=16,
                                             color=GOLD_PRIMARY if is_save_prof else TEXT_MUTED
                                         ),
-                                        ft.Text(f"Salvación: {save_str}", size=13, weight=ft.FontWeight.BOLD, color="#fff")
+                                        ft.Text(f"Salvación: {save_str}", size=13, weight=ft.FontWeight.BOLD, color="#ffffff")
                                     ],
                                     spacing=4
                                 ),
@@ -124,7 +124,7 @@ class SheetView(ft.Container):
                 content=ft.Row(
                     controls=[
                         ft.Icon(dot_icon, size=15, color=dot_color),
-                        ft.Text(skill_name, size=12, color="#fff", expand=True),
+                        ft.Text(skill_name, size=12, color="#ffffff", expand=True),
                         ft.Text(f"({stat_assoc})", size=10, color=TEXT_MUTED),
                         ft.Text(bonus_str, size=12, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
                         ft.IconButton(
@@ -175,10 +175,10 @@ class SheetView(ft.Container):
                         padding=8,
                         border_radius=ft.border_radius.all(6)
                     ),
-                    ft.Text("Visión en la Oscuridad Superior (Drow 36m)", size=12, color="#fff"),
+                    ft.Text("Visión en la Oscuridad Superior (Drow 36m)", size=12, color="#ffffff"),
                     ft.Divider(color=BORDER_DIM, height=1),
                     ft.Text("🗣️ Idiomas", size=14, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
-                    ft.Text(self.char.languages or "Común, Élfico", size=12, color="#fff"),
+                    ft.Text(self.char.languages or "Común, Élfico", size=12, color="#ffffff"),
                     ft.Divider(color=BORDER_DIM, height=1),
                     ft.Text("🛡️ Otras Competencias", size=14, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
                     ft.Text(self.char.proficiencies_extra or "Armaduras ligeras, armas sencillas, ballesta de mano, estoque.", size=12, color=TEXT_MUTED),

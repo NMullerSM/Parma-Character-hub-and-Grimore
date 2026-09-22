@@ -65,9 +65,11 @@ class JournalView(ft.Container):
 
         btn_add_session = ft.ElevatedButton(
             text="+ Registrar Sesión",
+            color="#000000",
+            bgcolor=GOLD_PRIMARY,
             style=ft.ButtonStyle(
                 bgcolor=GOLD_PRIMARY,
-                color="#111",
+                color="#000000",
                 shape=ft.RoundedRectangleBorder(radius=6)
             ),
             on_click=self._on_add_session

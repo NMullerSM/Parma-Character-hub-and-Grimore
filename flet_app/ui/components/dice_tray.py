@@ -67,9 +67,11 @@ class DiceTray(ft.Container):
             if is_hero:
                 btn = ft.ElevatedButton(
                     text=f"🎲 {label}",
+                    color="#000000",
+                    bgcolor=GOLD_PRIMARY,
                     style=ft.ButtonStyle(
                         bgcolor=GOLD_PRIMARY,
-                        color="#111",
+                        color="#000000",
                         shape=ft.RoundedRectangleBorder(radius=6)
                     ),
                     on_click=lambda e, s=sides: self.do_roll(s)

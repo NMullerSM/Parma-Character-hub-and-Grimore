@@ -29,7 +29,6 @@ from .ui.theme import (
     GOLD_LIGHT, GOLD_PRIMARY, TEXT_MUTED, COLOR_GREEN, create_gold_button,
     get_app_theme
 )
-from .ui.components.hero_header import HeroHeader
 from .ui.components.dice_tray import DiceTray
 from .ui.components.rules_dialog import RulesDialog
 from .ui.views.combat_view import CombatView
@@ -67,7 +66,6 @@ def main(page: ft.Page):
         char = UniversalAcroFormHandler.get_blank_character()
 
     # 2. Componentes de Interfaz
-    hero_header = HeroHeader(char=char, on_change=lambda: notify_state_changed())
     dice_tray = DiceTray()
     dice_tray.visible = False  # Oculto por defecto, alternable con botón 🎲 Dados
 
@@ -77,7 +75,7 @@ def main(page: ft.Page):
         page.update()
         dice_tray.do_roll(sides, custom_mod=mod, reason=reason)
 
-    # Vistas Modulares
+    # Vistas Modulares (CombatView contiene la cabecera operativa de combate de Artanis)
     combat_view = CombatView(char=char, on_roll_request=on_roll_request, on_state_change=lambda: notify_state_changed())
     sheet_view = SheetView(char=char, on_roll_request=on_roll_request, on_state_change=lambda: notify_state_changed())
     spells_view = SpellsView(char=char, okf_engine=okf, on_state_change=lambda: notify_state_changed())
@@ -89,14 +87,13 @@ def main(page: ft.Page):
     rules_dialog = RulesDialog(page=page)
 
     def notify_state_changed():
-        hero_header.update_data(char)
+        combat_view.update_data(char)
         okf_view.update_data(char)
         page.update()
 
     def refresh_all_views(new_char: CharacterSheet):
         nonlocal char
         char = new_char
-        hero_header.update_data(char)
         combat_view.update_data(char)
         sheet_view.update_data(char)
         spells_view.update_data(char)
@@ -228,7 +225,7 @@ def main(page: ft.Page):
                 ft.Row(
                     controls=[
                         ft.Container(
-                            content=ft.Text("D&D 5e", size=11, weight=ft.FontWeight.BOLD, color="#111"),
+                            content=ft.Text("D&D 5e", size=11, weight=ft.FontWeight.BOLD, color="#000000"),
                             bgcolor=GOLD_PRIMARY,
                             padding=ft.padding.symmetric(horizontal=8, vertical=4),
                             border_radius=ft.border_radius.all(4)
@@ -248,7 +245,9 @@ def main(page: ft.Page):
                         ),
                         ft.ElevatedButton(
                             text="Ejemplo: Artanis 4",
-                            style=ft.ButtonStyle(bgcolor=GOLD_PRIMARY, color="#111"),
+                            color="#000000",
+                            bgcolor=GOLD_PRIMARY,
+                            style=ft.ButtonStyle(bgcolor=GOLD_PRIMARY, color="#000000"),
                             on_click=on_load_artanis,
                             tooltip="Restaurar hoja de ejemplo Artanis LVL 4"
                         ),
@@ -282,12 +281,16 @@ def main(page: ft.Page):
                         ),
                         ft.ElevatedButton(
                             text="Descanso Largo",
-                            style=ft.ButtonStyle(bgcolor=COLOR_GREEN, color="#fff"),
+                            color="#ffffff",
+                            bgcolor=COLOR_GREEN,
+                            style=ft.ButtonStyle(bgcolor=COLOR_GREEN, color="#ffffff"),
                             on_click=on_long_rest,
                             tooltip="Restaurar toda la salud, dados de golpe y espacios de conjuro"
                         ),
                         ft.ElevatedButton(
                             text="🎲 Dados",
+                            color=GOLD_LIGHT,
+                            bgcolor=BG_CARD,
                             style=ft.ButtonStyle(bgcolor=BG_CARD, color=GOLD_LIGHT, side=ft.BorderSide(1, BORDER_GOLD)),
                             on_click=toggle_dice,
                             tooltip="Mostrar u ocultar la bandeja interactiva de dados"
@@ -335,17 +338,10 @@ def main(page: ft.Page):
         expand=True
     )
 
-    # Contenedor principal con soporte lateral de DiceTray
+    # Contenedor principal con soporte lateral de DiceTray (tabs ocupa toda la altura disponible)
     main_layout = ft.Row(
         controls=[
-            ft.Column(
-                controls=[
-                    hero_header,
-                    tabs
-                ],
-                expand=True,
-                spacing=8
-            ),
+            tabs,
             ft.Container(
                 content=dice_tray,
                 width=320,

@@ -9,6 +9,7 @@ from ..theme import (
     GOLD_PRIMARY, TEXT_MUTED, COLOR_RED, COLOR_GREEN, COLOR_BLUE,
     create_card_container
 )
+from ..components.hero_header import HeroHeader
 from ..components.slot_tracker import SlotTracker
 
 
@@ -28,6 +29,9 @@ class CombatView(ft.Container):
         self._build_ui()
 
     def _build_ui(self):
+        # Cabecera Operativa de Combate (Nombre, CA, Iniciativa, Velocidad, Competencia e Inspiración)
+        self.hero_header = HeroHeader(char=self.char, on_change=self.on_state_change)
+
         # 1. Tarjeta de Salud y Puntos de Golpe
         hp_pct = max(0.0, min(1.0, self.char.hp_current / max(1, self.char.hp_max)))
         bar_color = COLOR_GREEN if hp_pct > 0.5 else (GOLD_PRIMARY if hp_pct > 0.25 else COLOR_RED)
@@ -61,12 +65,12 @@ class CombatView(ft.Container):
 
         btn_heal = ft.ElevatedButton(
             text="Curar (+)",
-            style=ft.ButtonStyle(bgcolor=COLOR_GREEN, color="#fff"),
+            style=ft.ButtonStyle(bgcolor=COLOR_GREEN, color="#ffffff"),
             on_click=self._on_heal_click
         )
         btn_dmg = ft.ElevatedButton(
             text="Dañar (-)",
-            style=ft.ButtonStyle(bgcolor=COLOR_RED, color="#fff"),
+            style=ft.ButtonStyle(bgcolor=COLOR_RED, color="#ffffff"),
             on_click=self._on_damage_click
         )
         btn_temp = ft.OutlinedButton(
@@ -156,7 +160,9 @@ class CombatView(ft.Container):
                         ),
                         ft.ElevatedButton(
                             text=f"Ataque {wpn.attack_bonus}",
-                            style=ft.ButtonStyle(bgcolor=GOLD_PRIMARY, color="#111"),
+                            color="#000000",
+                            bgcolor=GOLD_PRIMARY,
+                            style=ft.ButtonStyle(bgcolor=GOLD_PRIMARY, color="#000000"),
                             on_click=lambda e, w=wpn: self._roll_attack(w)
                         ),
                         ft.OutlinedButton(
@@ -210,6 +216,7 @@ class CombatView(ft.Container):
 
         self.content = ft.ListView(
             controls=[
+                self.hero_header,
                 ft.ResponsiveRow(
                     controls=[
                         ft.Column(controls=[health_card, death_saves_card], col={"sm": 12, "md": 6}),
@@ -263,7 +270,7 @@ class CombatView(ft.Container):
                 bgcolor=active_color if is_active else "transparent",
                 border=ft.border.all(2, active_color),
                 alignment=ft.alignment.center,
-                content=ft.Icon(ft.Icons.CHECK, size=16, color="#fff") if is_active else None,
+                content=ft.Icon(ft.Icons.CHECK, size=16, color="#ffffff") if is_active else None,
                 on_click=lambda e, idx=i: on_toggle(idx)
             )
             boxes.append(box)
@@ -302,11 +309,11 @@ class CombatView(ft.Container):
                 self.on_state_change()
 
     def _open_add_weapon_dialog(self, e):
-        name_input = ft.TextField(label="Nombre del Arma / Ataque", value="Espada Corta", border_color=BORDER_DIM, color="#fff")
-        atk_input = ft.TextField(label="Bono de Ataque", value="+5", width=120, border_color=BORDER_DIM, color="#fff")
-        dmg_input = ft.TextField(label="Daño (ej: 1d6+3)", value="1d6+3", width=140, border_color=BORDER_DIM, color="#fff")
-        type_input = ft.TextField(label="Tipo de Daño", value="perforante", width=160, border_color=BORDER_DIM, color="#fff")
-        notes_input = ft.TextField(label="Propiedades / Notas", value="Sutil, ligera", border_color=BORDER_DIM, color="#fff")
+        name_input = ft.TextField(label="Nombre del Arma / Ataque", value="Espada Corta", border_color=BORDER_DIM, color="#ffffff")
+        atk_input = ft.TextField(label="Bono de Ataque", value="+5", width=120, border_color=BORDER_DIM, color="#ffffff")
+        dmg_input = ft.TextField(label="Daño (ej: 1d6+3)", value="1d6+3", width=140, border_color=BORDER_DIM, color="#ffffff")
+        type_input = ft.TextField(label="Tipo de Daño", value="perforante", width=160, border_color=BORDER_DIM, color="#ffffff")
+        notes_input = ft.TextField(label="Propiedades / Notas", value="Sutil, ligera", border_color=BORDER_DIM, color="#ffffff")
 
         def save_weapon(ev):
             dialog.open = False
@@ -344,7 +351,13 @@ class CombatView(ft.Container):
             ),
             actions=[
                 ft.TextButton("Cancelar", style=ft.ButtonStyle(color=TEXT_MUTED), on_click=close_d),
-                ft.ElevatedButton("Guardar Arma", style=ft.ButtonStyle(bgcolor=GOLD_PRIMARY, color="#111"), on_click=save_weapon),
+                ft.ElevatedButton(
+                    "Guardar Arma",
+                    color="#000000",
+                    bgcolor=GOLD_PRIMARY,
+                    style=ft.ButtonStyle(bgcolor=GOLD_PRIMARY, color="#000000"),
+                    on_click=save_weapon
+                ),
             ],
             actions_alignment=ft.MainAxisAlignment.END
         )
