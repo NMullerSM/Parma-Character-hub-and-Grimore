@@ -29,3 +29,5 @@ Desktop.ini
 # Logs y Archivos Temporales
 *.log
 scratch/*.tmp
+autosave_character.json
+autosave_*.json
