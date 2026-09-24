@@ -107,15 +107,10 @@ class SpellPickerDialog:
 
     def show(self):
         self._refresh_results()
-        self.page.overlay.append(self.dialog)
-        self.dialog.open = True
-        self.page.update()
+        self.page.open(self.dialog)
 
     def _close_dialog(self, e=None):
-        self.dialog.open = False
-        if self.dialog in self.page.overlay:
-            self.page.overlay.remove(self.dialog)
-        self.page.update()
+        self.page.close(self.dialog)
 
     def _on_search_change(self, e):
         self.search_query = e.control.value

@@ -7,6 +7,7 @@ import flet as ft
 import flet.canvas as cv
 from typing import Callable, Optional, Dict, Any, List
 from ...core.models import CharacterSheet, NetworkNode, NetworkEdge
+from ...core.db import DatabaseManager
 from ..theme import (
     BG_PRIMARY, BG_CARD, BG_CARD_ALT, BG_INPUT, BG_SURFACE, BORDER_DIM, BORDER_GOLD,
     GOLD_LIGHT, GOLD_PRIMARY, TEXT_MUTED, COLOR_RED, COLOR_GREEN, COLOR_BLUE,
@@ -76,6 +77,12 @@ class NetworkView(ft.Container):
     def update_data(self, char: CharacterSheet):
         self.char = char
         self._ensure_initial_positions()
+        if hasattr(self, "badge_nodes") and self.badge_nodes.content:
+            self.badge_nodes.content.value = f"{len(self.char.network_nodes)} Personajes"
+        if hasattr(self, "badge_edges") and self.badge_edges.content:
+            self.badge_edges.content.value = f"{len(self.char.network_edges)} Vínculos"
+        if hasattr(self, "toolbar") and self.toolbar.page:
+            self.toolbar.update()
         if self.view_mode == "canvas":
             self._render_canvas()
         else:
@@ -127,14 +134,17 @@ class NetworkView(ft.Container):
             tooltip="Distribuir automáticamente en círculo armónico"
         )
 
+        self.badge_nodes = create_badge(f"{len(self.char.network_nodes)} Personajes", bg_color=BG_INPUT, text_color=GOLD_LIGHT, border_color=BORDER_GOLD)
+        self.badge_edges = create_badge(f"{len(self.char.network_edges)} Vínculos", bg_color=BG_INPUT, text_color=TEXT_MUTED, border_color=BORDER_DIM)
+
         self.toolbar = ft.Container(
             content=ft.Row(
                 controls=[
                     ft.Row(
                         controls=[
                             ft.Text("🌐 Red de Personajes & Aliados", size=16, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
-                            create_badge(f"{len(self.char.network_nodes)} Personajes", bg_color=BG_INPUT, text_color=GOLD_LIGHT, border_color=BORDER_GOLD),
-                            create_badge(f"{len(self.char.network_edges)} Vínculos", bg_color=BG_INPUT, text_color=TEXT_MUTED, border_color=BORDER_DIM),
+                            self.badge_nodes,
+                            self.badge_edges,
                         ],
                         spacing=8
                     ),
@@ -250,12 +260,16 @@ class NetworkView(ft.Container):
                     )
                 )
 
-        # Capa de dibujo vectorial en el fondo
-        line_canvas = cv.Canvas(
-            shapes=canvas_shapes,
-            expand=True
-        )
-        self.canvas_stack.controls.append(line_canvas)
+        # Capa de dibujo vectorial en el fondo (solo si hay líneas trazadas)
+        if canvas_shapes:
+            line_canvas = cv.Canvas(
+                shapes=canvas_shapes,
+                left=0,
+                top=0,
+                right=0,
+                bottom=0
+            )
+            self.canvas_stack.controls.append(line_canvas)
 
         # 1.5 Etiquetas de Relación centradas sobre las líneas
         for edge in edges:
@@ -300,6 +314,9 @@ class NetworkView(ft.Container):
         for node in nodes:
             node_widget = self._create_draggable_node(node)
             self.canvas_stack.controls.append(node_widget)
+
+        if self.canvas_stack.page:
+            self.canvas_stack.update()
 
     def _create_draggable_node(self, node: NetworkNode) -> ft.Container:
         color, role_label = ROLE_CONFIG.get(node.role, (TEXT_MUTED, "Neutral"))
@@ -467,9 +484,8 @@ class NetworkView(ft.Container):
             name = name_input.value.strip() if name_input.value else ""
             if not name:
                 return
-            dialog.open = False
-            if dialog in self.page.overlay:
-                self.page.overlay.remove(dialog)
+            if self.page:
+                self.page.close(dialog)
 
             # Ubicación calculada para que no caiga fuera del canvas
             existing_count = len(self.char.network_nodes)
@@ -493,20 +509,53 @@ class NetworkView(ft.Container):
                 self.on_state_change()
 
         def close_dialog(ev):
-            dialog.open = False
-            if dialog in self.page.overlay:
-                self.page.overlay.remove(dialog)
-            self.page.update()
+            if self.page:
+                self.page.close(dialog)
+
+        # Opciones de importación rápida desde héroes guardados en la BD
+        db_mgr = DatabaseManager()
+        saved_heroes = db_mgr.list_characters()
+        existing_names = {n.name.strip().lower() for n in self.char.network_nodes}
+        importable = [h for h in saved_heroes if h["name"].strip().lower() not in existing_names]
+
+        import_dropdown = None
+        if importable:
+            import_options = [
+                ft.dropdown.Option(h["name"], f"📥 {h['name']} ({h.get('char_class', '')} Niv {h.get('level', 1)})")
+                for h in importable
+            ]
+            def on_import_select(ev):
+                if ev.control.value:
+                    sel_h = next((h for h in importable if h["name"] == ev.control.value), None)
+                    if sel_h:
+                        name_input.value = sel_h["name"]
+                        role_dropdown.value = "companion"
+                        desc_input.value = f"{sel_h.get('race', '')} {sel_h.get('char_class', '')} Nivel {sel_h.get('level', 1)}. Héroe de la campaña."
+                        dialog.update()
+
+            import_dropdown = ft.Dropdown(
+                label="⚡ Importar Héroe Guardado de la Campaña",
+                hint_text="Elige un personaje existente para vincularlo...",
+                options=import_options,
+                border_color=BORDER_GOLD,
+                on_change=on_import_select
+            )
+
+        dialog_controls = []
+        if import_dropdown:
+            dialog_controls.append(import_dropdown)
+            dialog_controls.append(ft.Divider(color=BORDER_DIM, height=1))
+        dialog_controls.extend([name_input, role_dropdown, desc_input])
 
         dialog = ft.AlertDialog(
             title=ft.Text("➕ Añadir Personaje a la Red", size=18, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
             content=ft.Container(
                 content=ft.Column(
-                    controls=[name_input, role_dropdown, desc_input],
+                    controls=dialog_controls,
                     spacing=10
                 ),
-                width=450,
-                height=230
+                width=460,
+                height=300 if import_dropdown else 240
             ),
             actions=[
                 ft.TextButton("Cancelar", style=ft.ButtonStyle(color=TEXT_MUTED), on_click=close_dialog),
@@ -520,9 +569,8 @@ class NetworkView(ft.Container):
             ],
             actions_alignment=ft.MainAxisAlignment.END
         )
-        self.page.overlay.append(dialog)
-        dialog.open = True
-        self.page.update()
+        if self.page:
+            self.page.open(dialog)
 
     def _open_connect_dialog(self, e):
         nodes = self.char.network_nodes
@@ -561,9 +609,8 @@ class NetworkView(ft.Container):
                 self.page.update()
                 return
 
-            dialog.open = False
-            if dialog in self.page.overlay:
-                self.page.overlay.remove(dialog)
+            if self.page:
+                self.page.close(dialog)
 
             # Evitar conexión duplicada
             existing = any(
@@ -582,10 +629,8 @@ class NetworkView(ft.Container):
                     self.on_state_change()
 
         def close_dialog(ev):
-            dialog.open = False
-            if dialog in self.page.overlay:
-                self.page.overlay.remove(dialog)
-            self.page.update()
+            if self.page:
+                self.page.close(dialog)
 
         dialog = ft.AlertDialog(
             title=ft.Text("🔗 Conectar Personajes", size=18, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
@@ -609,9 +654,8 @@ class NetworkView(ft.Container):
             ],
             actions_alignment=ft.MainAxisAlignment.END
         )
-        self.page.overlay.append(dialog)
-        dialog.open = True
-        self.page.update()
+        if self.page:
+            self.page.open(dialog)
 
     def _open_manage_edges_dialog(self, e):
         edges = self.char.network_edges
@@ -643,10 +687,8 @@ class NetworkView(ft.Container):
             rows.append(row)
 
         def close_dialog(ev):
-            dialog.open = False
-            if dialog in self.page.overlay:
-                self.page.overlay.remove(dialog)
-            self.page.update()
+            if self.page:
+                self.page.close(dialog)
 
         dialog = ft.AlertDialog(
             title=ft.Text("Hub de Vínculos de Campaña", size=18, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
@@ -658,9 +700,8 @@ class NetworkView(ft.Container):
             actions=[ft.TextButton("Cerrar", style=ft.ButtonStyle(color=GOLD_LIGHT), on_click=close_dialog)],
             actions_alignment=ft.MainAxisAlignment.END
         )
-        self.page.overlay.append(dialog)
-        dialog.open = True
-        self.page.update()
+        if self.page:
+            self.page.open(dialog)
 
     def _delete_edge(self, edge: NetworkEdge):
         if edge in self.char.network_edges:
@@ -673,15 +714,12 @@ class NetworkView(ft.Container):
         color, role_label = ROLE_CONFIG.get(node.role, (TEXT_MUTED, "Neutral"))
 
         def close_dialog(ev):
-            dialog.open = False
-            if dialog in self.page.overlay:
-                self.page.overlay.remove(dialog)
-            self.page.update()
+            if self.page:
+                self.page.close(dialog)
 
         def delete_character(ev):
-            dialog.open = False
-            if dialog in self.page.overlay:
-                self.page.overlay.remove(dialog)
+            if self.page:
+                self.page.close(dialog)
             self._remove_node(node)
 
         dialog = ft.AlertDialog(
@@ -715,9 +753,8 @@ class NetworkView(ft.Container):
             ],
             actions_alignment=ft.MainAxisAlignment.SPACE_BETWEEN
         )
-        self.page.overlay.append(dialog)
-        dialog.open = True
-        self.page.update()
+        if self.page:
+            self.page.open(dialog)
 
     def _remove_node(self, node: NetworkNode):
         if node in self.char.network_nodes:

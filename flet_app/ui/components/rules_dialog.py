@@ -83,12 +83,7 @@ class RulesDialog:
         )
 
     def show(self):
-        self.page.overlay.append(self.dialog)
-        self.dialog.open = True
-        self.page.update()
+        self.page.open(self.dialog)
 
     def _close(self, e=None):
-        self.dialog.open = False
-        if self.dialog in self.page.overlay:
-            self.page.overlay.remove(self.dialog)
-        self.page.update()
+        self.page.close(self.dialog)

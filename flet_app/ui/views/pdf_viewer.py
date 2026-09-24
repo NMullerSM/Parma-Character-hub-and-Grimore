@@ -2,8 +2,9 @@
 Vista de Visor de Manuales & PDFs (PyMuPDF, Navegación de Índice TOC, Enlaces y Caché Eficiente)
 """
 import os
+import sys
 import flet as ft
-from typing import Optional
+from typing import Optional, Callable
 from ...core.pdf_engine import PdfReaderEngine
 from ..theme import (
     BG_CARD, BG_INPUT, BORDER_DIM, BORDER_GOLD, GOLD_LIGHT,
@@ -12,37 +13,58 @@ from ..theme import (
 
 
 class PdfViewerView(ft.Container):
-    def __init__(self, default_doc: str = "Manual del Jugador 2024.pdf"):
+    def __init__(
+        self,
+        default_doc: str = "Manual del Jugador 2024.pdf",
+        on_toggle_zen: Optional[Callable[[bool], None]] = None
+    ):
         super().__init__()
         self.engine = PdfReaderEngine(max_cached_pages=4)
         self.current_page = 1
         self.zoom = 1.0
         self.show_outline = False
         self.default_doc = default_doc
+        self.on_toggle_zen = on_toggle_zen
+        self.is_zen = False
+        self.file_picker: Optional[ft.FilePicker] = None
         self.expand = True
 
         self._build_ui()
 
     def _build_ui(self):
         # 1. Selector de Manual
-        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+        if getattr(sys, "frozen", False):
+            base_dir = getattr(sys, "_MEIPASS", os.path.dirname(sys.executable))
+        else:
+            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
         self.repo_dir = base_dir
+
+        # Opciones predeterminadas
+        options = [
+            ft.dropdown.Option("Manual del Jugador 2024.pdf", "📘 Manual del Jugador 2024"),
+            ft.dropdown.Option("Guia de Xanathar Para Todo.pdf", "🔮 Guía de Xanathar para Todo"),
+            ft.dropdown.Option("Caldero de Tasha para Todo.pdf", "🧪 Caldero de Tasha para Todo"),
+            ft.dropdown.Option("Artanis LVL 4.pdf", "📜 Hoja Artanis LVL 4"),
+        ]
+
+        # Escanear dinámicamente cualquier PDF adicional en data/manuals
+        manuals_dir = os.path.join(self.repo_dir, "data", "manuals")
+        if os.path.exists(manuals_dir):
+            for fname in sorted(os.listdir(manuals_dir)):
+                if fname.lower().endswith(".pdf") and not any(opt.key == fname for opt in options):
+                    clean_title = fname[:-4].replace("_", " ")
+                    options.append(ft.dropdown.Option(fname, f"📖 {clean_title}"))
 
         self.doc_dropdown = ft.Dropdown(
             label="Manual / Documento PDF",
-            width=280,
+            width=260,
             value=self.default_doc,
             border_color=BORDER_GOLD,
-            options=[
-                ft.dropdown.Option("Manual del Jugador 2024.pdf", "📘 Manual del Jugador 2024"),
-                ft.dropdown.Option("Guia de Xanathar Para Todo.pdf", "🔮 Guía de Xanathar para Todo"),
-                ft.dropdown.Option("Caldero de Tasha para Todo.pdf", "🧪 Caldero de Tasha para Todo"),
-                ft.dropdown.Option("Artanis LVL 4.pdf", "📜 Hoja Artanis LVL 4"),
-            ],
+            options=options,
             on_change=self._on_doc_change
         )
 
-        # 2. Botón de Índice (TOC)
+        # 2. Botón de Índice (TOC) y Carga de PDF Externo
         self.btn_outline = ft.ElevatedButton(
             text="📑 Índice",
             style=ft.ButtonStyle(
@@ -52,6 +74,14 @@ class PdfViewerView(ft.Container):
                 shape=ft.RoundedRectangleBorder(radius=6)
             ),
             on_click=self._toggle_outline
+        )
+
+        self.btn_upload = ft.IconButton(
+            icon=ft.Icons.FILE_UPLOAD_OUTLINED,
+            icon_color=GOLD_LIGHT,
+            icon_size=20,
+            tooltip="Importar Manual PDF externo...",
+            on_click=self._on_pick_pdf_click
         )
 
         # 3. Paginación
@@ -74,7 +104,7 @@ class PdfViewerView(ft.Container):
         self.btn_next = ft.IconButton(icon=ft.Icons.NAVIGATE_NEXT, icon_color=GOLD_LIGHT, icon_size=20, tooltip="Página siguiente", on_click=lambda e: self.goto_page(self.current_page + 1))
         self.btn_last = ft.IconButton(icon=ft.Icons.LAST_PAGE, icon_color=GOLD_LIGHT, icon_size=20, tooltip="Última página", on_click=lambda e: self.goto_page(self.engine.page_count))
 
-        # 4. Controles de Zoom
+        # 4. Controles de Zoom y Pantalla Completa Dedicada del Lector
         self.btn_zoom_out = ft.IconButton(icon=ft.Icons.ZOOM_OUT, icon_color=GOLD_LIGHT, icon_size=20, tooltip="Alejar", on_click=self._zoom_out)
         self.zoom_label = ft.Text("100%", size=12, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT)
         self.btn_zoom_in = ft.IconButton(icon=ft.Icons.ZOOM_IN, icon_color=GOLD_LIGHT, icon_size=20, tooltip="Acercar", on_click=self._zoom_in)
@@ -84,21 +114,26 @@ class PdfViewerView(ft.Container):
             on_click=self._zoom_fit
         )
 
-        self.btn_fullscreen = ft.IconButton(
+        self.btn_fullscreen = ft.ElevatedButton(
+            text="⛶ Pantalla Completa",
             icon=ft.Icons.FULLSCREEN,
-            icon_color=GOLD_LIGHT,
-            icon_size=20,
-            tooltip="Alternar Pantalla Completa",
+            style=ft.ButtonStyle(
+                bgcolor=BG_INPUT,
+                color=GOLD_LIGHT,
+                side=ft.BorderSide(1, BORDER_GOLD),
+                shape=ft.RoundedRectangleBorder(radius=6)
+            ),
+            tooltip="Expandir el lector de PDF en toda la pantalla manteniendo los controles",
             on_click=self._toggle_fullscreen
         )
 
         # Barra Superior del Lector
-        toolbar = ft.Container(
+        self.toolbar = ft.Container(
             content=ft.Row(
                 controls=[
-                    ft.Row(controls=[self.btn_outline, self.doc_dropdown], spacing=8),
+                    ft.Row(controls=[self.btn_outline, self.doc_dropdown, self.btn_upload], spacing=4),
                     ft.Row(controls=[self.btn_first, self.btn_prev, self.page_input, self.total_pages_label, self.btn_next, self.btn_last], spacing=4),
-                    ft.Row(controls=[self.btn_zoom_out, self.zoom_label, self.btn_zoom_in, self.btn_zoom_fit, self.btn_fullscreen], spacing=4),
+                    ft.Row(controls=[self.btn_zoom_out, self.zoom_label, self.btn_zoom_in, self.btn_zoom_fit, self.btn_fullscreen], spacing=6),
                 ],
                 alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                 wrap=True
@@ -167,10 +202,17 @@ class PdfViewerView(ft.Container):
             expand=True
         )
 
+        viewport_stack = ft.Stack(
+            controls=[
+                self.viewport
+            ],
+            expand=True
+        )
+
         self.main_area = ft.Row(
             controls=[
                 self.outline_sidebar,
-                self.viewport
+                viewport_stack
             ],
             expand=True,
             spacing=10
@@ -178,19 +220,52 @@ class PdfViewerView(ft.Container):
 
         self.content = ft.Column(
             controls=[
-                toolbar,
+                self.toolbar,
                 self.main_area
             ],
             spacing=8,
             expand=True
         )
 
+
+
+    def attach_file_picker(self, picker: ft.FilePicker):
+        self.file_picker = picker
+        self.file_picker.on_result = self._on_pdf_picked
+
+    def _on_pick_pdf_click(self, e):
+        if self.file_picker:
+            self.file_picker.pick_files(
+                dialog_title="Importar Manual PDF",
+                allowed_extensions=["pdf"],
+                allow_multiple=False
+            )
+
+    def _on_pdf_picked(self, e: ft.FilePickerResultEvent):
+        if e.files and len(e.files) > 0:
+            pdf_path = e.files[0].path
+            if pdf_path and os.path.exists(pdf_path):
+                filename = os.path.basename(pdf_path)
+                if not any(opt.key == pdf_path for opt in self.doc_dropdown.options):
+                    self.doc_dropdown.options.append(ft.dropdown.Option(pdf_path, f"📁 {filename}"))
+                self.doc_dropdown.value = pdf_path
+                self.load_doc(pdf_path)
+                if self.page:
+                    self.page.update()
+
     def did_mount(self):
         # Cargar documento por defecto al montar
         self.load_doc(self.default_doc)
 
     def load_doc(self, doc_filename: str):
-        full_path = os.path.join(self.repo_dir, doc_filename)
+        # Buscar en data/manuals, data/characters, raíz o ruta directa
+        candidate_paths = [
+            doc_filename,
+            os.path.join(self.repo_dir, "data", "manuals", doc_filename),
+            os.path.join(self.repo_dir, "data", "characters", doc_filename),
+            os.path.join(self.repo_dir, doc_filename),
+        ]
+        full_path = next((p for p in candidate_paths if os.path.exists(p)), os.path.join(self.repo_dir, doc_filename))
         success = self.engine.open_document(full_path)
         if success:
             self.current_page = 1
@@ -302,10 +377,29 @@ class PdfViewerView(ft.Container):
         if self.page:
             self.page.update()
 
-    def _toggle_fullscreen(self, e):
+    def _toggle_fullscreen(self, e=None):
+        self.is_zen = not self.is_zen
+        if self.is_zen:
+            self.btn_fullscreen.text = "✕ Salir de Pantalla Completa"
+            self.btn_fullscreen.icon = ft.Icons.FULLSCREEN_EXIT
+            self.btn_fullscreen.style = ft.ButtonStyle(
+                bgcolor="rgba(220, 38, 38, 0.9)",
+                color="#ffffff",
+                side=ft.BorderSide(1, "#ef4444"),
+                shape=ft.RoundedRectangleBorder(radius=6)
+            )
+        else:
+            self.btn_fullscreen.text = "⛶ Pantalla Completa"
+            self.btn_fullscreen.icon = ft.Icons.FULLSCREEN
+            self.btn_fullscreen.style = ft.ButtonStyle(
+                bgcolor=BG_INPUT,
+                color=GOLD_LIGHT,
+                side=ft.BorderSide(1, BORDER_GOLD),
+                shape=ft.RoundedRectangleBorder(radius=6)
+            )
+        if self.on_toggle_zen:
+            self.on_toggle_zen(self.is_zen)
         if self.page:
-            self.page.window.full_screen = not self.page.window.full_screen
-            self.btn_fullscreen.icon = ft.Icons.FULLSCREEN_EXIT if self.page.window.full_screen else ft.Icons.FULLSCREEN
             self.page.update()
 
     def _on_doc_change(self, e):

@@ -31,3 +31,10 @@ Desktop.ini
 scratch/*.tmp
 autosave_character.json
 autosave_*.json
+*.db
+*.db-wal
+*.db-shm
+data/*.db
+data/*.db-wal
+data/*.db-shm
+data/characters/portraits/

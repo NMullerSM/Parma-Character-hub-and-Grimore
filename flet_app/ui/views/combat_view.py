@@ -316,9 +316,8 @@ class CombatView(ft.Container):
         notes_input = ft.TextField(label="Propiedades / Notas", value="Sutil, ligera", border_color=BORDER_DIM, color="#ffffff")
 
         def save_weapon(ev):
-            dialog.open = False
-            if dialog in self.page.overlay:
-                self.page.overlay.remove(dialog)
+            if self.page:
+                self.page.close(dialog)
             new_wpn = WeaponAction(
                 name=name_input.value or "Ataque",
                 attack_bonus=atk_input.value or "+0",
@@ -334,10 +333,8 @@ class CombatView(ft.Container):
                 self.on_state_change()
 
         def close_d(ev):
-            dialog.open = False
-            if dialog in self.page.overlay:
-                self.page.overlay.remove(dialog)
-            self.page.update()
+            if self.page:
+                self.page.close(dialog)
 
         dialog = ft.AlertDialog(
             title=ft.Text("⚔️ Añadir Arma o Acción de Ataque", size=18, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
@@ -361,9 +358,8 @@ class CombatView(ft.Container):
             ],
             actions_alignment=ft.MainAxisAlignment.END
         )
-        self.page.overlay.append(dialog)
-        dialog.open = True
-        self.page.update()
+        if self.page:
+            self.page.open(dialog)
 
     def _update_health_display(self):
         hp_pct = max(0.0, min(1.0, self.char.hp_current / max(1, self.char.hp_max)))
@@ -403,3 +399,7 @@ class CombatView(ft.Container):
         self._build_ui()
         if self.page:
             self.update()
+
+    def attach_file_picker(self, picker: ft.FilePicker):
+        self.hero_header.attach_file_picker(picker)
+

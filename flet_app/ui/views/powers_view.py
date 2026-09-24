@@ -218,9 +218,8 @@ class PowersView(ft.Container):
                 self.page.update()
 
         def select_feat(name: str, description: str):
-            dialog.open = False
-            if dialog in self.page.overlay:
-                self.page.overlay.remove(dialog)
+            if self.page:
+                self.page.close(dialog)
             new_f = CharacterFeature(
                 name=name,
                 source="PHB 2024",
@@ -239,6 +238,10 @@ class PowersView(ft.Container):
                 self.on_state_change()
 
         search_field.on_change = lambda ev: refresh_feats(ev.control.value)
+
+        def close_d():
+            if self.page:
+                self.page.close(dialog)
 
         dialog = ft.AlertDialog(
             title=ft.Text("🌟 Catálogo de Dotes OKF (PHB 2024)", size=18, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
@@ -261,16 +264,9 @@ class PowersView(ft.Container):
             actions_alignment=ft.MainAxisAlignment.END
         )
 
-        def close_d():
-            dialog.open = False
-            if dialog in self.page.overlay:
-                self.page.overlay.remove(dialog)
-            self.page.update()
-
         refresh_feats()
-        self.page.overlay.append(dialog)
-        dialog.open = True
-        self.page.update()
+        if self.page:
+            self.page.open(dialog)
 
     def update_data(self, char: CharacterSheet):
         self.char = char

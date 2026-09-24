@@ -540,10 +540,27 @@ class OkfCompendiumView(ft.Container):
         full_entity = self.okf.read_entity_file(file_path) if file_path else None
         body_text = ""
         if full_entity:
-            body_text = full_entity.get("body_markdown", "")
-            lines = body_text.split("\n")
-            cleaned_lines = [l for l in lines if not l.startswith("# ")]
-            body_text = "\n".join(cleaned_lines).strip()
+            raw_text = full_entity.get("body_markdown", "")
+            lines = raw_text.split("\n")
+            cleaned = []
+            for l in lines:
+                s = l.strip()
+                # Omitir títulos H1 repetidos que ya se muestran en la cabecera visual
+                if s.startswith("# ") and not s.startswith("### "):
+                    continue
+                # Omitir artefactos de extracción OCR de tablas PDF
+                if s in ("|", "]", "[", "||", "\\"):
+                    continue
+                # Desescapar comillas
+                l = l.replace('\\"', '"').replace("“", '"').replace("”", '"')
+                cleaned.append(l)
+
+            body_text = "\n".join(cleaned).strip()
+            # Desnudar comillas envolventes multilínea de YAML
+            if body_text.startswith('"""') and body_text.endswith('"""'):
+                body_text = body_text[3:-3].strip()
+            elif body_text.startswith('"') and body_text.endswith('"'):
+                body_text = body_text[1:-1].strip()
 
         detail_content = ft.ListView(
             controls=[
@@ -571,11 +588,15 @@ class OkfCompendiumView(ft.Container):
                 *sub_badges,
                 ft.Divider(color=BORDER_DIM, height=1),
                 ft.Container(
-                    content=ft.Text(body_text or "Sin descripción detallada.", size=13, color="#f0f2f5", selectable=True),
+                    content=ft.Markdown(
+                        body_text or "*Sin descripción detallada.*",
+                        selectable=True,
+                        extension_set=ft.MarkdownExtensionSet.GITHUB_WEB
+                    ),
                     bgcolor=BG_INPUT,
                     border=ft.border.all(1, BORDER_DIM),
                     border_radius=ft.border_radius.all(6),
-                    padding=12
+                    padding=16
                 )
             ],
             spacing=10,

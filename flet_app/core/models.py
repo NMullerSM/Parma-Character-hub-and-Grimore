@@ -178,7 +178,9 @@ class CharacterSheet:
     # Rasgos y Poderes
     features: List[CharacterFeature] = field(default_factory=list)
 
-    # Biografía
+    # Biografía y Retrato
+    portrait_path: str = ""
+    portrait_base64: str = ""
     appearance: str = ""
     history: str = ""
     personality_traits: str = ""

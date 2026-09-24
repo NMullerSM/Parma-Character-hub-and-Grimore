@@ -4,19 +4,28 @@ Una aplicación nativa de escritorio moderna, reactiva, elegante y **100% offlin
 
 ---
 
-## 🚀 Inicio Rápido (1 Clic)
+## 🚀 Inicio Rápido Multiplataforma
 
-Simplemente ejecuta cualquiera de estas opciones:
+### En Linux 🐧
+```bash
+./iniciar.sh
+# O directamente:
+.venv/bin/python run_app.py
+```
 
+### En Windows 🪟
 1. **Doble clic en `iniciar_desktop.bat`** (o `iniciar.bat`)
-2. O desde la terminal:
+2. O desde PowerShell / CMD:
    ```powershell
    .\iniciar_desktop.bat
    ```
-   O directamente con el entorno virtual Python:
-   ```powershell
-   .\.venv\Scripts\python.exe -m flet_app.main
-   ```
+
+---
+
+## 📁 Jerarquía de Datos y PDFs
+- `data/manuals/`: Libros de reglas oficiales en PDF (`Manual del Jugador 2024.pdf`, `Guía de Xanathar`, `Caldero de Tasha`).
+- `data/characters/`: Fichas de personaje en PDF (`Artanis LVL 4.pdf`), exportaciones de hojas y avatares.
+- `okf_dnd5e/`: Compendio atómico de 495 entidades (conjuros, dotes, especies, clases, reglas).
 
 ---
 
@@ -71,10 +80,27 @@ Simplemente ejecuta cualquiera de estas opciones:
 
 ---
 
-## 📦 Compilación a Ejecutable `.EXE` (Windows)
+## 📦 Compilación a Ejecutables Nativos
 
-Para generar el instalador / ejecutable distribuible sin requerir Python:
+### En Linux (Binario Nativo ELF) 🐧
+```bash
+./compilar.sh
+```
+El ejecutable se compilará en `dist/linux/Visualizador_Dnd_5e/Visualizador_Dnd_5e`.
+
+### En Windows (Ejecutable `.EXE`) 🪟
+Doble clic en `compilar_exe.bat` o desde la terminal:
 ```powershell
 .\compilar_exe.bat
 ```
-El ejecutable se compilará en `dist\Visualizador_Dnd_5e\Visualizador_Dnd_5e.exe`.
+El ejecutable se compilará en `dist\windows\Visualizador_Dnd_5e\Visualizador_Dnd_5e.exe`.
+
+---
+
+## 🛡️ Convenciones de Desarrollo (Linux & Windows)
+1. **Multiplataforma por diseño**: Toda nueva característica o librería debe funcionar de forma idéntica en Linux y Windows.
+2. **Dependencias limpias**: Los paquetes deben ser agnósticos o usar marcadores de plataforma PEP 508.
+3. **Paridad de UI y lógica**: La experiencia visual en Flet y la lógica de juego son 100% compartidas.
+
+Para consultar la especificación técnica completa y la hoja de ruta del proyecto, revisa [docs/PROJECT_CONVENTIONS_SDD.md](docs/PROJECT_CONVENTIONS_SDD.md).
+

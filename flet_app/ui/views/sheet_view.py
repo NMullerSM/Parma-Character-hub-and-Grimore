@@ -13,6 +13,7 @@ from ..theme import (
     GOLD_LIGHT, GOLD_PRIMARY, TEXT_MUTED, COLOR_BLUE, COLOR_GREEN, COLOR_RED,
     COLOR_PURPLE, COLOR_AMBER, create_card_container, create_badge
 )
+from ..components.portrait_card import CharacterPortraitCard
 
 
 class SheetView(ft.Container):
@@ -35,6 +36,12 @@ class SheetView(ft.Container):
         # 0. Cabecera Clásica: Identidad y Resumen de Combate & Magia
         prof_bonus = calc_proficiency_bonus(self.char.level)
         spell_stats = get_character_spell_stats(self.char)
+
+        self.portrait = CharacterPortraitCard(
+            char=self.char,
+            size=84,
+            on_portrait_changed=self.on_state_change
+        )
 
         def make_stat_badge(icon: str, label: str, value: str, color: str = GOLD_LIGHT, border_color: str = BORDER_DIM):
             return ft.Container(
@@ -91,13 +98,21 @@ class SheetView(ft.Container):
         )
 
         header_card = ft.Container(
-            content=ft.Column(
+            content=ft.Row(
                 controls=[
-                    identity_row,
-                    ft.Divider(color=BORDER_DIM, height=1),
-                    vitals_row
+                    self.portrait,
+                    ft.Column(
+                        controls=[
+                            identity_row,
+                            ft.Divider(color=BORDER_DIM, height=1),
+                            vitals_row
+                        ],
+                        spacing=8,
+                        expand=True
+                    )
                 ],
-                spacing=8
+                spacing=14,
+                vertical_alignment=ft.CrossAxisAlignment.CENTER
             ),
             bgcolor=BG_SURFACE,
             border=ft.border.all(1, BORDER_DIM),
@@ -290,3 +305,7 @@ class SheetView(ft.Container):
         self._build_ui()
         if self.page:
             self.update()
+
+    def attach_file_picker(self, picker: ft.FilePicker):
+        self.portrait.attach_file_picker(picker)
+

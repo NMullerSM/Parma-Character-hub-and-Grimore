@@ -2,15 +2,17 @@
 Asistente de Creación Guiada de Personajes D&D 5e (PHB 2024 / OKF)
 Permite a cualquier jugador forjar un aventurero paso a paso siguiendo las reglas oficiales del PHB 2024:
 Paso 1: Clase (Dados de golpe, competencias, salvaciones)
-Paso 2: Especie & Linaje (Velocidad, tamaño, visión en la oscuridad)
+Paso 2: Especie & Subraza / Linaje (Velocidad, tamaño, visión en la oscuridad, rasgos innatos)
 Paso 3: Trasfondo (Dote de origen, competencias, +2/+1 a atributos)
-Paso 4: Puntuaciones de Característica (Standard Array 15, 14, 13, 12, 10, 8 + bonificadores)
-Paso 5: Identidad, Cálculo de PG/CA/CD Mágica y Generación Final
+Paso 4: Puntuaciones de Característica (Conjunto Estándar, Tiradas 4d6 descartando menor, o Manual)
+Paso 5: Identidad, Retrato, Cálculo de PG/CA/CD Mágica y Generación Final
 """
+import random
 import flet as ft
 from typing import Callable, Optional, Dict, Any, List
 from ...core.models import CharacterSheet, CharacterFeature, WeaponAction, SpellSlotTier
 from ...core.okf_engine import OkfEngine
+from ...core.db import DatabaseManager
 from ...core.rules import (
     calc_modifier, calc_proficiency_bonus, CLASS_CASTING_ABILITY, get_spell_stats
 )
@@ -52,16 +54,90 @@ BACKGROUND_FEATS = {
 }
 
 SPECIES_DEFAULTS = {
-    "Humano": {"speed": "9 m", "darkvision": False, "size": "Mediano", "traits": "Dote adicional de origen, Inspiración heroica."},
-    "Elfo": {"speed": "9 m", "darkvision": True, "size": "Mediano", "traits": "Visión en la oscuridad (18m o 36m Drow), Linaje élfico, Trance."},
-    "Enano": {"speed": "9 m", "darkvision": True, "size": "Mediano", "traits": "Resistencia enana a veneno, Sentido de la piedra, +1 PG/nivel."},
-    "Mediano": {"speed": "9 m", "darkvision": False, "size": "Pequeño", "traits": "Suerte mediano (repite 1 natural en d20), Valiente."},
-    "Dracónido": {"speed": "9 m", "darkvision": True, "size": "Mediano", "traits": "Arma de aliento elemental, Resistencia al daño."},
-    "Gnomo": {"speed": "9 m", "darkvision": True, "size": "Pequeño", "traits": "Astucia gnoma (ventaja en salvaciones INT/SAB/CAR)."},
-    "Goliat": {"speed": "10.5 m", "darkvision": False, "size": "Mediano", "traits": "Ascendencia de gigantes, Constitución poderosa."},
-    "Orco": {"speed": "9 m", "darkvision": True, "size": "Mediano", "traits": "Acometida agresiva, Resistencia incansable."},
-    "Tiefling": {"speed": "9 m", "darkvision": True, "size": "Mediano", "traits": "Resistencia al fuego, Taumaturgia innata, Linaje abisal/infernal."},
-    "Aasimar": {"speed": "9 m", "darkvision": True, "size": "Mediano", "traits": "Curación celestial, Resistencia necrótica/radiante, Transformación."}
+    "Humano": {
+        "speed": "9 m", "darkvision": False, "size": "Mediano",
+        "traits": "Dote adicional de origen, Inspiración heroica diaria.",
+        "subspecies": {
+            "Estándar": {"speed": "9 m", "traits": "Versatilidad humana, dote adicional de origen."},
+            "Variante": {"speed": "9 m", "traits": "Dote de origen a elección, habilidad adicional."}
+        }
+    },
+    "Elfo": {
+        "speed": "9 m", "darkvision": True, "size": "Mediano",
+        "traits": "Visión en la oscuridad, Linaje élfico, Trance de 4 horas.",
+        "subspecies": {
+            "Alto Elfo": {"speed": "9 m", "traits": "Truco de mago a elección, idioma adicional, visión en la oscuridad (18m)."},
+            "Elfo de los Bosques": {"speed": "10.5 m", "traits": "Velocidad 10.5m (35 pies), Máscara de la naturaleza para ocultarse en follaje."},
+            "Drow (Elfo Oscuro)": {"speed": "9 m", "traits": "Visión en oscuridad superior (36m), Sensibilidad a la luz solar, Magia drow innata (Luces Danzantes, Fuego Feérico, Oscuridad)."},
+            "Eladrín": {"speed": "9 m", "traits": "Paso Feérico (teleportación brumosa de 9m) con efectos estacionales."}
+        }
+    },
+    "Enano": {
+        "speed": "9 m", "darkvision": True, "size": "Mediano",
+        "traits": "Resistencia enana a veneno, Sentido de la piedra, herramientas.",
+        "subspecies": {
+            "Enano de las Colinas": {"speed": "9 m", "traits": "Dureza enana (+1 punto de golpe por nivel adicional)."},
+            "Enano de las Montañas": {"speed": "9 m", "traits": "Competencia con armaduras ligeras y medias, fuerza telúrica."},
+            "Duergar (Enano Gris)": {"speed": "9 m", "traits": "Visión superior (36m), Magia duergar (Agrandar e Invisibilidad innatas)."}
+        }
+    },
+    "Mediano": {
+        "speed": "9 m", "darkvision": False, "size": "Pequeño",
+        "traits": "Suerte mediano (repite 1 natural en d20), Valiente, Agilidad.",
+        "subspecies": {
+            "Piesligeros": {"speed": "9 m", "traits": "Sigilo innato: ocultarse tras criaturas de tamaño mediano o mayor."},
+            "Fornido": {"speed": "9 m", "traits": "Resistencia fornida: ventaja y resistencia contra veneno."}
+        }
+    },
+    "Dracónido": {
+        "speed": "9 m", "darkvision": True, "size": "Mediano",
+        "traits": "Arma de aliento elemental, Resistencia al daño de su color.",
+        "subspecies": {
+            "Cromático": {"speed": "9 m", "traits": "Aliento de línea o cono (1d10), Inmunidad cromática temporal (Niv 5)."},
+            "Metálico": {"speed": "9 m", "traits": "Aliento elemental destructivo y segundo aliento incapacitante (Niv 5)."}
+        }
+    },
+    "Gnomo": {
+        "speed": "9 m", "darkvision": True, "size": "Pequeño",
+        "traits": "Astucia gnoma (ventaja en salvaciones INT/SAB/CAR contra magia).",
+        "subspecies": {
+            "Gnomo de las Rocas": {"speed": "9 m", "traits": "Conocimiento de artífice en maquinaria y creación de juguetes mecánicos."},
+            "Gnomo de los Bosques": {"speed": "9 m", "traits": "Truco Ilusión Menor innato y capacidad de comunicarse con bestias pequeñas."},
+            "Gnomo de las Profundidades": {"speed": "9 m", "traits": "Visión en oscuridad 36m y camuflaje con la roca."}
+        }
+    },
+    "Tiefling": {
+        "speed": "9 m", "darkvision": True, "size": "Mediano",
+        "traits": "Visión en la oscuridad (18m), Taumaturgia, resistencia mágica.",
+        "subspecies": {
+            "Infernal": {"speed": "9 m", "traits": "Resistencia al fuego, Reprensión Infernal y Oscuridad."},
+            "Abisal": {"speed": "9 m", "traits": "Resistencia al veneno, Rociada Venenosa y Rayo de Enfermedad."},
+            "Ctónico": {"speed": "9 m", "traits": "Resistencia necrótica, Toque Helado y Falsa Vida."}
+        }
+    },
+    "Goliat": {
+        "speed": "10.5 m", "darkvision": False, "size": "Mediano",
+        "traits": "Constitución poderosa, Resistencia de piedra a daño.",
+        "subspecies": {
+            "Linaje de las Colinas": {"speed": "10.5 m", "traits": "Fuerza titánica para derribar enemigos."},
+            "Linaje de la Tormenta": {"speed": "10.5 m", "traits": "Resistencia y represalia eléctrica."}
+        }
+    },
+    "Orco": {
+        "speed": "9 m", "darkvision": True, "size": "Mediano",
+        "traits": "Acometida agresiva, Resistencia incansable ante la muerte.",
+        "subspecies": {
+            "Estándar": {"speed": "9 m", "traits": "Acometida como acción adicional y salvación heroica a 1 PG."}
+        }
+    },
+    "Aasimar": {
+        "speed": "9 m", "darkvision": True, "size": "Mediano",
+        "traits": "Curación celestial, Resistencia necrótica/radiante.",
+        "subspecies": {
+            "Protector": {"speed": "9 m", "traits": "Alas luminosas incorpóreas con velocidad de vuelo y daño radiante."},
+            "Vengador": {"speed": "9 m", "traits": "Mirada abrasadora e intimidación radiante."}
+        }
+    }
 }
 
 
@@ -70,11 +146,13 @@ class CharacterCreatorWizard:
         self,
         page: ft.Page,
         okf_engine: OkfEngine,
-        on_character_created: Callable[[CharacterSheet], None]
+        on_character_created: Callable[[CharacterSheet], None],
+        on_open_manager: Optional[Callable[[], None]] = None
     ):
         self.page = page
         self.okf = okf_engine
         self.on_character_created = on_character_created
+        self.on_open_manager = on_open_manager
 
         self.current_step = 1  # 1: Clase, 2: Especie, 3: Trasfondo, 4: Atributos, 5: Revisión
 
@@ -82,29 +160,37 @@ class CharacterCreatorWizard:
         self.char_name = "Nuevo Aventurero"
         self.char_class = "Guerrero"
         self.char_species = "Humano"
-        self.char_subspecies = ""
+        self.char_subspecies = "Estándar"
         self.char_background = "Soldado"
         self.char_alignment = "Neutral Bueno"
+        self.char_portrait_path = ""
 
-        # Atributos base (Standard Array)
+        # Atributos base
+        self.ability_mode = "standard"  # "standard", "dice", "manual"
         self.raw_scores = {"FUE": 15, "DES": 14, "CON": 13, "INT": 12, "SAB": 10, "CAR": 8}
+        self.rolled_scores = []
         self.bg_plus2 = "FUE"
         self.bg_plus1 = "CON"
+
+        # FilePicker para foto de retrato
+        self.portrait_picker = ft.FilePicker(on_result=self._on_portrait_selected)
+        if self.portrait_picker not in self.page.overlay:
+            self.page.overlay.append(self.portrait_picker)
 
         self._build_dialog()
 
     def show(self):
         self.current_step = 1
         self._update_step_content()
-        self.page.overlay.append(self.dialog)
-        self.dialog.open = True
-        self.page.update()
+        self.page.open(self.dialog)
 
     def _close_dialog(self, e=None):
-        self.dialog.open = False
-        if self.dialog in self.page.overlay:
-            self.page.overlay.remove(self.dialog)
-        self.page.update()
+        self.page.close(self.dialog)
+
+    def _on_open_saved_click(self, e):
+        self._close_dialog()
+        if self.on_open_manager:
+            self.on_open_manager()
 
     def _build_dialog(self):
         self.step_indicator = ft.Text("Paso 1 de 5: Elige tu Clase", size=15, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT)
@@ -125,7 +211,20 @@ class CharacterCreatorWizard:
             on_click=self._next_step
         )
 
+        btn_open_saved = ft.OutlinedButton(
+            text="📂 Personajes Guardados",
+            icon=ft.Icons.FOLDER_SHARED,
+            style=ft.ButtonStyle(
+                color=GOLD_LIGHT,
+                side=ft.BorderSide(1, BORDER_DIM)
+            ),
+            tooltip="Ver o cargar personajes existentes en la base de datos",
+            on_click=self._on_open_saved_click
+        )
+
         self.dialog = ft.AlertDialog(
+            modal=True,
+            on_dismiss=lambda e: None,
             title=ft.Row(
                 controls=[
                     ft.Row(
@@ -135,7 +234,13 @@ class CharacterCreatorWizard:
                         ],
                         spacing=8
                     ),
-                    ft.IconButton(ft.Icons.CLOSE, icon_color=TEXT_MUTED, on_click=self._close_dialog)
+                    ft.Row(
+                        controls=[
+                            btn_open_saved,
+                            ft.IconButton(ft.Icons.CLOSE, icon_color=TEXT_MUTED, on_click=self._close_dialog)
+                        ],
+                        spacing=4
+                    )
                 ],
                 alignment=ft.MainAxisAlignment.SPACE_BETWEEN
             ),
@@ -148,8 +253,8 @@ class CharacterCreatorWizard:
                     ],
                     spacing=10
                 ),
-                width=800,
-                height=520
+                width=820,
+                height=540
             ),
             actions=[
                 self.btn_prev,
@@ -189,16 +294,16 @@ class CharacterCreatorWizard:
             self.step_indicator.value = "Paso 1 de 5: Elige tu Clase Heroica"
             self._build_step1_class()
         elif self.current_step == 2:
-            self.step_indicator.value = "Paso 2 de 5: Elige tu Especie y Linaje"
+            self.step_indicator.value = "Paso 2 de 5: Elige tu Especie y Subraza / Linaje"
             self._build_step2_species()
         elif self.current_step == 3:
             self.step_indicator.value = "Paso 3 de 5: Elige tu Trasfondo (Dote de Origen y +2/+1)"
             self._build_step3_background()
         elif self.current_step == 4:
-            self.step_indicator.value = "Paso 4 de 5: Asigna tus Puntuaciones de Atributo"
+            self.step_indicator.value = "Paso 4 de 5: Puntuaciones de Característica"
             self._build_step4_abilities()
         elif self.current_step == 5:
-            self.step_indicator.value = "Paso 5 de 5: Identidad y Revisión Final"
+            self.step_indicator.value = "Paso 5 de 5: Identidad, Retrato y Revisión Final"
             self._build_step5_review()
 
     # --- PASO 1: CLASE ---
@@ -217,12 +322,12 @@ class CharacterCreatorWizard:
                             alignment=ft.MainAxisAlignment.SPACE_BETWEEN
                         ),
                         ft.Text(f"Salvaciones: {', '.join(info['saves'])}", size=11, color=TEXT_MUTED),
-                        ft.Text(f"Armaduras: {info['armor']}", size=10, color=TEXT_MUTED, max_lines=1, overflow=ft.TextOverflow.ELLIPSIS),
+                        ft.Text(f"Armadura: {info['armor']}", size=11, color=TEXT_MUTED, max_lines=1, no_wrap=True),
                     ],
                     spacing=4
                 ),
                 padding=10,
-                width=230,
+                width=180,
                 bgcolor=BG_CARD_ALT if is_sel else BG_INPUT,
                 border=ft.border.all(1.5 if is_sel else 1, BORDER_GOLD if is_sel else BORDER_DIM),
                 border_radius=ft.border_radius.all(8),
@@ -230,31 +335,11 @@ class CharacterCreatorWizard:
             )
             class_cards.append(card)
 
-        # Panel de Detalle de la Clase Seleccionada
-        sel_info = CLASS_DEFAULTS.get(self.char_class, CLASS_DEFAULTS["Guerrero"])
-        detail_box = ft.Container(
-            content=ft.Column(
-                controls=[
-                    ft.Text(f"Clase Seleccionada: {self.char_class}", size=16, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
-                    ft.Text(f"Dado de Golpe: 1d{sel_info['hit_dice']} por nivel • Puntos de Golpe en Nivel 1: {sel_info['hit_dice']} + mod CON.", size=12, color="#f0f2f5"),
-                    ft.Text(f"Tiradas de Salvación: Competencia en {sel_info['saves'][0]} y {sel_info['saves'][1]}.", size=12, color=GOLD_LIGHT),
-                    ft.Text(f"Competencia en Armas: {sel_info['weapons']}.", size=12, color=TEXT_MUTED),
-                    ft.Text(f"Competencia en Armaduras: {sel_info['armor']}.", size=12, color=TEXT_MUTED),
-                ],
-                spacing=6
-            ),
-            bgcolor=BG_CARD,
-            border=ft.border.all(1, BORDER_GOLD),
-            border_radius=ft.border_radius.all(8),
-            padding=12
-        )
-
         grid = ft.Row(controls=class_cards, wrap=True, spacing=10)
         self.step_container.content = ft.ListView(
             controls=[
-                ft.Text("Selecciona la vocación heroica de tu personaje:", size=13, color=TEXT_MUTED),
-                grid,
-                detail_box
+                ft.Text("Selecciona una de las 12 Clases oficiales de D&D 5e (PHB 2024):", size=13, color=TEXT_MUTED),
+                grid
             ],
             spacing=10,
             expand=True
@@ -265,7 +350,7 @@ class CharacterCreatorWizard:
         self._build_step1_class()
         self.page.update()
 
-    # --- PASO 2: ESPECIE ---
+    # --- PASO 2: ESPECIE & SUBRAZA ---
     def _build_step2_species(self):
         species_cards = []
         for sp_name, info in SPECIES_DEFAULTS.items():
@@ -285,7 +370,7 @@ class CharacterCreatorWizard:
                     spacing=4
                 ),
                 padding=10,
-                width=230,
+                width=185,
                 bgcolor=BG_CARD_ALT if is_sel else BG_INPUT,
                 border=ft.border.all(1.5 if is_sel else 1, BORDER_GOLD if is_sel else BORDER_DIM),
                 border_radius=ft.border_radius.all(8),
@@ -294,12 +379,60 @@ class CharacterCreatorWizard:
             species_cards.append(card)
 
         sel_info = SPECIES_DEFAULTS.get(self.char_species, SPECIES_DEFAULTS["Humano"])
+        sub_options = sel_info.get("subspecies", {})
+
+        # Asegurar subraza válida
+        if self.char_subspecies not in sub_options and sub_options:
+            self.char_subspecies = list(sub_options.keys())[0]
+
+        sub_chips = []
+        for sub_name, sub_data in sub_options.items():
+            is_sub_sel = (self.char_subspecies == sub_name)
+            sub_chip = ft.Container(
+                content=ft.Row(
+                    controls=[
+                        ft.Icon(ft.Icons.CHECK_CIRCLE if is_sub_sel else ft.Icons.RADIO_BUTTON_UNCHECKED, size=14, color=GOLD_PRIMARY if is_sub_sel else TEXT_MUTED),
+                        ft.Text(sub_name, size=12, weight=ft.FontWeight.BOLD if is_sub_sel else ft.FontWeight.NORMAL, color=GOLD_LIGHT if is_sub_sel else "#f0f2f5"),
+                    ],
+                    spacing=6
+                ),
+                bgcolor=BG_CARD_ALT if is_sub_sel else BG_INPUT,
+                border=ft.border.all(1.5 if is_sub_sel else 1, BORDER_GOLD if is_sub_sel else BORDER_DIM),
+                border_radius=ft.border_radius.all(6),
+                padding=ft.padding.symmetric(horizontal=12, vertical=8),
+                on_click=lambda e, sn=sub_name: self._set_subspecies(sn)
+            )
+            sub_chips.append(sub_chip)
+
+        sub_box = ft.Container(
+            content=ft.Column(
+                controls=[
+                    ft.Text(f"Linajes / Subrazas de {self.char_species}:", size=13, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
+                    ft.Row(controls=sub_chips, wrap=True, spacing=8),
+                ],
+                spacing=8
+            ),
+            visible=bool(sub_options),
+            bgcolor=BG_SURFACE,
+            border=ft.border.all(1, BORDER_DIM),
+            border_radius=ft.border_radius.all(8),
+            padding=10
+        )
+
+        active_sub_traits = sub_options.get(self.char_subspecies, {}).get("traits", sel_info["traits"])
+        active_sub_speed = sub_options.get(self.char_subspecies, {}).get("speed", sel_info["speed"])
+
         detail_box = ft.Container(
             content=ft.Column(
                 controls=[
-                    ft.Text(f"Especie Seleccionada: {self.char_species}", size=16, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
-                    ft.Text(f"Velocidad: {sel_info['speed']} • Tamaño: {sel_info['size']}.", size=12, color="#f0f2f5"),
-                    ft.Text(f"Rasgos Biológicos: {sel_info['traits']}", size=12, color=GOLD_LIGHT),
+                    ft.Row(
+                        controls=[
+                            ft.Text(f"Especie: {self.char_species}  ➔  {self.char_subspecies}", size=15, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
+                            create_badge(f"Velocidad: {active_sub_speed}", bg_color=BG_INPUT, text_color=GOLD_PRIMARY, border_color=BORDER_GOLD),
+                        ],
+                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN
+                    ),
+                    ft.Text(f"Rasgos Biológicos & Mágicos: {active_sub_traits}", size=12, color="#f0f2f5"),
                 ],
                 spacing=6
             ),
@@ -309,11 +442,12 @@ class CharacterCreatorWizard:
             padding=12
         )
 
-        grid = ft.Row(controls=species_cards, wrap=True, spacing=10)
+        grid = ft.Row(controls=species_cards, wrap=True, spacing=8)
         self.step_container.content = ft.ListView(
             controls=[
-                ft.Text("Selecciona la especie o linaje de tu personaje:", size=13, color=TEXT_MUTED),
+                ft.Text("1. Selecciona la especie base:", size=13, color=TEXT_MUTED),
                 grid,
+                sub_box,
                 detail_box
             ],
             spacing=10,
@@ -322,6 +456,16 @@ class CharacterCreatorWizard:
 
     def _set_species(self, sp_name: str):
         self.char_species = sp_name
+        sub_options = SPECIES_DEFAULTS.get(sp_name, {}).get("subspecies", {})
+        if sub_options:
+            self.char_subspecies = list(sub_options.keys())[0]
+        else:
+            self.char_subspecies = ""
+        self._build_step2_species()
+        self.page.update()
+
+    def _set_subspecies(self, sub_name: str):
+        self.char_subspecies = sub_name
         self._build_step2_species()
         self.page.update()
 
@@ -339,7 +483,7 @@ class CharacterCreatorWizard:
                     spacing=2
                 ),
                 padding=10,
-                width=230,
+                width=220,
                 bgcolor=BG_CARD_ALT if is_sel else BG_INPUT,
                 border=ft.border.all(1.5 if is_sel else 1, BORDER_GOLD if is_sel else BORDER_DIM),
                 border_radius=ft.border_radius.all(8),
@@ -347,7 +491,6 @@ class CharacterCreatorWizard:
             )
             bg_cards.append(card)
 
-        # Selectores para bono +2 y +1 del Trasfondo (Regla PHB 2024)
         stat_options = [
             ft.dropdown.Option("FUE", "Fuerza (FUE)"),
             ft.dropdown.Option("DES", "Destreza (DES)"),
@@ -359,8 +502,7 @@ class CharacterCreatorWizard:
 
         def on_plus2_change(e):
             self.bg_plus2 = e.control.value
-            if self.bg_plus2 == self.bg_plus1:
-                # Cambiar el otro para que no coincidan
+            if self.bg_plus1 == self.bg_plus2:
                 for opt in ["FUE", "DES", "CON", "INT", "SAB", "CAR"]:
                     if opt != self.bg_plus2:
                         self.bg_plus1 = opt
@@ -370,13 +512,18 @@ class CharacterCreatorWizard:
 
         def on_plus1_change(e):
             self.bg_plus1 = e.control.value
+            if self.bg_plus1 == self.bg_plus2:
+                for opt in ["FUE", "DES", "CON", "INT", "SAB", "CAR"]:
+                    if opt != self.bg_plus1:
+                        self.bg_plus2 = opt
+                        break
             self._build_step3_background()
             self.page.update()
 
         bonus_box = ft.Container(
             content=ft.Column(
                 controls=[
-                    ft.Text("Mejoras de Característica del Trasfondo (PHB 2024):", size=13, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
+                    ft.Text("Bonos de Atributo del Trasfondo (+2 y +1):", size=13, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
                     ft.Text("En D&D 5e (2024), tu trasfondo te otorga un bono de +2 a un atributo y +1 a otro atributo:", size=11, color=TEXT_MUTED),
                     ft.Row(
                         controls=[
@@ -410,10 +557,105 @@ class CharacterCreatorWizard:
         self._build_step3_background()
         self.page.update()
 
-    # --- PASO 4: ATRIBUTOS (Standard Array) ---
+    # --- PASO 4: ATRIBUTOS (3 MODOS: ESTÁNDAR, 4D6, MANUAL) ---
+    def _set_ability_mode(self, mode: str):
+        self.ability_mode = mode
+        if mode == "standard":
+            self.raw_scores = {"FUE": 15, "DES": 14, "CON": 13, "INT": 12, "SAB": 10, "CAR": 8}
+        elif mode == "dice" and not self.rolled_scores:
+            self._roll_4d6_scores()
+        self._build_step4_abilities()
+        self.page.update()
+
+    def _roll_4d6_scores(self, e=None):
+        results = []
+        for _ in range(6):
+            d4 = [random.randint(1, 6) for _ in range(4)]
+            d4.sort()
+            score = sum(d4[1:])  # suma los 3 mayores
+            results.append(score)
+        results.sort(reverse=True)
+        self.rolled_scores = results
+        # Asignar automáticamente en orden descendente inicial
+        stats = ["FUE", "DES", "CON", "INT", "SAB", "CAR"]
+        for i, s in enumerate(stats):
+            self.raw_scores[s] = results[i]
+        self._build_step4_abilities()
+        if self.page:
+            self.page.update()
+
     def _build_step4_abilities(self):
         stat_names = ["FUE", "DES", "CON", "INT", "SAB", "CAR"]
         stat_full = {"FUE": "Fuerza", "DES": "Destreza", "CON": "Constitución", "INT": "Inteligencia", "SAB": "Sabiduría", "CAR": "Carisma"}
+
+        # Barra de selección de Modo
+        mode_btn_std = ft.ElevatedButton(
+            text="Conjunto Estándar",
+            color="#000000" if self.ability_mode == "standard" else GOLD_LIGHT,
+            bgcolor=GOLD_PRIMARY if self.ability_mode == "standard" else BG_INPUT,
+            style=ft.ButtonStyle(
+                bgcolor=GOLD_PRIMARY if self.ability_mode == "standard" else BG_INPUT,
+                color="#000000" if self.ability_mode == "standard" else GOLD_LIGHT,
+                side=ft.BorderSide(1, BORDER_GOLD if self.ability_mode == "standard" else BORDER_DIM),
+                shape=ft.RoundedRectangleBorder(radius=6)
+            ),
+            on_click=lambda e: self._set_ability_mode("standard"),
+            tooltip="Valores oficiales fijos: 15, 14, 13, 12, 10, 8"
+        )
+        mode_btn_dice = ft.ElevatedButton(
+            text="🎲 Tirar 4d6 (Menor Descartado)",
+            color="#000000" if self.ability_mode == "dice" else GOLD_LIGHT,
+            bgcolor=GOLD_PRIMARY if self.ability_mode == "dice" else BG_INPUT,
+            style=ft.ButtonStyle(
+                bgcolor=GOLD_PRIMARY if self.ability_mode == "dice" else BG_INPUT,
+                color="#000000" if self.ability_mode == "dice" else GOLD_LIGHT,
+                side=ft.BorderSide(1, BORDER_GOLD if self.ability_mode == "dice" else BORDER_DIM),
+                shape=ft.RoundedRectangleBorder(radius=6)
+            ),
+            on_click=lambda e: self._set_ability_mode("dice"),
+            tooltip="Tirada aleatoria oficial de 4 dados de 6 caras descartando el más bajo"
+        )
+        mode_btn_manual = ft.ElevatedButton(
+            text="✍️ Manual / Libre",
+            color="#000000" if self.ability_mode == "manual" else GOLD_LIGHT,
+            bgcolor=GOLD_PRIMARY if self.ability_mode == "manual" else BG_INPUT,
+            style=ft.ButtonStyle(
+                bgcolor=GOLD_PRIMARY if self.ability_mode == "manual" else BG_INPUT,
+                color="#000000" if self.ability_mode == "manual" else GOLD_LIGHT,
+                side=ft.BorderSide(1, BORDER_GOLD if self.ability_mode == "manual" else BORDER_DIM),
+                shape=ft.RoundedRectangleBorder(radius=6)
+            ),
+            on_click=lambda e: self._set_ability_mode("manual"),
+            tooltip="Ingresa directamente cualquier puntuación numérica obtenida en mesa"
+        )
+
+        mode_bar = ft.Row([mode_btn_std, mode_btn_dice, mode_btn_manual], spacing=8, wrap=True)
+
+        banner_controls = []
+        if self.ability_mode == "dice":
+            scores_str = ", ".join(str(s) for s in self.rolled_scores)
+            banner_controls = [
+                ft.Container(
+                    content=ft.Row(
+                        controls=[
+                            ft.Row([
+                                ft.Icon(ft.Icons.CASINO, color=GOLD_PRIMARY, size=20),
+                                ft.Text(f"Puntuaciones 4d6 Obtenidas: {scores_str}", size=13, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
+                            ], spacing=8),
+                            ft.OutlinedButton(
+                                text="🎲 Re-tirar Dados",
+                                style=ft.ButtonStyle(color=GOLD_LIGHT, side=ft.BorderSide(1, BORDER_GOLD)),
+                                on_click=self._roll_4d6_scores
+                            )
+                        ],
+                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN
+                    ),
+                    bgcolor=BG_SURFACE,
+                    border=ft.border.all(1, BORDER_GOLD),
+                    border_radius=ft.border_radius.all(6),
+                    padding=ft.padding.symmetric(horizontal=12, vertical=8)
+                )
+            ]
 
         rows = []
         for stat in stat_names:
@@ -433,20 +675,43 @@ class CharacterCreatorWizard:
                         pass
                 return handler
 
-            dropdown = ft.Dropdown(
-                value=str(base_score),
-                options=[
-                    ft.dropdown.Option("15", "15 (Alto)"),
-                    ft.dropdown.Option("14", "14"),
-                    ft.dropdown.Option("13", "13"),
-                    ft.dropdown.Option("12", "12"),
-                    ft.dropdown.Option("10", "10 (Medio)"),
-                    ft.dropdown.Option("8", "8 (Bajo)"),
-                ],
-                width=110,
-                border_color=BORDER_DIM,
-                on_change=make_change_handler()
-            )
+            if self.ability_mode == "manual":
+                stat_control = ft.TextField(
+                    value=str(base_score),
+                    width=90,
+                    text_size=13,
+                    content_padding=ft.padding.all(8),
+                    border_color=BORDER_DIM,
+                    focused_border_color=BORDER_GOLD,
+                    keyboard_type=ft.KeyboardType.NUMBER,
+                    on_change=make_change_handler()
+                )
+            elif self.ability_mode == "dice":
+                # Dropdown con las opciones generadas
+                opts = [ft.dropdown.Option(str(v), str(v)) for v in sorted(list(set(self.rolled_scores)), reverse=True)]
+                stat_control = ft.Dropdown(
+                    value=str(base_score),
+                    options=opts,
+                    width=100,
+                    border_color=BORDER_DIM,
+                    on_change=make_change_handler()
+                )
+            else:
+                # Standard Array
+                stat_control = ft.Dropdown(
+                    value=str(base_score),
+                    options=[
+                        ft.dropdown.Option("15", "15 (Alto)"),
+                        ft.dropdown.Option("14", "14"),
+                        ft.dropdown.Option("13", "13"),
+                        ft.dropdown.Option("12", "12"),
+                        ft.dropdown.Option("10", "10 (Medio)"),
+                        ft.dropdown.Option("8", "8 (Bajo)"),
+                    ],
+                    width=110,
+                    border_color=BORDER_DIM,
+                    on_change=make_change_handler()
+                )
 
             bonus_badge = ft.Text(f"+{bg_add} Trasfondo" if bg_add > 0 else "—", size=11, color=GOLD_PRIMARY if bg_add > 0 else TEXT_MUTED)
 
@@ -461,8 +726,8 @@ class CharacterCreatorWizard:
                             width=160,
                             spacing=2
                         ),
-                        dropdown,
-                        ft.Text("➔ Puntuación Final:", size=11, color=TEXT_MUTED),
+                        stat_control,
+                        ft.Text("➔ Total:", size=12, color=TEXT_MUTED),
                         ft.Text(str(final_score), size=16, weight=ft.FontWeight.BOLD, color="#ffffff"),
                         create_badge(f"Mod {mod_str}", bg_color=BG_INPUT, text_color=GOLD_LIGHT, border_color=BORDER_GOLD)
                     ],
@@ -478,28 +743,43 @@ class CharacterCreatorWizard:
 
         self.step_container.content = ft.ListView(
             controls=[
-                ft.Text("Conjunto Estándar Oficial D&D 5e (15, 14, 13, 12, 10, 8):", size=13, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
-                ft.Text("Asigna qué puntuación base va a cada característica. Los bonos de tu trasfondo (+2 y +1) se suman automáticamente:", size=11, color=TEXT_MUTED),
+                mode_bar,
+                *banner_controls,
+                ft.Text("Asigna las puntuaciones base a cada característica. Los bonos de tu trasfondo (+2 y +1) se suman automáticamente:", size=11, color=TEXT_MUTED),
                 *rows
             ],
             spacing=8,
             expand=True
         )
 
-    # --- PASO 5: REVISIÓN & GENERACIÓN ---
+    # --- PASO 5: REVISIÓN & FOTO DE RETRATO ---
+    def _pick_portrait(self, e):
+        self.portrait_picker.pick_files(
+            dialog_title="Seleccionar Retrato del Personaje",
+            allowed_extensions=["png", "jpg", "jpeg", "webp"],
+            allow_multiple=False
+        )
+
+    def _on_portrait_selected(self, e: ft.FilePickerResultEvent):
+        if e.files and len(e.files) > 0:
+            src = e.files[0].path
+            if src:
+                db = DatabaseManager()
+                saved_path = db.save_portrait_file(src, self.char_name)
+                self.char_portrait_path = saved_path
+                self._build_step5_review()
+                self.page.update()
+
     def _build_step5_review(self):
-        # Calcular PGs de nivel 1
         con_score = self.raw_scores["CON"] + (2 if self.bg_plus2 == "CON" else (1 if self.bg_plus1 == "CON" else 0))
         con_mod = calc_modifier(con_score)
         hd = CLASS_DEFAULTS[self.char_class]["hit_dice"]
         level1_hp = max(1, hd + con_mod)
 
-        # Calcular CA de nivel 1
         des_score = self.raw_scores["DES"] + (2 if self.bg_plus2 == "DES" else (1 if self.bg_plus1 == "DES" else 0))
         des_mod = calc_modifier(des_score)
         base_ca = 10 + des_mod
 
-        # Calcular CD de conjuros (si aplica)
         cast_stat = CLASS_CASTING_ABILITY.get(self.char_class, "CAR")
         cast_score = self.raw_scores[cast_stat] + (2 if self.bg_plus2 == cast_stat else (1 if self.bg_plus1 == cast_stat else 0))
         cast_mod = calc_modifier(cast_score)
@@ -510,12 +790,14 @@ class CharacterCreatorWizard:
             value=self.char_name,
             border_color=BORDER_GOLD,
             color="#ffffff",
+            expand=True,
             on_change=lambda e: setattr(self, "char_name", e.control.value)
         )
 
         align_dropdown = ft.Dropdown(
             label="Alineamiento Moral",
             value=self.char_alignment,
+            width=200,
             options=[
                 ft.dropdown.Option("Legal Bueno", "Legal Bueno"),
                 ft.dropdown.Option("Neutral Bueno", "Neutral Bueno"),
@@ -529,6 +811,52 @@ class CharacterCreatorWizard:
             on_change=lambda e: setattr(self, "char_alignment", e.control.value)
         )
 
+        # Sección de Foto de Retrato
+        if self.char_portrait_path:
+            portrait_preview = ft.Image(
+                src=self.char_portrait_path,
+                width=64,
+                height=64,
+                fit=ft.ImageFit.COVER,
+                border_radius=ft.border_radius.all(32)
+            )
+        else:
+            portrait_preview = ft.CircleAvatar(
+                content=ft.Text(self.char_name[:2].upper() if self.char_name else "AV", size=14, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
+                bgcolor=BG_INPUT,
+                radius=28
+            )
+
+        portrait_row = ft.Container(
+            content=ft.Row(
+                controls=[
+                    portrait_preview,
+                    ft.Column(
+                        controls=[
+                            ft.Text("Retrato / Avatar del Héroe", size=13, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
+                            ft.Text(self.char_portrait_path or "Sin imagen asignada (se usará el blasón heráldico de clase)", size=11, color=TEXT_MUTED, max_lines=1, no_wrap=True),
+                            ft.ElevatedButton(
+                                text="📷 Subir Foto de Disco...",
+                                icon=ft.Icons.UPLOAD_FILE,
+                                style=ft.ButtonStyle(bgcolor=BG_INPUT, color=GOLD_LIGHT, side=ft.BorderSide(1, BORDER_GOLD)),
+                                on_click=self._pick_portrait
+                            )
+                        ],
+                        spacing=4,
+                        expand=True
+                    )
+                ],
+                spacing=12,
+                vertical_alignment=ft.CrossAxisAlignment.CENTER
+            ),
+            bgcolor=BG_SURFACE,
+            border=ft.border.all(1, BORDER_DIM),
+            border_radius=ft.border_radius.all(8),
+            padding=10
+        )
+
+        display_race = f"{self.char_species} ({self.char_subspecies})" if self.char_subspecies else self.char_species
+
         summary_card = ft.Container(
             content=ft.Column(
                 controls=[
@@ -536,7 +864,7 @@ class CharacterCreatorWizard:
                     ft.Row(
                         controls=[
                             create_badge(f"Clase: {self.char_class} (d{hd})", bg_color=BG_INPUT, text_color=GOLD_LIGHT, border_color=BORDER_GOLD),
-                            create_badge(f"Especie: {self.char_species}", bg_color=BG_INPUT, text_color=GOLD_LIGHT, border_color=BORDER_GOLD),
+                            create_badge(f"Especie: {display_race}", bg_color=BG_INPUT, text_color=GOLD_LIGHT, border_color=BORDER_GOLD),
                             create_badge(f"Trasfondo: {self.char_background}", bg_color=BG_INPUT, text_color=GOLD_LIGHT, border_color=BORDER_GOLD),
                         ],
                         wrap=True,
@@ -553,7 +881,7 @@ class CharacterCreatorWizard:
                         wrap=True,
                         spacing=12
                     ),
-                    ft.Text(f"Dote de Origen Adquirida: {BACKGROUND_FEATS.get(self.char_background, ('', ''))[0]}", size=12, color=GOLD_PRIMARY, italic=True)
+                    ft.Text(f"Dote de Origen: {BACKGROUND_FEATS.get(self.char_background, ('', ''))[0]}", size=12, color=GOLD_PRIMARY, italic=True)
                 ],
                 spacing=8
             ),
@@ -565,30 +893,46 @@ class CharacterCreatorWizard:
 
         self.step_container.content = ft.ListView(
             controls=[
-                ft.Text("Asigna el nombre y revisa el cálculo final de tu héroe:", size=13, color=TEXT_MUTED),
+                ft.Text("Asigna el nombre, imagen y revisa el cálculo final de tu héroe:", size=13, color=TEXT_MUTED),
                 ft.Row([name_field, align_dropdown], spacing=10),
+                portrait_row,
                 summary_card
             ],
             spacing=10,
             expand=True
         )
 
+    # --- GENERACIÓN FINAL DEL PERSONAJE ---
     def _generate_character(self):
-        # 1. Puntuaciones finales
+        # 1. Calcular atributos finales
         final_abilities = {}
-        for stat, base in self.raw_scores.items():
-            bonus = (2 if self.bg_plus2 == stat else (1 if self.bg_plus1 == stat else 0))
-            final_abilities[stat] = base + bonus
+        for stat in ["FUE", "DES", "CON", "INT", "SAB", "CAR"]:
+            base = self.raw_scores[stat]
+            add = (2 if self.bg_plus2 == stat else (1 if self.bg_plus1 == stat else 0))
+            final_abilities[stat] = base + add
 
-        # 2. HP y CA
         con_mod = calc_modifier(final_abilities["CON"])
         des_mod = calc_modifier(final_abilities["DES"])
         hd = CLASS_DEFAULTS[self.char_class]["hit_dice"]
         level1_hp = max(1, hd + con_mod)
+
+        # Bono de dureza enana si aplica
+        if self.char_subspecies == "Enano de las Colinas":
+            level1_hp += 1
+
         ca = 10 + des_mod
 
-        # 3. Dote de origen
-        feat_name, feat_desc = BACKGROUND_FEATS.get(self.char_background, ("Dote de Origen", "Dote de trasfondo"))
+        # 2. Dote de trasfondo
+        feat_name, feat_desc = BACKGROUND_FEATS.get(self.char_background, ("Dote de Origen", "Dote inicial"))
+
+        # Rasgos de especie y subraza
+        sp_info = SPECIES_DEFAULTS.get(self.char_species, {})
+        sub_info = sp_info.get("subspecies", {}).get(self.char_subspecies, {})
+        sub_traits = sub_info.get("traits", sp_info.get("traits", ""))
+        speed = sub_info.get("speed", sp_info.get("speed", "9 m"))
+
+        display_race = f"{self.char_species} ({self.char_subspecies})" if self.char_subspecies else self.char_species
+
         features = [
             CharacterFeature(
                 name=feat_name,
@@ -597,9 +941,9 @@ class CharacterCreatorWizard:
                 recharge="Pasivo"
             ),
             CharacterFeature(
-                name=f"Rasgos de {self.char_species}",
-                source=f"Especie ({self.char_species})",
-                description=SPECIES_DEFAULTS.get(self.char_species, {}).get("traits", ""),
+                name=f"Rasgos de {display_race}",
+                source=f"Especie ({display_race})",
+                description=sub_traits,
                 recharge="Pasivo"
             )
         ]
@@ -620,17 +964,18 @@ class CharacterCreatorWizard:
         new_char = CharacterSheet(
             name=self.char_name.strip() or "Nuevo Héroe",
             char_class=self.char_class,
-            subclass="",
+            subclass=self.char_subspecies if self.char_subspecies != "Estándar" else "",
             level=1,
-            race=self.char_species,
+            race=display_race,
             background=self.char_background,
             alignment=self.char_alignment,
+            portrait_path=self.char_portrait_path,
             xp=0,
             hp_current=level1_hp,
             hp_max=level1_hp,
             armor_class=ca,
             initiative_bonus=des_mod,
-            speed=SPECIES_DEFAULTS.get(self.char_species, {}).get("speed", "9 m"),
+            speed=speed,
             proficiency_bonus=2,
             abilities=final_abilities,
             saving_throw_profs=CLASS_DEFAULTS[self.char_class]["saves"],

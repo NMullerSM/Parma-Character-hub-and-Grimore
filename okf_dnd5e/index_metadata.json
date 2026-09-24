@@ -1,7 +1,7 @@
 {
   "format": "OKF-DND5E",
   "version": "2024.1",
-  "total_entities": 495,
+  "total_entities": 507,
   "entities": [
     {
       "id": "abrir",
@@ -11972,6 +11972,198 @@
         "salvaciones"
       ],
       "path": "reglas_y_mecanicas/salvaciones_de_muerte.md"
+    },
+    {
+      "id": "elfo_alto_elfo",
+      "nombre": "Alto Elfo (Linaje Solar y Lunar)",
+      "tipo": "linaje",
+      "especie_padre": "Elfo",
+      "fuente": "PHB 2024",
+      "pagina": 190,
+      "tags": [
+        "especie",
+        "elfo",
+        "alto_elfo",
+        "linaje",
+        "arcano"
+      ],
+      "path": "especies_y_linajes/elfo/alto_elfo.md"
+    },
+    {
+      "id": "elfo_bosques",
+      "nombre": "Elfo de los Bosques (Linaje Silvano)",
+      "tipo": "linaje",
+      "especie_padre": "Elfo",
+      "fuente": "PHB 2024",
+      "pagina": 191,
+      "tags": [
+        "especie",
+        "elfo",
+        "bosques",
+        "linaje",
+        "silvano"
+      ],
+      "path": "especies_y_linajes/elfo/elfo_bosques.md"
+    },
+    {
+      "id": "enano_colinas",
+      "nombre": "Enano de las Colinas",
+      "tipo": "linaje",
+      "especie_padre": "Enano",
+      "fuente": "PHB 2024",
+      "pagina": 186,
+      "tags": [
+        "especie",
+        "enano",
+        "colinas",
+        "linaje",
+        "resistencia"
+      ],
+      "path": "especies_y_linajes/enano/enano_colinas.md"
+    },
+    {
+      "id": "enano_montanias",
+      "nombre": "Enano de las Montañas",
+      "tipo": "linaje",
+      "especie_padre": "Enano",
+      "fuente": "PHB 2024",
+      "pagina": 187,
+      "tags": [
+        "especie",
+        "enano",
+        "montanias",
+        "linaje",
+        "fuerza"
+      ],
+      "path": "especies_y_linajes/enano/enano_montanias.md"
+    },
+    {
+      "id": "gnomo_rocas",
+      "nombre": "Gnomo de las Rocas",
+      "tipo": "linaje",
+      "especie_padre": "Gnomo",
+      "fuente": "PHB 2024",
+      "pagina": 193,
+      "tags": [
+        "especie",
+        "gnomo",
+        "rocas",
+        "linaje",
+        "artifice"
+      ],
+      "path": "especies_y_linajes/gnomo/gnomo_rocas.md"
+    },
+    {
+      "id": "gnomo_bosques",
+      "nombre": "Gnomo de los Bosques",
+      "tipo": "linaje",
+      "especie_padre": "Gnomo",
+      "fuente": "PHB 2024",
+      "pagina": 193,
+      "tags": [
+        "especie",
+        "gnomo",
+        "bosques",
+        "linaje",
+        "ilusion"
+      ],
+      "path": "especies_y_linajes/gnomo/gnomo_bosques.md"
+    },
+    {
+      "id": "mediano_piesligeros",
+      "nombre": "Mediano Piesligeros",
+      "tipo": "linaje",
+      "especie_padre": "Mediano",
+      "fuente": "PHB 2024",
+      "pagina": 188,
+      "tags": [
+        "especie",
+        "mediano",
+        "piesligeros",
+        "linaje",
+        "sigilo"
+      ],
+      "path": "especies_y_linajes/mediano/mediano_piesligeros.md"
+    },
+    {
+      "id": "mediano_fornido",
+      "nombre": "Mediano Fornido",
+      "tipo": "linaje",
+      "especie_padre": "Mediano",
+      "fuente": "PHB 2024",
+      "pagina": 188,
+      "tags": [
+        "especie",
+        "mediano",
+        "fornido",
+        "linaje",
+        "resistencia"
+      ],
+      "path": "especies_y_linajes/mediano/mediano_fornido.md"
+    },
+    {
+      "id": "tiefling_infernal",
+      "nombre": "Tiefling (Linaje Infernal)",
+      "tipo": "linaje",
+      "especie_padre": "Tiefling",
+      "fuente": "PHB 2024",
+      "pagina": 198,
+      "tags": [
+        "especie",
+        "tiefling",
+        "infernal",
+        "linaje",
+        "fuego"
+      ],
+      "path": "especies_y_linajes/tiefling/tiefling_infernal.md"
+    },
+    {
+      "id": "tiefling_abisal",
+      "nombre": "Tiefling (Linaje Abisal)",
+      "tipo": "linaje",
+      "especie_padre": "Tiefling",
+      "fuente": "PHB 2024",
+      "pagina": 198,
+      "tags": [
+        "especie",
+        "tiefling",
+        "abisal",
+        "linaje",
+        "caos"
+      ],
+      "path": "especies_y_linajes/tiefling/tiefling_abisal.md"
+    },
+    {
+      "id": "draconido_cromatico",
+      "nombre": "Dracónido Cromático",
+      "tipo": "linaje",
+      "especie_padre": "Dracónido",
+      "fuente": "PHB 2024",
+      "pagina": 184,
+      "tags": [
+        "especie",
+        "draconido",
+        "cromatico",
+        "linaje",
+        "aliento"
+      ],
+      "path": "especies_y_linajes/draconido/draconido_cromatico.md"
+    },
+    {
+      "id": "draconido_metalico",
+      "nombre": "Dracónido Metálico",
+      "tipo": "linaje",
+      "especie_padre": "Dracónido",
+      "fuente": "PHB 2024",
+      "pagina": 184,
+      "tags": [
+        "especie",
+        "draconido",
+        "metalico",
+        "linaje",
+        "aliento"
+      ],
+      "path": "especies_y_linajes/draconido/draconido_metalico.md"
     }
   ]
 }

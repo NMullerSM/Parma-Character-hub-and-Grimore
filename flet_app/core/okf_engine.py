@@ -3,6 +3,7 @@ Motor de Conocimiento Atómico OKF (Open Knowledge Format) para D&D 5e
 Lectura y búsqueda eficiente de alta velocidad con caché LRU y bajo consumo de RAM.
 """
 import os
+import sys
 import json
 import yaml
 from functools import lru_cache
@@ -13,8 +14,11 @@ from .models import SpellItem
 class OkfEngine:
     def __init__(self, okf_root_path: Optional[str] = None):
         if okf_root_path is None:
-            # Detectar automáticamente relativo al repo
-            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            # Detectar automáticamente relativo al repo o bundle congelado
+            if getattr(sys, "frozen", False):
+                base_dir = getattr(sys, "_MEIPASS", os.path.dirname(sys.executable))
+            else:
+                base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
             self.okf_dir = os.path.join(base_dir, "okf_dnd5e")
         else:
             self.okf_dir = okf_root_path

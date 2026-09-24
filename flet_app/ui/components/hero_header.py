@@ -8,6 +8,7 @@ from ..theme import (
     BG_CARD, BG_INPUT, BORDER_GOLD, BORDER_DIM, GOLD_LIGHT,
     GOLD_PRIMARY, TEXT_MUTED, create_badge
 )
+from .portrait_card import CharacterPortraitCard
 
 
 class HeroHeader(ft.Container):
@@ -18,19 +19,26 @@ class HeroHeader(ft.Container):
         self.bgcolor = BG_CARD
         self.border = ft.border.all(1, BORDER_GOLD)
         self.border_radius = ft.border_radius.all(10)
-        self.padding = 16
+        self.padding = 14
         self.margin = ft.margin.only(bottom=12)
 
         self._build_ui()
 
     def _build_ui(self):
+        # Retrato Artístico del Personaje
+        self.portrait = CharacterPortraitCard(
+            char=self.char,
+            size=72,
+            on_portrait_changed=self.on_change
+        )
+
         # Campo de Nombre
         self.name_field = ft.TextField(
             value=self.char.name,
             border=ft.InputBorder.UNDERLINE,
             border_color=BORDER_GOLD,
             cursor_color=GOLD_LIGHT,
-            text_size=24,
+            text_size=22,
             text_style=ft.TextStyle(weight=ft.FontWeight.BOLD, color="#ffffff"),
             content_padding=ft.padding.all(4),
             on_change=self._on_name_change,
@@ -66,10 +74,18 @@ class HeroHeader(ft.Container):
 
         self.content = ft.ResponsiveRow(
             controls=[
-                ft.Column(
-                    controls=[self.name_field, self.badges_row],
+                ft.Row(
+                    controls=[
+                        self.portrait,
+                        ft.Column(
+                            controls=[self.name_field, self.badges_row],
+                            spacing=4,
+                            expand=True
+                        )
+                    ],
                     col={"sm": 12, "md": 6, "lg": 5},
-                    spacing=6
+                    spacing=12,
+                    vertical_alignment=ft.CrossAxisAlignment.CENTER
                 ),
                 ft.Row(
                     controls=[
@@ -119,6 +135,7 @@ class HeroHeader(ft.Container):
 
     def update_data(self, char: CharacterSheet):
         self.char = char
+        self.portrait.update_char(char)
         self.name_field.value = char.name
         self.badges_row.controls = [
             create_badge(f"{char.char_class} ({char.subclass or 'Nivel ' + str(char.level)})"),
@@ -129,3 +146,6 @@ class HeroHeader(ft.Container):
         self.inspiration_switch.value = char.inspiration
         if self.page:
             self.update()
+
+    def attach_file_picker(self, picker: ft.FilePicker):
+        self.portrait.attach_file_picker(picker)
