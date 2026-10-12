@@ -961,18 +961,32 @@ class CharacterCreatorWizard:
         elif self.char_class == "Brujo":
             slots["1"] = SpellSlotTier(level=1, total=1, current=1)
 
+        # 6. Determinar sentidos según especie y linaje
+        spec_info = SPECIES_DEFAULTS.get(self.char_species, {})
+        has_darkvision = spec_info.get("darkvision", False)
+        senses = "Visión Normal (sin visión en la oscuridad)"
+        if has_darkvision:
+            if "36m" in sub_traits or "superior" in sub_traits.lower() or "drow" in self.char_subspecies.lower() or "duergar" in self.char_subspecies.lower() or "profundidades" in self.char_subspecies.lower():
+                senses = "Visión en la Oscuridad Superior (36 m)"
+            else:
+                senses = "Visión en la Oscuridad (18 m)"
+
         new_char = CharacterSheet(
             name=self.char_name.strip() or "Nuevo Héroe",
             char_class=self.char_class,
-            subclass=self.char_subspecies if self.char_subspecies != "Estándar" else "",
+            subclass="",
             level=1,
             race=display_race,
             background=self.char_background,
             alignment=self.char_alignment,
+            senses=senses,
             portrait_path=self.char_portrait_path,
             xp=0,
             hp_current=level1_hp,
             hp_max=level1_hp,
+            hit_dice_max=1,
+            hit_dice_current=1,
+            hit_dice_faces=CLASS_DEFAULTS[self.char_class]["hit_dice"],
             armor_class=ca,
             initiative_bonus=des_mod,
             speed=speed,

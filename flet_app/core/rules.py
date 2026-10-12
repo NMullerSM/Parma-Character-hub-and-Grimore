@@ -88,16 +88,96 @@ def get_character_spell_stats(char: CharacterSheet) -> Dict[str, Any]:
     return get_spell_stats(char, casting_ability=ability)
 
 
+CLASS_HIT_DICE = {
+    "Bárbaro": 12,
+    "Guerrero": 10,
+    "Paladín": 10,
+    "Explorador": 10,
+    "Bardo": 8,
+    "Clérigo": 8,
+    "Druida": 8,
+    "Monje": 8,
+    "Pícaro": 8,
+    "Brujo": 8,
+    "Hechicero": 6,
+    "Mago": 6,
+    "Artífice": 8,
+}
+
+DND_CONDITIONS = [
+    {
+        "name": "Concentración",
+        "icon": "auto_awesome",
+        "color": "#a855f7",
+        "description": "Mantienes un conjuro activo. Si recibes daño, debes superar una salvación de CON (CD 10 o la mitad del daño)."
+    },
+    {
+        "name": "Envenenado",
+        "icon": "coronavirus",
+        "color": "#22c55e",
+        "description": "Tienes desventaja en tiradas de ataque y pruebas de característica."
+    },
+    {
+        "name": "Asustado",
+        "icon": "sentiment_very_dissatisfied",
+        "color": "#ef4444",
+        "description": "Desventaja en pruebas y ataques mientras la fuente del miedo esté a la vista. No puedes acercarte voluntariamente."
+    },
+    {
+        "name": "Derribado",
+        "icon": "airline_seat_flat",
+        "color": "#f59e0b",
+        "description": "Tus ataques tienen desventaja. Ataques a 1.5m contra ti tienen ventaja. Levantarse cuesta la mitad de tu movimiento."
+    },
+    {
+        "name": "Cegado",
+        "icon": "visibility_off",
+        "color": "#64748b",
+        "description": "Fallas automáticamente pruebas de visión. Ataques contra ti tienen ventaja; tus ataques tienen desventaja."
+    },
+    {
+        "name": "Ensordecido",
+        "icon": "hearing_disabled",
+        "color": "#64748b",
+        "description": "Fallas automáticamente pruebas de audición."
+    },
+    {
+        "name": "Paralizado",
+        "icon": "lock",
+        "color": "#dc2626",
+        "description": "Incapacitado (sin acciones ni reacciones). Fallas salvaciones FUE/DES. Ataques a 1.5m son críticos automáticos."
+    },
+    {
+        "name": "Incapacitado",
+        "icon": "pan_tool",
+        "color": "#e11d48",
+        "description": "No puedes realizar acciones ni reacciones. Tu concentración se interrumpe de inmediato."
+    },
+    {
+        "name": "Invisible",
+        "icon": "blur_on",
+        "color": "#38bdf8",
+        "description": "Imposible de ver sin magia o sentidos especiales. Tienes ventaja en ataques; ataques contra ti tienen desventaja."
+    },
+]
+
+
 def perform_short_rest(char: CharacterSheet, hit_dice_spent: int = 1) -> Tuple[CharacterSheet, str]:
-    """Aplica descanso corto: consume dados de golpe y recupera recursos de descanso corto."""
+    """Aplica descanso corto: consume dados de golpe según la clase y recupera recursos de descanso corto."""
+    curr_dice = getattr(char, "hit_dice_current", char.level)
+    actual_spent = max(0, min(curr_dice, hit_dice_spent))
+    char.hit_dice_current = max(0, curr_dice - actual_spent)
+
     con_mod = calc_modifier(char.abilities.get("CON", 10))
     healed = 0
     rolls = []
-    for _ in range(hit_dice_spent):
-        roll = random.randint(1, 8)
+    faces = getattr(char, "hit_dice_faces", 8) or 8
+
+    for _ in range(actual_spent):
+        roll = random.randint(1, faces)
         tot = max(1, roll + con_mod)
         healed += tot
-        rolls.append(f"1d8({roll}) + {con_mod} = {tot}")
+        rolls.append(f"1d{faces}({roll}) + {con_mod} = {tot}")
 
     old_hp = char.hp_current
     char.hp_current = min(char.hp_max, char.hp_current + healed)
@@ -110,18 +190,32 @@ def perform_short_rest(char: CharacterSheet, hit_dice_spent: int = 1) -> Tuple[C
             f.uses_current = f.uses_max
             features_recovered.append(f.name)
 
-    msg = f"Descanso Corto: Se recuperaron {recovered} PG ({', '.join(rolls)})."
+    hd_max = getattr(char, "hit_dice_max", char.level) or max(1, char.level)
+    if actual_spent > 0:
+        msg = f"Descanso Corto ({actual_spent}d{faces} gastados): Se recuperaron {recovered} PG ({', '.join(rolls)}). Dados de golpe restantes: {char.hit_dice_current}/{hd_max}."
+    else:
+        msg = f"Descanso Corto (sin gastar dados): Dados de golpe restantes: {char.hit_dice_current}/{hd_max}."
+
     if features_recovered:
         msg += f" Usos recargados: {', '.join(features_recovered)}."
     return char, msg
 
 
 def perform_long_rest(char: CharacterSheet) -> Tuple[CharacterSheet, str]:
-    """Aplica descanso largo: restaura PG al máximo, todos los espacios de conjuro y poderes."""
+    """Aplica descanso largo: restaura PG al máximo, la mitad de dados de golpe gastados, espacios de conjuro y poderes."""
     char.hp_current = char.hp_max
     char.hp_temp = 0
     char.death_saves_success = 0
     char.death_saves_failure = 0
+
+    # Restaurar dados de golpe (al menos la mitad de los dados máximos, mín 1)
+    hd_max = getattr(char, "hit_dice_max", char.level) or max(1, char.level)
+    char.hit_dice_max = hd_max
+    hd_curr = getattr(char, "hit_dice_current", hd_max)
+    recovered_hd = max(1, hd_max // 2)
+    new_hd = min(hd_max, hd_curr + recovered_hd)
+    diff_hd = new_hd - hd_curr
+    char.hit_dice_current = new_hd
 
     # Restaurar todos los espacios de conjuros
     for tier in char.spell_slots.values():
@@ -131,7 +225,8 @@ def perform_long_rest(char: CharacterSheet) -> Tuple[CharacterSheet, str]:
     for f in char.features:
         f.uses_current = f.uses_max
 
-    return char, "Descanso Largo: PG restaurados al 100%, espacios de conjuro y poderes recargados."
+    hd_msg = f"+{diff_hd} Dados de Golpe ({char.hit_dice_current}/{char.hit_dice_max})" if diff_hd > 0 else f"Dados de Golpe al máximo ({char.hit_dice_current}/{char.hit_dice_max})"
+    return char, f"Descanso Largo: PG al 100%, {hd_msg}, espacios de conjuro y poderes recargados."
 
 
 def roll_dice(sides: int, mode: str = "normal", modifier: int = 0) -> Dict[str, Any]:

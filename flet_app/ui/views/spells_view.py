@@ -2,9 +2,9 @@
 Vista de Conjuros & Magia (Catálogo OKF, Espacios y Hechizos por Nivel)
 """
 import flet as ft
-from typing import Callable, Optional
+from typing import Callable, Optional, Any
 from ...core.models import CharacterSheet, SpellItem
-from ...core.rules import calc_modifier, calc_proficiency_bonus
+from ...core.rules import calc_modifier, calc_proficiency_bonus, get_character_spell_stats
 from ...core.okf_engine import OkfEngine
 from ..theme import (
     BG_CARD, BG_CARD_ALT, BG_INPUT, BORDER_DIM, BORDER_GOLD,
@@ -13,6 +13,15 @@ from ..theme import (
 )
 from ..components.slot_tracker import SlotTracker
 from ..components.spell_picker import SpellPickerDialog
+
+ABILITY_NAMES = {
+    "INT": "Inteligencia",
+    "SAB": "Sabiduría",
+    "CAR": "Carisma",
+    "FUE": "Fuerza",
+    "DES": "Destreza",
+    "CON": "Constitución",
+}
 
 
 class SpellsView(ft.Container):
@@ -29,22 +38,34 @@ class SpellsView(ft.Container):
         self.filter_level = "all"
         self.expand = True
 
+        # Controles reactivos de la barra de estadísticas mágicas
+        self.stat_aptitude_text = ft.Text("", size=18, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT)
+        self.stat_dc_text = ft.Text("", size=18, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT)
+        self.stat_atk_text = ft.Text("", size=18, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT)
+        self.stat_prof_text = ft.Text("", size=18, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT)
+
         self._build_ui()
 
+    def _update_magic_stats(self):
+        spell_stats = get_character_spell_stats(self.char)
+        ability_code = spell_stats.get("ability", "CAR")
+        ability_name = ABILITY_NAMES.get(ability_code, ability_code)
+        self.stat_aptitude_text.value = f"{ability_name} ({ability_code})"
+        self.stat_dc_text.value = str(spell_stats.get("save_dc", 10))
+        self.stat_atk_text.value = spell_stats.get("attack_bonus", "+0")
+        self.stat_prof_text.value = f"+{spell_stats.get('prof_bonus', 2)}"
+
     def _build_ui(self):
-        # 1. Barra de Estadísticas Mágicas
-        prof = calc_proficiency_bonus(self.char.level)
-        cha_mod = calc_modifier(self.char.abilities.get("CAR", 10))
-        save_dc = 8 + prof + cha_mod
-        atk_bonus = f"+{prof + cha_mod}" if (prof + cha_mod) >= 0 else str(prof + cha_mod)
+        # 1. Barra de Estadísticas Mágicas Dinámica
+        self._update_magic_stats()
 
         stat_bar = ft.Container(
             content=ft.Row(
                 controls=[
-                    self._create_magic_stat("APTITUD MÁGICA", "Carisma"),
-                    self._create_magic_stat("CD SALVACIÓN CONJUROS", str(save_dc)),
-                    self._create_magic_stat("BONIFICADOR ATAQUE", atk_bonus),
-                    self._create_magic_stat("COMPETENCIA", f"+{prof}"),
+                    self._create_magic_stat("APTITUD MÁGICA", self.stat_aptitude_text),
+                    self._create_magic_stat("CD SALVACIÓN CONJUROS", self.stat_dc_text),
+                    self._create_magic_stat("BONIFICADOR ATAQUE", self.stat_atk_text),
+                    self._create_magic_stat("COMPETENCIA", self.stat_prof_text),
                 ],
                 alignment=ft.MainAxisAlignment.SPACE_AROUND,
                 wrap=True,
@@ -117,12 +138,13 @@ class SpellsView(ft.Container):
             expand=True
         )
 
-    def _create_magic_stat(self, label: str, val: str) -> ft.Container:
+    def _create_magic_stat(self, label: str, val: Any) -> ft.Container:
+        val_control = val if isinstance(val, ft.Control) else ft.Text(str(val), size=18, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT)
         return ft.Container(
             content=ft.Column(
                 controls=[
                     ft.Text(label, size=9, weight=ft.FontWeight.BOLD, color=TEXT_MUTED),
-                    ft.Text(val, size=18, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
+                    val_control,
                 ],
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 spacing=2
@@ -323,6 +345,7 @@ class SpellsView(ft.Container):
 
     def update_data(self, new_char: CharacterSheet):
         self.char = new_char
+        self._update_magic_stats()
         self.slot_tracker.update_data(self.char.spell_slots)
         self._populate_spells()
         if self.page:

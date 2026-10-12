@@ -90,6 +90,7 @@ class SheetView(ft.Container):
                 make_stat_badge(ft.Icons.DIRECTIONS_RUN, "Velocidad", self.char.speed or "9 m", GOLD_LIGHT),
                 make_stat_badge(ft.Icons.FAVORITE, "Puntos Golpe", f"{self.char.hp_current} / {self.char.hp_max}", COLOR_GREEN if self.char.hp_current > self.char.hp_max * 0.5 else COLOR_RED),
                 make_stat_badge(ft.Icons.STAR, "Competencia", f"+{prof_bonus}", GOLD_LIGHT),
+                make_stat_badge(ft.Icons.CASINO, "Dados de Golpe", f"{self.char.hit_dice_current}/{self.char.hit_dice_max} d{self.char.hit_dice_faces}", GOLD_LIGHT),
                 make_stat_badge(ft.Icons.AUTO_AWESOME, f"CD Conjuro ({spell_stats['ability']})", f"CD {spell_stats['save_dc']}", COLOR_PURPLE, COLOR_PURPLE),
                 make_stat_badge(ft.Icons.GPS_FIXED, "Ataque Mágico", spell_stats["attack_bonus"], COLOR_PURPLE, COLOR_PURPLE),
             ],
@@ -265,7 +266,7 @@ class SheetView(ft.Container):
                         padding=8,
                         border_radius=ft.border_radius.all(6)
                     ),
-                    ft.Text("Visión en la Oscuridad Superior (Drow 36m)", size=12, color="#ffffff"),
+                    ft.Text(self.char.senses or "Visión normal (sin visión en la oscuridad)", size=12, color="#ffffff"),
                     ft.Divider(color=BORDER_DIM, height=1),
                     ft.Text("🗣️ Idiomas", size=14, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
                     ft.Text(self.char.languages or "Común, Élfico", size=12, color="#ffffff"),

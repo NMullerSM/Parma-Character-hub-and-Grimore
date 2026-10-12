@@ -1,7 +1,7 @@
 {
   "format": "OKF-DND5E",
   "version": "2024.1",
-  "total_entities": 507,
+  "total_entities": 513,
   "entities": [
     {
       "id": "abrir",
@@ -12164,6 +12164,97 @@
         "aliento"
       ],
       "path": "especies_y_linajes/draconido/draconido_metalico.md"
+    },
+    {
+      "id": "regla_condiciones",
+      "nombre": "Condiciones de Estado (15 Oficiales)",
+      "tipo": "regla",
+      "fuente": "PHB 2024",
+      "pagina": 364,
+      "tags": [
+        "reglas",
+        "condiciones",
+        "combate",
+        "estados",
+        "salud"
+      ],
+      "path": "reglas_y_mecanicas/condiciones_de_estado.md"
+    },
+    {
+      "id": "regla_acciones_combate",
+      "nombre": "Acciones en Combate",
+      "tipo": "regla",
+      "fuente": "PHB 2024",
+      "pagina": 362,
+      "tags": [
+        "reglas",
+        "combate",
+        "acciones",
+        "iniciativa"
+      ],
+      "path": "reglas_y_mecanicas/acciones_en_combate.md"
+    },
+    {
+      "id": "equipo_armas_simples",
+      "nombre": "Armas Simples (Cuerpo a Cuerpo y Distancia)",
+      "tipo": "equipo",
+      "subtipo": "Armas",
+      "fuente": "PHB 2024",
+      "pagina": 213,
+      "tags": [
+        "equipo",
+        "armas",
+        "simples",
+        "combate"
+      ],
+      "path": "equipo_y_armamento/armas_simples.md"
+    },
+    {
+      "id": "equipo_armas_marciales",
+      "nombre": "Armas Marciales (Cuerpo a Cuerpo y Distancia)",
+      "tipo": "equipo",
+      "subtipo": "Armas",
+      "fuente": "PHB 2024",
+      "pagina": 214,
+      "tags": [
+        "equipo",
+        "armas",
+        "marciales",
+        "combate"
+      ],
+      "path": "equipo_y_armamento/armas_marciales.md"
+    },
+    {
+      "id": "equipo_armaduras_escudos",
+      "nombre": "Armaduras y Escudos (Ligeras, Medias y Pesadas)",
+      "tipo": "equipo",
+      "subtipo": "Armaduras",
+      "fuente": "PHB 2024",
+      "pagina": 215,
+      "tags": [
+        "equipo",
+        "armaduras",
+        "escudos",
+        "ca",
+        "defensa"
+      ],
+      "path": "equipo_y_armamento/armaduras_y_escudos.md"
+    },
+    {
+      "id": "equipo_aventuras",
+      "nombre": "Equipo de Aventuras, Pociones y Focos Mágicos",
+      "tipo": "equipo",
+      "subtipo": "Aventuras",
+      "fuente": "PHB 2024",
+      "pagina": 218,
+      "tags": [
+        "equipo",
+        "pociones",
+        "focos",
+        "herramientas",
+        "aventura"
+      ],
+      "path": "equipo_y_armamento/equipo_de_aventuras.md"
     }
   ]
 }

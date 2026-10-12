@@ -15,6 +15,7 @@ if __name__ == "__main__" and not __package__:
     __package__ = "flet_app"
     importlib.import_module("flet_app")
 
+import re
 import json
 import flet as ft
 from typing import Optional
@@ -244,6 +245,65 @@ def main(page: ft.Page):
 
     char_selector.on_change = on_char_selector_change
 
+    # Control de exportación e importación de fichas
+    pending_export_char: Optional[CharacterSheet] = None
+
+    def on_json_import_picked(e: ft.FilePickerResultEvent):
+        if e.files and len(e.files) > 0:
+            file_path = e.files[0].path
+            if file_path and os.path.exists(file_path):
+                try:
+                    with open(file_path, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                    imported_char = CharacterSheet.from_dict(data)
+                    db.save_character(imported_char, set_active=True)
+                    refresh_all_views(imported_char)
+                    update_char_selector()
+                    page.snack_bar = ft.SnackBar(ft.Text(f"📥 Héroe {imported_char.name} ({imported_char.char_class} Niv {imported_char.level}) importado y activado."))
+                    page.snack_bar.open = True
+                    page.update()
+                except Exception as ex:
+                    page.snack_bar = ft.SnackBar(ft.Text(f"Error al importar JSON: {ex}"))
+                    page.snack_bar.open = True
+                    page.update()
+
+    def on_json_export_picked(e: ft.FilePickerResultEvent):
+        nonlocal pending_export_char
+        if e.path and pending_export_char:
+            dest_path = e.path if e.path.endswith(".json") else f"{e.path}.json"
+            try:
+                with open(dest_path, "w", encoding="utf-8") as f:
+                    json.dump(pending_export_char.to_dict(), f, indent=2, ensure_ascii=False)
+                page.snack_bar = ft.SnackBar(ft.Text(f"💾 Ficha de {pending_export_char.name} exportada con éxito en {os.path.basename(dest_path)}"))
+                page.snack_bar.open = True
+                page.update()
+            except Exception as ex:
+                page.snack_bar = ft.SnackBar(ft.Text(f"Error al exportar JSON: {ex}"))
+                page.snack_bar.open = True
+                page.update()
+            finally:
+                pending_export_char = None
+
+    def on_pdf_export_picked(e: ft.FilePickerResultEvent):
+        nonlocal pending_export_char
+        if e.path and pending_export_char:
+            dest_path = e.path if e.path.endswith(".pdf") else f"{e.path}.pdf"
+            try:
+                UniversalAcroFormHandler.export_character_to_pdf(pending_export_char, output_path=dest_path)
+                page.snack_bar = ft.SnackBar(ft.Text(f"📜 Ficha PDF oficial generada en {os.path.basename(dest_path)}"))
+                page.snack_bar.open = True
+                page.update()
+            except Exception as ex:
+                page.snack_bar = ft.SnackBar(ft.Text(f"Error al generar PDF: {ex}"))
+                page.snack_bar.open = True
+                page.update()
+            finally:
+                pending_export_char = None
+
+    json_import_picker = ft.FilePicker(on_result=on_json_import_picked)
+    json_export_picker = ft.FilePicker(on_result=on_json_export_picked)
+    pdf_export_picker = ft.FilePicker(on_result=on_pdf_export_picked)
+
     def open_heroes_manager_dialog(e=None):
         heroes_list_view = ft.ListView(spacing=8, expand=True)
 
@@ -297,8 +357,28 @@ def main(page: ft.Page):
                     populate_heroes()
                     page.update()
 
+                def on_export_json_hero(ev, cid=char_id, cname=char_name):
+                    nonlocal pending_export_char
+                    pending_export_char = db.get_character_by_id(cid) or char
+                    safe_slug = re.sub(r'[^a-zA-Z0-9_\-]', '_', cname.strip().lower())
+                    json_export_picker.save_file(
+                        dialog_title=f"Exportar {cname} a JSON",
+                        file_name=f"{safe_slug}.json",
+                        allowed_extensions=["json"]
+                    )
+
+                def on_export_pdf_hero(ev, cid=char_id, cname=char_name):
+                    nonlocal pending_export_char
+                    pending_export_char = db.get_character_by_id(cid) or char
+                    safe_slug = re.sub(r'[^a-zA-Z0-9_\-]', '_', cname.strip().lower())
+                    pdf_export_picker.save_file(
+                        dialog_title=f"Exportar {cname} a PDF Oficial",
+                        file_name=f"{safe_slug}_oficial.pdf",
+                        allowed_extensions=["pdf"]
+                    )
+
                 btn_load = ft.ElevatedButton(
-                    text="Activo" if is_active else "Cargar Ficha",
+                    text="Activo" if is_active else "Cargar",
                     icon=ft.Icons.CHECK if is_active else ft.Icons.PLAY_ARROW,
                     disabled=is_active,
                     style=ft.ButtonStyle(
@@ -339,8 +419,25 @@ def main(page: ft.Page):
                                 spacing=12
                             ),
                             ft.Row(
-                                controls=[btn_load, btn_del],
-                                spacing=6
+                                controls=[
+                                    ft.IconButton(
+                                        icon=ft.Icons.FILE_DOWNLOAD_OUTLINED,
+                                        icon_color=GOLD_LIGHT,
+                                        icon_size=18,
+                                        tooltip=f"Exportar {char_name} a JSON",
+                                        on_click=on_export_json_hero
+                                    ),
+                                    ft.IconButton(
+                                        icon=ft.Icons.PICTURE_AS_PDF_OUTLINED,
+                                        icon_color=COLOR_AMBER,
+                                        icon_size=18,
+                                        tooltip=f"Exportar {char_name} a PDF Oficial",
+                                        on_click=on_export_pdf_hero
+                                    ),
+                                    btn_load,
+                                    btn_del
+                                ],
+                                spacing=4
                             )
                         ],
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN
@@ -370,17 +467,42 @@ def main(page: ft.Page):
             ),
             content=ft.Container(
                 content=heroes_list_view,
-                width=550,
-                height=380
+                width=680,
+                height=400
             ),
             actions=[
-                ft.ElevatedButton(
-                    text="🧙 Crear Nuevo Héroe",
-                    icon=ft.Icons.AUTO_AWESOME,
-                    bgcolor=GOLD_PRIMARY,
-                    color="#000000",
-                    style=ft.ButtonStyle(bgcolor=GOLD_PRIMARY, color="#000000"),
-                    on_click=on_new_from_dialog
+                ft.Row(
+                    controls=[
+                        ft.ElevatedButton(
+                            text="🧙 Crear Nuevo",
+                            icon=ft.Icons.AUTO_AWESOME,
+                            bgcolor=GOLD_PRIMARY,
+                            color="#000000",
+                            style=ft.ButtonStyle(bgcolor=GOLD_PRIMARY, color="#000000"),
+                            on_click=on_new_from_dialog
+                        ),
+                        ft.ElevatedButton(
+                            text="📥 Importar JSON",
+                            icon=ft.Icons.FILE_UPLOAD_OUTLINED,
+                            style=ft.ButtonStyle(bgcolor=BG_INPUT, color=GOLD_LIGHT, side=ft.BorderSide(1, BORDER_DIM)),
+                            tooltip="Importar una ficha de personaje guardada en formato .json",
+                            on_click=lambda ev: json_import_picker.pick_files(
+                                dialog_title="Seleccionar ficha JSON de personaje",
+                                allowed_extensions=["json"]
+                            )
+                        ),
+                        ft.ElevatedButton(
+                            text="📄 Importar PDF",
+                            icon=ft.Icons.PICTURE_AS_PDF,
+                            style=ft.ButtonStyle(bgcolor=BG_INPUT, color=TEXT_MUTED, side=ft.BorderSide(1, BORDER_DIM)),
+                            tooltip="Importar una hoja editable oficial de D&D 5e en PDF",
+                            on_click=lambda ev: pdf_character_picker.pick_files(
+                                dialog_title="Seleccionar hoja de personaje PDF",
+                                allowed_extensions=["pdf"]
+                            )
+                        )
+                    ],
+                    spacing=8
                 ),
                 ft.TextButton("Cerrar", style=ft.ButtonStyle(color=TEXT_MUTED), on_click=lambda ev: page.close(mgr_dialog))
             ],
@@ -440,11 +562,78 @@ def main(page: ft.Page):
 
     def on_short_rest(e):
         nonlocal char
-        char, msg = perform_short_rest(char)
-        refresh_all_views(char)
-        page.snack_bar = ft.SnackBar(ft.Text(msg))
-        page.snack_bar.open = True
-        page.update()
+        hd_curr = getattr(char, "hit_dice_current", char.level)
+        hd_max = getattr(char, "hit_dice_max", char.level)
+        hd_faces = getattr(char, "hit_dice_faces", 8)
+        con_mod = (char.abilities.get("CON", 10) - 10) // 2
+        con_str = f"+{con_mod}" if con_mod >= 0 else str(con_mod)
+
+        dice_input = ft.TextField(
+            value=str(min(1, hd_curr)),
+            width=65,
+            height=38,
+            text_align=ft.TextAlign.CENTER,
+            content_padding=ft.padding.all(4),
+            border_color=BORDER_DIM,
+            focused_border_color=BORDER_GOLD,
+            color="#ffffff",
+            keyboard_type=ft.KeyboardType.NUMBER
+        )
+
+        def do_rest(ev):
+            page.close(rest_dialog)
+            try:
+                spent = max(0, min(hd_curr, int(dice_input.value or "0")))
+            except ValueError:
+                spent = 0
+            nonlocal char
+            char, msg = perform_short_rest(char, hit_dice_spent=spent)
+            refresh_all_views(char)
+            page.snack_bar = ft.SnackBar(ft.Text(msg))
+            page.snack_bar.open = True
+            page.update()
+
+        info_text = (
+            f"Dados de golpe disponibles: {hd_curr} / {hd_max} (d{hd_faces})\n"
+            f"Modificador de Constitución: {con_str} por cada dado tirado.\n"
+            f"Cada dado gastado restaurará 1d{hd_faces} + CON a tus PG.\n"
+            "Tus poderes de recarga corta se renovarán automáticamente."
+        )
+
+        rest_dialog = ft.AlertDialog(
+            title=ft.Text("☕ Descanso Corto (1 hora)", size=17, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
+            content=ft.Container(
+                content=ft.Column(
+                    controls=[
+                        ft.Text(info_text, size=12, color="#e5e7eb"),
+                        ft.Divider(color=BORDER_DIM, height=1),
+                        ft.Row(
+                            controls=[
+                                ft.Text(f"Dados a gastar (0 a {hd_curr}):", size=13, weight=ft.FontWeight.BOLD, color=GOLD_LIGHT),
+                                dice_input,
+                            ],
+                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN
+                        ),
+                    ],
+                    spacing=10
+                ),
+                width=450,
+                height=180
+            ),
+            actions=[
+                ft.TextButton("Cancelar", style=ft.ButtonStyle(color=TEXT_MUTED), on_click=lambda ev: page.close(rest_dialog)),
+                ft.ElevatedButton(
+                    text="Descansar",
+                    icon=ft.Icons.BEDTIME,
+                    bgcolor=GOLD_PRIMARY,
+                    color="#000000",
+                    style=ft.ButtonStyle(bgcolor=GOLD_PRIMARY, color="#000000"),
+                    on_click=do_rest
+                )
+            ],
+            actions_alignment=ft.MainAxisAlignment.END
+        )
+        page.open(rest_dialog)
 
     def on_long_rest(e):
         nonlocal char
@@ -483,6 +672,9 @@ def main(page: ft.Page):
 
     page.overlay.extend([
         pdf_character_picker,
+        json_import_picker,
+        json_export_picker,
+        pdf_export_picker,
         portrait_picker_combat,
         portrait_picker_sheet,
         pdf_manual_picker
@@ -502,6 +694,45 @@ def main(page: ft.Page):
     def on_open_rules_click(e):
         rules_dialog.show()
 
+    def on_quick_export_json(e):
+        nonlocal pending_export_char
+        if char:
+            pending_export_char = char
+            safe_slug = re.sub(r'[^a-zA-Z0-9_\-]', '_', char.name.strip().lower())
+            json_export_picker.save_file(
+                dialog_title=f"Exportar {char.name} a JSON",
+                file_name=f"{safe_slug}.json",
+                allowed_extensions=["json"]
+            )
+
+    def on_quick_export_pdf(e):
+        nonlocal pending_export_char
+        if char:
+            pending_export_char = char
+            safe_slug = re.sub(r'[^a-zA-Z0-9_\-]', '_', char.name.strip().lower())
+            pdf_export_picker.save_file(
+                dialog_title=f"Exportar {char.name} a PDF Oficial",
+                file_name=f"{safe_slug}_oficial.pdf",
+                allowed_extensions=["pdf"]
+            )
+
+    btn_export_menu = ft.PopupMenuButton(
+        icon=ft.Icons.IOS_SHARE,
+        tooltip="Exportar ficha activa (JSON / PDF)",
+        items=[
+            ft.PopupMenuItem(
+                text="Exportar Ficha (.json)",
+                icon=ft.Icons.FILE_DOWNLOAD,
+                on_click=on_quick_export_json
+            ),
+            ft.PopupMenuItem(
+                text="Exportar a PDF Oficial",
+                icon=ft.Icons.PICTURE_AS_PDF,
+                on_click=on_quick_export_pdf
+            ),
+        ]
+    )
+
     # Barra de Acciones Superior Optimizada y Limpia
     top_toolbar = ft.Container(
         content=ft.Row(
@@ -518,6 +749,7 @@ def main(page: ft.Page):
                         ft.VerticalDivider(width=1, color=BORDER_DIM),
                         char_selector,
                         btn_heroes,
+                        btn_export_menu,
                     ],
                     spacing=8
                 ),

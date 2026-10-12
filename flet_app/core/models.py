@@ -119,6 +119,10 @@ class CharacterSheet:
     hp_current: int = 27
     hp_max: int = 27
     hp_temp: int = 0
+    hit_dice_max: int = 4
+    hit_dice_current: int = 4
+    hit_dice_faces: int = 8
+    conditions: List[str] = field(default_factory=list)
     armor_class: int = 15
     initiative_bonus: int = 3
     speed: str = "9 m"
@@ -188,6 +192,7 @@ class CharacterSheet:
     bonds: str = ""
     flaws: str = ""
     languages: str = "Común, Élfico, Inframundo"
+    senses: str = "Visión en la Oscuridad Superior (36 m)"
     proficiencies_extra: str = "Instrumentos: Laúd, Flauta dulce, Violín. Armaduras: Ligeras. Armas: Simples, Ballesta de mano, Espada corta, Estoque."
 
     # Diario de Campaña
@@ -228,4 +233,21 @@ class CharacterSheet:
                 char.network_edges = [NetworkEdge(**e) if isinstance(e, dict) else e for e in v]
             elif hasattr(char, k):
                 setattr(char, k, v)
+
+        # Asegurar coherencia en dados de golpe y condiciones si faltan en guardados anteriores
+        if "hit_dice_max" not in data or char.hit_dice_max <= 0:
+            char.hit_dice_max = max(1, char.level)
+        if "hit_dice_current" not in data:
+            char.hit_dice_current = char.hit_dice_max
+        if "hit_dice_faces" not in data or char.hit_dice_faces <= 0:
+            hd_map = {
+                "bárbaro": 12, "barbaro": 12,
+                "guerrero": 10, "paladín": 10, "paladin": 10, "explorador": 10,
+                "bardo": 8, "clérigo": 8, "clerigo": 8, "druida": 8, "monje": 8, "pícaro": 8, "picaro": 8, "brujo": 8,
+                "mago": 6, "hechicero": 6
+            }
+            char.hit_dice_faces = hd_map.get(char.char_class.lower(), 8)
+        if not isinstance(char.conditions, list):
+            char.conditions = []
+
         return char

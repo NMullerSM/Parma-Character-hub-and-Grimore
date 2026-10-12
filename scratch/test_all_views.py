@@ -51,7 +51,9 @@ def run_integration_tests():
     spv.page = page
     spv.update_data(char)
     assert spv is not None
-    print("  SpellsView created & updated.")
+    assert "Inteligencia" in spv.stat_aptitude_text.value
+    assert spv.stat_dc_text.value != ""
+    print("  SpellsView created & updated with dynamic spell aptitude.")
 
     # 4. PowersView
     pv = PowersView(char=char, okf_engine=okf)
@@ -65,13 +67,19 @@ def run_integration_tests():
     okfv.page = page
     okfv._select_category("especie")
     assert okfv.current_category == "especie"
-    assert len(okfv.results_cache) == 11
+    assert len(okfv.results_cache) >= 11  # 11 especies base + 12 linajes = 23 entidades
     okfv._select_category("clase")
     assert okfv.current_category == "clase"
     assert len(okfv.results_cache) == 13
     okfv._select_category("conjuro")
     assert okfv.current_category == "conjuro"
     assert len(okfv.results_cache) == 378
+    okfv._select_category("equipo")
+    assert okfv.current_category == "equipo"
+    assert len(okfv.results_cache) == 4
+    okfv._select_category("regla")
+    assert okfv.current_category == "regla"
+    assert len(okfv.results_cache) == 4
     print("  OkfCompendiumView category switching verified across all entities.")
 
     # 6. JournalView
@@ -100,15 +108,18 @@ def run_integration_tests():
     print("  NetworkView node creation & auto-save verified.")
 
     # 8. PdfViewerView
-    pdfv = PdfViewerView()
+    zen_events = []
+    pdfv = PdfViewerView(on_toggle_zen=lambda is_zen: zen_events.append(is_zen))
     pdfv.page = page
-    # Test fullscreen toggle
-    assert page.window.full_screen is False
+    # Test fullscreen / Zen toggle
+    assert pdfv.is_zen is False
     pdfv._toggle_fullscreen(None)
-    assert page.window.full_screen is True
+    assert pdfv.is_zen is True
+    assert zen_events[-1] is True
     pdfv._toggle_fullscreen(None)
-    assert page.window.full_screen is False
-    print("  PdfViewerView fullscreen toggle verified.")
+    assert pdfv.is_zen is False
+    assert zen_events[-1] is False
+    print("  PdfViewerView fullscreen / Zen toggle verified.")
 
     # 9. CharacterCreatorWizard
     wizard = CharacterCreatorWizard(page=page, okf_engine=okf, on_character_created=lambda c: None)

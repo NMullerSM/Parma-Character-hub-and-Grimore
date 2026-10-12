@@ -97,6 +97,14 @@ class OkfEngine:
 
         return results
 
+    def count_entities(self, tipo: Optional[Union[str, List[str]]] = None) -> int:
+        """Devuelve el conteo rápido de entidades según el tipo o lista de tipos."""
+        if not tipo:
+            return len(self._index)
+        if isinstance(tipo, list):
+            return sum(1 for item in self._index if item.get("tipo") in tipo)
+        return sum(1 for item in self._index if item.get("tipo") == tipo)
+
     @lru_cache(maxsize=128)
     def read_entity_file(self, rel_path: str) -> Optional[Dict[str, Any]]:
         """Lee y parsea bajo demanda un archivo atómico Markdown con frontmatter YAML."""

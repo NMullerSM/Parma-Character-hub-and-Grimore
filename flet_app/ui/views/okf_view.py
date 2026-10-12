@@ -9,7 +9,7 @@ from ...core.okf_engine import OkfEngine
 from ..theme import (
     BG_PRIMARY, BG_CARD, BG_CARD_ALT, BG_INPUT, BG_SURFACE, BORDER_DIM, BORDER_GOLD,
     GOLD_LIGHT, GOLD_PRIMARY, TEXT_MUTED, COLOR_GREEN, COLOR_AMBER, COLOR_PURPLE,
-    COLOR_RED, create_card_container, create_badge, create_gold_button
+    COLOR_RED, COLOR_BLUE, create_card_container, create_badge, create_gold_button
 )
 
 
@@ -43,14 +43,15 @@ class OkfCompendiumView(ft.Container):
             self.update()
 
     def _build_ui(self):
-        # 1. Selector de Categorías (Chips Horizontales)
+        # 1. Selector de Categorías (Chips Horizontales con conteos dinámicos)
         categories = [
-            ("conjuro", "✨ Conjuros (378)"),
-            ("dote", "🌟 Dotes (74)"),
-            ("especie", "🧬 Especies & Linajes (11)"),
-            ("trasfondo", "📜 Trasfondos (17)"),
-            ("clase", "⚔️ Clases & Subclases (13)"),
-            ("regla", "📖 Reglas & Mecánicas"),
+            ("conjuro", f"✨ Conjuros ({self.okf.count_entities('conjuro')})"),
+            ("dote", f"🌟 Dotes ({self.okf.count_entities('dote')})"),
+            ("especie", f"🧬 Especies & Linajes ({self.okf.count_entities(['especie', 'linaje'])})"),
+            ("trasfondo", f"📜 Trasfondos ({self.okf.count_entities('trasfondo')})"),
+            ("clase", f"⚔️ Clases & Subclases ({self.okf.count_entities(['clase', 'subclase'])})"),
+            ("equipo", f"🛡️ Equipo & Armamento ({self.okf.count_entities(['equipo', 'arma', 'armadura'])})"),
+            ("regla", f"📖 Reglas & Mecánicas ({self.okf.count_entities('regla')})"),
         ]
 
         self.cat_buttons = {}
@@ -285,6 +286,8 @@ class OkfCompendiumView(ft.Container):
             tipo_query = ["especie", "linaje"]
         elif target_type == "clase":
             tipo_query = ["clase", "subclase"]
+        elif target_type == "equipo":
+            tipo_query = ["equipo", "arma", "armadura"]
 
         results = self.okf.search_entities(
             query=self.search_query,
@@ -346,6 +349,12 @@ class OkfCompendiumView(ft.Container):
         elif tipo in ["especie", "linaje"]:
             tag_text = "Linaje" if tipo == "linaje" else "Especie"
             tag_color = COLOR_GREEN
+        elif tipo in ["equipo", "arma", "armadura"]:
+            tag_text = item.get("subtipo", "Equipo")
+            tag_color = COLOR_BLUE
+        elif tipo == "regla":
+            tag_text = "Regla"
+            tag_color = COLOR_AMBER
 
         # Indicador si ya está en la ficha
         in_char = False
@@ -534,6 +543,16 @@ class OkfCompendiumView(ft.Container):
                     ),
                     on_click=lambda e, it=item: self._add_feat_to_char(it)
                 )
+
+        elif tipo in ["clase", "subclase"]:
+            header_badges.insert(0, create_badge("Subclase" if tipo == "subclase" else "Clase", bg_color=BG_INPUT, text_color=COLOR_PURPLE, border_color=COLOR_PURPLE))
+        elif tipo in ["especie", "linaje"]:
+            header_badges.insert(0, create_badge("Linaje" if tipo == "linaje" else "Especie", bg_color=BG_INPUT, text_color=COLOR_GREEN, border_color=COLOR_GREEN))
+        elif tipo in ["equipo", "arma", "armadura"]:
+            subtipo = item.get("subtipo", "Equipo")
+            header_badges.insert(0, create_badge(f"Equipo ({subtipo})", bg_color=BG_INPUT, text_color=COLOR_BLUE, border_color=COLOR_BLUE))
+        elif tipo == "regla":
+            header_badges.insert(0, create_badge("Regla Oficial", bg_color=BG_INPUT, text_color=COLOR_AMBER, border_color=BORDER_GOLD))
 
         # Cargar Markdown bajo demanda
         file_path = item.get("path")

@@ -14,6 +14,10 @@ Este documento es la **Fuente Única de Verdad (Single Source of Truth)** para e
 | **04** | **Árbol Atómico OKF: Renderizado Markdown & Buscador** | `✅ COMPLETADO` | Linux / Windows | Reemplazo de `ft.Text` por `ft.Markdown`, limpieza de escapes y buscador en vivo en cabecera. |
 | **05** | **Visor de Manuales: Modo Inmersivo & Controles Ergonómicos** | `✅ COMPLETADO` | Linux / Windows | Zen Reader (100% altura), controles en barra superior y botón de importación externa. |
 | **06** | **Visualización de Personaje: Retrato & Avatar Gráfico** | `✅ COMPLETADO` | Linux / Windows | Componente `CharacterPortraitCard` con marco dorado, subida de foto local y fallback visual. |
+| **07** | **Calibración de Reglas de Clase & Sentidos Dinámicos** | `✅ COMPLETADO` | Linux / Windows | Aptitud mágica dinámica en SpellsView, corrección de subclase vs subraza en Wizard y sentidos dinámicos. |
+| **08** | **Mecánicas de Dados de Golpe, Descansos y Condiciones** | `✅ COMPLETADO` | Linux / Windows | Caras de dados por clase (d6-d12), diálogo de descanso corto interactivo, recuperación en descanso largo y gestor de estados. |
+| **09** | **Expansión del Compendio OKF: Armamento, Armaduras y Reglas** | `✅ COMPLETADO` | Linux / Windows | Directorio `equipo_y_armamento/` (armas, armaduras, equipo), reglas de combate y estado, chips con conteo dinámico y 513 entidades indexadas. |
+| **10** | **Portabilidad de Personajes: Exportación/Importación JSON & AcroForm PDF** | `✅ COMPLETADO` | Linux / Windows | Exportación e importación individual JSON en gestor de héroes y rellenado editable automático de PDF oficial AcroForm (`export_character_to_pdf`). |
 
 ---
 
@@ -124,3 +128,54 @@ Cualquier nuevo desarrollo, dependencia, refactorización o corrección dentro d
   * Fallback estético inteligente con icono de clase (mago, bardo, clérigo, paladín, etc.) y siglas del personaje sobre fondo temático.
   * Integrado en la cabecera de `CombatView` y en la tarjeta de identidad de `SheetView`.
 * **Criterio de Aceptación**: El personaje cuenta con identidad visual personalizada o fallback heráldico con persistencia local.
+
+---
+
+### Módulo 07: Calibración de Reglas de Clase & Sentidos Dinámicos
+* **Estado**: `✅ COMPLETADO`
+* **Implementación**:
+  * `SpellsView` adaptado con `get_character_spell_stats` para determinar la aptitud mágica real (INT para Magos, SAB para Clérigos/Druidas/Exploradores, CAR para Bardos/Paladines/Brujos/Hechiceros) y actualización reactiva en `update_data`.
+  * `CharacterCreatorWizard` corregido para no asignar la subraza al campo `subclass`, manteniendo la subraza en `race` y la subclase limpia en nivel 1.
+  * Campo `senses` dinámico agregado a `CharacterSheet`, poblado desde el asistente y mostrado en `SheetView`.
+  * Suite de pruebas automatizadas actualizada y en verde (`scratch/test_all_views.py` y `scratch/test_wizard_and_fixes.py`).
+* **Criterio de Aceptación**: Cualquier clase mágica o especie muestra sus estadísticas y sentidos correctos y las suites de prueba pasan al 100%.
+
+---
+
+### Módulo 08: Mecánicas de Dados de Golpe, Descansos Oficiales y Condiciones de Combate
+* **Estado**: `✅ COMPLETADO`
+* **Implementación**:
+  * Campos `hit_dice_max`, `hit_dice_current`, `hit_dice_faces` y `conditions` agregados al modelo `CharacterSheet` con deserialización defensiva para bases de datos previas.
+  * `perform_short_rest` actualizado para gastar dados reales según la clase (d6, d8, d10, d12) sumando el modificador de Constitución y recargando poderes de descanso corto.
+  * Diálogo modal interactivo de Descanso Corto en la barra superior que permite elegir la cantidad exacta de dados a gastar (0 a disponibles).
+  * `perform_long_rest` restaurado según reglas oficiales PHB 2024: restablece salud al 100%, todos los espacios y poderes, y recupera la mitad de los dados de golpe máximos gastados (mínimo 1).
+  * Gestor interactivo de 9 condiciones oficiales en `CombatView` (Concentración, Envenenado, Asustado, Derribado, Cegado, Ensordecido, Paralizado, Incapacitado, Invisible) con tooltips explicativos y persistencia inmediata.
+  * Fila de gasto directo de dado de golpe en `health_card` e indicador en la cabecera vital de `SheetView`.
+* **Criterio de Aceptación**: El descanso corto consume y tira los dados correctos según la clase, el descanso largo recupera dados de golpe proporcionales y las condiciones de combate pueden activarse/desactivarse interactivamente.
+
+---
+
+### Módulo 09: Expansión del Compendio OKF: Armamento, Armaduras y Reglas
+* **Estado**: `✅ COMPLETADO`
+* **Implementación**:
+  * Directorio `okf_dnd5e/equipo_y_armamento/` incorporado con catálogo atómico estructurado: `armas_simples.md`, `armas_marciales.md`, `armaduras_y_escudos.md` y `equipo_de_aventuras.md`.
+  * Documentos de reglas en `okf_dnd5e/reglas_y_mecanicas/`: `condiciones_de_estado.md` (15 condiciones oficiales de D&D 5e con efectos mecánicos) y `acciones_en_combate.md` (10 acciones estándar de turno).
+  * Catálogo e índice maestro `index_metadata.json` ampliado de 507 a 513 entidades atómicas catalogadas con frontmatter YAML.
+  * `OkfEngine.count_entities()` implementado para cálculo de totales dinámicos en memoria por taxonomía.
+  * Chips de navegación en `OkfCompendiumView` enriquecidos con nueva categoría `🛡️ Equipo & Armamento` y conteos dinámicos en vivo para las 7 categorías sin valores estáticos desfasados.
+* **Criterio de Aceptación**: Búsqueda instantánea de armas, armaduras, equipo de aventurero y reglas de combate/condiciones integrada y funcional en el visor maestro-detalle OKF.
+
+---
+
+### Módulo 10: Portabilidad de Personajes: Exportación/Importación JSON & AcroForm PDF
+* **Estado**: `✅ COMPLETADO`
+* **Implementación**:
+  * Implementado en `flet_app/core/pdf_engine.py` (`UniversalAcroFormHandler.export_character_to_pdf`) para rellenado automático de formularios oficiales AcroForm (compatible con anotaciones xref y widgets estándar).
+  * Diálogo **🎭 Gestor de Héroes & Personajes** en `flet_app/main.py`:
+    * Botón de descarga individual en cada tarjeta para exportar la ficha a `.json`.
+    * Botón de exportación oficial en cada tarjeta para generar el PDF editable con las estadísticas, armas, conjuros, puntos de golpe y dados de golpe actuales.
+    * Acciones del diálogo con botones para **"📥 Importar JSON"** y **"📄 Importar PDF"** integrados directamente con `ft.FilePicker`.
+  * Menú emergente de exportación rápida en la barra superior (`btn_export_menu`) con acceso en un solo clic a exportación JSON y PDF para la ficha activa.
+  * Nuevo método `get_character_by_id` en `DatabaseManager` para lectura atómica de cualquier personaje sin alternar forzosamente su estado activo.
+* **Criterio de Aceptación**: Cualquier ficha puede exportarse a JSON o a PDF editable oficial y reimportarse de forma transparente en la base de datos local SQLite.
+

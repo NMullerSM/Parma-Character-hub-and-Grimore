@@ -219,6 +219,20 @@ class DatabaseManager:
             cursor.execute("SELECT id, name, char_class, level, race, hp_current, hp_max, portrait_path, is_active, updated_at FROM characters ORDER BY updated_at DESC;")
             return [dict(r) for r in cursor.fetchall()]
 
+    def get_character_by_id(self, char_id: int) -> Optional[CharacterSheet]:
+        """Obtiene un personaje por su ID sin alterar el estado de activo."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT data_json, portrait_path FROM characters WHERE id = ?;", (char_id,))
+            row = cursor.fetchone()
+            if row:
+                data = json.loads(row["data_json"])
+                char = CharacterSheet.from_dict(data)
+                if row["portrait_path"] and not char.portrait_path:
+                    char.portrait_path = row["portrait_path"]
+                return char
+        return None
+
     def set_active_character_by_id(self, char_id: int) -> Optional[CharacterSheet]:
         """Cambia el personaje activo dado su ID."""
         with self._get_connection() as conn:
