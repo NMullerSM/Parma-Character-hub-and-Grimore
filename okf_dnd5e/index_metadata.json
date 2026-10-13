@@ -11935,9 +11935,9 @@
     },
     {
       "id": "bardo_colegio_de_susurros",
-      "nombre": "Bardo: Colegio de Susurros",
+      "nombre": "Colegio de los Susurros",
       "tipo": "subclase",
-      "fuente": "XGE",
+      "fuente": "Guía de Xanathar para Todo",
       "pagina": 30,
       "tags": [
         "clase",
@@ -11945,7 +11945,9 @@
         "subclase",
         "susurros"
       ],
-      "path": "clases/bardo/subclases/colegio_de_susurros.md"
+      "path": "clases/bardo/subclases/colegio_de_susurros.md",
+      "clase": "Bardo",
+      "nivel": 3
     },
     {
       "id": "descansos_y_curacion",
@@ -12255,6 +12257,1014 @@
         "aventura"
       ],
       "path": "equipo_y_armamento/equipo_de_aventuras.md"
+    },
+    {
+      "id": "barbaro_berserker",
+      "nombre": "Senda del Bersérker",
+      "nombre_ingles": "Path of the Berserker",
+      "tipo": "subclase",
+      "clase": "Bárbaro",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "bárbaro",
+        "furia",
+        "daño",
+        "marcial",
+        "phb2024"
+      ],
+      "path": "clases/barbaro/subclases/berserker.md"
+    },
+    {
+      "id": "barbaro_corazon_salvaje",
+      "nombre": "Senda del Corazón Salvaje",
+      "nombre_ingles": "Path of the Wild Heart",
+      "tipo": "subclase",
+      "clase": "Bárbaro",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "bárbaro",
+        "totem",
+        "animal",
+        "resistencia",
+        "phb2024"
+      ],
+      "path": "clases/barbaro/subclases/corazon_salvaje.md"
+    },
+    {
+      "id": "barbaro_arbol_del_mundo",
+      "nombre": "Senda del Árbol del Mundo",
+      "nombre_ingles": "Path of the World Tree",
+      "tipo": "subclase",
+      "clase": "Bárbaro",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "bárbaro",
+        "yggdrasil",
+        "vitalidad",
+        "teletransporte",
+        "phb2024"
+      ],
+      "path": "clases/barbaro/subclases/arbol_del_mundo.md"
+    },
+    {
+      "id": "barbaro_zelote",
+      "nombre": "Senda del Zelote",
+      "nombre_ingles": "Path of the Zealot",
+      "tipo": "subclase",
+      "clase": "Bárbaro",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "bárbaro",
+        "divino",
+        "inmortal",
+        "daño radiante",
+        "phb2024"
+      ],
+      "path": "clases/barbaro/subclases/zelote.md"
+    },
+    {
+      "id": "barbaro_bestia",
+      "nombre": "Senda de la Bestia",
+      "nombre_ingles": "Path of the Beast",
+      "tipo": "subclase",
+      "clase": "Bárbaro",
+      "nivel": 3,
+      "fuente": "Caldero de Tasha para Todo",
+      "tags": [
+        "bárbaro",
+        "tasha",
+        "mordisco",
+        "garras",
+        "licantropía"
+      ],
+      "path": "clases/barbaro/subclases/bestia.md"
+    },
+    {
+      "id": "bardo_conocimiento",
+      "nombre": "Colegio del Conocimiento",
+      "nombre_ingles": "College of Lore",
+      "tipo": "subclase",
+      "clase": "Bardo",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "bardo",
+        "sabiduría",
+        "palabras cortantes",
+        "secretos mágicos",
+        "phb2024"
+      ],
+      "path": "clases/bardo/subclases/conocimiento.md"
+    },
+    {
+      "id": "bardo_valor",
+      "nombre": "Colegio del Valor",
+      "nombre_ingles": "College of Valor",
+      "tipo": "subclase",
+      "clase": "Bardo",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "bardo",
+        "marcial",
+        "armadura media",
+        "combate",
+        "phb2024"
+      ],
+      "path": "clases/bardo/subclases/valor.md"
+    },
+    {
+      "id": "bardo_elocuencia",
+      "nombre": "Colegio de la Elocuencia",
+      "nombre_ingles": "College of Eloquence",
+      "tipo": "subclase",
+      "clase": "Bardo",
+      "nivel": 3,
+      "fuente": "Caldero de Tasha para Todo",
+      "tags": [
+        "bardo",
+        "tasha",
+        "persuasión",
+        "oratoria",
+        "inspiración infalible"
+      ],
+      "path": "clases/bardo/subclases/elocuencia.md"
+    },
+    {
+      "id": "bardo_glamour",
+      "nombre": "Colegio del Glamour",
+      "nombre_ingles": "College of Glamour",
+      "tipo": "subclase",
+      "clase": "Bardo",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "bardo",
+        "fey",
+        "fascinación",
+        "presencia majestuosa",
+        "phb2024"
+      ],
+      "path": "clases/bardo/subclases/glamour.md"
+    },
+    {
+      "id": "bardo_espadas",
+      "nombre": "Colegio de las Espadas",
+      "nombre_ingles": "College of Swords",
+      "tipo": "subclase",
+      "clase": "Bardo",
+      "nivel": 3,
+      "fuente": "Guia de Xanathar Para Todo",
+      "tags": [
+        "bardo",
+        "xanathar",
+        "duelo",
+        "florituras",
+        "armas sutiles"
+      ],
+      "path": "clases/bardo/subclases/espadas.md"
+    },
+    {
+      "id": "clerigo_vida",
+      "nombre": "Dominio de la Vida",
+      "nombre_ingles": "Life Domain",
+      "tipo": "subclase",
+      "clase": "Clérigo",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "clérigo",
+        "sanación",
+        "armadura pesada",
+        "vitalidad",
+        "phb2024"
+      ],
+      "path": "clases/clerigo/subclases/vida.md"
+    },
+    {
+      "id": "clerigo_luz",
+      "nombre": "Dominio de la Luz",
+      "nombre_ingles": "Light Domain",
+      "tipo": "subclase",
+      "clase": "Clérigo",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "clérigo",
+        "fuego",
+        "sol",
+        "resplandor",
+        "blaster",
+        "phb2024"
+      ],
+      "path": "clases/clerigo/subclases/luz.md"
+    },
+    {
+      "id": "clerigo_guerra",
+      "nombre": "Dominio de la Guerra",
+      "nombre_ingles": "War Domain",
+      "tipo": "subclase",
+      "clase": "Clérigo",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "clérigo",
+        "combate",
+        "armas marciales",
+        "guía divina",
+        "phb2024"
+      ],
+      "path": "clases/clerigo/subclases/guerra.md"
+    },
+    {
+      "id": "clerigo_engano",
+      "nombre": "Dominio del Engaño",
+      "nombre_ingles": "Trickery Domain",
+      "tipo": "subclase",
+      "clase": "Clérigo",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "clérigo",
+        "ilusión",
+        "sigilo",
+        "duplicado",
+        "phb2024"
+      ],
+      "path": "clases/clerigo/subclases/engano.md"
+    },
+    {
+      "id": "clerigo_crepusculo",
+      "nombre": "Dominio del Crepúsculo",
+      "nombre_ingles": "Twilight Domain",
+      "tipo": "subclase",
+      "clase": "Clérigo",
+      "nivel": 3,
+      "fuente": "Caldero de Tasha para Todo",
+      "tags": [
+        "clérigo",
+        "tasha",
+        "visión 90m",
+        "aura crepuscular",
+        "vuelo"
+      ],
+      "path": "clases/clerigo/subclases/crepusculo.md"
+    },
+    {
+      "id": "clerigo_forja",
+      "nombre": "Dominio de la Forja",
+      "nombre_ingles": "Forge Domain",
+      "tipo": "subclase",
+      "clase": "Clérigo",
+      "nivel": 3,
+      "fuente": "Guia de Xanathar Para Todo",
+      "tags": [
+        "clérigo",
+        "xanathar",
+        "metal",
+        "artesanía",
+        "fuego",
+        "armadura"
+      ],
+      "path": "clases/clerigo/subclases/forja.md"
+    },
+    {
+      "id": "druida_luna",
+      "nombre": "Círculo de la Luna",
+      "nombre_ingles": "Circle of the Moon",
+      "tipo": "subclase",
+      "clase": "Druida",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "druida",
+        "forma salvaje",
+        "bestias",
+        "combate",
+        "phb2024"
+      ],
+      "path": "clases/druida/subclases/luna.md"
+    },
+    {
+      "id": "druida_tierra",
+      "nombre": "Círculo de la Tierra",
+      "nombre_ingles": "Circle of the Land",
+      "tipo": "subclase",
+      "clase": "Druida",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "druida",
+        "biomas",
+        "recuperación natural",
+        "elementos",
+        "phb2024"
+      ],
+      "path": "clases/druida/subclases/tierra.md"
+    },
+    {
+      "id": "druida_mar",
+      "nombre": "Círculo del Mar",
+      "nombre_ingles": "Circle of the Sea",
+      "tipo": "subclase",
+      "clase": "Druida",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "druida",
+        "tormenta",
+        "agua",
+        "vuelo de vapor",
+        "phb2024"
+      ],
+      "path": "clases/druida/subclases/mar.md"
+    },
+    {
+      "id": "druida_estrellas",
+      "nombre": "Círculo de las Estrellas",
+      "nombre_ingles": "Circle of the Stars",
+      "tipo": "subclase",
+      "clase": "Druida",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "druida",
+        "constelaciones",
+        "arquero",
+        "cáliz",
+        "dragón",
+        "phb2024",
+        "tasha"
+      ],
+      "path": "clases/druida/subclases/estrellas.md"
+    },
+    {
+      "id": "guerrero_campeon",
+      "nombre": "Campeón",
+      "nombre_ingles": "Champion",
+      "tipo": "subclase",
+      "clase": "Guerrero",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "guerrero",
+        "crítico 19-20",
+        "atleta notable",
+        "marcial",
+        "phb2024"
+      ],
+      "path": "clases/guerrero/subclases/campeon.md"
+    },
+    {
+      "id": "guerrero_maestro_de_batalla",
+      "nombre": "Maestro de Batalla",
+      "nombre_ingles": "Battle Master",
+      "tipo": "subclase",
+      "clase": "Guerrero",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "guerrero",
+        "maniobras",
+        "dados de superioridad",
+        "táctica",
+        "phb2024"
+      ],
+      "path": "clases/guerrero/subclases/maestro_de_batalla.md"
+    },
+    {
+      "id": "guerrero_caballero_sobrenatural",
+      "nombre": "Caballero Sobrenatural",
+      "nombre_ingles": "Eldritch Knight",
+      "tipo": "subclase",
+      "clase": "Guerrero",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "guerrero",
+        "magia",
+        "evocación",
+        "abjuración",
+        "vínculo de arma",
+        "phb2024"
+      ],
+      "path": "clases/guerrero/subclases/caballero_sobrenatural.md"
+    },
+    {
+      "id": "guerrero_psiquico",
+      "nombre": "Guerrero Psíquico",
+      "nombre_ingles": "Psi Warrior",
+      "tipo": "subclase",
+      "clase": "Guerrero",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "guerrero",
+        "psiónico",
+        "telequinesis",
+        "escudo mental",
+        "phb2024",
+        "tasha"
+      ],
+      "path": "clases/guerrero/subclases/guerrero_psiquico.md"
+    },
+    {
+      "id": "guerrero_caballero_runico",
+      "nombre": "Caballero Rúnico",
+      "nombre_ingles": "Rune Knight",
+      "tipo": "subclase",
+      "clase": "Guerrero",
+      "nivel": 3,
+      "fuente": "Caldero de Tasha para Todo",
+      "tags": [
+        "guerrero",
+        "tasha",
+        "runas",
+        "gigantes",
+        "tamaño grande"
+      ],
+      "path": "clases/guerrero/subclases/caballero_runico.md"
+    },
+    {
+      "id": "monje_mano_abierta",
+      "nombre": "Camino de la Mano Abierta",
+      "nombre_ingles": "Way of the Open Hand",
+      "tipo": "subclase",
+      "clase": "Monje",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "monje",
+        "ki",
+        "derribar",
+        "golpe de palma vibrante",
+        "phb2024"
+      ],
+      "path": "clases/monje/subclases/mano_abierta.md"
+    },
+    {
+      "id": "monje_sombras",
+      "nombre": "Camino de las Sombras",
+      "nombre_ingles": "Way of Shadow",
+      "tipo": "subclase",
+      "clase": "Monje",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "monje",
+        "sigilo",
+        "paso sombrío",
+        "oscuridad",
+        "teletransporte",
+        "phb2024"
+      ],
+      "path": "clases/monje/subclases/sombras.md"
+    },
+    {
+      "id": "monje_cuatro_elementos",
+      "nombre": "Camino de los Cuatro Elementos",
+      "nombre_ingles": "Warrior of the Elements",
+      "tipo": "subclase",
+      "clase": "Monje",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "monje",
+        "fuego",
+        "aire",
+        "agua",
+        "tierra",
+        "alcance",
+        "phb2024"
+      ],
+      "path": "clases/monje/subclases/cuatro_elementos.md"
+    },
+    {
+      "id": "monje_misericordia",
+      "nombre": "Camino de la Misericordia",
+      "nombre_ingles": "Way of Mercy",
+      "tipo": "subclase",
+      "clase": "Monje",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "monje",
+        "sanación",
+        "toque de daño",
+        "máscara",
+        "phb2024",
+        "tasha"
+      ],
+      "path": "clases/monje/subclases/misericordia.md"
+    },
+    {
+      "id": "paladin_devocion",
+      "nombre": "Juramento de Devoción",
+      "nombre_ingles": "Oath of Devotion",
+      "tipo": "subclase",
+      "clase": "Paladín",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "paladín",
+        "arma sagrada",
+        "luz",
+        "aura de devoción",
+        "phb2024"
+      ],
+      "path": "clases/paladin/subclases/devocion.md"
+    },
+    {
+      "id": "paladin_venganza",
+      "nombre": "Juramento de Venganza",
+      "nombre_ingles": "Oath of Vengeance",
+      "tipo": "subclase",
+      "clase": "Paladín",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "paladín",
+        "voto de enemistad",
+        "perseguidor",
+        "cazador",
+        "phb2024"
+      ],
+      "path": "clases/paladin/subclases/venganza.md"
+    },
+    {
+      "id": "paladin_antiguos",
+      "nombre": "Juramento de los Antiguos",
+      "nombre_ingles": "Oath of the Ancients",
+      "tipo": "subclase",
+      "clase": "Paladín",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "paladín",
+        "naturaleza",
+        "aura de custodia",
+        "resistencia mágica",
+        "phb2024"
+      ],
+      "path": "clases/paladin/subclases/antiguos.md"
+    },
+    {
+      "id": "paladin_gloria",
+      "nombre": "Juramento de Gloria",
+      "nombre_ingles": "Oath of Glory",
+      "tipo": "subclase",
+      "clase": "Paladín",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "paladín",
+        "atleta",
+        "aura de presteza",
+        "velocidad",
+        "phb2024",
+        "tasha"
+      ],
+      "path": "clases/paladin/subclases/gloria.md"
+    },
+    {
+      "id": "explorador_cazador",
+      "nombre": "Cazador",
+      "nombre_ingles": "Hunter",
+      "tipo": "subclase",
+      "clase": "Explorador",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "explorador",
+        "cazador de colosos",
+        "multitaque",
+        "defensa",
+        "phb2024"
+      ],
+      "path": "clases/explorador/subclases/cazador.md"
+    },
+    {
+      "id": "explorador_senor_de_las_bestias",
+      "nombre": "Señor de las Bestias",
+      "nombre_ingles": "Beast Master",
+      "tipo": "subclase",
+      "clase": "Explorador",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "explorador",
+        "compañero animal",
+        "tierra",
+        "mar",
+        "cielo",
+        "phb2024"
+      ],
+      "path": "clases/explorador/subclases/senor_de_las_bestias.md"
+    },
+    {
+      "id": "explorador_acechador_sombrio",
+      "nombre": "Acechador Sombrío",
+      "nombre_ingles": "Gloom Stalker",
+      "tipo": "subclase",
+      "clase": "Explorador",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "explorador",
+        "infratierra",
+        "invisible en oscuridad",
+        "emboscada",
+        "phb2024",
+        "xanathar"
+      ],
+      "path": "clases/explorador/subclases/acechador_sombrio.md"
+    },
+    {
+      "id": "explorador_caminante_feerico",
+      "nombre": "Caminante Feérico",
+      "nombre_ingles": "Fey Wanderer",
+      "tipo": "subclase",
+      "clase": "Explorador",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "explorador",
+        "carisma",
+        "fey",
+        "daño psíquico",
+        "phb2024",
+        "tasha"
+      ],
+      "path": "clases/explorador/subclases/caminante_feerico.md"
+    },
+    {
+      "id": "picaro_ladron",
+      "nombre": "Ladrón",
+      "nombre_ingles": "Thief",
+      "tipo": "subclase",
+      "clase": "Pícaro",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "pícaro",
+        "manos rápidas",
+        "usar objeto",
+        "sigilo supremo",
+        "phb2024"
+      ],
+      "path": "clases/picaro/subclases/ladron.md"
+    },
+    {
+      "id": "picaro_asesino",
+      "nombre": "Asesino",
+      "nombre_ingles": "Assassin",
+      "tipo": "subclase",
+      "clase": "Pícaro",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "pícaro",
+        "emboscada",
+        "crítico automático",
+        "venenos",
+        "phb2024"
+      ],
+      "path": "clases/picaro/subclases/asesino.md"
+    },
+    {
+      "id": "picaro_bribon_arcano",
+      "nombre": "Bribón Arcano",
+      "nombre_ingles": "Arcane Trickster",
+      "tipo": "subclase",
+      "clase": "Pícaro",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "pícaro",
+        "magia",
+        "mano de mago invisible",
+        "ilusión",
+        "phb2024"
+      ],
+      "path": "clases/picaro/subclases/bribon_arcano.md"
+    },
+    {
+      "id": "picaro_cuchilla_del_alma",
+      "nombre": "Cuchilla del Alma",
+      "nombre_ingles": "Soulknife",
+      "tipo": "subclase",
+      "clase": "Pícaro",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "pícaro",
+        "psiónico",
+        "hojas psíquicas",
+        "telepatía",
+        "phb2024",
+        "tasha"
+      ],
+      "path": "clases/picaro/subclases/cuchilla_del_alma.md"
+    },
+    {
+      "id": "picaro_espadachin",
+      "nombre": "Espadachín",
+      "nombre_ingles": "Swashbuckler",
+      "tipo": "subclase",
+      "clase": "Pícaro",
+      "nivel": 3,
+      "fuente": "Guia de Xanathar Para Todo",
+      "tags": [
+        "pícaro",
+        "xanathar",
+        "duelo 1v1",
+        "iniciativa carisma",
+        "movilidad"
+      ],
+      "path": "clases/picaro/subclases/espadachin.md"
+    },
+    {
+      "id": "hechicero_magia_salvaje",
+      "nombre": "Magia Salvaje",
+      "nombre_ingles": "Wild Magic",
+      "tipo": "subclase",
+      "clase": "Hechicero",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "hechicero",
+        "oleada mágica",
+        "azar",
+        "marea de caos",
+        "phb2024"
+      ],
+      "path": "clases/hechicero/subclases/magia_salvaje.md"
+    },
+    {
+      "id": "hechicero_linaje_draconico",
+      "nombre": "Linaje Dracónico",
+      "nombre_ingles": "Draconic Sorcery",
+      "tipo": "subclase",
+      "clase": "Hechicero",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "hechicero",
+        "dragón",
+        "escamas",
+        "alas dracónicas",
+        "afinidad elemental",
+        "phb2024"
+      ],
+      "path": "clases/hechicero/subclases/linaje_draconico.md"
+    },
+    {
+      "id": "hechicero_mente_aberrante",
+      "nombre": "Mente Aberrante",
+      "nombre_ingles": "Aberrant Mind",
+      "tipo": "subclase",
+      "clase": "Hechicero",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "hechicero",
+        "psiónico",
+        "tentáculos",
+        "telepatía",
+        "phb2024",
+        "tasha"
+      ],
+      "path": "clases/hechicero/subclases/mente_aberrante.md"
+    },
+    {
+      "id": "hechicero_alma_mecanica",
+      "nombre": "Alma Mecánica",
+      "nombre_ingles": "Clockwork Soul",
+      "tipo": "subclase",
+      "clase": "Hechicero",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "hechicero",
+        "mecanismo",
+        "orden",
+        "modron",
+        "cancelar ventaja",
+        "phb2024",
+        "tasha"
+      ],
+      "path": "clases/hechicero/subclases/alma_mecanica.md"
+    },
+    {
+      "id": "hechicero_alma_divina",
+      "nombre": "Alma Divina",
+      "nombre_ingles": "Divine Soul",
+      "tipo": "subclase",
+      "clase": "Hechicero",
+      "nivel": 3,
+      "fuente": "Guia de Xanathar Para Todo",
+      "tags": [
+        "hechicero",
+        "xanathar",
+        "clérigo",
+        "ángel",
+        "sanación",
+        "metamagia"
+      ],
+      "path": "clases/hechicero/subclases/alma_divina.md"
+    },
+    {
+      "id": "brujo_infernal",
+      "nombre": "El Infernal",
+      "nombre_ingles": "Fiend Patron",
+      "tipo": "subclase",
+      "clase": "Brujo",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "brujo",
+        "demonio",
+        "diablo",
+        "fuego",
+        "bendición del oscuro",
+        "phb2024"
+      ],
+      "path": "clases/brujo/subclases/infernal.md"
+    },
+    {
+      "id": "brujo_primigenio",
+      "nombre": "El Primigenio",
+      "nombre_ingles": "Great Old One Patron",
+      "tipo": "subclase",
+      "clase": "Brujo",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "brujo",
+        "cthulhu",
+        "mente",
+        "telepatía",
+        "locura",
+        "phb2024"
+      ],
+      "path": "clases/brujo/subclases/primigenio.md"
+    },
+    {
+      "id": "brujo_feerico_ancestral",
+      "nombre": "El Feérico Ancestral",
+      "nombre_ingles": "Archfey Patron",
+      "tipo": "subclase",
+      "clase": "Brujo",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "brujo",
+        "fey",
+        "paso brumoso",
+        "hechizo",
+        "ilusión",
+        "phb2024"
+      ],
+      "path": "clases/brujo/subclases/feerico_ancestral.md"
+    },
+    {
+      "id": "brujo_celestial",
+      "nombre": "El Celestial",
+      "nombre_ingles": "Celestial Patron",
+      "tipo": "subclase",
+      "clase": "Brujo",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "brujo",
+        "ángel",
+        "curación",
+        "radiante",
+        "phb2024",
+        "xanathar"
+      ],
+      "path": "clases/brujo/subclases/celestial.md"
+    },
+    {
+      "id": "brujo_filo_maldito",
+      "nombre": "El Filo Maldito",
+      "nombre_ingles": "Hexblade Patron",
+      "tipo": "subclase",
+      "clase": "Brujo",
+      "nivel": 3,
+      "fuente": "Guia de Xanathar Para Todo",
+      "tags": [
+        "brujo",
+        "xanathar",
+        "espada",
+        "carisma al ataque",
+        "maldición",
+        "armaduras medias"
+      ],
+      "path": "clases/brujo/subclases/filo_maldito.md"
+    },
+    {
+      "id": "mago_evocacion",
+      "nombre": "Escuela de Evocación",
+      "nombre_ingles": "School of Evocation",
+      "tipo": "subclase",
+      "clase": "Mago",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "mago",
+        "fuego",
+        "área",
+        "esculpir conjuros",
+        "sobrecargar",
+        "phb2024"
+      ],
+      "path": "clases/mago/subclases/evocacion.md"
+    },
+    {
+      "id": "mago_abjuracion",
+      "nombre": "Escuela de Abjuración",
+      "nombre_ingles": "School of Abjuration",
+      "tipo": "subclase",
+      "clase": "Mago",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "mago",
+        "escudo arcano",
+        "protección",
+        "disipar magia",
+        "phb2024"
+      ],
+      "path": "clases/mago/subclases/abjuracion.md"
+    },
+    {
+      "id": "mago_adivinacion",
+      "nombre": "Escuela de Adivinación",
+      "nombre_ingles": "School of Divination",
+      "tipo": "subclase",
+      "clase": "Mago",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "mago",
+        "augurio",
+        "portento",
+        "d20",
+        "visión",
+        "phb2024"
+      ],
+      "path": "clases/mago/subclases/adivinacion.md"
+    },
+    {
+      "id": "mago_ilusionismo",
+      "nombre": "Escuela de Ilusionismo",
+      "nombre_ingles": "School of Illusion",
+      "tipo": "subclase",
+      "clase": "Mago",
+      "nivel": 3,
+      "fuente": "PHB 2024",
+      "tags": [
+        "mago",
+        "engaño",
+        "ilusión tangible",
+        "maleable",
+        "phb2024"
+      ],
+      "path": "clases/mago/subclases/ilusionismo.md"
+    },
+    {
+      "id": "mago_escribas",
+      "nombre": "Orden de los Escribas",
+      "nombre_ingles": "Order of Scribes",
+      "tipo": "subclase",
+      "clase": "Mago",
+      "nivel": 3,
+      "fuente": "Caldero de Tasha para Todo",
+      "tags": [
+        "mago",
+        "tasha",
+        "grimorio consciente",
+        "cambio elemental",
+        "pergaminos"
+      ],
+      "path": "clases/mago/subclases/escribas.md"
+    },
+    {
+      "id": "regla_personalizacion_tasha",
+      "nombre": "Opciones de Personalización de Linaje (Tasha)",
+      "tipo": "regla",
+      "fuente": "Caldero de Tasha para Todo",
+      "tags": [
+        "tasha",
+        "regla",
+        "atributos"
+      ],
+      "path": "reglas_y_mecanicas/personalizacion_origen_tasha.md"
     }
   ]
 }

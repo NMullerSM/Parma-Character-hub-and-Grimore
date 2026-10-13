@@ -1,0 +1,18 @@
+---
+id: "barbaro_corazon_salvaje"
+nombre: "Senda del Corazón Salvaje"
+nombre_ingles: "Path of the Wild Heart"
+tipo: "subclase"
+clase_padre: "Bárbaro"
+nivel_desbloqueo: 3
+fuente: "PHB 2024"
+tags: ["bárbaro", "totem", "animal", "resistencia", "phb2024"]
+---
+
+# Subclase: Senda del Corazón Salvaje (Path of the Wild Heart)
+**Clase Base:** Bárbaro  
+**Manual / Fuente:** PHB 2024  
+**Nivel de Desbloqueo Oficial:** Nivel 3
+
+## Resumen del Arquetipo
+Sintonizado con los espíritus totémicos de la naturaleza (Oso, Águila, Lobo), adquiere resistencias elementales y sentidos agudos.

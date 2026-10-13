@@ -141,6 +141,11 @@ SPECIES_DEFAULTS = {
 }
 
 
+from .builder_hub import BuilderHubDialog
+from .standard_builder import StandardBuilderDialog
+from .quick_and_random_dialogs import QuickBuildDialog, RandomizeDialog
+
+
 class CharacterCreatorWizard:
     def __init__(
         self,
@@ -154,9 +159,30 @@ class CharacterCreatorWizard:
         self.on_character_created = on_character_created
         self.on_open_manager = on_open_manager
 
-        self.current_step = 1  # 1: Clase, 2: Especie, 3: Trasfondo, 4: Atributos, 5: Revisión
+        # Instanciar constructores y diálogos avanzados D&D Beyond
+        self.standard_builder = StandardBuilderDialog(
+            page=self.page,
+            okf_engine=self.okf,
+            on_character_created=self._on_char_forged
+        )
+        self.quick_builder = QuickBuildDialog(
+            page=self.page,
+            on_character_created=self._on_char_forged
+        )
+        self.random_builder = RandomizeDialog(
+            page=self.page,
+            on_character_created=self._on_char_forged
+        )
+        self.hub_dialog = BuilderHubDialog(
+            page=self.page,
+            on_start_standard=self.standard_builder.show,
+            on_start_quick=self.quick_builder.show,
+            on_start_random=self.random_builder.show,
+            on_open_saved=self.on_open_manager
+        )
 
-        # Estado del personaje en creación
+        # Estado del creador clásico
+        self.current_step = 1
         self.char_name = "Nuevo Aventurero"
         self.char_class = "Guerrero"
         self.char_species = "Humano"
@@ -164,22 +190,28 @@ class CharacterCreatorWizard:
         self.char_background = "Soldado"
         self.char_alignment = "Neutral Bueno"
         self.char_portrait_path = ""
-
-        # Atributos base
-        self.ability_mode = "standard"  # "standard", "dice", "manual"
+        self.ability_mode = "standard"
         self.raw_scores = {"FUE": 15, "DES": 14, "CON": 13, "INT": 12, "SAB": 10, "CAR": 8}
         self.rolled_scores = []
         self.bg_plus2 = "FUE"
         self.bg_plus1 = "CON"
 
-        # FilePicker para foto de retrato
         self.portrait_picker = ft.FilePicker(on_result=self._on_portrait_selected)
         if self.portrait_picker not in self.page.overlay:
             self.page.overlay.append(self.portrait_picker)
 
         self._build_dialog()
 
+    def _on_char_forged(self, new_char: CharacterSheet):
+        if self.on_character_created:
+            self.on_character_created(new_char)
+
     def show(self):
+        """Abre el Hub de selección de los 3 modos de D&D Beyond (Standard, Quick, Randomize)."""
+        self.hub_dialog.show()
+
+    def show_legacy(self):
+        """Abre el asistente clásico paso a paso."""
         self.current_step = 1
         self._update_step_content()
         self.page.open(self.dialog)

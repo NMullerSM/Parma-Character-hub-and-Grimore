@@ -18,6 +18,7 @@ Este documento es la **Fuente Única de Verdad (Single Source of Truth)** para e
 | **08** | **Mecánicas de Dados de Golpe, Descansos y Condiciones** | `✅ COMPLETADO` | Linux / Windows | Caras de dados por clase (d6-d12), diálogo de descanso corto interactivo, recuperación en descanso largo y gestor de estados. |
 | **09** | **Expansión del Compendio OKF: Armamento, Armaduras y Reglas** | `✅ COMPLETADO` | Linux / Windows | Directorio `equipo_y_armamento/` (armas, armaduras, equipo), reglas de combate y estado, chips con conteo dinámico y 513 entidades indexadas. |
 | **10** | **Portabilidad de Personajes: Exportación/Importación JSON & AcroForm PDF** | `✅ COMPLETADO` | Linux / Windows | Exportación e importación individual JSON en gestor de héroes y rellenado editable automático de PDF oficial AcroForm (`export_character_to_pdf`). |
+| **11** | **Creador de Personajes D&D Beyond: 3 Modos & 7 Fases** | `✅ COMPLETADO` | Linux / Windows | Hub de selección (Standard, Quick Build 60s, Randomize 4d6), stepper de 7 fases, Point Buy 27 pts, tokens TTUI y side drawer OKF en Markdown. |
 
 ---
 
@@ -178,4 +179,26 @@ Cualquier nuevo desarrollo, dependencia, refactorización o corrección dentro d
   * Menú emergente de exportación rápida en la barra superior (`btn_export_menu`) con acceso en un solo clic a exportación JSON y PDF para la ficha activa.
   * Nuevo método `get_character_by_id` en `DatabaseManager` para lectura atómica de cualquier personaje sin alternar forzosamente su estado activo.
 * **Criterio de Aceptación**: Cualquier ficha puede exportarse a JSON o a PDF editable oficial y reimportarse de forma transparente en la base de datos local SQLite.
+
+---
+
+### Módulo 11: Creador de Personajes D&D Beyond (3 Modos & 7 Fases)
+* **Estado**: `✅ COMPLETADO`
+* **Implementación**:
+  * **Tokens de Diseño TTUI (D&D Beyond)**: Paleta Obsidian (`#12181c`), superficies de tarjeta (`#232b2f`), bordes de pizarra/hierro (`#323d42`), carmesí oficial D&D (`#c50009`), oro arcano (`#c9a45c`) y texto pergamino (`#ede3d2`) estandarizados en `flet_app/ui/theme.py`.
+  * **Prototipado Stitch MCP**: Proyecto `projects/15335208518407567827` ("DnD Beyond Character Builder - Desktop UI") creado con diseño de hub y sistema estético Dark Fantasy.
+  * **Motores Desacoplados**:
+    * `flet_app/core/point_buy.py`: Calculadora matemática oficial de compra por puntos (27 pts, rango 8-15, tabla de costes no lineal).
+    * `flet_app/core/quick_build.py`: Asignación asistida en 60s basada en Priority Arrays sobre el Standard Array para las 12 clases.
+    * `flet_app/core/random_generator.py`: Generador procedural con algoritmo 4d6 drop lowest, filtros de clase/especie, escala nivel 1-20 y botón re-roll.
+    * `flet_app/core/modifier_pipeline.py`: Pipeline determinista de evaluación de modificadores (Base $\to$ Set $\to$ Bonus $\to$ Proficiency).
+  * **Componentes Modulares & UI**:
+    * `BuilderHubDialog`: Hub con 3 tarjetas visuales (Standard Build, Quick Build, Randomize).
+    * `StandardBuilderDialog`: Constructor en 7 fases (1. Reglas, 2. Especie, 3. Clase, 4. Atributos, 5. Trasfondo, 6. Equipo, 7. Conjuros).
+    * `BuilderHeader`: Barra superior flotante reactiva con vitales (Nombre, Clase, Nivel, PG, CA, Avatar).
+    * `BuilderStepper`: Stepper horizontal de 7 pasos con badges de alerta para opciones pendientes.
+    * `AbilityMatrix`: Matriz de características interactiva soportando Point Buy (botones $+/-$), Standard Array, 4d6 y Manual.
+    * `OkfDrawer`: Panel lateral deslizante que renderiza los compendios atómicos Markdown de `okf_dnd5e/` sin cerrar el constructor.
+    * `QuickBuildDialog` & `RandomizeDialog`: Modales dedicados para creación en 60s y tiradas procedurales.
+* **Criterio de Aceptación**: Los tres modos forjan personajes legales de D&D 5e (PHB 2024), persistiendo en SQLite, actualizando las vistas reactivas y pasando la suite de pruebas unitarias y de integración al 100%.
 
