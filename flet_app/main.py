@@ -25,6 +25,8 @@ from .core.rules import perform_short_rest, perform_long_rest
 from .core.okf_engine import OkfEngine
 from .core.pdf_engine import UniversalAcroFormHandler
 from .core.db import DatabaseManager
+from .core.session_ledger import SessionRollLedger
+
 
 from .ui.theme import (
     BG_PRIMARY, BG_SURFACE, BG_CARD, BG_CARD_ALT, BG_INPUT, BORDER_GOLD, BORDER_DIM,
@@ -54,6 +56,14 @@ def main(page: ft.Page):
     page.theme = get_app_theme()
     page.bgcolor = BG_PRIMARY
     page.padding = 12
+
+    def on_window_event(e):
+        if e.data == "close":
+            SessionRollLedger.get_current().destroy_session()
+            page.window.destroy()
+
+    page.window.prevent_close = True
+    page.window.on_event = on_window_event
 
     # Rutas base del repo
     if getattr(sys, "frozen", False):
@@ -93,17 +103,18 @@ def main(page: ft.Page):
             db.save_character(char, set_active=True)
 
     # 2. Componentes de Interfaz
-    dice_tray = DiceTray()
+    dice_tray = DiceTray(char=char)
     dice_container = ft.Container(
         content=dice_tray,
-        width=320,
+        width=340,
         visible=False,
     )
 
-    def on_roll_request(sides: int, mod: int, reason: str):
+    def on_roll_request(sides: int, mod: int, reason: str, count: int = 1, mode: str = "normal"):
         dice_container.visible = True
         page.update()
-        dice_tray.do_roll(sides, custom_mod=mod, reason=reason)
+        dice_tray.do_roll(sides=sides, custom_mod=mod, custom_mode=mode, reason=reason, count=count)
+
 
     # Control de Modo Zen Global (inmersivo para cualquier pestaña)
     is_global_zen = False
@@ -187,9 +198,11 @@ def main(page: ft.Page):
     def refresh_all_views(new_char: CharacterSheet):
         nonlocal char
         char = new_char
+        dice_tray.set_character(char)
         _autosave()
         combat_view.update_data(char)
         sheet_view.update_data(char)
+
         spells_view.update_data(char)
         powers_view.update_data(char)
         okf_view.update_data(char)

@@ -19,6 +19,8 @@ Este documento es la **Fuente Única de Verdad (Single Source of Truth)** para e
 | **09** | **Expansión del Compendio OKF: Armamento, Armaduras y Reglas** | `✅ COMPLETADO` | Linux / Windows | Directorio `equipo_y_armamento/` (armas, armaduras, equipo), reglas de combate y estado, chips con conteo dinámico y 513 entidades indexadas. |
 | **10** | **Portabilidad de Personajes: Exportación/Importación JSON & AcroForm PDF** | `✅ COMPLETADO` | Linux / Windows | Exportación e importación individual JSON en gestor de héroes y rellenado editable automático de PDF oficial AcroForm (`export_character_to_pdf`). |
 | **11** | **Creador de Personajes D&D Beyond: 3 Modos & 7 Fases** | `✅ COMPLETADO` | Linux / Windows | Hub de selección (Standard, Quick Build 60s, Randomize 4d6), stepper de 7 fases, Point Buy 27 pts, tokens TTUI y side drawer OKF en Markdown. |
+| **12** | **TaleSpire Dice Bridge & Session Ledger** | `✅ IMPLEMENTADO` | Windows / Linux | Detección automática de TaleSpire vía IPC Named Pipe, tiradas compuestas, fallback local y registro volátil de sesión. |
+
 
 ---
 

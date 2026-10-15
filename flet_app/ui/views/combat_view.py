@@ -18,9 +18,10 @@ class CombatView(ft.Container):
     def __init__(
         self,
         char: CharacterSheet,
-        on_roll_request: Optional[Callable[[int, int, str], None]] = None,
+        on_roll_request: Optional[Callable[..., None]] = None,
         on_state_change: Optional[Callable[[], None]] = None
     ):
+
         super().__init__()
         self.char = char
         self.on_roll_request = on_roll_request
@@ -399,7 +400,8 @@ class CombatView(ft.Container):
 
     def _on_roll_death_save(self, e):
         if self.on_roll_request:
-            self.on_roll_request(20, 0, "Salvación Contra la Muerte (DC 10)")
+            self.on_roll_request(20, 0, "Salvación Contra la Muerte (DC 10)", 1, "normal")
+
 
     def _remove_weapon(self, wpn: WeaponAction):
         if wpn in self.char.weapons:
@@ -482,19 +484,24 @@ class CombatView(ft.Container):
             mod = int(wpn.attack_bonus.replace("+", ""))
         except ValueError:
             pass
-        self.on_roll_request(20, mod, f"Ataque con {wpn.name}")
+        self.on_roll_request(20, mod, f"Ataque con {wpn.name}", 1, "normal")
 
     def _roll_damage(self, wpn: WeaponAction):
         if not self.on_roll_request:
             return
+        count = 1
         sides = 8
         mod = 0
         import re
-        m = re.search(r"(\d+)?d(\d+)(?:\+(\d+))?", wpn.damage)
+        dmg_str = (wpn.damage or "").replace(" ", "").lower()
+        m = re.search(r"(\d+)?d(\d+)(?:([+-])(\d+))?", dmg_str)
         if m:
+            count = int(m.group(1)) if m.group(1) else 1
             sides = int(m.group(2))
-            mod = int(m.group(3)) if m.group(3) else 0
-        self.on_roll_request(sides, mod, f"Daño de {wpn.name}")
+            sign = m.group(3)
+            mod_val = int(m.group(4)) if m.group(4) else 0
+            mod = mod_val if sign != "-" else -mod_val
+        self.on_roll_request(sides, mod, f"Daño de {wpn.name}", count, "normal")
 
     def _toggle_condition(self, cond_name: str):
         if not hasattr(self.char, "conditions") or not isinstance(self.char.conditions, list):

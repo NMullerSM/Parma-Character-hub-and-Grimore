@@ -20,7 +20,7 @@ class SheetView(ft.Container):
     def __init__(
         self,
         char: CharacterSheet,
-        on_roll_request: Optional[Callable[[int, int, str], None]] = None,
+        on_roll_request: Optional[Callable[..., None]] = None,
         on_state_change: Optional[Callable[[], None]] = None
     ):
         super().__init__()
@@ -295,11 +295,11 @@ class SheetView(ft.Container):
 
     def _roll_save(self, stat_name: str, modifier: int):
         if self.on_roll_request:
-            self.on_roll_request(20, modifier, f"Salvación de {stat_name}")
+            self.on_roll_request(20, modifier, f"Salvación de {stat_name}", 1, "normal")
 
     def _roll_skill(self, skill_name: str, modifier: int):
         if self.on_roll_request:
-            self.on_roll_request(20, modifier, f"Prueba de {skill_name}")
+            self.on_roll_request(20, modifier, f"Prueba de {skill_name}", 1, "normal")
 
     def update_data(self, char: CharacterSheet):
         self.char = char

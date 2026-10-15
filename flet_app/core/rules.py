@@ -262,3 +262,125 @@ def roll_dice(sides: int, mode: str = "normal", modifier: int = 0) -> Dict[str, 
         "is_fumble": (sides == 20 and selected == 1),
         "detail": f"d{sides}: {breakdown}{mod_str} = {total}"
     }
+
+
+def roll_dice_multiple(count: int = 1, sides: int = 20, mode: str = "normal", modifier: int = 0) -> Dict[str, Any]:
+    """
+    Tirada de uno o múltiples dados con soporte de Ventaja/Desventaja (para d20)
+    y acumulador de pools de dados con modificadores.
+    """
+    count = max(1, count)
+    if count == 1:
+        res = roll_dice(sides=sides, mode=mode, modifier=modifier)
+        res["count"] = 1
+        return res
+
+    # Múltiples dados
+    rolls = [random.randint(1, sides) for _ in range(count)]
+    subtotal = sum(rolls)
+    total = subtotal + modifier
+    mod_str = f" + {modifier}" if modifier > 0 else (f" - {abs(modifier)}" if modifier < 0 else "")
+    rolls_str = ", ".join(str(r) for r in rolls)
+
+    is_crit = False
+    is_fumble = False
+    if sides == 20:
+        is_crit = (20 in rolls)
+        is_fumble = (1 in rolls and not is_crit)
+
+    return {
+        "count": count,
+        "sides": sides,
+        "mode": mode,
+        "modifier": modifier,
+        "rolls": rolls,
+        "selected": subtotal,
+        "total": total,
+        "is_crit": is_crit,
+        "is_fumble": is_fumble,
+        "detail": f"{count}d{sides}: [{rolls_str}]{mod_str} = {total}"
+    }
+
+
+def roll_dice_pool(pool: Dict[Any, int], modifier: int = 0, mode: str = "normal") -> Dict[str, Any]:
+    """
+    Resuelve una tirada compuesta de múltiples tipos de dados (ej. 1d20 + 2d6 + 1d8 + 3).
+    Soporta claves de dados enteras (20, 6) o textuales ('d20', 'd6').
+    """
+    clean_pool: Dict[int, int] = {}
+    for k, v in pool.items():
+        if v <= 0:
+            continue
+        try:
+            face = int(str(k).lower().replace("d", ""))
+            clean_pool[face] = clean_pool.get(face, 0) + int(v)
+        except ValueError:
+            continue
+
+    if not clean_pool:
+        # Default a 1d20 si el pool está vacío
+        clean_pool = {20: 1}
+
+    # Ordenar con d20 primero, luego d100, d12, d10, d8, d6, d4
+    sorted_faces = sorted(clean_pool.keys(), key=lambda f: (0 if f == 20 else 1, -f))
+
+    parts = []
+    formula_parts = []
+    subtotal = 0
+    is_crit = False
+    is_fumble = False
+    d20_rolled = False
+
+    for sides in sorted_faces:
+        count = clean_pool[sides]
+        if sides == 20 and count == 1 and mode in ("advantage", "disadvantage"):
+            d20_rolled = True
+            r1 = random.randint(1, 20)
+            r2 = random.randint(1, 20)
+            sel = max(r1, r2) if mode == "advantage" else min(r1, r2)
+            subtotal += sel
+            if sel == 20:
+                is_crit = True
+            elif sel == 1:
+                is_fumble = True
+            tag = "ventaja" if mode == "advantage" else "desventaja"
+            parts.append(f"1d20[{r1}, {r2} -> {sel}]({tag})")
+            formula_parts.append(f"1d20({tag})")
+        else:
+            rolls = [random.randint(1, sides) for _ in range(count)]
+            s = sum(rolls)
+            subtotal += s
+            if sides == 20:
+                d20_rolled = True
+                if 20 in rolls:
+                    is_crit = True
+                elif 1 in rolls and not is_crit:
+                    is_fumble = True
+            rolls_repr = ", ".join(str(r) for r in rolls)
+            parts.append(f"{count}d{sides}({rolls_repr})")
+            formula_parts.append(f"{count}d{sides}")
+
+    if not d20_rolled:
+        is_crit = False
+        is_fumble = False
+
+    total = subtotal + modifier
+    mod_str = f" + {modifier}" if modifier > 0 else (f" - {abs(modifier)}" if modifier < 0 else "")
+    mod_formula = f"+{modifier}" if modifier > 0 else (f"{modifier}" if modifier < 0 else "")
+
+    detail = f"{' + '.join(parts)}{mod_str} = {total}"
+    formula = f"{' + '.join(formula_parts)}{mod_formula}"
+
+    return {
+        "pool": clean_pool,
+        "modifier": modifier,
+        "mode": mode,
+        "subtotal": subtotal,
+        "total": total,
+        "is_crit": is_crit,
+        "is_fumble": is_fumble,
+        "detail": detail,
+        "formula": formula
+    }
+
+
