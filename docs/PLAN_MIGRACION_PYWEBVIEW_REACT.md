@@ -1,7 +1,8 @@
-# Plan de Arquitectura y Migración Técnica: Flet a PyWebView + React 18
+# D&D Sanctum — Plan de Arquitectura y Migración Técnica: Flet a PyWebView + React 18
 
+> **Nombre Oficial de la Aplicación:** `D&D Sanctum` (*Desktop Character Hub & Grimoire*)  
 > **Rama de Trabajo:** `pywebview-migration`  
-> **Estado:** Especificación Técnica & Plan de Ejecución de Bajo Nivel  
+> **Estado:** En Ejecución  
 > **Objetivo:** Sustituir la capa de interfaz Flet (Flutter) por una arquitectura moderna basada en **PyWebView + React 18 + Vite + Tailwind CSS**, manteniendo el 100% de la lógica de negocio Python en local, reduciendo el consumo de RAM de ~220 MB a ~60 MB, aplicando la **Ley de Hick** y el Design System de Stitch (**Obsidian & Parchment D&D 5e Hub**), y garantizando empaquetado nativo en `.exe` (Windows) y `Flatpak` (Linux) con integración fluida para **TaleSpire**.
 
 ---
@@ -379,3 +380,28 @@ En esta migración se eliminarán por completo todos los elementos acoplados a F
 | **Fase 4: Integración TaleSpire & PDF** | - Conectar el puente `talespire_bridge.py` con los botones de tirada de la UI.<br>- Integrar importación/exportación de PDF con PyMuPDF. | Tiradas enviándose a TaleSpire y sincronización de ficha PDF. |
 | **Fase 5: Depuración Legacy** | - Eliminar código de Flet (`flet_app/`).<br>- Borrar scripts antiguos (`iniciar_desktop.bat`, `compilar.sh`, etc.).<br>- Dejar `iniciar.bat`, `iniciar.sh` y `build_desktop.py` unificados. | Repositorio limpio y libre de dependencias huérfanas. |
 | **Fase 6: Compilación y Validación** | - Probar build de PyInstaller en Windows (.exe).<br>- Validar consumo de memoria RAM (<80 MB).<br>- Configurar manifiesto Flatpak para Linux. | Ejecutable standalone funcional y verificado. |
+
+---
+
+## 9. Anexo A: Compactación de Páginas y Aislamiento de OKF (Ley de Hick)
+
+Para evitar la sobrecarga cognitiva durante la partida:
+1. **Compendio de Consulta vs Administración de Archivos:**
+   - La pantalla de juego contará con un buscador rápido flotante o pestaña aislada `Compendio` enfocada exclusivamente en lectura y búsqueda instantánea (sin botones de gestión de archivos, recarga o indexación técnica).
+   - Toda la **gestión de fuentes de datos OKF** (añadir carpetas, recargar índice, re-escanear metadatos) se traslada a la pantalla de **Configuración (Settings)**.
+2. **Navegación Unificada Táctica:**
+   - Barra superior minimalista: Nombre del personaje activo, selector rápido de modo (Hoja / Combate / Grimorio / Compendio / Ajustes), y botón de dados (que abre el Drawer colapsable).
+
+---
+
+## 10. Anexo B: Propuesta de Integración Externa con AideDD.org
+
+* **Objetivo:** Permitir en futuras iteraciones la sincronización y actualización del compendio de conjuros, invocaciones, trasfondos y objetos mágicos desde [AideDD](https://www.aidedd.org/dnd-filters/spells.php).
+* **Enfoque Arquitectónico:**
+  1. **Módulo Conector (`core/importers/aidedd_crawler.py`):**
+     - Cliente HTTP asíncrono con `httpx` que consulta el catálogo oficial de AideDD.
+     - Extracción y normalización de campos (nivel, escuela, tiempo de lanzamiento, alcance, componentes, duración, descripción en español e inglés).
+  2. **Pipeline de Transformación a OKF:**
+     - El conector convertirá los conjuros obtenidos en archivos Markdown individuales con Frontmatter YAML compatibles con el formato estándar del `OkfEngine` (`okf_dnd5e/conjuros/...`).
+  3. **Activador en UI:**
+     - Botón en `Configuración > Fuentes de Datos`: *"Sincronizar Conjuros desde AideDD (Beta)"*, que operará en segundo plano sin congelar la interfaz y reportará el progreso mediante eventos en la barra de estado.

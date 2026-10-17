@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "EB Garamond", serif;
+  --font-body: "Manrope", sans-serif;
+  --font-stat: "Space Grotesk", sans-serif;
+
+  --color-canvas: var(--bg-canvas);
+  --color-surface: var(--bg-surface);
+  --color-card: var(--bg-card);
+  --color-card-hover: var(--bg-card-hover);
+  --color-input: var(--bg-input);
+
+  --color-border-iron: var(--border-iron);
+  --color-border-gold: var(--border-gold);
+
+  --color-crimson: var(--accent-crimson);
+  --color-crimson-hover: var(--accent-crimson-hover);
+  --color-gold: var(--accent-gold);
+  --color-gold-hover: var(--accent-gold-hover);
+
+  --color-main: var(--text-main);
+  --color-muted: var(--text-muted);
+}
+
+/* ==========================================================================
+   TEMA 1: OBSIDIAN SANCTUM (OSCURO) - Por defecto
+   Inspirado en grimorios oscuros, runas de obsidiana y filigrana de oro.
+   ========================================================================== */
+:root,
+[data-theme="dark-obsidian"] {
+  --bg-canvas: #12181c;
+  --bg-surface: #1a2227;
+  --bg-card: #232b2f;
+  --bg-card-hover: #2b353a;
+  --bg-input: #0d1317;
+
+  --border-iron: #323d42;
+  --border-gold: #c9a45c;
+
+  --accent-crimson: #c50009;
+  --accent-crimson-hover: #dc050f;
+  --accent-gold: #c9a45c;
+  --accent-gold-hover: #e8c176;
+
+  --text-main: #ede3d2;
+  --text-muted: #8c979e;
+
+  color-scheme: dark;
+}
+
+/* ==========================================================================
+   TEMA 2: ILLUMINATED GRIMOIRE (CLARO)
+   Inspirado en páginas de pergamino antiguo con tinta caligráfica.
+   ========================================================================== */
+[data-theme="light-parchment"] {
+  --bg-canvas: #f5efe6;
+  --bg-surface: #ebe2d3;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f9f6f0;
+  --bg-input: #f0e7d8;
+
+  --border-iron: #d5c8b5;
+  --border-gold: #ad853b;
+
+  --accent-crimson: #9e0007;
+  --accent-crimson-hover: #7d0006;
+  --accent-gold: #8c6b2d;
+  --accent-gold-hover: #6d5220;
+
+  --text-main: #1c1815;
+  --text-muted: #6e655b;
+
+  color-scheme: light;
+}
+
+/* Scrollbars personalizados discretos y estéticos */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-iron);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-gold);
+}

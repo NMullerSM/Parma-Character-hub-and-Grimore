@@ -1,0 +1,324 @@
+import type {
+  CharacterSummary,
+  CharacterSheetData,
+  TaleSpireStatus,
+  RollRequest,
+  RollResult,
+  CompendiumCategory,
+  CompendiumSearchResult,
+  AppSettings,
+  ThemeOption,
+} from "./types";
+
+declare global {
+  interface Window {
+    pywebview?: {
+      api: any;
+    };
+  }
+}
+
+// Datos Mock para previsualización directa en navegador (npm run dev)
+const mockCharacters: CharacterSummary[] = [
+  {
+    id: 1,
+    name: "Artanis",
+    char_class: "Paladín",
+    subclass: "Juramento de Venganza",
+    level: 4,
+    race: "Semielfo",
+    hp_current: 36,
+    hp_max: 36,
+    is_active: 1,
+    updated_at: "2026-10-17 18:00:00",
+  },
+];
+
+const mockActiveCharacter: CharacterSheetData = {
+  id: 1,
+  name: "Artanis",
+  char_class: "Paladín",
+  subclass: "Juramento de Venganza",
+  level: 4,
+  race: "Semielfo",
+  background: "Soldado",
+  alignment: "Legal Bueno",
+  xp: 2700,
+  inspiration: true,
+  proficiency_bonus: 2,
+  ac: 18,
+  speed: 30,
+  initiative: 0,
+  hp_current: 36,
+  hp_max: 36,
+  hp_temp: 0,
+  hit_dice_total: "4d10",
+  hit_dice_current: "4d10",
+  death_save_successes: 0,
+  death_save_failures: 0,
+  abilities: {
+    FUE: { base: 16, override: 0, bonus: 3, proficient: false, save_bonus: 3 },
+    DES: { base: 10, override: 0, bonus: 0, proficient: false, save_bonus: 0 },
+    CON: { base: 14, override: 0, bonus: 2, proficient: false, save_bonus: 2 },
+    INT: { base: 10, override: 0, bonus: 0, proficient: false, save_bonus: 0 },
+    SAB: { base: 12, override: 0, bonus: 1, proficient: true, save_bonus: 3 },
+    CAR: { base: 16, override: 0, bonus: 3, proficient: true, save_bonus: 5 },
+  },
+  skills: {
+    Atletismo: { proficient: true, bonus: 5, expertise: false },
+    Intimidación: { proficient: true, bonus: 5, expertise: false },
+    Perspicacia: { proficient: true, bonus: 3, expertise: false },
+    Religión: { proficient: false, bonus: 0, expertise: false },
+  },
+  spells: [
+    {
+      name: "Castigo Abrasador",
+      level: 1,
+      school: "Evocación",
+      cast_time: "1 Acción Adicional",
+      range_area: "Personal",
+      components: "V",
+      duration: "Concentración, hasta 1 minuto",
+      prepared: true,
+      notes: "+1d6 fuego en golpe cuerpo a cuerpo.",
+    },
+    {
+      name: "Curar Heridas",
+      level: 1,
+      school: "Evocación",
+      cast_time: "1 Acción",
+      range_area: "Toque",
+      components: "V, S",
+      duration: "Instantáneo",
+      prepared: true,
+      notes: "Cura 1d8 + mod Carisma.",
+    },
+  ],
+  spell_slots_total: { "1": 3 },
+  spell_slots_used: { "1": 1 },
+  weapon_actions: [
+    {
+      name: "Espadón +1",
+      type: "Cuerpo a cuerpo",
+      range_val: "5 pies",
+      hit_dc: "+6",
+      damage_dice: "2d6+4",
+      damage_type: "Cortante",
+      notes: "Pesada, dos manos.",
+    },
+  ],
+  features: [
+    { name: "Sentido Divino", source: "Paladín Nvl 1", description: "Detecta celestiales, infernales y no muertos a 60 pies." },
+    { name: "Imposición de Manos", source: "Paladín Nvl 1", description: "Reserva de 20 PG de curación por descanso largo." },
+    { name: "Castigo Divino", source: "Paladín Nvl 2", description: "Gasta ranura de nivel 1 para infligir +2d8 radiante." },
+  ],
+};
+
+// Cliente unificado
+export const api = {
+  isNative: (): boolean => {
+    return typeof window !== "undefined" && !!window.pywebview?.api;
+  },
+
+  async listCharacters(): Promise<CharacterSummary[]> {
+    if (this.isNative()) {
+      return await window.pywebview!.api.list_characters();
+    }
+    return mockCharacters;
+  },
+
+  async getActiveCharacter(): Promise<CharacterSheetData | null> {
+    if (this.isNative()) {
+      return await window.pywebview!.api.get_active_character();
+    }
+    return mockActiveCharacter;
+  },
+
+  async getCharacterById(id: number): Promise<CharacterSheetData | null> {
+    if (this.isNative()) {
+      return await window.pywebview!.api.get_character_by_id(id);
+    }
+    return mockActiveCharacter;
+  },
+
+  async setActiveCharacter(id: number): Promise<CharacterSheetData | null> {
+    if (this.isNative()) {
+      return await window.pywebview!.api.set_active_character(id);
+    }
+    return mockActiveCharacter;
+  },
+
+  async saveCharacter(charData: CharacterSheetData): Promise<{ success: boolean; id: number }> {
+    if (this.isNative()) {
+      return await window.pywebview!.api.save_character(charData);
+    }
+    return { success: true, id: charData.id || 1 };
+  },
+
+  async deleteCharacter(id: number): Promise<boolean> {
+    if (this.isNative()) {
+      return await window.pywebview!.api.delete_character(id);
+    }
+    return true;
+  },
+
+  async getTaleSpireStatus(): Promise<TaleSpireStatus> {
+    if (this.isNative()) {
+      return await window.pywebview!.api.get_talespire_status();
+    }
+    return {
+      is_installed: true,
+      is_running: false,
+      is_connected: false,
+      state_label: "installed_closed",
+    };
+  },
+
+  async connectTaleSpire(): Promise<{ success: boolean; message: string }> {
+    if (this.isNative()) {
+      return await window.pywebview!.api.connect_talespire();
+    }
+    return { success: true, message: "Conexión simulada con TaleSpire." };
+  },
+
+  async disconnectTaleSpire(): Promise<void> {
+    if (this.isNative()) {
+      await window.pywebview!.api.disconnect_talespire();
+    }
+  },
+
+  async rollDice(request: RollRequest): Promise<RollResult> {
+    if (this.isNative()) {
+      return await window.pywebview!.api.roll_dice(request);
+    }
+    // Simulación local en navegador
+    const rolls: Array<{ sides: number; roll: number }> = [];
+    let total = request.modifier;
+    for (const [sidesStr, count] of Object.entries(request.dice)) {
+      const sides = parseInt(sidesStr, 10);
+      for (let i = 0; i < count; i++) {
+        const val = Math.floor(Math.random() * sides) + 1;
+        rolls.push({ sides, roll: val });
+        total += val;
+      }
+    }
+    return {
+      total,
+      dice_rolls: rolls,
+      modifier: request.modifier,
+      label: request.label,
+      timestamp: new Date().toLocaleTimeString(),
+      talespire_sent: false,
+    };
+  },
+
+  async triggerTaleSpireGesture(): Promise<boolean> {
+    if (this.isNative()) {
+      return await window.pywebview!.api.trigger_talespire_gesture();
+    }
+    return true;
+  },
+
+  async getCompendiumCategories(): Promise<CompendiumCategory[]> {
+    if (this.isNative()) {
+      return await window.pywebview!.api.get_compendium_categories();
+    }
+    return [
+      { id: "clases", label: "Clases y Subclases", count: 12 },
+      { id: "especies_y_linajes", label: "Especies y Linajes", count: 9 },
+      { id: "conjuros", label: "Grimorio de Conjuros", count: 320 },
+      { id: "trasfondos", label: "Trasfondos", count: 16 },
+      { id: "dotes", label: "Dotes", count: 42 },
+      { id: "equipo_y_armamento", label: "Equipo y Armamento", count: 85 },
+      { id: "reglas_y_mecanicas", label: "Reglas y Mecánicas", count: 28 },
+    ];
+  },
+
+  async searchCompendium(query: string, category?: string): Promise<CompendiumSearchResult[]> {
+    if (this.isNative()) {
+      return await window.pywebview!.api.search_compendium(query, category);
+    }
+    return [
+      {
+        id: "castigo-divino",
+        name: "Castigo Divino",
+        category: "clases",
+        snippet: "A partir del nivel 2, cuando golpeas con un arma cuerpo a cuerpo...",
+        path: "okf_dnd5e/clases/paladin.md",
+      },
+    ];
+  },
+
+  async getCompendiumEntry(category: string, entryName: string): Promise<any> {
+    if (this.isNative()) {
+      return await window.pywebview!.api.get_compendium_entry(category, entryName);
+    }
+    return {
+      name: entryName,
+      category,
+      content: `# ${entryName}\n\nDescripción detallada de reglas simulada para previsualización web.`,
+    };
+  },
+
+  async validatePointBuy(scores: Record<string, number>): Promise<{
+    valid: boolean;
+    points_spent: number;
+    points_remaining: number;
+    error?: string;
+    standard_array: number[];
+  }> {
+    if (this.isNative()) {
+      return await window.pywebview!.api.validate_point_buy(scores);
+    }
+    return {
+      valid: true,
+      points_spent: 27,
+      points_remaining: 0,
+      standard_array: [15, 14, 13, 12, 10, 8],
+    };
+  },
+
+  async performRest(charId: number, restType: "short" | "long", hitDiceSpent: number = 0): Promise<any> {
+    if (this.isNative()) {
+      return await window.pywebview!.api.perform_rest(charId, restType, hitDiceSpent);
+    }
+    return { success: true };
+  },
+
+  async exportPdf(charId: number): Promise<{ success: boolean; path?: string; error?: string }> {
+    if (this.isNative()) {
+      return await window.pywebview!.api.export_character_pdf(charId);
+    }
+    return { success: true, path: "C:/fake/path/Artanis_Sheet.pdf" };
+  },
+
+  async getSettings(): Promise<AppSettings> {
+    if (this.isNative()) {
+      return await window.pywebview!.api.get_settings();
+    }
+    return {
+      theme: "dark-obsidian",
+      talespire_mode: "dm",
+      talespire_enabled: true,
+      okf_path: "okf_dnd5e",
+      custom_themes_dir: "themes",
+    };
+  },
+
+  async setSetting(key: string, value: any): Promise<boolean> {
+    if (this.isNative()) {
+      return await window.pywebview!.api.set_setting(key, value);
+    }
+    return true;
+  },
+
+  async getAvailableThemes(): Promise<ThemeOption[]> {
+    if (this.isNative()) {
+      return await window.pywebview!.api.get_available_themes();
+    }
+    return [
+      { id: "dark-obsidian", name: "Obsidian Sanctum (Oscuro)", is_dark: true },
+      { id: "light-parchment", name: "Illuminated Grimoire (Claro)", is_dark: false },
+    ];
+  },
+};
