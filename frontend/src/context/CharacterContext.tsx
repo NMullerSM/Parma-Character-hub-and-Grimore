@@ -1,6 +1,13 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { api } from "../api/client";
-import type { CharacterSheetData, CharacterSummary, RollRequest, RollResult, TaleSpireStatus } from "../api/types";
+import type {
+  CharacterSheetData,
+  CharacterSummary,
+  RollRequest,
+  RollResult,
+  RollHistoryEntry,
+  TaleSpireStatus,
+} from "../api/types";
 
 interface ToastMessage {
   id: string;
@@ -13,12 +20,19 @@ interface CharacterContextType {
   characters: CharacterSummary[];
   loading: boolean;
   talespireStatus: TaleSpireStatus;
+  dndEdition: string;
   isDiceDrawerOpen: boolean;
   diceRequest: RollRequest;
   lastRollResult: RollResult | null;
+  rollHistory: RollHistoryEntry[];
   toasts: ToastMessage[];
 
+  // Animación física de dados
+  isRollingAnimation: boolean;
+  currentRollingData: RollResult | null;
+
   // Acciones
+  setDndEdition: (edition: string) => Promise<void>;
   reloadCharacters: () => Promise<void>;
   selectCharacter: (id: number) => Promise<void>;
   updateActiveCharacter: (updates: Partial<CharacterSheetData>) => void;
@@ -26,6 +40,8 @@ interface CharacterContextType {
   openDiceDrawer: (req?: Partial<RollRequest>) => void;
   closeDiceDrawer: () => void;
   executeRoll: (req: RollRequest) => Promise<RollResult>;
+  fetchRollHistory: () => Promise<void>;
+  clearRollHistory: () => Promise<void>;
   performRestAction: (restType: "short" | "long", hitDiceSpent?: number) => Promise<void>;
   refreshTaleSpire: () => Promise<void>;
   connectTaleSpire: () => Promise<void>;
@@ -38,6 +54,7 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [activeCharacter, setActiveCharacter] = useState<CharacterSheetData | null>(null);
   const [characters, setCharacters] = useState<CharacterSummary[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [dndEdition, setEditionState] = useState<string>("5.5e");
   const [talespireStatus, setTaleSpireStatus] = useState<TaleSpireStatus>({
     is_installed: false,
     is_running: false,
@@ -52,6 +69,9 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     send_to_talespire: true,
   });
   const [lastRollResult, setLastRollResult] = useState<RollResult | null>(null);
+  const [rollHistory, setRollHistory] = useState<RollHistoryEntry[]>([]);
+  const [isRollingAnimation, setIsRollingAnimation] = useState<boolean>(false);
+  const [currentRollingData, setCurrentRollingData] = useState<RollResult | null>(null);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
   const showToast = useCallback((text: string, type: "info" | "success" | "warn" = "info") => {
@@ -62,12 +82,29 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }, 3500);
   }, []);
 
+  const fetchRollHistory = useCallback(async () => {
+    try {
+      const h = await api.getRollHistory();
+      setRollHistory(h);
+    } catch (e) {
+      console.error("Error fetching roll history:", e);
+    }
+  }, []);
+
+  const clearRollHistory = async () => {
+    await api.clearRollHistory();
+    setRollHistory([]);
+    showToast("Historial de tiradas de la sesión purgado", "info");
+  };
+
   const reloadCharacters = useCallback(async () => {
     try {
       const list = await api.listCharacters();
       setCharacters(list);
       const active = await api.getActiveCharacter();
       setActiveCharacter(active);
+      const settings = await api.getSettings();
+      if (settings.dnd_edition) setEditionState(settings.dnd_edition);
     } catch (e) {
       console.error("Error loading character data:", e);
     } finally {
@@ -87,7 +124,14 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   useEffect(() => {
     reloadCharacters();
     refreshTaleSpire();
-  }, [reloadCharacters, refreshTaleSpire]);
+    fetchRollHistory();
+  }, [reloadCharacters, refreshTaleSpire, fetchRollHistory]);
+
+  const setDndEdition = async (edition: string) => {
+    setEditionState(edition);
+    await api.setSetting("dnd_edition", edition);
+    showToast(`Edición activa: D&D ${edition}`, "info");
+  };
 
   const selectCharacter = async (id: number) => {
     setLoading(true);
@@ -141,6 +185,16 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     try {
       const result = await api.rollDice(req);
       setLastRollResult(result);
+
+      // Desencadenar animación cinematográfica en el centro de la pantalla
+      setCurrentRollingData(result);
+      setIsRollingAnimation(true);
+      setTimeout(() => {
+        setIsRollingAnimation(false);
+      }, 2600);
+
+      await fetchRollHistory();
+
       if (result.talespire_sent) {
         showToast(`🎲 ${result.label}: ${result.total} (Enviado a TaleSpire)`, "success");
       } else {
@@ -159,7 +213,12 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       const res = await api.performRest(activeCharacter.id, restType, hitDiceSpent);
       if (res.success && res.character) {
         setActiveCharacter(res.character);
-        showToast(restType === "long" ? "Descanso Largo completado (PG y ranuras restaurados)" : "Descanso Corto completado", "success");
+        showToast(
+          restType === "long"
+            ? "Descanso Largo completado (PG y ranuras restaurados)"
+            : "Descanso Corto completado",
+          "success"
+        );
       }
     } catch (e) {
       showToast("Error al procesar descanso", "warn");
@@ -183,10 +242,15 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         characters,
         loading,
         talespireStatus,
+        dndEdition,
         isDiceDrawerOpen,
         diceRequest,
         lastRollResult,
+        rollHistory,
         toasts,
+        isRollingAnimation,
+        currentRollingData,
+        setDndEdition,
         reloadCharacters,
         selectCharacter,
         updateActiveCharacter,
@@ -194,6 +258,8 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         openDiceDrawer,
         closeDiceDrawer,
         executeRoll,
+        fetchRollHistory,
+        clearRollHistory,
         performRestAction,
         refreshTaleSpire,
         connectTaleSpire,

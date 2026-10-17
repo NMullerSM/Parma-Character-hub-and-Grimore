@@ -42,6 +42,31 @@ export interface SpellItemData {
   notes: string;
 }
 
+export interface SessionLogData {
+  id: number;
+  date: string;
+  title: string;
+  summary: string;
+  loot: string;
+  xp_gained: number;
+}
+
+export interface NetworkNodeData {
+  id: string;
+  name: string;
+  role: string;
+  description: string;
+  avatar_base64?: string;
+  x: number;
+  y: number;
+}
+
+export interface NetworkEdgeData {
+  source_id: string;
+  target_id: string;
+  relation: string;
+}
+
 export interface CharacterSheetData {
   id?: number;
   name: string;
@@ -71,6 +96,9 @@ export interface CharacterSheetData {
   spell_slots_used: Record<string, number>;
   weapon_actions: WeaponActionData[];
   features: Array<{ name: string; source: string; description: string }>;
+  sessions: SessionLogData[];
+  network_nodes: NetworkNodeData[];
+  network_edges: NetworkEdgeData[];
   portrait_path?: string;
 }
 
@@ -97,6 +125,47 @@ export interface RollResult {
   talespire_sent: boolean;
 }
 
+export interface RollHistoryEntry {
+  id: number;
+  time_str: string;
+  character_name: string;
+  reason: string;
+  formula: string;
+  detail: string;
+  total: number;
+  is_crit: boolean;
+  is_fumble: boolean;
+  channel: string;
+}
+
+export interface PdfDocumentSummary {
+  name: string;
+  path: string;
+}
+
+export interface PdfTocItem {
+  level: number;
+  title: string;
+  page: number;
+}
+
+export interface PdfDocumentInfo {
+  success: boolean;
+  path: string;
+  filename: string;
+  page_count: number;
+  toc: PdfTocItem[];
+  error?: string;
+}
+
+export interface PdfPageRenderResult {
+  success: boolean;
+  page_num: number;
+  image_base64?: string;
+  links?: Array<{ target_page: number }>;
+  error?: string;
+}
+
 export interface CompendiumCategory {
   id: string;
   label: string;
@@ -113,6 +182,7 @@ export interface CompendiumSearchResult {
 
 export interface AppSettings {
   theme: string;
+  dnd_edition?: string;
   talespire_mode: "dm" | "player";
   talespire_enabled: boolean;
   okf_path: string;

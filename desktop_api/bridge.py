@@ -11,10 +11,12 @@ from datetime import datetime
 from typing import Optional, Dict, Any, List
 from pathlib import Path
 
-from core.models import CharacterSheet
+import webview
+
+from core.models import CharacterSheet, SessionLog, NetworkNode, NetworkEdge
 from core.db import DatabaseManager
 from core.okf_engine import OkfEngine
-from core.pdf_engine import UniversalAcroFormHandler
+from core.pdf_engine import UniversalAcroFormHandler, PdfReaderEngine
 from core.talespire_bridge import TaleSpireBridge
 from core.point_buy import PointBuyCalculator, TOTAL_BUDGET, MIN_SCORE, MAX_SCORE
 from core.rules import perform_short_rest, perform_long_rest
@@ -32,6 +34,7 @@ class DesktopBridge:
         self.db = DatabaseManager()
         self.okf = OkfEngine(os.path.join(base_dir, "okf_dnd5e"))
         self.ts = TaleSpireBridge()
+        self.pdf_reader = PdfReaderEngine()
         self.window = None
 
         # Migrar autosave_character.json si la base de datos está vacía
@@ -42,6 +45,10 @@ class DesktopBridge:
 
     def set_window(self, window):
         self.window = window
+
+    def _is_active_character_id(self, char_id: int) -> bool:
+        active = self.db.get_active_character()
+        return bool(active and active.id == char_id)
 
     # =========================================================================
     # GESTIÓN DE PERSONAJES
@@ -104,13 +111,7 @@ class DesktopBridge:
 
     def roll_dice(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Ejecuta una tirada de dados combinada.
-        request: {
-          'dice': { '20': 1, '6': 2 },
-          'modifier': 3,
-          'label': 'Ataque con Espada',
-          'send_to_talespire': True
-        }
+        Ejecuta una tirada de dados combinada y la registra en el Session Roll Ledger.
         """
         pool_raw = request.get("dice", {"20": 1})
         modifier = int(request.get("modifier", 0))
@@ -134,13 +135,12 @@ class DesktopBridge:
             try:
                 url = self.ts.build_pool_url(pool, modifier=modifier, label=label)
                 ts_sent = self.ts.send_roll(url)
-                # Ejecutar micro-gesto físico
                 ts_mode = self.db.get_setting("talespire_mode", "dm")
                 self.ts.execute_throw_gesture(ts_mode=ts_mode)
             except Exception as e:
                 print(f"[DesktopBridge] Error enviando a TaleSpire: {e}")
 
-        # Registrar en Ledger de sesión
+        # Registrar en Ledger de sesión en memoria
         active_char = self.db.get_active_character()
         char_name = active_char.name if active_char else "Héroe"
         dice_repr = " + ".join([f"{count}d{sides}" for sides, count in pool.items()])
@@ -171,10 +171,276 @@ class DesktopBridge:
             "talespire_sent": ts_sent,
         }
 
+    def get_roll_history(self) -> List[Dict[str, Any]]:
+        """Retorna el historial completo de tiradas de la sesión activa."""
+        entries = SessionRollLedger.get_current().get_history()
+        return [
+            {
+                "id": e.id,
+                "time_str": e.time_str,
+                "character_name": e.character_name,
+                "reason": e.reason,
+                "formula": e.formula,
+                "detail": e.detail,
+                "total": e.total,
+                "is_crit": e.is_crit,
+                "is_fumble": e.is_fumble,
+                "channel": e.channel,
+            }
+            for e in entries
+        ]
+
+    def clear_roll_history(self) -> bool:
+        """Limpia el historial de tiradas de la sesión."""
+        SessionRollLedger.get_current().clear_history()
+        return True
+
     def trigger_talespire_gesture(self) -> bool:
         """Simula manualmente el gesto de lanzamiento en TaleSpire."""
         ts_mode = self.db.get_setting("talespire_mode", "dm")
         return self.ts.execute_throw_gesture(ts_mode=ts_mode)
+
+    # =========================================================================
+    # DIARIO DE CAMPAÑA & RED DE PERSONAJES
+    # =========================================================================
+
+    def get_character_journals(self, char_id: int) -> List[Dict[str, Any]]:
+        """Retorna las crónicas de sesión del personaje."""
+        char = self.db.get_character_by_id(char_id)
+        if not char:
+            return []
+        return [
+            {
+                "id": s.id,
+                "date": s.date,
+                "title": s.title,
+                "summary": s.summary,
+                "loot": s.loot,
+                "xp_gained": s.xp_gained,
+            }
+            for s in char.sessions
+        ]
+
+    def save_character_journal(self, char_id: int, journal_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Añade o actualiza una sesión en el diario del personaje."""
+        char = self.db.get_character_by_id(char_id)
+        if not char:
+            return {"success": False, "error": "Personaje no encontrado"}
+
+        sess_id = journal_data.get("id", len(char.sessions) + 1)
+        # Buscar si ya existe
+        existing = next((s for s in char.sessions if s.id == sess_id), None)
+        if existing:
+            existing.date = journal_data.get("date", existing.date)
+            existing.title = journal_data.get("title", existing.title)
+            existing.summary = journal_data.get("summary", existing.summary)
+            existing.loot = journal_data.get("loot", existing.loot)
+            existing.xp_gained = int(journal_data.get("xp_gained", existing.xp_gained))
+        else:
+            char.sessions.append(
+                SessionLog(
+                    id=sess_id,
+                    date=journal_data.get("date", datetime.now().strftime("%Y-%m-%d")),
+                    title=journal_data.get("title", "Nueva Crónica"),
+                    summary=journal_data.get("summary", ""),
+                    loot=journal_data.get("loot", ""),
+                    xp_gained=int(journal_data.get("xp_gained", 0)),
+                )
+            )
+
+        self.db.save_character(char, set_active=self._is_active_character_id(char_id))
+        return {"success": True, "sessions": self.get_character_journals(char_id)}
+
+    def delete_character_journal(self, char_id: int, session_id: int) -> Dict[str, Any]:
+        """Elimina una sesión del diario del personaje."""
+        char = self.db.get_character_by_id(char_id)
+        if not char:
+            return {"success": False, "error": "Personaje no encontrado"}
+
+        char.sessions = [s for s in char.sessions if s.id != session_id]
+        self.db.save_character(char, set_active=self._is_active_character_id(char_id))
+        return {"success": True, "sessions": self.get_character_journals(char_id)}
+
+    def get_character_network(self, char_id: int) -> Dict[str, Any]:
+        """Retorna nodos y vínculos de la red social/campaña del personaje."""
+        char = self.db.get_character_by_id(char_id)
+        if not char:
+            return {"nodes": [], "edges": []}
+        return {
+            "nodes": [
+                {
+                    "id": n.id,
+                    "name": n.name,
+                    "role": n.role,
+                    "description": n.description,
+                    "avatar_base64": n.avatar_base64,
+                    "x": n.x,
+                    "y": n.y,
+                }
+                for n in char.network_nodes
+            ],
+            "edges": [
+                {
+                    "source_id": e.source_id,
+                    "target_id": e.target_id,
+                    "relation": e.relation,
+                }
+                for e in char.network_edges
+            ],
+        }
+
+    def save_network_node(self, char_id: int, node_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Guarda o actualiza un nodo (PNJ/Aliado) en la red."""
+        char = self.db.get_character_by_id(char_id)
+        if not char:
+            return {"success": False, "error": "Personaje no encontrado"}
+
+        node_id = str(node_data.get("id") or f"node_{len(char.network_nodes) + 1}")
+        existing = next((n for n in char.network_nodes if n.id == node_id), None)
+        if existing:
+            existing.name = node_data.get("name", existing.name)
+            existing.role = node_data.get("role", existing.role)
+            existing.description = node_data.get("description", existing.description)
+            existing.x = float(node_data.get("x", existing.x))
+            existing.y = float(node_data.get("y", existing.y))
+        else:
+            char.network_nodes.append(
+                NetworkNode(
+                    id=node_id,
+                    name=node_data.get("name", "PNJ"),
+                    role=node_data.get("role", "Neutral"),
+                    description=node_data.get("description", ""),
+                    avatar_base64=node_data.get("avatar_base64", ""),
+                    x=float(node_data.get("x", 0.0)),
+                    y=float(node_data.get("y", 0.0)),
+                )
+            )
+
+        self.db.save_character(char, set_active=self._is_active_character_id(char_id))
+        return {"success": True, "network": self.get_character_network(char_id)}
+
+    def delete_network_node(self, char_id: int, node_id: str) -> Dict[str, Any]:
+        """Elimina un nodo y sus aristas asociadas."""
+        char = self.db.get_character_by_id(char_id)
+        if not char:
+            return {"success": False, "error": "Personaje no encontrado"}
+
+        char.network_nodes = [n for n in char.network_nodes if n.id != node_id]
+        char.network_edges = [e for e in char.network_edges if e.source_id != node_id and e.target_id != node_id]
+        self.db.save_character(char, set_active=self._is_active_character_id(char_id))
+        return {"success": True, "network": self.get_character_network(char_id)}
+
+    def save_network_edge(self, char_id: int, edge_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Crea un vínculo relacional entre dos personajes."""
+        char = self.db.get_character_by_id(char_id)
+        if not char:
+            return {"success": False, "error": "Personaje no encontrado"}
+
+        src = edge_data.get("source_id")
+        tgt = edge_data.get("target_id")
+        rel = edge_data.get("relation", "Aliado")
+
+        if src == tgt:
+            return {"success": False, "error": "No puedes vincular un personaje consigo mismo."}
+
+        # Evitar duplicados
+        char.network_edges = [
+            e for e in char.network_edges
+            if not ((e.source_id == src and e.target_id == tgt) or (e.source_id == tgt and e.target_id == src))
+        ]
+        char.network_edges.append(NetworkEdge(source_id=src, target_id=tgt, relation=rel))
+
+        self.db.save_character(char, set_active=self._is_active_character_id(char_id))
+        return {"success": True, "network": self.get_character_network(char_id)}
+
+    def delete_network_edge(self, char_id: int, edge_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Elimina un vínculo relacional."""
+        char = self.db.get_character_by_id(char_id)
+        if not char:
+            return {"success": False, "error": "Personaje no encontrado"}
+
+        src = edge_data.get("source_id")
+        tgt = edge_data.get("target_id")
+        char.network_edges = [
+            e for e in char.network_edges
+            if not ((e.source_id == src and e.target_id == tgt) or (e.source_id == tgt and e.target_id == src))
+        ]
+        self.db.save_character(char, set_active=self._is_active_character_id(char_id))
+        return {"success": True, "network": self.get_character_network(char_id)}
+
+    # =========================================================================
+    # MOTOR Y VISOR DE PDFS (PyMuPDF)
+    # =========================================================================
+
+    def list_pdf_documents(self) -> List[Dict[str, str]]:
+        """Busca manuales y fichas PDF en el proyecto."""
+        results = []
+        search_dirs = [
+            os.path.join(self.base_dir, "data", "characters"),
+            os.path.join(self.base_dir, "data", "manuals"),
+            self.base_dir,
+        ]
+        for sdir in search_dirs:
+            if os.path.exists(sdir):
+                for fname in os.listdir(sdir):
+                    if fname.lower().endswith(".pdf"):
+                        full = os.path.join(sdir, fname)
+                        if not any(r["path"] == full for r in results):
+                            results.append({"name": fname, "path": full})
+        return results
+
+    def open_pdf_document(self, file_path: str) -> Dict[str, Any]:
+        """Abre un documento PDF y retorna su metainformación."""
+        if not os.path.isabs(file_path):
+            file_path = os.path.join(self.base_dir, file_path)
+
+        success = self.pdf_reader.open_document(file_path)
+        if not success:
+            return {"success": False, "error": f"No se pudo abrir el archivo {file_path}"}
+
+        return {
+            "success": True,
+            "path": file_path,
+            "filename": os.path.basename(file_path),
+            "page_count": self.pdf_reader.page_count,
+            "toc": self.pdf_reader.get_toc(),
+        }
+
+    def render_pdf_page(self, page_num: int, zoom: float = 1.0) -> Dict[str, Any]:
+        """Renderiza una página del PDF abierto a imagen base64."""
+        if not self.pdf_reader.is_open:
+            return {"success": False, "error": "No hay ningún PDF abierto."}
+
+        b64 = self.pdf_reader.render_page_base64(page_num, zoom=zoom)
+        links = self.pdf_reader.get_page_links(page_num)
+        return {
+            "success": bool(b64),
+            "page_num": page_num,
+            "image_base64": b64,
+            "links": links,
+        }
+
+    def export_character_pdf(self, char_id: int, target_path: Optional[str] = None) -> Dict[str, Any]:
+        """Exporta el personaje activo a una hoja PDF oficial rellena con AcroForms."""
+        char = self.db.get_character_by_id(char_id)
+        if not char:
+            return {"success": False, "error": "Personaje no encontrado"}
+
+        template_pdf = os.path.join(self.base_dir, "data", "characters", "Artanis LVL 4.pdf")
+        if not os.path.exists(template_pdf):
+            template_pdf = os.path.join(self.base_dir, "Artanis LVL 4.pdf")
+
+        if not target_path:
+            clean_name = "".join(c for c in char.name if c.isalnum() or c in (" ", "_", "-")).strip().replace(" ", "_")
+            target_path = os.path.join(self.base_dir, "data", "characters", f"{clean_name}_Sheet.pdf")
+
+        os.makedirs(os.path.dirname(target_path), exist_ok=True)
+        try:
+            handler = UniversalAcroFormHandler(template_pdf)
+            handler.fill_from_character(char, target_path)
+            return {"success": True, "path": target_path}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
 
     # =========================================================================
     # COMPENDIO OKF (MARKDOWN & REGLAS)
@@ -182,42 +448,87 @@ class DesktopBridge:
 
     def get_compendium_categories(self) -> List[Dict[str, Any]]:
         """Lista las categorías disponibles en el compendio OKF con su conteo."""
-        categories = [
-            {"id": "clases", "label": "Clases y Subclases", "count": len(self.okf.get_classes())},
-            {"id": "especies_y_linajes", "label": "Especies y Linajes", "count": len(self.okf.get_races())},
-            {"id": "conjuros", "label": "Grimorio de Conjuros", "count": len(self.okf.get_spells())},
-            {"id": "trasfondos", "label": "Trasfondos", "count": len(self.okf.get_backgrounds())},
-            {"id": "dotes", "label": "Dotes de Personaje", "count": len(self.okf.get_feats())},
-            {"id": "equipo_y_armamento", "label": "Equipo y Armamento", "count": len(self.okf.get_equipment())},
-            {"id": "reglas_y_mecanicas", "label": "Reglas y Mecánicas", "count": len(self.okf.get_rules())},
+        return [
+            {"id": "clases", "label": "Clases y Subclases", "count": self.okf.count_entities(["clase", "subclase"])},
+            {"id": "especies_y_linajes", "label": "Especies y Linajes", "count": self.okf.count_entities(["especie", "linaje"])},
+            {"id": "conjuros", "label": "Grimorio de Conjuros", "count": self.okf.count_entities("conjuro")},
+            {"id": "trasfondos", "label": "Trasfondos", "count": self.okf.count_entities("trasfondo")},
+            {"id": "dotes", "label": "Dotes de Personaje", "count": self.okf.count_entities("dote")},
+            {"id": "equipo_y_armamento", "label": "Equipo y Armamento", "count": self.okf.count_entities("equipo")},
+            {"id": "reglas_y_mecanicas", "label": "Reglas y Mecánicas", "count": self.okf.count_entities("regla")},
         ]
-        return categories
 
-    def search_compendium(self, query: str, category: Optional[str] = None) -> List[Dict[str, Any]]:
-        """Búsqueda de texto completo en el compendio OKF."""
-        query_clean = query.strip().lower()
-        if not query_clean:
-            return []
+    def search_compendium(self, query: str = "", category: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Búsqueda de texto o listado por categoría en el compendio OKF."""
+        query_clean = (query or "").strip()
+
+        category_type_map = {
+            "clases": ["clase", "subclase"],
+            "especies_y_linajes": ["especie", "linaje"],
+            "conjuros": "conjuro",
+            "trasfondos": "trasfondo",
+            "dotes": "dote",
+            "equipo_y_armamento": "equipo",
+            "reglas_y_mecanicas": "regla",
+        }
+
+        tipo_filter = category_type_map.get(category) if category else None
+        entities = self.okf.search_entities(query=query_clean, tipo=tipo_filter, limit=120)
 
         results = []
-        entries = self.okf.search_all(query_clean)
-        for item in entries:
-            if category and item.get("category") != category:
-                continue
+        for item in entities:
+            item_tipo = item.get("tipo", "")
+            snippet_parts = [item.get("fuente", "PHB 2024")]
+            if "nivel" in item and item["nivel"] is not None:
+                snippet_parts.append(f"Nivel {item['nivel']}")
+            if "escuela" in item and item["escuela"]:
+                snippet_parts.append(str(item["escuela"]))
+            if "dado_golpe" in item and item["dado_golpe"]:
+                snippet_parts.append(f"DG: {item['dado_golpe']}")
+
             results.append({
                 "id": item.get("id", ""),
-                "name": item.get("name", ""),
-                "category": item.get("category", ""),
-                "snippet": item.get("snippet", ""),
+                "name": item.get("nombre", item.get("id", "")),
+                "category": item_tipo,
+                "snippet": " • ".join(snippet_parts),
                 "path": item.get("path", ""),
             })
-            if len(results) >= 50:
-                break
         return results
 
     def get_compendium_entry(self, category: str, entry_name: str) -> Optional[Dict[str, Any]]:
         """Obtiene una entrada completa del compendio OKF con su markdown."""
-        return self.okf.get_entry(category, entry_name)
+        query_id = entry_name.strip()
+        matched = next(
+            (item for item in self.okf._index if item.get("id") == query_id or item.get("nombre", "").lower() == query_id.lower()),
+            None
+        )
+        if not matched:
+            results = self.okf.search_entities(query=query_id, limit=1)
+            if results:
+                matched = results[0]
+
+        if not matched:
+            return None
+
+        rel_path = matched.get("path")
+        content = ""
+        full_meta = dict(matched)
+        if rel_path:
+            full_data = self.okf.read_entity_file(rel_path)
+            if full_data:
+                full_meta.update(full_data)
+                content = full_data.get("body_markdown") or full_data.get("descripcion", "")
+
+        if not content:
+            content = matched.get("descripcion", "")
+
+        return {
+            "id": matched.get("id", ""),
+            "name": matched.get("nombre", entry_name),
+            "category": matched.get("tipo", category),
+            "content": content,
+            "metadata": full_meta,
+        }
 
     # =========================================================================
     # REGLAS 5E & DESCANSO
@@ -255,34 +566,8 @@ class DesktopBridge:
         else:
             perform_short_rest(char, hit_dice_spent=hit_dice_spent)
 
-        self.db.save_character(char, set_active=(char.id == getattr(self.db.get_active_character(), "id", None)))
+        self.db.save_character(char, set_active=self._is_active_character_id(char_id))
         return {"success": True, "character": char.to_dict()}
-
-    # =========================================================================
-    # MOTOR DE PDFS (ACROFORMS OFICIALES)
-    # =========================================================================
-
-    def export_character_pdf(self, char_id: int, target_path: Optional[str] = None) -> Dict[str, Any]:
-        """Exporta el personaje activo a una hoja PDF oficial rellena con AcroForms."""
-        char = self.db.get_character_by_id(char_id)
-        if not char:
-            return {"success": False, "error": "Personaje no encontrado"}
-
-        template_pdf = os.path.join(self.base_dir, "data", "characters", "Artanis LVL 4.pdf")
-        if not os.path.exists(template_pdf):
-            template_pdf = os.path.join(self.base_dir, "Artanis LVL 4.pdf")
-
-        if not target_path:
-            clean_name = "".join(c for c in char.name if c.isalnum() or c in (" ", "_", "-")).strip().replace(" ", "_")
-            target_path = os.path.join(self.base_dir, "data", "characters", f"{clean_name}_Sheet.pdf")
-
-        os.makedirs(os.path.dirname(target_path), exist_ok=True)
-        try:
-            handler = UniversalAcroFormHandler(template_pdf)
-            handler.fill_from_character(char, target_path)
-            return {"success": True, "path": target_path}
-        except Exception as e:
-            return {"success": False, "error": str(e)}
 
     # =========================================================================
     # AJUSTES & TEMAS
@@ -292,6 +577,7 @@ class DesktopBridge:
         """Retorna todos los ajustes configurados."""
         return {
             "theme": self.db.get_setting("theme", "dark-obsidian"),
+            "dnd_edition": self.db.get_setting("dnd_edition", "5.5e"),
             "talespire_mode": self.db.get_setting("talespire_mode", "dm"),
             "talespire_enabled": self.db.get_setting("talespire_enabled", "true") == "true",
             "okf_path": self.db.get_setting("okf_path", os.path.join(self.base_dir, "okf_dnd5e")),
@@ -306,8 +592,10 @@ class DesktopBridge:
     def get_available_themes(self) -> List[Dict[str, Any]]:
         """Retorna temas base y temas personalizados en themes/."""
         themes = [
-            {"id": "dark-obsidian", "name": "Obsidian Sanctum (Oscuro)", "is_dark": True},
-            {"id": "light-parchment", "name": "Illuminated Grimoire (Claro)", "is_dark": False},
+            {"id": "dark-obsidian", "name": "Obsidian & Steel (Oscuro)", "is_dark": True},
+            {"id": "dark-amethyst", "name": "Arcane Amethyst (Oscuro)", "is_dark": True},
+            {"id": "light-parchment", "name": "Illuminated Parchment (Claro)", "is_dark": False},
+            {"id": "light-mithril", "name": "Mithril Scribe (Claro)", "is_dark": False},
         ]
         themes_dir = os.path.join(self.base_dir, "themes")
         if os.path.exists(themes_dir):
@@ -337,7 +625,7 @@ class DesktopBridge:
         if not self.window:
             return None
         file_types = ("Archivos de Imagen (*.png;*.jpg;*.jpeg;*.webp)", "Todos los Archivos (*.*)")
-        result = self.window.create_file_dialog(pywebview.OPEN_DIALOG, allow_multiple=False, file_types=file_types)
+        result = self.window.create_file_dialog(webview.OPEN_DIALOG, allow_multiple=False, file_types=file_types)
         if result and len(result) > 0:
             return result[0]
         return None
@@ -347,7 +635,7 @@ class DesktopBridge:
         if not self.window:
             return None
         file_types = ("Archivos PDF (*.pdf)", "Todos los Archivos (*.*)")
-        result = self.window.create_file_dialog(pywebview.OPEN_DIALOG, allow_multiple=False, file_types=file_types)
+        result = self.window.create_file_dialog(webview.OPEN_DIALOG, allow_multiple=False, file_types=file_types)
         if result and len(result) > 0:
             return result[0]
         return None

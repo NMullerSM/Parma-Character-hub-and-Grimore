@@ -135,6 +135,9 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
       features: [
         { name: "Competencia en Armas", source: charClass, description: "Entrenado en todas las armas marciales y simples." },
       ],
+      sessions: [],
+      network_nodes: [],
+      network_edges: [],
     };
 
     try {

@@ -125,6 +125,7 @@ class DatabaseManager:
                 try:
                     data = json.loads(row["data_json"])
                     char = CharacterSheet.from_dict(data)
+                    char.id = row["id"]
                     if row["portrait_path"] and not char.portrait_path:
                         char.portrait_path = row["portrait_path"]
                     return char
@@ -138,6 +139,7 @@ class DatabaseManager:
                 try:
                     data = json.loads(row["data_json"])
                     char = CharacterSheet.from_dict(data)
+                    char.id = row["id"]
                     if row["portrait_path"] and not char.portrait_path:
                         char.portrait_path = row["portrait_path"]
                     # Marcarlo activo
@@ -231,6 +233,7 @@ class DatabaseManager:
             if row:
                 data = json.loads(row["data_json"])
                 char = CharacterSheet.from_dict(data)
+                char.id = char_id
                 if row["portrait_path"] and not char.portrait_path:
                     char.portrait_path = row["portrait_path"]
                 return char
@@ -248,6 +251,7 @@ class DatabaseManager:
                 conn.commit()
                 data = json.loads(row["data_json"])
                 char = CharacterSheet.from_dict(data)
+                char.id = char_id
                 if row["portrait_path"] and not char.portrait_path:
                     char.portrait_path = row["portrait_path"]
                 return char

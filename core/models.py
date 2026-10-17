@@ -105,6 +105,7 @@ class NetworkEdge:
 
 @dataclass
 class CharacterSheet:
+    id: Optional[int] = None
     # Identidad Básica
     name: str = "Nuevo Aventurero"
     char_class: str = "Bardo"

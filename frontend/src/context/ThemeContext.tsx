@@ -15,8 +15,10 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setCurrentTheme] = useState<string>("dark-obsidian");
   const [availableThemes, setAvailableThemes] = useState<ThemeOption[]>([
-    { id: "dark-obsidian", name: "Obsidian Sanctum (Oscuro)", is_dark: true },
-    { id: "light-parchment", name: "Illuminated Grimoire (Claro)", is_dark: false },
+    { id: "dark-obsidian", name: "Obsidian & Steel (Oscuro)", is_dark: true },
+    { id: "dark-amethyst", name: "Arcane Amethyst (Oscuro)", is_dark: true },
+    { id: "light-parchment", name: "Illuminated Parchment (Claro)", is_dark: false },
+    { id: "light-mithril", name: "Mithril Scribe (Claro)", is_dark: false },
   ]);
 
   useEffect(() => {
@@ -46,7 +48,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const toggleTheme = async () => {
-    const nextTheme = theme === "dark-obsidian" ? "light-parchment" : "dark-obsidian";
+    const nextTheme = isDark ? "light-parchment" : "dark-obsidian";
     await setTheme(nextTheme);
   };
 

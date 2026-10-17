@@ -12,64 +12,114 @@
   --color-input: var(--bg-input);
 
   --color-border-iron: var(--border-iron);
-  --color-border-gold: var(--border-gold);
+  --color-border-gold: var(--border-accent);
 
   --color-crimson: var(--accent-crimson);
   --color-crimson-hover: var(--accent-crimson-hover);
-  --color-gold: var(--accent-gold);
-  --color-gold-hover: var(--accent-gold-hover);
+  --color-gold: var(--accent-secondary);
+  --color-gold-hover: var(--accent-secondary-hover);
 
   --color-main: var(--text-main);
   --color-muted: var(--text-muted);
 }
 
 /* ==========================================================================
-   TEMA 1: OBSIDIAN SANCTUM (OSCURO) - Por defecto
-   Inspirado en grimorios oscuros, runas de obsidiana y filigrana de oro.
+   TEMA 1: OBSIDIAN & STEEL (OSCURO)
+   Elegancia fría: Piedra obsidiana, acero rúnico y carmesí D&D (sin amarillo chillón).
    ========================================================================== */
 :root,
 [data-theme="dark-obsidian"] {
-  --bg-canvas: #12181c;
-  --bg-surface: #1a2227;
-  --bg-card: #232b2f;
-  --bg-card-hover: #2b353a;
-  --bg-input: #0d1317;
+  --bg-canvas: #0e1317;
+  --bg-surface: #151b21;
+  --bg-card: #1c242c;
+  --bg-card-hover: #232d36;
+  --bg-input: #0a0e12;
 
-  --border-iron: #323d42;
-  --border-gold: #c9a45c;
+  --border-iron: #2d3843;
+  --border-accent: #79a6d2;
 
-  --accent-crimson: #c50009;
-  --accent-crimson-hover: #dc050f;
-  --accent-gold: #c9a45c;
-  --accent-gold-hover: #e8c176;
+  --accent-crimson: #e63946;
+  --accent-crimson-hover: #ff4d5e;
+  --accent-secondary: #79c0ff;        /* Hielo arcano / plata rúnica */
+  --accent-secondary-hover: #a5d6ff;
 
-  --text-main: #ede3d2;
-  --text-muted: #8c979e;
+  --text-main: #f0f4f8;
+  --text-muted: #8b99a8;
 
   color-scheme: dark;
 }
 
 /* ==========================================================================
-   TEMA 2: ILLUMINATED GRIMOIRE (CLARO)
-   Inspirado en páginas de pergamino antiguo con tinta caligráfica.
+   TEMA 2: ILLUMINATED PARCHMENT (CLARO)
+   Atmósfera editorial de manuscrito: Pergamino noble, tinta sepia y carmesí lacre.
    ========================================================================== */
 [data-theme="light-parchment"] {
-  --bg-canvas: #f5efe6;
-  --bg-surface: #ebe2d3;
+  --bg-canvas: #f6f1e8;
+  --bg-surface: #ede5d8;
   --bg-card: #ffffff;
-  --bg-card-hover: #f9f6f0;
-  --bg-input: #f0e7d8;
+  --bg-card-hover: #faf6f0;
+  --bg-input: #f2ebe0;
 
-  --border-iron: #d5c8b5;
-  --border-gold: #ad853b;
+  --border-iron: #d4c8b8;
+  --border-accent: #b31b27;
 
-  --accent-crimson: #9e0007;
-  --accent-crimson-hover: #7d0006;
-  --accent-gold: #8c6b2d;
-  --accent-gold-hover: #6d5220;
+  --accent-crimson: #b31b27;
+  --accent-crimson-hover: #91121d;
+  --accent-secondary: #244b7a;        /* Azul tinta de escriba */
+  --accent-secondary-hover: #193557;
 
-  --text-main: #1c1815;
-  --text-muted: #6e655b;
+  --text-main: #2b2520;               /* Carbón sepia cálido (nunca negro puro) */
+  --text-muted: #73695f;
+
+  color-scheme: light;
+}
+
+/* ==========================================================================
+   TEMA 3: ARCANE AMETHYST (OSCURO)
+   Misterio arcano: Noche violeta profunda, runas amatista y destellos rubí.
+   ========================================================================== */
+[data-theme="dark-amethyst"] {
+  --bg-canvas: #100e17;
+  --bg-surface: #181424;
+  --bg-card: #201a30;
+  --bg-card-hover: #29223d;
+  --bg-input: #0c0a12;
+
+  --border-iron: #372d50;
+  --border-accent: #c084fc;
+
+  --accent-crimson: #f43f5e;
+  --accent-crimson-hover: #fb7185;
+  --accent-secondary: #c084fc;        /* Púrpura arcano / amatista */
+  --accent-secondary-hover: #d8b4fe;
+
+  --text-main: #f3f0f9;
+  --text-muted: #9f95b5;
+
+  color-scheme: dark;
+}
+
+/* ==========================================================================
+   TEMA 4: MITHRIL SCRIBE (CLARO)
+   Claridad táctica: Plata mithril suave, azul real y carmesí de heráldica.
+   ========================================================================== */
+[data-theme="light-mithril"] {
+  --bg-canvas: #f1f5f9;
+  --bg-surface: #e2e8f0;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f8fafc;
+  --bg-input: #e2e8f0;
+
+  --border-iron: #cbd5e1;
+  --border-accent: #2563eb;
+
+  --accent-crimson: #dc2626;
+  --accent-crimson-hover: #b91c1c;
+  --accent-secondary: #2563eb;        /* Azul real de caballería */
+  --accent-secondary-hover: #1d4ed8;
+
+  --text-main: #1e293b;               /* Gris pizarra profundo (antifatiga) */
+  --text-muted: #64748b;
 
   color-scheme: light;
 }
@@ -87,5 +137,36 @@
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-gold);
+  background: var(--accent-crimson);
+}
+
+/* Animaciones de micro-interacción y desplazamiento fluido */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0.7;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-pop-in {
+  animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

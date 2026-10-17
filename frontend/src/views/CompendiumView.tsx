@@ -26,21 +26,22 @@ export const CompendiumView: React.FC = () => {
 
   useEffect(() => {
     const timer = setTimeout(async () => {
-      if (!searchQuery.trim() && !selectedCat) return;
       setLoading(true);
       try {
-        const queryToRun = searchQuery.trim() || "a"; // búsqueda base si está vacío
+        const queryToRun = searchQuery.trim();
         const data = await api.searchCompendium(queryToRun, selectedCat || undefined);
         setResults(data);
-        if (data.length > 0 && !selectedEntry) {
+        if (data.length > 0) {
           loadEntry(data[0].category, data[0].name);
+        } else {
+          setSelectedEntry(null);
         }
       } catch (e) {
         console.error("Error searching compendium:", e);
       } finally {
         setLoading(false);
       }
-    }, 250);
+    }, 200);
 
     return () => clearTimeout(timer);
   }, [searchQuery, selectedCat]);
