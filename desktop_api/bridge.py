@@ -141,13 +141,25 @@ class DesktopBridge:
                 print(f"[DesktopBridge] Error enviando a TaleSpire: {e}")
 
         # Registrar en Ledger de sesión
+        active_char = self.db.get_active_character()
+        char_name = active_char.name if active_char else "Héroe"
         dice_repr = " + ".join([f"{count}d{sides}" for sides, count in pool.items()])
         mod_repr = f" + {modifier}" if modifier > 0 else (f" - {abs(modifier)}" if modifier < 0 else "")
+        formula_str = f"{dice_repr}{mod_repr}" if mod_repr else dice_repr
+        detail_str = f"Dados: [{', '.join(str(r['roll']) for r in rolls)}]"
+        is_crit = any(r["sides"] == 20 and r["roll"] == 20 for r in rolls)
+        is_fumble = any(r["sides"] == 20 and r["roll"] == 1 for r in rolls)
+        channel_str = "TaleSpire 3D" if ts_sent else "Motor Local"
+
         SessionRollLedger.get_current().record_roll(
-            label=f"{label} ({dice_repr}{mod_repr})",
-            dice_type=f"d{max(pool.keys())}",
-            result=total,
-            is_ts_delivered=ts_sent,
+            character_name=char_name,
+            reason=label,
+            formula=formula_str,
+            detail=detail_str,
+            total=total,
+            is_crit=is_crit,
+            is_fumble=is_fumble,
+            channel=channel_str,
         )
 
         return {

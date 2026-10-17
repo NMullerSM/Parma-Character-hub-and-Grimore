@@ -2,17 +2,17 @@
 setlocal
 chcp 65001 >nul
 cd /d "%~dp0"
-title Compilar D&D Sanctum a .EXE
+title Compilar DnD Sanctum a .EXE
 
 echo ===================================================
-echo  Compilador PyInstaller D&D Sanctum a .EXE
+echo  Compilador PyInstaller DnD Sanctum a .EXE
 echo ===================================================
 
-if not exist ".venv\Scripts\python.exe" (
-    echo [Error] No se encontró el entorno virtual .venv en: %~dp0.venv
+if not exist "%~dp0.venv\Scripts\python.exe" (
+    echo [Error] No se encontro el entorno virtual en: "%~dp0.venv"
     pause
     exit /b 1
 )
 
-".venv\Scripts\python.exe" build_desktop.py %*
+"%~dp0.venv\Scripts\python.exe" build_desktop.py %*
 pause
