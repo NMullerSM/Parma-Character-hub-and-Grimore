@@ -211,29 +211,161 @@ class CharacterSheet:
         char = cls()
         for k, v in data.items():
             if k == "weapons":
-                char.weapons = [WeaponAction(**w) if isinstance(w, dict) else w for w in v]
+                char.weapons = [
+                    WeaponAction(
+                        name=w.get("name", "Arma"),
+                        attack_bonus=str(w.get("attack_bonus") or w.get("hit_dc", "+0")),
+                        damage=str(w.get("damage") or w.get("damage_dice", "1d4")),
+                        damage_type=str(w.get("damage_type", "")),
+                        notes=str(w.get("notes", "")),
+                    )
+                    if isinstance(w, dict) else w
+                    for w in v
+                ]
+            elif k == "weapon_actions" and "weapons" not in data:
+                char.weapons = [
+                    WeaponAction(
+                        name=w.get("name", "Arma"),
+                        attack_bonus=str(w.get("hit_dc") or w.get("attack_bonus", "+0")),
+                        damage=str(w.get("damage_dice") or w.get("damage", "1d4")),
+                        damage_type=str(w.get("damage_type", "")),
+                        notes=str(w.get("notes", "")),
+                    )
+                    if isinstance(w, dict) else w
+                    for w in v
+                ]
             elif k == "spell_slots":
                 char.spell_slots = {
-                    lvl: SpellSlotTier(**tier) if isinstance(tier, dict) else tier
+                    str(lvl): SpellSlotTier(**tier) if isinstance(tier, dict) else tier
                     for lvl, tier in v.items()
                 }
             elif k == "spells":
                 spell_fields = {f.name for f in fields(SpellItem)}
-                char.spells = [
-                    SpellItem(**{sk: sv for sk, sv in s.items() if sk in spell_fields})
-                    if isinstance(s, dict) else s
-                    for s in v
-                ]
+                parsed_spells = []
+                for s in v:
+                    if isinstance(s, dict):
+                        s_norm = dict(s)
+                        if "cast_time" in s_norm and "casting_time" not in s_norm:
+                            s_norm["casting_time"] = s_norm["cast_time"]
+                        if "range_area" in s_norm and "range" not in s_norm:
+                            s_norm["range"] = s_norm["range_area"]
+                        if "notes" in s_norm and not s_norm.get("description"):
+                            s_norm["description"] = s_norm["notes"]
+                        parsed_spells.append(SpellItem(**{sk: sv for sk, sv in s_norm.items() if sk in spell_fields}))
+                    else:
+                        parsed_spells.append(s)
+                char.spells = parsed_spells
             elif k == "features":
-                char.features = [CharacterFeature(**f) if isinstance(f, dict) else f for f in v]
+                feat_fields = {f.name for f in fields(CharacterFeature)}
+                char.features = [
+                    CharacterFeature(**{fk: fv for fk, fv in f.items() if fk in feat_fields})
+                    if isinstance(f, dict) else f
+                    for f in v
+                ]
             elif k == "sessions":
-                char.sessions = [SessionLog(**sess) if isinstance(sess, dict) else sess for sess in v]
+                sess_fields = {f.name for f in fields(SessionLog)}
+                char.sessions = [
+                    SessionLog(**{sk: sv for sk, sv in sess.items() if sk in sess_fields})
+                    if isinstance(sess, dict) else sess
+                    for sess in v
+                ]
             elif k == "network_nodes":
-                char.network_nodes = [NetworkNode(**n) if isinstance(n, dict) else n for n in v]
+                node_fields = {f.name for f in fields(NetworkNode)}
+                char.network_nodes = [
+                    NetworkNode(**{nk: nv for nk, nv in n.items() if nk in node_fields})
+                    if isinstance(n, dict) else n
+                    for n in v
+                ]
             elif k == "network_edges":
-                char.network_edges = [NetworkEdge(**e) if isinstance(e, dict) else e for e in v]
+                edge_fields = {f.name for f in fields(NetworkEdge)}
+                char.network_edges = [
+                    NetworkEdge(**{ek: ev for ek, ev in e.items() if ek in edge_fields})
+                    if isinstance(e, dict) else e
+                    for e in v
+                ]
+            elif k == "abilities" and isinstance(v, dict):
+                norm_abilities: Dict[str, int] = {}
+                profs_from_abilities: List[str] = list(data.get("saving_throw_profs", []))
+                has_dict_ability = False
+                for stat_k, stat_v in v.items():
+                    if isinstance(stat_v, dict):
+                        has_dict_ability = True
+                        override_val = int(stat_v.get("override", 0) or 0)
+                        base_val = int(stat_v.get("base", 10) or 10)
+                        norm_abilities[stat_k] = override_val if override_val > 0 else base_val
+                        if stat_v.get("proficient") and stat_k not in profs_from_abilities:
+                            profs_from_abilities.append(stat_k)
+                    else:
+                        try:
+                            norm_abilities[stat_k] = int(stat_v)
+                        except (ValueError, TypeError):
+                            norm_abilities[stat_k] = 10
+                char.abilities = norm_abilities
+                if has_dict_ability and "saving_throw_profs" not in data:
+                    char.saving_throw_profs = profs_from_abilities
+            elif k == "skills" and isinstance(v, dict):
+                norm_skills: Dict[str, str] = {}
+                for sk_k, sk_v in v.items():
+                    if isinstance(sk_v, dict):
+                        if sk_v.get("expertise"):
+                            norm_skills[sk_k] = "expertise"
+                        elif sk_v.get("proficient"):
+                            norm_skills[sk_k] = "proficient"
+                        else:
+                            norm_skills[sk_k] = "none"
+                    else:
+                        norm_skills[sk_k] = str(sk_v)
+                char.skills = norm_skills
+            elif k == "ac" and "armor_class" not in data:
+                char.armor_class = int(v)
+            elif k == "initiative" and "initiative_bonus" not in data:
+                char.initiative_bonus = int(v)
+            elif k == "death_save_successes" and "death_saves_success" not in data:
+                char.death_saves_success = int(v)
+            elif k == "death_save_failures" and "death_saves_failure" not in data:
+                char.death_saves_failure = int(v)
+            elif k == "speed":
+                char.speed = f"{v} pies" if isinstance(v, (int, float)) else str(v)
+            elif k == "hit_dice_current":
+                if isinstance(v, str) and "d" in v.lower():
+                    try:
+                        char.hit_dice_current = int(v.lower().split("d")[0].strip())
+                    except ValueError:
+                        char.hit_dice_current = char.level
+                else:
+                    try:
+                        char.hit_dice_current = int(v)
+                    except (ValueError, TypeError):
+                        char.hit_dice_current = char.level
             elif hasattr(char, k):
                 setattr(char, k, v)
+
+        # Soportar spell_slots_total y spell_slots_used provenientes del frontend React
+        if "spell_slots_total" in data and isinstance(data["spell_slots_total"], dict):
+            used_map = data.get("spell_slots_used", {}) if isinstance(data.get("spell_slots_used"), dict) else {}
+            for lvl_str, tot_val in data["spell_slots_total"].items():
+                lvl_key = str(lvl_str)
+                tot_int = int(tot_val or 0)
+                used_int = int(used_map.get(lvl_key, 0) or 0)
+                char.spell_slots[lvl_key] = SpellSlotTier(
+                    level=int(lvl_key) if lvl_key.isdigit() else 1,
+                    total=tot_int,
+                    current=max(0, tot_int - used_int)
+                )
+
+        # Soportar hit_dice_total (ej. "4d10") si viene desde el frontend
+        if "hit_dice_total" in data and isinstance(data["hit_dice_total"], str) and "d" in data["hit_dice_total"].lower():
+            parts = data["hit_dice_total"].lower().split("d", 1)
+            if "hit_dice_max" not in data:
+                try:
+                    char.hit_dice_max = int(parts[0].strip())
+                except ValueError:
+                    pass
+            if "hit_dice_faces" not in data:
+                try:
+                    char.hit_dice_faces = int(parts[1].strip())
+                except ValueError:
+                    pass
 
         # Asegurar coherencia en dados de golpe y condiciones si faltan en guardados anteriores
         if "hit_dice_max" not in data or char.hit_dice_max <= 0:

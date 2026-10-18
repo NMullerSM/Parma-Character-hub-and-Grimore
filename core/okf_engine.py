@@ -18,7 +18,7 @@ class OkfEngine:
             if getattr(sys, "frozen", False):
                 base_dir = getattr(sys, "_MEIPASS", os.path.dirname(sys.executable))
             else:
-                base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+                base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             self.okf_dir = os.path.join(base_dir, "okf_dnd5e")
         else:
             self.okf_dir = okf_root_path
@@ -484,3 +484,92 @@ class OkfEngine:
 
         spells.sort(key=lambda s: (s.get("nivel", 0), s.get("nombre", "")))
         return spells
+
+    def search_available_spells(
+        self,
+        query: str = "",
+        class_name: Optional[str] = None,
+        level: Optional[int] = None,
+        max_level: Optional[int] = None,
+        school: Optional[str] = None,
+        limit: int = 150
+    ) -> List[Dict[str, Any]]:
+        """
+        Búsqueda enriquecida de conjuros en el compendio OKF con filtros combinados
+        de clase, nivel, escuela y texto libre. Devuelve objetos listos para el grimorio.
+        """
+        q = (query or "").lower().strip()
+        c_filter = (class_name or "").lower().strip()
+        if c_filter == "all" or c_filter == "cualquiera" or c_filter == "todos":
+            c_filter = ""
+        s_filter = (school or "").lower().strip()
+        if s_filter == "all" or s_filter == "todas":
+            s_filter = ""
+
+        results = []
+        for item in self._index:
+            if item.get("tipo") != "conjuro":
+                continue
+
+            lvl = int(item.get("nivel", 0)) if item.get("nivel") is not None else 0
+            if level is not None and lvl != level:
+                continue
+            if max_level is not None and lvl > max_level:
+                continue
+
+            if c_filter:
+                item_classes = [str(c).lower() for c in item.get("clases", [])]
+                if not any(c_filter in c for c in item_classes):
+                    continue
+
+            if s_filter:
+                item_school = str(item.get("escuela", "")).lower()
+                if s_filter not in item_school:
+                    continue
+
+            if q:
+                nombre = str(item.get("nombre", "")).lower()
+                nombre_en = str(item.get("nombre_ingles", "")).lower()
+                tags = [str(t).lower() for t in item.get("tags", [])]
+                if not (q in nombre or q in nombre_en or any(q in t for t in tags)):
+                    continue
+
+            # Enriquecer con los metadatos completos del archivo
+            rel_path = item.get("path")
+            full_data = self.read_entity_file(rel_path) if rel_path else None
+            data = full_data or item
+
+            body_md = data.get("body_markdown", data.get("descripcion", ""))
+            # Generar snippet si es muy largo
+            snippet = body_md[:200] + "..." if len(body_md) > 200 else body_md
+
+            results.append({
+                "id": item.get("id"),
+                "name": data.get("nombre", item.get("nombre")),
+                "name_en": data.get("nombre_ingles", item.get("nombre_ingles", "")),
+                "level": lvl,
+                "school": data.get("escuela", item.get("escuela", "Evocación")),
+                "cast_time": data.get("tiempo_lanzamiento", "1 acción"),
+                "casting_time": data.get("tiempo_lanzamiento", "1 acción"),
+                "range_area": data.get("alcance", "18 m"),
+                "range": data.get("alcance", "18 m"),
+                "components": data.get("componentes", "V, S"),
+                "duration": data.get("duracion", "Instantáneo"),
+                "concentration": bool(data.get("concentracion", False)),
+                "ritual": bool(data.get("ritual", False)),
+                "classes": data.get("clases", item.get("clases", [])),
+                "prepared": True,
+                "notes": body_md,
+                "description": body_md,
+                "snippet": snippet,
+                "higher_levels": data.get("niveles_superiores", ""),
+                "source": data.get("fuente", item.get("fuente", "PHB 2024")),
+                "path": rel_path
+            })
+
+            if len(results) >= limit:
+                break
+
+        results.sort(key=lambda s: (s["level"], s["name"]))
+        return results
+

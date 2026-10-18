@@ -3,12 +3,18 @@ import { useTheme } from "../context/ThemeContext";
 import { useCharacter } from "../context/CharacterContext";
 import { api } from "../api/client";
 import type { AppSettings } from "../api/types";
-import { X, Globe, Sparkles, FolderSync, Shield } from "lucide-react";
+import { X, Upload } from "lucide-react";
 
 export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const { theme, setTheme, availableThemes } = useTheme();
-  const { talespireStatus, connectTaleSpire, showToast, characters, reloadCharacters, selectCharacter } =
-    useCharacter();
+  const {
+    talespireStatus,
+    connectTaleSpire,
+    showToast,
+    characters,
+    reloadCharacters,
+    selectCharacter,
+  } = useCharacter();
 
   const [settings, setSettings] = useState<AppSettings>({
     theme: "dark-obsidian",
@@ -29,6 +35,17 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
     }
     load();
   }, []);
+
+  // Ley de Hick: Salida rápida con tecla Escape
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
 
   const handleModeChange = async (mode: "dm" | "player") => {
     setSettings((prev) => ({ ...prev, talespire_mode: mode }));
@@ -54,6 +71,34 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
     }
   };
 
+  const handleImportPdf = async () => {
+    try {
+      const res = await api.importCharacterPdf();
+      if (res.success && res.character) {
+        await reloadCharacters();
+        showToast(`Ficha importada desde PDF: ${res.character.name}`, "success");
+      } else if (res.error && res.error !== "Importación cancelada.") {
+        showToast(res.error, "warn");
+      }
+    } catch (e) {
+      showToast("Error al importar PDF", "warn");
+    }
+  };
+
+  const handleImportJson = async () => {
+    try {
+      const res = await api.importCharacterJson();
+      if (res.success && res.character) {
+        await reloadCharacters();
+        showToast(`Ficha importada desde JSON: ${res.character.name}`, "success");
+      } else if (res.error && res.error !== "Importación cancelada.") {
+        showToast(res.error, "warn");
+      }
+    } catch (e) {
+      showToast("Error al importar JSON", "warn");
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
@@ -65,11 +110,14 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
         <div className="px-6 py-4 border-b border-border-iron flex items-center justify-between">
           <div>
             <h2 className="font-display font-bold text-xl text-gold">Ajustes & Configuración</h2>
-            <p className="text-xs text-muted">Personaliza tu entorno de juego, temas y conexiones externas.</p>
+            <p className="text-xs text-muted">
+              Personaliza tu entorno de juego, temas y conexiones externas.
+            </p>
           </div>
           <button
             onClick={onClose}
             className="p-1 rounded text-muted hover:text-main hover:bg-card transition-colors"
+            title="Cerrar (Esc)"
           >
             <X className="w-5 h-5" />
           </button>
@@ -79,9 +127,8 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
         <div className="p-6 overflow-y-auto space-y-6">
           {/* 1. Selector de Tema Visual */}
           <section className="space-y-3">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-gold" />
-              <span>Tema Visual & Estilo</span>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
+              Tema Visual & Estilo
             </h3>
 
             <div className="grid grid-cols-2 gap-3">
@@ -97,21 +144,24 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
                 >
                   <div className="font-semibold text-sm text-main">{t.name}</div>
                   <div className="text-xs text-muted mt-0.5">
-                    {t.is_dark ? "Atmósfera oscura tipo Sanctum" : "Contraste claro tipo Pergamino"}
+                    {t.is_dark
+                      ? "Atmósfera oscura tipo Sanctum"
+                      : "Contraste claro tipo Pergamino"}
                   </div>
                 </button>
               ))}
             </div>
             <p className="text-[11px] text-muted">
-              Puedes agregar temas personalizados creando subcarpetas con un archivo <code className="text-gold">theme.json</code> en la carpeta <code className="text-gold">themes/</code>.
+              Puedes agregar temas personalizados creando subcarpetas con un archivo{" "}
+              <code className="text-gold">theme.json</code> en la carpeta{" "}
+              <code className="text-gold">themes/</code>.
             </p>
           </section>
 
           {/* 2. Integración con TaleSpire */}
           <section className="space-y-3 pt-3 border-t border-border-iron">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted flex items-center gap-2">
-              <Shield className="w-4 h-4 text-gold" />
-              <span>Conexión TaleSpire (Puente 3D)</span>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
+              Conexión TaleSpire (Puente 3D)
             </h3>
 
             <div className="p-4 rounded-xl border border-border-iron bg-card space-y-3">
@@ -119,7 +169,8 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
                 <div>
                   <div className="text-sm font-semibold text-main">Estado del Puente IPC</div>
                   <div className="text-xs text-muted mt-0.5">
-                    Estado: <span className="font-semibold text-gold">{talespireStatus.state_label}</span>
+                    Estado:{" "}
+                    <span className="font-semibold text-gold">{talespireStatus.state_label}</span>
                   </div>
                 </div>
                 <button
@@ -132,7 +183,9 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
 
               {/* Modo de Altura del Cursor */}
               <div className="pt-2 border-t border-border-iron/40">
-                <label className="block text-xs text-muted mb-1.5 font-medium">Calibración de Gesto Físico</label>
+                <label className="block text-xs text-muted mb-1.5 font-medium">
+                  Calibración de Gesto Físico (Eje Y relativo a la ventana de TaleSpire)
+                </label>
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleModeChange("dm")}
@@ -142,7 +195,7 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
                         : "border-border-iron bg-surface text-muted"
                     }`}
                   >
-                    Modo DM / GM (17.5% Altura)
+                    Modo DM / GM (30.0% Altura)
                   </button>
                   <button
                     onClick={() => handleModeChange("player")}
@@ -152,7 +205,7 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
                         : "border-border-iron bg-surface text-muted"
                     }`}
                   >
-                    Modo Jugador (15.5% Altura)
+                    Modo Jugador (24.0% Altura)
                   </button>
                 </div>
               </div>
@@ -168,11 +221,10 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
             </div>
           </section>
 
-          {/* 3. Fuentes de Datos OKF & Propuesta AideDD */}
+          {/* 3. Fuentes de Datos OKF */}
           <section className="space-y-3 pt-3 border-t border-border-iron">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted flex items-center gap-2">
-              <FolderSync className="w-4 h-4 text-gold" />
-              <span>Fuentes de Datos & Compendios</span>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
+              Fuentes de Datos & Compendios
             </h3>
 
             <div className="p-4 rounded-xl border border-border-iron bg-card space-y-3">
@@ -182,43 +234,48 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
                   {settings.okf_path}
                 </span>
               </div>
-
-              {/* Tarjeta Propuesta AideDD.org */}
-              <div className="p-3 rounded-lg bg-surface/60 border border-border-iron/80 space-y-1.5">
-                <div className="flex items-center gap-2 text-xs font-semibold text-gold">
-                  <Globe className="w-3.5 h-3.5" />
-                  <span>Sincronización con AideDD.org (Propuesta)</span>
-                </div>
-                <p className="text-[11px] text-muted leading-relaxed">
-                  Arquitectura preparada para conectar con el catálogo de conjuros, invocaciones y objetos mágicos de <span className="text-main font-medium">aidedd.org</span> mediante un crawler asíncrono para generar ficheros Markdown OKF automáticamente.
-                </p>
-                <div className="pt-1">
-                  <button
-                    disabled
-                    className="px-2.5 py-1 rounded bg-card border border-border-iron text-[11px] text-muted/60 cursor-not-allowed"
-                  >
-                    Sincronizar desde AideDD (Próximamente)
-                  </button>
-                </div>
-              </div>
             </div>
           </section>
 
-          {/* 4. Gestión de Personajes Guardados */}
+          {/* 4. Gestión e Importación de Personajes */}
           <section className="space-y-3 pt-3 border-t border-border-iron">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
-              Personajes Guardados en SQLite
-            </h3>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
+                Personajes en Base de Datos SQLite
+              </h3>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleImportPdf}
+                  className="px-2.5 py-1 rounded bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-medium text-muted hover:text-main flex items-center gap-1.5 transition-colors"
+                >
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>Importar PDF AcroForm</span>
+                </button>
+                <button
+                  onClick={handleImportJson}
+                  className="px-2.5 py-1 rounded bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-medium text-muted hover:text-main flex items-center gap-1.5 transition-colors"
+                >
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>Importar JSON</span>
+                </button>
+              </div>
+            </div>
+
             <div className="bg-card border border-border-iron rounded-xl divide-y divide-border-iron/60 overflow-hidden">
               {characters.map((c) => (
                 <div key={c.id} className="p-3 flex items-center justify-between text-xs">
                   <div>
                     <span className="font-semibold text-main">{c.name}</span>
-                    <span className="text-muted ml-2">Nvl {c.level} {c.char_class}</span>
+                    <span className="text-muted ml-2">
+                      Nvl {c.level} {c.char_class}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => selectCharacter(c.id)}
+                      onClick={() => {
+                        selectCharacter(c.id);
+                        onClose();
+                      }}
                       className="px-2.5 py-1 rounded bg-surface border border-border-iron hover:border-gold text-muted hover:text-main"
                     >
                       Cargar

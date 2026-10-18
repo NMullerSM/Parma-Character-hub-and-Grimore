@@ -21,6 +21,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     { id: "light-mithril", name: "Mithril Scribe (Claro)", is_dark: false },
   ]);
 
+  const applyTheme = (themeId: string) => {
+    setCurrentTheme(themeId);
+    document.documentElement.setAttribute("data-theme", themeId);
+  };
+
   useEffect(() => {
     async function loadTheme() {
       try {
@@ -35,12 +40,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
     }
     loadTheme();
+    window.addEventListener("pywebviewready", loadTheme);
+    return () => window.removeEventListener("pywebviewready", loadTheme);
   }, []);
-
-  const applyTheme = (themeId: string) => {
-    setCurrentTheme(themeId);
-    document.documentElement.setAttribute("data-theme", themeId);
-  };
 
   const setTheme = async (themeId: string) => {
     applyTheme(themeId);

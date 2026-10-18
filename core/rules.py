@@ -384,3 +384,171 @@ def roll_dice_pool(pool: Dict[Any, int], modifier: int = 0, mode: str = "normal"
     }
 
 
+def compute_dynamic_features(char: CharacterSheet) -> List[Any]:
+    """
+    Calcula y actualiza dinámicamente los rasgos, dotes y habilidades especiales
+    del personaje de acuerdo a las reglas oficiales de D&D 5e / 2024 (usos por nivel,
+    dados escalados, recarga en descansos y CDs de salvación).
+    """
+    from .models import CharacterFeature
+
+    car_mod = calc_modifier(char.abilities.get("CAR", 10))
+    des_mod = calc_modifier(char.abilities.get("DES", 10))
+    fue_mod = calc_modifier(char.abilities.get("FUE", 10))
+    int_mod = calc_modifier(char.abilities.get("INT", 10))
+    sab_mod = calc_modifier(char.abilities.get("SAB", 10))
+    prof = calc_proficiency_bonus(char.level)
+
+    features = list(char.features or [])
+    feat_names = {f.name.lower(): f for f in features}
+
+    # 1. Inspiración Bárdica (Bardo)
+    if "bardo" in (char.char_class or "").lower() or any("inspiración" in k for k in feat_names):
+        bard_die = "d6" if char.level < 5 else ("d8" if char.level < 10 else ("d10" if char.level < 15 else "d12"))
+        max_uses = max(1, car_mod)
+        recharge = "Corto" if char.level >= 5 else "Largo"
+        insp_name = f"Inspiración Bárdica ({bard_die})"
+
+        # Buscar si ya existe
+        existing = next((f for f in features if "inspiración" in f.name.lower() or "bárdica" in f.name.lower()), None)
+        if existing:
+            existing.name = insp_name
+            existing.uses_max = max_uses
+            if existing.uses_current is None or existing.uses_current > max_uses:
+                existing.uses_current = max_uses
+            existing.recharge = recharge
+            existing.description = (
+                f"Con una acción adicional, inspiras a una criatura a 18 m. Añade 1{bard_die} a una tirada de "
+                f"d20 durante los próximos 10 minutos. Usos máximos: {max_uses} (+{car_mod} CAR). "
+                f"Recarga con Descanso {recharge}."
+            )
+        else:
+            features.insert(
+                0,
+                CharacterFeature(
+                    id="feat_bardic_insp",
+                    name=insp_name,
+                    source="Bardo",
+                    uses_max=max_uses,
+                    uses_current=max_uses,
+                    recharge=recharge,
+                    description=f"Con una acción adicional, inspiras a una criatura a 18 m (1{bard_die}). Recarga con Descanso {recharge}."
+                )
+            )
+
+    # 2. Hojas Psíquicas (Psychic Blades - Colegio de Susurros)
+    if "susurro" in (char.subclass or "").lower() or any("hojas psíquicas" in k or "psychic blades" in k for k in feat_names):
+        pb_die = "2d6" if char.level < 5 else ("3d6" if char.level < 10 else ("5d6" if char.level < 15 else "8d6"))
+        recharge = "Corto" if char.level >= 5 else "Largo"
+        existing = next((f for f in features if "hojas psíquicas" in f.name.lower() or "psychic blades" in f.name.lower()), None)
+        desc = (
+            f"Al impactar con un arma sutil o a distancia, puedes gastar 1 uso de Inspiración Bárdica para infligir "
+            f"+{pb_die} de daño psíquico a la criatura (1 vez por turno). Recarga con Descanso {recharge}."
+        )
+        if existing:
+            existing.name = f"Hojas Psíquicas ({pb_die})"
+            existing.description = desc
+            existing.recharge = recharge
+            existing.uses_max = max(1, car_mod)
+        else:
+            features.append(
+                CharacterFeature(
+                    id="feat_psychic_blades",
+                    name=f"Hojas Psíquicas ({pb_die})",
+                    source="Colegio de Susurros",
+                    uses_max=max(1, car_mod),
+                    uses_current=max(1, car_mod),
+                    recharge=recharge,
+                    description=desc,
+                )
+            )
+
+    # 3. Palabras de Terror (Words of Terror - Colegio de Susurros)
+    if "susurro" in (char.subclass or "").lower() or any("palabras de terror" in k or "words of terror" in k for k in feat_names):
+        cd_val = 8 + prof + car_mod
+        desc = (
+            f"Tras hablar 1 minuto a solas con un humanoide, debe superar una tirada de salvación de SAB "
+            f"contra CD {cd_val} o quedará asustado de ti (o de quien elijas) durante 1 hora. Recarga con Descanso Corto o Largo."
+        )
+        existing = next((f for f in features if "palabras de terror" in f.name.lower() or "words of terror" in f.name.lower()), None)
+        if existing:
+            existing.description = desc
+            existing.recharge = "Corto"
+            existing.uses_max = 1
+        else:
+            features.append(
+                CharacterFeature(
+                    id="feat_words_of_terror",
+                    name=f"Palabras de Terror (CD {cd_val})",
+                    source="Colegio de Susurros",
+                    uses_max=1,
+                    uses_current=1,
+                    recharge="Corto",
+                    description=desc,
+                )
+            )
+
+    # 4. Magia Drow (Especie / Linaje Drow)
+    if "drow" in (char.race or "").lower() or any("magia drow" in k for k in feat_names):
+        existing = next((f for f in features if "magia drow" in f.name.lower()), None)
+        desc = (
+            "Conoces el truco Luces Danzantes (a voluntad). "
+            + ("A partir de nivel 3 puedes lanzar Fuego Feérico 1 vez por descanso largo sin gastar ranura. " if char.level >= 3 else "")
+            + ("A nivel 5 puedes lanzar Oscuridad 1 vez por descanso largo. " if char.level >= 5 else "")
+            + f"Tu aptitud mágica es Carisma (CD {8 + prof + car_mod})."
+        )
+        if existing:
+            existing.description = desc
+            existing.uses_max = 1
+            existing.recharge = "Largo"
+        else:
+            features.append(
+                CharacterFeature(
+                    id="feat_drow_magic",
+                    name="Magia Drow",
+                    source="Linaje Drow",
+                    uses_max=1,
+                    uses_current=1,
+                    recharge="Largo",
+                    description=desc,
+                )
+            )
+
+    # 5. Dote Afortunado (Lucky)
+    if any("afortunado" in k or "lucky" in k for k in feat_names):
+        lucky_feat = next((f for f in features if "afortunado" in f.name.lower() or "lucky" in f.name.lower()), None)
+        if lucky_feat:
+            lucky_feat.uses_max = prof
+            if lucky_feat.uses_current is None or lucky_feat.uses_current > prof:
+                lucky_feat.uses_current = prof
+            lucky_feat.recharge = "Largo"
+            lucky_feat.description = (
+                f"Tienes {prof} puntos de suerte. Puedes gastar 1 punto para tirar un d20 adicional en tiradas de ataque, "
+                f"pruebas o salvaciones y elegir qué dado usar. Recarga con Descanso Largo."
+            )
+
+    # 6. Ataque Furtivo (Pícaro)
+    if "pícaro" in (char.char_class or "").lower() or "picaro" in (char.char_class or "").lower():
+        sneak_dice = f"{(char.level + 1) // 2}d6"
+        existing = next((f for f in features if "ataque furtivo" in f.name.lower() or "sneak attack" in f.name.lower()), None)
+        desc = f"1 vez por turno, infliges +{sneak_dice} de daño adicional si tienes ventaja o un aliado a 1.5 m del objetivo."
+        if existing:
+            existing.name = f"Ataque Furtivo ({sneak_dice})"
+            existing.description = desc
+        else:
+            features.append(
+                CharacterFeature(
+                    id="feat_sneak_attack",
+                    name=f"Ataque Furtivo ({sneak_dice})",
+                    source="Pícaro",
+                    uses_max=0,
+                    uses_current=0,
+                    recharge="Pasivo",
+                    description=desc,
+                )
+            )
+
+    return features
+
+
+

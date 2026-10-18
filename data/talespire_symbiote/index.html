@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D&D Sanctum Companion - TaleSpire Symbiote</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --gold: #c9a45c;
+      --gold-hover: #e5bd68;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --green: #3fb950;
+      --red: #f85149;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 12px;
+      font-size: 13px;
+      user-select: none;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+    }
+    .title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+    }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--red);
+    }
+    .status-dot.connected {
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+    }
+    .char-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 12px;
+    }
+    .char-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--gold);
+    }
+    .char-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .stats-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .stat-pill {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 6px;
+      text-align: center;
+    }
+    .stat-val {
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .stat-label {
+      font-size: 9px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    button {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 4px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    button:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: #1c222b;
+    }
+    button.primary {
+      background: var(--gold);
+      color: #0b0d10;
+      border-color: var(--gold);
+    }
+    button.primary:hover {
+      background: var(--gold-hover);
+      color: #0b0d10;
+    }
+    .ledger {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px;
+      max-height: 140px;
+      overflow-y: auto;
+    }
+    .ledger-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .ledger-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 11px;
+    }
+    .ledger-item:last-child {
+      border-bottom: none;
+    }
+    .crit { color: var(--green); font-weight: 700; }
+    .fumble { color: var(--red); font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="title">
+      <span>⚔️</span>
+      <span>D&D Sanctum</span>
+    </div>
+    <div class="status-badge">
+      <div id="statusDot" class="status-dot"></div>
+      <span id="statusText">Desconectado</span>
+    </div>
+  </div>
+
+  <div class="char-card">
+    <div class="char-name" id="charName">Artanis de las Estrellas</div>
+    <div class="char-sub" id="charSub">Mago Elfo · Nivel 4</div>
+    <div class="stats-row">
+      <div class="stat-pill">
+        <div class="stat-val" id="charHp" style="color: var(--green);">24/24</div>
+        <div class="stat-label">Puntos Golpe</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-val" id="charAc" style="color: var(--gold);">15</div>
+        <div class="stat-label">Armadura</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-val" id="charDc" style="color: #a371f7;">CD 14</div>
+        <div class="stat-label">Salv. Conjuros</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions-grid">
+    <button class="primary" onclick="rollFormula('1d20', 'Tirada D20')">1d20</button>
+    <button onclick="rollFormula('2d20kh1', 'Ventaja')">Ventaja</button>
+    <button onclick="rollFormula('2d20kl1', 'Desventaja')">Desventaja</button>
+    <button onclick="rollFormula('1d6', 'd6')">1d6</button>
+    <button onclick="rollFormula('1d8', 'd8')">1d8</button>
+    <button onclick="rollFormula('1d10', 'd10')">1d10</button>
+  </div>
+
+  <div class="ledger">
+    <div class="ledger-title">Registro de Tiradas TaleSpire</div>
+    <div id="ledgerList">
+      <div class="ledger-item" style="color: var(--muted);">Esperando tiradas...</div>
+    </div>
+  </div>
+
+  <script>
+    // Enlace con TaleSpire Symbiote API y Puente Local D&D Sanctum WebSocket
+    let ws = null;
+    const WS_URL = "ws://127.0.0.1:8765";
+
+    function updateStatus(connected) {
+      const dot = document.getElementById("statusDot");
+      const txt = document.getElementById("statusText");
+      if (connected) {
+        dot.classList.add("connected");
+        txt.textContent = "Conectado";
+      } else {
+        dot.classList.remove("connected");
+        txt.textContent = "Desconectado";
+      }
+    }
+
+    function addLedgerEntry(reason, total, detail, isCrit, isFumble) {
+      const list = document.getElementById("ledgerList");
+      const item = document.createElement("div");
+      item.className = "ledger-item";
+      let totalClass = "";
+      if (isCrit) totalClass = "crit";
+      if (isFumble) totalClass = "fumble";
+
+      item.innerHTML = `
+        <div>
+          <strong>${reason}</strong>
+          <span style="color: var(--muted); font-size: 10px;">${detail}</span>
+        </div>
+        <div class="${totalClass}" style="font-size: 13px;">${total}</div>
+      `;
+      if (list.children.length === 1 && list.children[0].textContent.includes("Esperando")) {
+        list.innerHTML = "";
+      }
+      list.prepend(item);
+    }
+
+    // Inicializar conexión con TaleSpire Symbiote API
+    async function initTaleSpire() {
+      if (typeof window.TS !== "undefined" && window.TS.dice) {
+        console.log("TaleSpire Symbiote API detectada.");
+        // Escuchar resultados de dados concluidos en TaleSpire
+        window.TS.dice.onRollResults((rollResults) => {
+          console.log("Tirada concluida en TaleSpire:", rollResults);
+          handleTaleSpireRoll(rollResults);
+        });
+      } else {
+        console.warn("TaleSpire TS.dice no detectado (modo navegador de pruebas).");
+      }
+    }
+
+    // Lanzar dados en TaleSpire usando TS.dice.putDiceInTray
+    async function rollFormula(formula, label) {
+      if (typeof window.TS !== "undefined" && window.TS.dice) {
+        try {
+          const descriptors = await window.TS.dice.makeRollDescriptors(formula);
+          await window.TS.dice.putDiceInTray(descriptors, true);
+        } catch (e) {
+          console.error("Error al enviar dados a bandeja de TaleSpire:", e);
+        }
+      } else {
+        // Simulación local si no está dentro de TaleSpire
+        const val = Math.floor(Math.random() * 20) + 1;
+        addLedgerEntry(label, val, formula, val === 20, val === 1);
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({
+            event: "roll_result",
+            formula: formula,
+            label: label,
+            total: val,
+            is_crit: val === 20,
+            is_fumble: val === 1
+          }));
+        }
+      }
+    }
+
+    function handleTaleSpireRoll(results) {
+      let total = 0;
+      let detail = "";
+      let isCrit = false;
+      let isFumble = false;
+
+      if (results && results.rollGroups) {
+        results.rollGroups.forEach(g => {
+          g.dice.forEach(d => {
+            total += d.value;
+            detail += `${d.value} `;
+            if (d.sides === 20 && d.value === 20) isCrit = true;
+            if (d.sides === 20 && d.value === 1) isFumble = true;
+          });
+        });
+      }
+
+      addLedgerEntry("TaleSpire", total, detail.trim(), isCrit, isFumble);
+
+      // Reenviar a D&D Sanctum para actualizar el visualizador 2D y el libro de sesiones
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({
+          event: "talespire_roll",
+          total: total,
+          detail: detail,
+          is_crit: isCrit,
+          is_fumble: isFumble
+        }));
+      }
+    }
+
+    // Conectar WebSocket a D&D Sanctum
+    function connectWebSocket() {
+      try {
+        ws = new WebSocket(WS_URL);
+        ws.onopen = () => {
+          updateStatus(true);
+          ws.send(JSON.stringify({ event: "symbiote_hello", client: "TaleSpire" }));
+        };
+        ws.onclose = () => {
+          updateStatus(false);
+          setTimeout(connectWebSocket, 3000);
+        };
+        ws.onerror = () => {
+          updateStatus(false);
+        };
+        ws.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            if (data.event === "character_sync") {
+              document.getElementById("charName").textContent = data.character.name;
+              document.getElementById("charSub").textContent = `${data.character.char_class} · Nivel ${data.character.level}`;
+              document.getElementById("charHp").textContent = `${data.character.hp_current}/${data.character.hp_max}`;
+              document.getElementById("charAc").textContent = data.character.ac;
+            } else if (data.event === "trigger_roll") {
+              rollFormula(data.formula, data.label || "Tirada Remota");
+            }
+          } catch (e) {
+            console.error("Error al procesar mensaje de Sanctum:", e);
+          }
+        };
+      } catch (e) {
+        updateStatus(false);
+        setTimeout(connectWebSocket, 3000);
+      }
+    }
+
+    // Inicio automático
+    initTaleSpire();
+    connectWebSocket();
+  </script>
+</body>
+</html>

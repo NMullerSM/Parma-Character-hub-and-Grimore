@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useCharacter } from "../context/CharacterContext";
+import type { RollMode } from "../api/types";
 import { X, RotateCcw, Trash2, History, Dice5 } from "lucide-react";
 
 export const DiceDrawer: React.FC = () => {
@@ -12,36 +13,35 @@ export const DiceDrawer: React.FC = () => {
     rollHistory,
     clearRollHistory,
     talespireStatus,
+    activeCharacter,
+    updateActiveCharacter,
+    showToast,
   } = useCharacter();
 
   const [activeTab, setActiveTab] = useState<"roller" | "history">("roller");
   const [pool, setPool] = useState<Record<string, number>>({ "20": 1 });
   const [modifier, setModifier] = useState<number>(0);
   const [label, setLabel] = useState<string>("Tirada Rápida");
+  const [mode, setMode] = useState<RollMode>("normal");
   const [sendToTaleSpire, setSendToTaleSpire] = useState<boolean>(true);
   const [isRolling, setIsRolling] = useState<boolean>(false);
+  const [dc, setDc] = useState<number | undefined>(undefined);
+  const [isDeathSave, setIsDeathSave] = useState<boolean>(false);
 
   useEffect(() => {
     if (diceRequest) {
       setPool(diceRequest.dice || { "20": 1 });
       setModifier(diceRequest.modifier || 0);
       setLabel(diceRequest.label || "Tirada Rápida");
+      setMode(diceRequest.mode || "normal");
+      setDc(diceRequest.dc);
+      setIsDeathSave(Boolean(diceRequest.is_death_save || diceRequest.label?.toLowerCase().includes("muerte")));
       if (typeof diceRequest.send_to_talespire === "boolean") {
         setSendToTaleSpire(diceRequest.send_to_talespire);
       }
       setActiveTab("roller");
     }
   }, [diceRequest]);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isDiceDrawerOpen) {
-        closeDiceDrawer();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isDiceDrawerOpen, closeDiceDrawer]);
 
   if (!isDiceDrawerOpen) return null;
 
@@ -77,6 +77,9 @@ export const DiceDrawer: React.FC = () => {
     setPool({ "20": 1 });
     setModifier(0);
     setLabel("Tirada Rápida");
+    setMode("normal");
+    setDc(undefined);
+    setIsDeathSave(false);
   };
 
   const handleRoll = async () => {
@@ -86,7 +89,11 @@ export const DiceDrawer: React.FC = () => {
         dice: pool,
         modifier,
         label,
+        mode,
         send_to_talespire: sendToTaleSpire,
+        dc,
+        is_death_save: isDeathSave,
+        is_saving_throw: Boolean(dc !== undefined || isDeathSave || label.toLowerCase().includes("salvaci")),
       });
     } finally {
       setIsRolling(false);
@@ -94,6 +101,7 @@ export const DiceDrawer: React.FC = () => {
   };
 
   const totalDiceCount = Object.values(pool).reduce((acc, count) => acc + count, 0);
+  const hasD20 = (pool["20"] || 0) > 0;
 
   return (
     <div className="fixed inset-0 z-40 flex justify-end">
@@ -162,6 +170,40 @@ export const DiceDrawer: React.FC = () => {
                   className="w-full bg-input text-main border border-border-iron rounded px-3 py-1.5 text-sm focus:border-gold outline-none"
                 />
               </div>
+
+              {/* Modo de Tirada (Normal / Ventaja / Desventaja) */}
+              {hasD20 && (
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">
+                    Modo de Tirada (d20)
+                  </label>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {(
+                      [
+                        { id: "normal", label: "Normal" },
+                        { id: "advantage", label: "Ventaja" },
+                        { id: "disadvantage", label: "Desventaja" },
+                      ] as const
+                    ).map((m) => (
+                      <button
+                        key={m.id}
+                        onClick={() => setMode(m.id)}
+                        className={`py-1.5 rounded border text-xs font-semibold transition-all ${
+                          mode === m.id
+                            ? m.id === "advantage"
+                              ? "border-emerald-500 bg-emerald-500/15 text-emerald-400"
+                              : m.id === "disadvantage"
+                              ? "border-crimson bg-crimson/15 text-crimson"
+                              : "border-gold bg-gold/15 text-gold"
+                            : "border-border-iron bg-card/40 text-muted hover:text-main"
+                        }`}
+                      >
+                        {m.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Selector de Dados */}
               <div>
@@ -245,6 +287,50 @@ export const DiceDrawer: React.FC = () => {
                 </div>
               </div>
 
+              {/* CD Objetivo (Dificultad de Salvación) */}
+              {(hasD20 || isDeathSave) && (
+                <div className="p-2.5 rounded border border-border-iron bg-card/40 space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold uppercase tracking-wider text-muted">
+                      CD Objetivo (Salvación / Dificultad)
+                    </label>
+                    {dc !== undefined && (
+                      <button
+                        onClick={() => setDc(undefined)}
+                        className="text-[10px] text-muted hover:text-crimson"
+                      >
+                        Quitar CD
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      value={dc ?? ""}
+                      placeholder="Sin CD (Opcional, ej: 10, 15...)"
+                      onChange={(e) => setDc(e.target.value ? parseInt(e.target.value, 10) : undefined)}
+                      className="flex-1 bg-input text-main border border-border-iron rounded px-2.5 py-1 text-xs focus:border-gold outline-none"
+                    />
+                    <div className="flex gap-1">
+                      {[10, 12, 15, 18].map((v) => (
+                        <button
+                          key={v}
+                          type="button"
+                          onClick={() => setDc(v)}
+                          className={`px-2 py-1 rounded text-[11px] font-stat border transition-colors ${
+                            dc === v
+                              ? "border-gold bg-gold/20 text-gold font-bold"
+                              : "border-border-iron bg-surface text-muted hover:text-main"
+                          }`}
+                        >
+                          CD{v}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Conexión TaleSpire */}
               {talespireStatus.is_installed && (
                 <div className="p-3 rounded border border-border-iron bg-card/60 space-y-1.5">
@@ -265,29 +351,92 @@ export const DiceDrawer: React.FC = () => {
                 </div>
               )}
 
-              {/* Resultado Anterior: Con espaciado seguro para que NO se monte sobre el botón */}
+              {/* Resultado Anterior */}
               {lastRollResult && (
-                <div className="p-3 rounded-lg border border-gold/40 bg-card text-center space-y-1">
+                <div className="p-3 rounded-lg border border-gold/40 bg-card text-center space-y-1.5">
                   <p className="text-[11px] text-muted uppercase tracking-wider font-semibold">
                     Última: {lastRollResult.label}
                   </p>
-                  <div className="font-stat font-bold text-2xl text-gold">{lastRollResult.total}</div>
-                  <div className="text-[11px] text-muted font-stat">
-                    Dados: [{lastRollResult.dice_rolls.map((r) => r.roll).join(", ")}]
-                    {lastRollResult.modifier !== 0 && (
-                      <span>
-                        {" "}
-                        {lastRollResult.modifier > 0
-                          ? `+${lastRollResult.modifier}`
-                          : lastRollResult.modifier}
-                      </span>
-                    )}
-                  </div>
+                  {lastRollResult.talespire_sent ? (
+                    <div className="font-stat font-bold text-sm text-gold py-1">
+                      Lanzado en mesa 3D (TaleSpire)
+                    </div>
+                  ) : (
+                    <>
+                      <div className="font-stat font-bold text-2xl text-gold">
+                        {lastRollResult.total}
+                      </div>
+
+                      {/* Veredicto de Éxito / Fracaso para Salvaciones */}
+                      {lastRollResult.success !== undefined && (
+                        <div
+                          className={`py-1 px-3 rounded text-xs font-bold uppercase tracking-wider mx-auto inline-block ${
+                            lastRollResult.is_crit
+                              ? "bg-emerald-500/25 border border-emerald-500 text-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.3)]"
+                              : lastRollResult.is_fumble
+                              ? "bg-crimson/25 border border-crimson text-crimson animate-pulse"
+                              : lastRollResult.success
+                              ? "bg-emerald-500/20 border border-emerald-500/60 text-emerald-400"
+                              : "bg-crimson/20 border border-crimson/60 text-crimson"
+                          }`}
+                        >
+                          {lastRollResult.is_death_save
+                            ? lastRollResult.is_crit
+                              ? "¡ÉXITO CRÍTICO! (+2 Éxitos)"
+                              : lastRollResult.is_fumble
+                              ? "¡FALLO CRÍTICO! (+2 Fallos)"
+                              : lastRollResult.success
+                              ? "¡ÉXITO! (+1 Éxito)"
+                              : "¡FRACASO! (+1 Fallo)"
+                            : lastRollResult.success
+                            ? `¡ÉXITO! (${lastRollResult.total} vs CD ${lastRollResult.dc || 10})`
+                            : `FRACASO (${lastRollResult.total} vs CD ${lastRollResult.dc || 10})`}
+                        </div>
+                      )}
+
+                      {/* Botón rápido para asentar en ficha si es Salvación de Muerte */}
+                      {lastRollResult.is_death_save && activeCharacter && (
+                        <div className="pt-1">
+                          <button
+                            onClick={() => {
+                              if (lastRollResult.success) {
+                                const addCount = lastRollResult.is_crit ? 2 : 1;
+                                const nextSucc = Math.min(3, (activeCharacter.death_save_successes || 0) + addCount);
+                                updateActiveCharacter({ death_save_successes: nextSucc });
+                                showToast(`Registrado: ${nextSucc}/3 Éxitos contra Muerte`, "success");
+                              } else {
+                                const addCount = lastRollResult.is_fumble ? 2 : 1;
+                                const nextFail = Math.min(3, (activeCharacter.death_save_failures || 0) + addCount);
+                                updateActiveCharacter({ death_save_failures: nextFail });
+                                showToast(`Registrado: ${nextFail}/3 Fallos contra Muerte`, "warn");
+                              }
+                            }}
+                            className="px-2.5 py-1 rounded bg-surface border border-border-iron hover:border-gold text-[11px] font-semibold text-main transition-colors"
+                          >
+                            ✓ Asentar en Salvaciones de Muerte
+                          </button>
+                        </div>
+                      )}
+
+                      <div className="text-[11px] text-muted font-stat">
+                        {lastRollResult.detail ||
+                          `Dados: [${lastRollResult.dice_rolls.map((r) => r.roll).join(", ")}]`}
+                        {lastRollResult.modifier !== 0 && (
+                          <span>
+                            {" "}
+                            {lastRollResult.modifier > 0
+                              ? `+${lastRollResult.modifier}`
+                              : lastRollResult.modifier}
+                          </span>
+                        )}
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
             </div>
 
-            {/* Pie del Drawer Fijo: Nunca se superpone */}
+            {/* Pie del Drawer Fijo */}
             <div className="p-4 border-t border-border-iron bg-surface flex gap-2 shrink-0">
               <button
                 onClick={closeDiceDrawer}
@@ -347,7 +496,7 @@ export const DiceDrawer: React.FC = () => {
                             : "text-gold"
                         }`}
                       >
-                        {item.total}
+                        {item.channel === "TaleSpire 3D" ? "3D" : item.total}
                       </span>
                     </div>
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { api } from "../api/client";
 import type { CompendiumCategory, CompendiumSearchResult } from "../api/types";
 import { Search } from "lucide-react";
+import { MarkdownViewer } from "../components/MarkdownViewer";
 
 export const CompendiumView: React.FC = () => {
   const [categories, setCategories] = useState<CompendiumCategory[]>([]);
@@ -139,9 +140,9 @@ export const CompendiumView: React.FC = () => {
               </div>
 
               {/* Contenido Renderizado */}
-              <div className="prose prose-invert max-w-none text-xs md:text-sm text-main/90 leading-relaxed space-y-3 font-body whitespace-pre-wrap">
-                {selectedEntry.content || "Sin descripción disponible."}
-              </div>
+              <MarkdownViewer
+                content={selectedEntry.content || "Sin descripción disponible."}
+              />
             </div>
           ) : (
             <div className="h-full flex items-center justify-center text-muted text-sm text-center">

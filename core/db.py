@@ -82,7 +82,7 @@ class DatabaseManager:
             # 3. Nodos de Red Social / Campaña
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS network_nodes (
-                    id TEXT PRIMARY KEY,
+                    id TEXT,
                     character_id INTEGER,
                     name TEXT,
                     role TEXT,
@@ -90,6 +90,7 @@ class DatabaseManager:
                     avatar_base64 TEXT,
                     x REAL DEFAULT 0.0,
                     y REAL DEFAULT 0.0,
+                    PRIMARY KEY (id, character_id),
                     FOREIGN KEY (character_id) REFERENCES characters(id) ON DELETE CASCADE
                 );
             """)
@@ -152,31 +153,38 @@ class DatabaseManager:
 
     def save_character(self, char: CharacterSheet, set_active: bool = True) -> int:
         """Guarda o actualiza un personaje en la base de datos de manera atómica."""
-        char_dict = char.to_dict()
-        data_json = json.dumps(char_dict, ensure_ascii=False)
-
         with self._get_connection() as conn:
             cursor = conn.cursor()
-            # Buscar si ya existe por nombre
-            cursor.execute("SELECT id FROM characters WHERE name = ? LIMIT 1;", (char.name,))
-            existing = cursor.fetchone()
+            existing = None
+            if char.id is not None:
+                cursor.execute("SELECT id, is_active FROM characters WHERE id = ? LIMIT 1;", (char.id,))
+                existing = cursor.fetchone()
+            if not existing:
+                cursor.execute("SELECT id, is_active FROM characters WHERE name = ? LIMIT 1;", (char.name,))
+                existing = cursor.fetchone()
 
             if existing:
                 char_id = existing["id"]
+                char.id = char_id
+                char_dict = char.to_dict()
+                data_json = json.dumps(char_dict, ensure_ascii=False)
                 if set_active:
                     cursor.execute("UPDATE characters SET is_active = 0;")
+                new_active = 1 if set_active else int(existing["is_active"] or 0)
                 cursor.execute("""
                     UPDATE characters
-                    SET char_class = ?, subclass = ?, level = ?, race = ?,
+                    SET name = ?, char_class = ?, subclass = ?, level = ?, race = ?,
                         hp_current = ?, hp_max = ?, portrait_path = ?,
                         data_json = ?, is_active = ?, updated_at = CURRENT_TIMESTAMP
                     WHERE id = ?;
                 """, (
-                    char.char_class, char.subclass, char.level, char.race,
+                    char.name, char.char_class, char.subclass, char.level, char.race,
                     char.hp_current, char.hp_max, char.portrait_path,
-                    data_json, 1 if set_active else 0, char_id
+                    data_json, new_active, char_id
                 ))
             else:
+                char_dict = char.to_dict()
+                data_json = json.dumps(char_dict, ensure_ascii=False)
                 if set_active:
                     cursor.execute("UPDATE characters SET is_active = 0;")
                 cursor.execute("""
@@ -190,6 +198,9 @@ class DatabaseManager:
                     data_json, 1 if set_active else 0
                 ))
                 char_id = cursor.lastrowid
+                char.id = char_id
+                char_dict["id"] = char_id
+                cursor.execute("UPDATE characters SET data_json = ? WHERE id = ?;", (json.dumps(char_dict, ensure_ascii=False), char_id))
 
             # Sincronizar sesiones en campaign_journals
             cursor.execute("DELETE FROM campaign_journals WHERE character_id = ?;", (char_id,))
@@ -203,7 +214,7 @@ class DatabaseManager:
             cursor.execute("DELETE FROM network_nodes WHERE character_id = ?;", (char_id,))
             for n in char.network_nodes:
                 cursor.execute("""
-                    INSERT INTO network_nodes (id, character_id, name, role, description, avatar_base64, x, y)
+                    INSERT OR REPLACE INTO network_nodes (id, character_id, name, role, description, avatar_base64, x, y)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?);
                 """, (n.id, char_id, n.name, n.role, n.description, n.avatar_base64, n.x, n.y))
 
@@ -221,7 +232,7 @@ class DatabaseManager:
         """Lista todos los personajes disponibles."""
         with self._get_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT id, name, char_class, level, race, hp_current, hp_max, portrait_path, is_active, updated_at FROM characters ORDER BY updated_at DESC;")
+            cursor.execute("SELECT id, name, char_class, subclass, level, race, hp_current, hp_max, portrait_path, is_active, updated_at FROM characters ORDER BY updated_at DESC;")
             return [dict(r) for r in cursor.fetchall()]
 
     def get_character_by_id(self, char_id: int) -> Optional[CharacterSheet]:

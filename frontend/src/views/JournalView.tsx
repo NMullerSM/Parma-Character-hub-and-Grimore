@@ -3,6 +3,7 @@ import { useCharacter } from "../context/CharacterContext";
 import { api } from "../api/client";
 import type { SessionLogData } from "../api/types";
 import { Plus, Trash2, Save, BookOpen, Edit3 } from "lucide-react";
+import { MarkdownViewer } from "../components/MarkdownViewer";
 
 export const JournalView: React.FC = () => {
   const { activeCharacter, showToast } = useCharacter();
@@ -237,8 +238,10 @@ export const JournalView: React.FC = () => {
                     className="w-full h-full min-h-[220px] bg-input text-main border border-border-iron rounded-lg p-3 text-xs leading-relaxed focus:border-gold outline-none resize-none font-body"
                   />
                 ) : (
-                  <div className="w-full h-full min-h-[220px] bg-surface/50 border border-border-iron rounded-lg p-4 text-xs leading-relaxed text-main/90 overflow-y-auto whitespace-pre-wrap font-body">
-                    {summary || "*No hay notas escritas para esta sesión aún.*"}
+                  <div className="w-full h-full min-h-[220px] bg-surface/50 border border-border-iron rounded-lg p-4 overflow-y-auto">
+                    <MarkdownViewer
+                      content={summary || "*No hay notas escritas para esta sesión aún.*"}
+                    />
                   </div>
                 )}
               </div>

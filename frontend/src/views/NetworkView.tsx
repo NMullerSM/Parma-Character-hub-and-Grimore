@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useCharacter } from "../context/CharacterContext";
 import { api } from "../api/client";
 import type { NetworkNodeData, NetworkEdgeData } from "../api/types";
-import { Link2, Trash2, UserPlus, Users } from "lucide-react";
+import { Link2, Trash2, UserPlus, X } from "lucide-react";
 
 export const NetworkView: React.FC = () => {
-  const { activeCharacter, showToast } = useCharacter();
+  const { activeCharacter, showToast, characters } = useCharacter();
   const [nodes, setNodes] = useState<NetworkNodeData[]>([]);
   const [edges, setEdges] = useState<NetworkEdgeData[]>([]);
 
@@ -29,6 +29,17 @@ export const NetworkView: React.FC = () => {
       loadNetwork(activeCharacter.id);
     }
   }, [activeCharacter?.id]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsNodeModalOpen(false);
+        setIsEdgeModalOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const loadNetwork = async (charId: number) => {
     try {
@@ -55,14 +66,43 @@ export const NetworkView: React.FC = () => {
         x: 100,
         y: 100,
       };
-      await api.saveNetworkNode(activeCharacter.id, newNode);
+      const res = await api.saveNetworkNode(activeCharacter.id, newNode);
+      if (res?.network?.nodes) {
+        setNodes(res.network.nodes);
+        setEdges(res.network.edges || []);
+      } else {
+        await loadNetwork(activeCharacter.id);
+      }
       showToast(`Contacto "${newNode.name}" registrado en la red`, "success");
       setIsNodeModalOpen(false);
       setNodeName("");
       setNodeDesc("");
-      await loadNetwork(activeCharacter.id);
     } catch (e) {
       showToast("Error al registrar contacto", "warn");
+    }
+  };
+
+  const handleImportCharacter = async (charSummary: any) => {
+    if (!activeCharacter?.id) return;
+    const newNode: NetworkNodeData = {
+      id: `char_node_${charSummary.id}`,
+      name: charSummary.name,
+      role: "Compañero",
+      description: `Nivel ${charSummary.level} ${charSummary.char_class} (${charSummary.race || "Aventurero"})`,
+      x: 120,
+      y: 120,
+    };
+    try {
+      const res = await api.saveNetworkNode(activeCharacter.id, newNode);
+      if (res?.network?.nodes) {
+        setNodes(res.network.nodes);
+        setEdges(res.network.edges || []);
+      } else {
+        await loadNetwork(activeCharacter.id);
+      }
+      showToast(`Aventurero "${charSummary.name}" vinculado a la red`, "success");
+    } catch (e) {
+      showToast("Error al vincular personaje", "warn");
     }
   };
 
@@ -143,6 +183,32 @@ export const NetworkView: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Vincular Aventurero Guardado de la Campaña */}
+          {characters.filter((c) => c.id !== activeCharacter.id).length > 0 && (
+            <select
+              onChange={(e) => {
+                const target = characters.find((c) => String(c.id) === e.target.value);
+                if (target) {
+                  handleImportCharacter(target);
+                  e.target.value = "";
+                }
+              }}
+              defaultValue=""
+              className="bg-surface text-main border border-border-iron hover:border-gold rounded px-2.5 py-1.5 text-xs focus:border-gold outline-none transition-colors"
+            >
+              <option value="" disabled>
+                + Vincular Aventurero...
+              </option>
+              {characters
+                .filter((c) => c.id !== activeCharacter.id)
+                .map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name} ({c.char_class} {c.level})
+                  </option>
+                ))}
+            </select>
+          )}
+
           <button
             onClick={() => setIsNodeModalOpen(true)}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-semibold rounded text-main transition-colors"
@@ -166,9 +232,8 @@ export const NetworkView: React.FC = () => {
         {/* Columna Izquierda: Tarjetas de Contactos */}
         <div className="md:col-span-2 bg-card border border-border-iron rounded-xl p-4 overflow-y-auto space-y-3">
           <div className="flex items-center justify-between pb-2 border-b border-border-iron/60">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted flex items-center gap-1.5">
-              <Users className="w-3.5 h-3.5 text-gold" />
-              <span>Personajes y Facciones ({nodes.length})</span>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
+              Personajes y Facciones ({nodes.length})
             </h3>
           </div>
 
@@ -274,7 +339,16 @@ export const NetworkView: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/70 backdrop-blur-xs" onClick={() => setIsNodeModalOpen(false)} />
           <div className="relative bg-surface border border-border-iron rounded-xl p-5 max-w-md w-full space-y-4 z-10 select-none shadow-2xl">
-            <h3 className="font-display font-bold text-lg text-gold">Añadir Personaje o Facción</h3>
+            <div className="flex items-center justify-between">
+              <h3 className="font-display font-bold text-lg text-gold">Añadir Personaje o Facción</h3>
+              <button
+                onClick={() => setIsNodeModalOpen(false)}
+                className="p-1 text-muted hover:text-main rounded"
+                title="Cerrar (Esc)"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
             <div className="space-y-3">
               <div>
                 <label className="block text-xs font-semibold uppercase text-muted mb-1">Nombre</label>
@@ -331,7 +405,16 @@ export const NetworkView: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/70 backdrop-blur-xs" onClick={() => setIsEdgeModalOpen(false)} />
           <div className="relative bg-surface border border-border-iron rounded-xl p-5 max-w-md w-full space-y-4 z-10 select-none shadow-2xl">
-            <h3 className="font-display font-bold text-lg text-gold">Trazar Vínculo Relacional</h3>
+            <div className="flex items-center justify-between">
+              <h3 className="font-display font-bold text-lg text-gold">Trazar Vínculo Relacional</h3>
+              <button
+                onClick={() => setIsEdgeModalOpen(false)}
+                className="p-1 text-muted hover:text-main rounded"
+                title="Cerrar (Esc)"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
             <div className="space-y-3">
               <div>
                 <label className="block text-xs font-semibold uppercase text-muted mb-1">Personaje Origen</label>

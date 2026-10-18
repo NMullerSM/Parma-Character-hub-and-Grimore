@@ -1,0 +1,12 @@
+{
+  "manifestVersion": 1,
+  "name": "DnDSanctumCompanion",
+  "entryPoint": "index.html",
+  "summary": "Companion oficial de D&D Sanctum para sincronización bidireccional de tiradas de dados y personajes en TaleSpire.",
+  "version": "1.0.0",
+  "api": {
+    "version": "0.1",
+    "initializeEarly": false
+  },
+  "events": ["onRollResults"]
+}

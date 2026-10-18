@@ -31,8 +31,10 @@ class PdfReaderEngine:
         self.doc: Optional[pymupdf.Document] = None
         self.file_path: Optional[str] = None
         self.max_cached = max_cached_pages
-        # Caché LRU de páginas renderizadas: (page_num, zoom) -> base64_str
-        self._page_cache: OrderedDict[Tuple[int, float], str] = OrderedDict()
+        self.trim_margin: float = 6.0
+        self.has_scanner_borders: bool = False
+        # Caché LRU de páginas renderizadas: (page_num, zoom, trim) -> base64_str
+        self._page_cache: OrderedDict[Tuple[int, float, bool], str] = OrderedDict()
 
     def open_document(self, file_path: str) -> bool:
         self.close()
@@ -41,6 +43,9 @@ class PdfReaderEngine:
         try:
             self.doc = pymupdf.open(file_path)
             self.file_path = file_path
+            # Detección heurística de manuales escaneados con marco de registro (Tasha/Xanathar)
+            lower_name = os.path.basename(file_path).lower()
+            self.has_scanner_borders = "xanathar" in lower_name or "tasha" in lower_name
             return True
         except Exception as e:
             print(f"[PdfReaderEngine] Error al abrir {file_path}: {e}")
@@ -56,6 +61,7 @@ class PdfReaderEngine:
                 pass
             self.doc = None
         self.file_path = None
+        self.has_scanner_borders = False
         gc.collect()
 
     @property
@@ -87,36 +93,67 @@ class PdfReaderEngine:
             print(f"[PdfReaderEngine] Error al leer TOC: {e}")
             return []
 
-    def get_page_links(self, page_num: int) -> List[Dict[str, Any]]:
-        """Extrae los enlaces interactivos (p. ej. links de índice a páginas destino)."""
+    def _should_trim(self, trim_margins: Optional[bool] = None) -> bool:
+        if trim_margins is not None:
+            return bool(trim_margins)
+        return self.has_scanner_borders
+
+    def get_page_links(self, page_num: int, trim_margins: Optional[bool] = None) -> List[Dict[str, Any]]:
+        """Extrae los enlaces interactivos ajustados al recorte si está activo."""
         if not self.is_open or page_num < 1 or page_num > self.page_count:
             return []
         try:
             page = self.doc[page_num - 1]
+            should_trim = self._should_trim(trim_margins)
+            margin = self.trim_margin if should_trim else 0.0
+
+            pw = max(10.0, float(page.rect.width - 2 * margin)) if should_trim else float(page.rect.width)
+            ph = max(10.0, float(page.rect.height - 2 * margin)) if should_trim else float(page.rect.height)
+
             links = []
             for link in page.get_links():
                 target_page = link.get("page")
                 if target_page is not None and target_page >= 0:
                     r = link.get("from")
                     if r:
-                        links.append({
-                            "rect": (r.x0, r.y0, r.x1, r.y1),
-                            "target_page": target_page + 1
-                        })
+                        x0 = max(0.0, r.x0 - margin)
+                        y0 = max(0.0, r.y0 - margin)
+                        x1 = min(pw, r.x1 - margin)
+                        y1 = min(ph, r.y1 - margin)
+                        if x1 > x0 and y1 > y0:
+                            links.append({
+                                "rect": (x0, y0, x1, y1),
+                                "target_page": target_page + 1
+                            })
             return links
         except Exception as e:
             print(f"[PdfReaderEngine] Error al leer enlaces: {e}")
             return []
 
-    def render_page_base64(self, page_num: int, zoom: float = 1.0) -> Optional[str]:
+    def get_page_dimensions(self, page_num: int, trim_margins: Optional[bool] = None) -> Tuple[float, float]:
+        """Retorna el ancho y alto en puntos de la página (con descuento de márgenes si aplica)."""
+        if not self.is_open or page_num < 1 or page_num > self.page_count:
+            return (595.0, 842.0)
+        try:
+            page = self.doc[page_num - 1]
+            should_trim = self._should_trim(trim_margins)
+            if should_trim:
+                m = self.trim_margin
+                return (max(10.0, float(page.rect.width - 2 * m)), max(10.0, float(page.rect.height - 2 * m)))
+            return (float(page.rect.width), float(page.rect.height))
+        except Exception:
+            return (595.0, 842.0)
+
+    def render_page_base64(self, page_num: int, zoom: float = 1.0, trim_margins: Optional[bool] = None) -> Optional[str]:
         """
-        Renderiza la página solicitada a PNG en base64 para Flet.
-        Gestiona el caché LRU para evitar consumir más de unos pocos MB de RAM.
+        Renderiza la página solicitada a PNG en base64 para la vista web.
+        Aplica recorte quirúrgico de marcos de registro si trim_margins está activo.
         """
         if not self.is_open or page_num < 1 or page_num > self.page_count:
             return None
 
-        cache_key = (page_num, round(zoom, 2))
+        should_trim = self._should_trim(trim_margins)
+        cache_key = (page_num, round(zoom, 2), should_trim)
         if cache_key in self._page_cache:
             self._page_cache.move_to_end(cache_key)
             return self._page_cache[cache_key]
@@ -124,7 +161,15 @@ class PdfReaderEngine:
         try:
             page = self.doc[page_num - 1]
             mat = pymupdf.Matrix(zoom, zoom)
-            pix = page.get_pixmap(matrix=mat, alpha=False)
+
+            margin = self.trim_margin if should_trim else 0.0
+            r = page.rect
+            if margin > 0.0 and r.width > 20 and r.height > 20:
+                clip_rect = pymupdf.Rect(r.x0 + margin, r.y0 + margin, r.x1 - margin, r.y1 - margin)
+                pix = page.get_pixmap(matrix=mat, clip=clip_rect, alpha=False)
+            else:
+                pix = page.get_pixmap(matrix=mat, alpha=False)
+
             img_bytes = pix.tobytes("png")
             b64_str = base64.b64encode(img_bytes).decode("ascii")
 
@@ -422,7 +467,7 @@ class UniversalAcroFormHandler:
             if getattr(sys, "frozen", False):
                 base_dir = getattr(sys, "_MEIPASS", os.path.dirname(sys.executable))
             else:
-                base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+                base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             candidate = os.path.join(base_dir, "data", "characters", "Artanis LVL 4.pdf")
             if os.path.exists(candidate):
                 template_pdf_path = candidate
