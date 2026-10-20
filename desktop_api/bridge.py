@@ -547,6 +547,11 @@ class DesktopBridge:
                                     return {"success": True, "image_base64": f"data:image/png;base64,{b64}"}
                         except Exception:
                             continue
+                    if "PERMISSION_DENIED" in err_body or he.code == 403:
+                        return {
+                            "success": False,
+                            "error": "Google AI Studio (Error 403: PERMISSION_DENIED): Tu proyecto no tiene permisos para Imagen 3. Google requiere una cuenta con facturación activa en Google Cloud para generar imágenes con Imagen 3. Puedes usar el proveedor gratuito (Pollinations) o una clave de OpenAI."
+                        }
                     return {"success": False, "error": f"Error de Google AI Studio: {err_body[:250]}"}
 
             elif p == "openai":
@@ -573,6 +578,22 @@ class DesktopBridge:
                         return {"success": True, "image_base64": f"data:image/png;base64,{b64}"}
                     elif res_data.get("data") and res_data["data"][0].get("url"):
                         return {"success": True, "image_base64": res_data["data"][0]["url"]}
+
+            elif p in ("pollinations", "free"):
+                # Generador gratuito y sin clave vía Pollinations.ai (FLUX / SD)
+                import urllib.parse
+                clean_prompt = prompt[:350].strip()
+                encoded_prompt = urllib.parse.quote(clean_prompt)
+                seed = int(datetime.now().timestamp())
+                poll_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=512&height=512&nologo=true&seed={seed}"
+                poll_req = urllib.request.Request(
+                    poll_url,
+                    headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) DndSanctum/1.0"}
+                )
+                with urllib.request.urlopen(poll_req, timeout=60) as resp:
+                    img_bytes = resp.read()
+                    b64 = base64.b64encode(img_bytes).decode("ascii")
+                    return {"success": True, "image_base64": f"data:image/jpeg;base64,{b64}"}
 
             else:
                 # Stable Diffusion / WebUI Local

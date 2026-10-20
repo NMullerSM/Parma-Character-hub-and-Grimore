@@ -8,10 +8,11 @@ interface AiPortraitModalProps {
   onClose: () => void;
   character: CharacterSheetData;
   onPortraitGenerated: (base64OrUrl: string) => void;
+  initialConfigOpen?: boolean;
 }
 
 type ArtStyle = "pixelart" | "fantasy" | "oil" | "sketch" | "cinematic";
-type AiProvider = "google" | "openai" | "sd_local" | "custom";
+type AiProvider = "pollinations" | "google" | "openai" | "sd_local" | "custom";
 
 interface StyleOption {
   id: ArtStyle;
@@ -27,15 +28,24 @@ interface ProviderMeta {
   placeholderKey: string;
   helpText: string;
   helpLink?: string;
+  isFree?: boolean;
 }
 
 const PROVIDER_OPTIONS: ProviderMeta[] = [
   {
+    id: "pollinations",
+    name: "Gratis / Sin Clave (Pollinations)",
+    defaultUrl: "https://image.pollinations.ai",
+    placeholderKey: "No requiere clave",
+    helpText: "Generador instantáneo y gratuito. No requiere registro, tarjeta ni API Key.",
+    isFree: true,
+  },
+  {
     id: "google",
-    name: "Google AI Studio (Gemini / Imagen 3)",
+    name: "Google AI Studio (Imagen 3)",
     defaultUrl: "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict",
     placeholderKey: "AIzaSy...",
-    helpText: "Clave gratuita de Google. No necesitas configurar URL ni endpoints complejos.",
+    helpText: "Requiere proyecto de Google Cloud con facturación activa para Imagen 3 (de lo contrario da 403 PERMISSION_DENIED).",
     helpLink: "https://aistudio.google.com/app/apikey",
   },
   {
@@ -43,14 +53,14 @@ const PROVIDER_OPTIONS: ProviderMeta[] = [
     name: "OpenAI (DALL-E 3)",
     defaultUrl: "https://api.openai.com/v1/images/generations",
     placeholderKey: "sk-...",
-    helpText: "Usa tu clave oficial de OpenAI con saldo disponible.",
+    helpText: "Usa tu clave oficial de OpenAI (platform.openai.com) con saldo de créditos.",
     helpLink: "https://platform.openai.com/api-keys",
   },
   {
     id: "sd_local",
     name: "Stable Diffusion Local (WebUI)",
     defaultUrl: "http://127.0.0.1:7860/sdapi/v1/txt2img",
-    placeholderKey: "Opcional si tu WebUI no usa autenticación",
+    placeholderKey: "Opcional",
     helpText: "Ejecutando en tu PC (requiere A1111 o ComfyUI con argumento --api).",
   },
   {
@@ -100,19 +110,20 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
   onClose,
   character,
   onPortraitGenerated,
+  initialConfigOpen = false,
 }) => {
-  const [selectedStyle, setSelectedStyle] = useState<ArtStyle>("pixelart");
+  const [selectedStyle, setSelectedStyle] = useState<ArtStyle>("fantasy");
   const [prompt, setPrompt] = useState<string>("");
   const [isCopied, setIsCopied] = useState<boolean>(false);
-  const [showConfig, setShowConfig] = useState<boolean>(false);
+  const [showConfig, setShowConfig] = useState<boolean>(initialConfigOpen);
   const [showAdvancedUrl, setShowAdvancedUrl] = useState<boolean>(false);
 
   const [provider, setProvider] = useState<AiProvider>(() => {
-    return (localStorage.getItem("dnd_ai_img_provider") as AiProvider) || "google";
+    return (localStorage.getItem("dnd_ai_img_provider") as AiProvider) || "pollinations";
   });
   const [apiKey, setApiKey] = useState<string>(() => localStorage.getItem("dnd_ai_img_api_key") || "");
   const [apiUrl, setApiUrl] = useState<string>(() => {
-    return localStorage.getItem("dnd_ai_img_api_url") || "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict";
+    return localStorage.getItem("dnd_ai_img_api_url") || "https://image.pollinations.ai";
   });
 
   const [pastedImage, setPastedImage] = useState<string>("");
@@ -120,7 +131,13 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [statusMessage, setStatusMessage] = useState<string>("");
 
-  // Auto-detectar proveedor si la clave pegada es característica
+  useEffect(() => {
+    if (initialConfigOpen) {
+      setShowConfig(true);
+    }
+  }, [initialConfigOpen]);
+
+  // Auto-detectar proveedor si la clave pegada es de Google u OpenAI
   const handleKeyChange = (val: string) => {
     const trimmed = val.trim();
     setApiKey(trimmed);
@@ -192,14 +209,14 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
   const handleGenerate = async () => {
     const cleanKey = apiKey.trim();
 
-    if (!cleanKey && provider !== "sd_local") {
-      setStatusMessage("Por favor ingresa tu API Key en la configuración antes de generar.");
+    if (!cleanKey && (provider === "google" || provider === "openai" || provider === "custom")) {
+      setStatusMessage(`Ingresa tu API Key de ${activeProviderMeta.name} o selecciona la opción 'Gratis / Sin Clave'.`);
       setShowConfig(true);
       return;
     }
 
     setLoading(true);
-    setStatusMessage(`Generando retrato mediante ${PROVIDER_OPTIONS.find(p => p.id === provider)?.name || "IA"}...`);
+    setStatusMessage(`Generando retrato mediante ${activeProviderMeta.name}...`);
 
     try {
       const res = await api.generateAiPortrait({
@@ -259,7 +276,7 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
                 Generador de Retrato IA de Personaje
               </h2>
               <p className="text-xs text-muted">
-                Crea ilustraciones personalizadas para {character.name || "tu héroe"} usando Google Imagen 3 u OpenAI.
+                Crea ilustraciones personalizadas para {character.name || "tu héroe"} usando IA.
               </p>
             </div>
           </div>
@@ -274,7 +291,7 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
               title="Configurar Proveedor y API Key"
             >
               <Settings2 className="w-4 h-4" />
-              <span>Configuración API</span>
+              <span>Configuración</span>
             </button>
             <button
               onClick={onClose}
@@ -310,7 +327,7 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
             {/* Selector de Proveedor */}
             <div>
               <label className="block text-muted text-[11px] mb-1 font-medium">Proveedor de Imagen</label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
                 {PROVIDER_OPTIONS.map((opt) => (
                   <button
                     key={opt.id}
@@ -322,6 +339,7 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
                         : "bg-card border-border-iron text-muted hover:text-main hover:border-gold/50"
                     }`}
                   >
+                    {opt.id === "pollinations" && "Gratis / Sin Clave"}
                     {opt.id === "google" && "Google AI Studio"}
                     {opt.id === "openai" && "OpenAI"}
                     {opt.id === "sd_local" && "Stable Diffusion"}
@@ -331,25 +349,34 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
               </div>
             </div>
 
-            {/* Campo Clave de API */}
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="block text-muted text-[11px] font-medium">
-                  API Key de {activeProviderMeta.name}
-                </label>
-                <span className="text-[10px] text-muted/80">Guardada localmente de forma segura</span>
+            {/* Campo Clave de API (si el proveedor la requiere) */}
+            {!activeProviderMeta.isFree ? (
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-muted text-[11px] font-medium">
+                    API Key de {activeProviderMeta.name}
+                  </label>
+                  <span className="text-[10px] text-muted/80">Guardada localmente de forma segura</span>
+                </div>
+                <input
+                  type="password"
+                  value={apiKey}
+                  onChange={(e) => handleKeyChange(e.target.value)}
+                  placeholder={activeProviderMeta.placeholderKey}
+                  className="w-full bg-input text-main border border-border-iron rounded px-3 py-1.5 text-xs focus:border-gold outline-none"
+                />
+                <p className="text-[11px] text-muted/90 mt-1">
+                  {activeProviderMeta.helpText}
+                </p>
               </div>
-              <input
-                type="password"
-                value={apiKey}
-                onChange={(e) => handleKeyChange(e.target.value)}
-                placeholder={activeProviderMeta.placeholderKey}
-                className="w-full bg-input text-main border border-border-iron rounded px-3 py-1.5 text-xs focus:border-gold outline-none"
-              />
-              <p className="text-[11px] text-muted/90 mt-1">
-                {activeProviderMeta.helpText}
-              </p>
-            </div>
+            ) : (
+              <div className="p-2.5 rounded bg-card/60 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-2">
+                <Check className="w-4 h-4 shrink-0" />
+                <span>
+                  <strong>Listo para generar:</strong> Esta opción es 100% gratuita y no requiere ninguna clave ni tarjeta.
+                </span>
+              </div>
+            )}
 
             {/* Opciones Avanzadas: Endpoint URL */}
             <div>
@@ -361,8 +388,8 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
                 <span>{showAdvancedUrl ? "▾ Ocultar URL del Endpoint" : "▸ Ver / Editar URL del Endpoint"}</span>
               </button>
               {showAdvancedUrl && (
-                <div className="mt-2 pt-2 border-t border-border-iron/40 animate-fade-in">
-                  <label className="block text-muted text-[10px] mb-1">URL del Endpoint API</label>
+                <div className="mt-2 pt-2 border-t border-border-iron/40 animate-fade-in space-y-1">
+                  <label className="block text-muted text-[10px]">URL del Endpoint API</label>
                   <input
                     type="text"
                     value={apiUrl}
@@ -373,7 +400,7 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
                     placeholder="https://..."
                     className="w-full bg-input text-main border border-border-iron rounded px-2.5 py-1 text-xs focus:border-gold outline-none font-mono"
                   />
-                  <p className="text-[10px] text-muted/70 mt-1">
+                  <p className="text-[10px] text-muted/70">
                     Google AI Studio Imagen 3: <code className="text-gold">https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict</code>
                   </p>
                 </div>
@@ -465,7 +492,7 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
                     <ImageIcon className="w-8 h-8 mx-auto opacity-40 text-gold" />
                     <p className="text-[11px] font-medium">Sin previsualización</p>
                     <p className="text-[10px] text-muted/70">
-                      Genera con la API de {activeProviderMeta.name} o pega una URL/Base64.
+                      Genera con {activeProviderMeta.name} o pega una URL/Base64.
                     </p>
                   </div>
                 )}
@@ -497,7 +524,7 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
               </div>
 
               {statusMessage && (
-                <div className="p-2 rounded bg-surface border border-border-iron text-[11px] text-gold font-medium">
+                <div className="p-2.5 rounded bg-surface border border-border-iron text-[11px] text-gold font-medium leading-relaxed">
                   {statusMessage}
                 </div>
               )}
@@ -514,7 +541,7 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
               className="px-4 py-2 rounded-lg bg-gold hover:bg-gold-hover disabled:opacity-50 text-canvas font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm active:scale-95"
             >
               <Sparkles className="w-4 h-4" />
-              <span>{loading ? "Generando..." : `Generar con ${provider === "google" ? "Google Imagen 3" : provider === "openai" ? "DALL-E 3" : "IA"}`}</span>
+              <span>{loading ? "Generando..." : `Generar con ${provider === "pollinations" ? "IA Gratis" : provider === "google" ? "Google Imagen 3" : provider === "openai" ? "DALL-E 3" : "IA"}`}</span>
             </button>
             <button
               onClick={handleCopyPrompt}
