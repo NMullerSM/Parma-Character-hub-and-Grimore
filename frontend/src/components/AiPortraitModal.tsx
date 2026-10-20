@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { X, Sparkles, Copy, Check, Wand2, Image as ImageIcon, Settings2 } from "lucide-react";
+import { X, Sparkles, Copy, Check, Wand2, Image as ImageIcon, Settings2, ExternalLink } from "lucide-react";
 import { api } from "../api/client";
 import type { CharacterSheetData } from "../api/types";
 
@@ -11,6 +11,7 @@ interface AiPortraitModalProps {
 }
 
 type ArtStyle = "pixelart" | "fantasy" | "oil" | "sketch" | "cinematic";
+type AiProvider = "google" | "openai" | "sd_local" | "custom";
 
 interface StyleOption {
   id: ArtStyle;
@@ -18,6 +19,48 @@ interface StyleOption {
   badge: string;
   promptModifier: string;
 }
+
+interface ProviderMeta {
+  id: AiProvider;
+  name: string;
+  defaultUrl: string;
+  placeholderKey: string;
+  helpText: string;
+  helpLink?: string;
+}
+
+const PROVIDER_OPTIONS: ProviderMeta[] = [
+  {
+    id: "google",
+    name: "Google AI Studio (Gemini / Imagen 3)",
+    defaultUrl: "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict",
+    placeholderKey: "AIzaSy...",
+    helpText: "Clave gratuita de Google. No necesitas configurar URL ni endpoints complejos.",
+    helpLink: "https://aistudio.google.com/app/apikey",
+  },
+  {
+    id: "openai",
+    name: "OpenAI (DALL-E 3)",
+    defaultUrl: "https://api.openai.com/v1/images/generations",
+    placeholderKey: "sk-...",
+    helpText: "Usa tu clave oficial de OpenAI con saldo disponible.",
+    helpLink: "https://platform.openai.com/api-keys",
+  },
+  {
+    id: "sd_local",
+    name: "Stable Diffusion Local (WebUI)",
+    defaultUrl: "http://127.0.0.1:7860/sdapi/v1/txt2img",
+    placeholderKey: "Opcional si tu WebUI no usa autenticación",
+    helpText: "Ejecutando en tu PC (requiere A1111 o ComfyUI con argumento --api).",
+  },
+  {
+    id: "custom",
+    name: "Endpoint Personalizado",
+    defaultUrl: "",
+    placeholderKey: "Token o API Key",
+    helpText: "Configura manualmente cualquier proxy o API compatible.",
+  },
+];
 
 const STYLE_OPTIONS: StyleOption[] = [
   {
@@ -62,12 +105,49 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
   const [prompt, setPrompt] = useState<string>("");
   const [isCopied, setIsCopied] = useState<boolean>(false);
   const [showConfig, setShowConfig] = useState<boolean>(false);
-  const [apiUrl, setApiUrl] = useState<string>(() => localStorage.getItem("dnd_ai_img_api_url") || "");
+  const [showAdvancedUrl, setShowAdvancedUrl] = useState<boolean>(false);
+
+  const [provider, setProvider] = useState<AiProvider>(() => {
+    return (localStorage.getItem("dnd_ai_img_provider") as AiProvider) || "google";
+  });
   const [apiKey, setApiKey] = useState<string>(() => localStorage.getItem("dnd_ai_img_api_key") || "");
+  const [apiUrl, setApiUrl] = useState<string>(() => {
+    return localStorage.getItem("dnd_ai_img_api_url") || "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict";
+  });
+
   const [pastedImage, setPastedImage] = useState<string>("");
   const [previewImage, setPreviewImage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [statusMessage, setStatusMessage] = useState<string>("");
+
+  // Auto-detectar proveedor si la clave pegada es característica
+  const handleKeyChange = (val: string) => {
+    const trimmed = val.trim();
+    setApiKey(trimmed);
+    localStorage.setItem("dnd_ai_img_api_key", trimmed);
+
+    if (trimmed.startsWith("AIzaSy") && provider !== "google") {
+      setProvider("google");
+      setApiUrl("https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict");
+      localStorage.setItem("dnd_ai_img_provider", "google");
+      localStorage.setItem("dnd_ai_img_api_url", "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict");
+    } else if (trimmed.startsWith("sk-") && provider !== "openai") {
+      setProvider("openai");
+      setApiUrl("https://api.openai.com/v1/images/generations");
+      localStorage.setItem("dnd_ai_img_provider", "openai");
+      localStorage.setItem("dnd_ai_img_api_url", "https://api.openai.com/v1/images/generations");
+    }
+  };
+
+  const handleProviderSelect = (newProv: AiProvider) => {
+    setProvider(newProv);
+    localStorage.setItem("dnd_ai_img_provider", newProv);
+    const meta = PROVIDER_OPTIONS.find((p) => p.id === newProv);
+    if (meta && meta.defaultUrl) {
+      setApiUrl(meta.defaultUrl);
+      localStorage.setItem("dnd_ai_img_api_url", meta.defaultUrl);
+    }
+  };
 
   // Construir prompt dinámico según estilo y datos del personaje
   useEffect(() => {
@@ -100,6 +180,7 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
   };
 
   const handleSaveConfig = () => {
+    localStorage.setItem("dnd_ai_img_provider", provider);
     localStorage.setItem("dnd_ai_img_api_url", apiUrl.trim());
     localStorage.setItem("dnd_ai_img_api_key", apiKey.trim());
     setShowConfig(false);
@@ -107,83 +188,37 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
     setTimeout(() => setStatusMessage(""), 3000);
   };
 
-  // Generación por llamada a API configurada (OpenAI / SD WebUI / Custom)
+  // Generación por llamada nativa sin problemas de CORS
   const handleGenerate = async () => {
-    const cleanUrl = apiUrl.trim();
     const cleanKey = apiKey.trim();
 
-    if (!cleanUrl) {
-      // Sin API configurada: generar vista previa estilizada SVG o pedir configuración
-      setStatusMessage("No hay API configurada. Puedes copiar el prompt para Midjourney/DALL-E o ingresar tu endpoint en Configuración.");
+    if (!cleanKey && provider !== "sd_local") {
+      setStatusMessage("Por favor ingresa tu API Key en la configuración antes de generar.");
       setShowConfig(true);
       return;
     }
 
     setLoading(true);
-    setStatusMessage("Enviando petición a la API de generación de imágenes...");
+    setStatusMessage(`Generando retrato mediante ${PROVIDER_OPTIONS.find(p => p.id === provider)?.name || "IA"}...`);
 
     try {
-      // Intento estándar: OpenAI DALL-E / Custom Image API
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-      };
-      if (cleanKey) {
-        headers["Authorization"] = `Bearer ${cleanKey}`;
-      }
-
-      // Si la URL es de OpenAI
-      const isDalle = cleanUrl.includes("openai.com");
-      const body = isDalle
-        ? JSON.stringify({
-            model: "dall-e-3",
-            prompt: prompt,
-            n: 1,
-            size: "1024x1024",
-            response_format: "b64_json",
-          })
-        : JSON.stringify({
-            prompt: prompt,
-            negative_prompt: "blurry, low quality, deformed, extra limbs, bad anatomy",
-            steps: 25,
-            width: 512,
-            height: 512,
-          });
-
-      const response = await fetch(cleanUrl, {
-        method: "POST",
-        headers,
-        body,
+      const res = await api.generateAiPortrait({
+        prompt,
+        provider,
+        apiKey: cleanKey,
+        apiUrl: apiUrl.trim(),
+        model: provider === "openai" ? "dall-e-3" : "imagen-3.0-generate-002",
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Error API (${response.status}): ${errorText.slice(0, 150)}`);
-      }
-
-      const data = await response.json();
-      let resultBase64 = "";
-
-      if (data.data && data.data[0]) {
-        if (data.data[0].b64_json) {
-          resultBase64 = `data:image/png;base64,${data.data[0].b64_json}`;
-        } else if (data.data[0].url) {
-          resultBase64 = data.data[0].url;
-        }
-      } else if (data.images && data.images[0]) {
-        resultBase64 = `data:image/png;base64,${data.images[0]}`;
-      } else if (data.image) {
-        resultBase64 = data.image.startsWith("data:") ? data.image : `data:image/png;base64,${data.image}`;
-      }
-
-      if (resultBase64) {
-        setPreviewImage(resultBase64);
-        setStatusMessage("¡Imagen generada con éxito!");
+      if (res.success && res.image_base64) {
+        setPreviewImage(res.image_base64);
+        setStatusMessage("¡Retrato generado exitosamente!");
       } else {
-        throw new Error("La API no devolvió una imagen en formato reconocido.");
+        throw new Error(res.error || "La API no devolvió una imagen válida.");
       }
     } catch (e: any) {
-      console.error("Error generating AI image:", e);
-      setStatusMessage(`Error al generar: ${e.message || e}`);
+      console.error("Error generating portrait:", e);
+      setStatusMessage(`Error: ${e.message || e}`);
     } finally {
       setLoading(false);
     }
@@ -204,13 +239,15 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
     onClose();
   };
 
+  const activeProviderMeta = PROVIDER_OPTIONS.find((p) => p.id === provider) || PROVIDER_OPTIONS[0];
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-canvas/85 backdrop-blur-sm animate-fade-in"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-2xl bg-card border border-border-iron rounded-xl shadow-2xl flex flex-col overflow-hidden max-h-[90vh]"
+        className="relative w-full max-w-2xl bg-card border border-border-iron rounded-xl shadow-2xl flex flex-col overflow-hidden max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Cabecera */}
@@ -222,22 +259,22 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
                 Generador de Retrato IA de Personaje
               </h2>
               <p className="text-xs text-muted">
-                Crea o previsualiza ilustraciones basadas en la apariencia física de {character.name || "tu héroe"}.
+                Crea ilustraciones personalizadas para {character.name || "tu héroe"} usando Google Imagen 3 u OpenAI.
               </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowConfig(!showConfig)}
-              className={`p-1.5 rounded-lg border text-xs transition-colors flex items-center gap-1 ${
+              className={`px-2.5 py-1.5 rounded-lg border text-xs transition-colors flex items-center gap-1.5 ${
                 showConfig
-                  ? "bg-gold text-canvas border-gold"
+                  ? "bg-gold text-canvas border-gold font-semibold"
                   : "bg-surface border-border-iron text-muted hover:text-main hover:border-gold"
               }`}
-              title="Configurar Endpoint y API Key"
+              title="Configurar Proveedor y API Key"
             >
               <Settings2 className="w-4 h-4" />
-              <span className="hidden sm:inline font-semibold">Configuración API</span>
+              <span>Configuración API</span>
             </button>
             <button
               onClick={onClose}
@@ -249,40 +286,100 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
           </div>
         </div>
 
-        {/* Panel de Configuración de API (Colapsable) */}
+        {/* Panel de Configuración de API (Colapsable o Inicial) */}
         {showConfig && (
-          <div className="p-4 bg-surface/80 border-b border-border-iron space-y-3 shrink-0 animate-fade-in">
+          <div className="p-4 bg-surface border-b border-border-iron space-y-3.5 shrink-0 animate-fade-in">
             <div className="flex items-center justify-between">
               <h3 className="text-xs font-semibold uppercase tracking-wider text-gold flex items-center gap-1.5">
                 <Settings2 className="w-3.5 h-3.5" />
-                Conexión con Proveedor de Imagen IA
+                Configuración del Proveedor IA
               </h3>
-              <span className="text-[10px] text-muted">
-                Soporta OpenAI (DALL-E 3), Stable Diffusion WebUI (A1111/ComfyUI) o endpoints compatibles.
-              </span>
+              {activeProviderMeta.helpLink && (
+                <a
+                  href={activeProviderMeta.helpLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[11px] text-gold hover:underline flex items-center gap-1 font-medium"
+                >
+                  <span>Obtener clave aquí</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              )}
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <div>
-                <label className="block text-muted text-[11px] mb-1">URL del Endpoint API</label>
-                <input
-                  type="text"
-                  value={apiUrl}
-                  onChange={(e) => setApiUrl(e.target.value)}
-                  placeholder="https://api.openai.com/v1/images/generations"
-                  className="w-full bg-input text-main border border-border-iron rounded px-2.5 py-1.5 text-xs focus:border-gold outline-none"
-                />
-              </div>
-              <div>
-                <label className="block text-muted text-[11px] mb-1">API Key (Se guarda en tu navegador)</label>
-                <input
-                  type="password"
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  placeholder="sk-..."
-                  className="w-full bg-input text-main border border-border-iron rounded px-2.5 py-1.5 text-xs focus:border-gold outline-none"
-                />
+
+            {/* Selector de Proveedor */}
+            <div>
+              <label className="block text-muted text-[11px] mb-1 font-medium">Proveedor de Imagen</label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                {PROVIDER_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.id}
+                    onClick={() => handleProviderSelect(opt.id)}
+                    type="button"
+                    className={`px-2.5 py-1.5 text-xs rounded border text-center transition-all ${
+                      provider === opt.id
+                        ? "bg-gold text-canvas border-gold font-bold shadow-sm"
+                        : "bg-card border-border-iron text-muted hover:text-main hover:border-gold/50"
+                    }`}
+                  >
+                    {opt.id === "google" && "Google AI Studio"}
+                    {opt.id === "openai" && "OpenAI"}
+                    {opt.id === "sd_local" && "Stable Diffusion"}
+                    {opt.id === "custom" && "Personalizado"}
+                  </button>
+                ))}
               </div>
             </div>
+
+            {/* Campo Clave de API */}
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-muted text-[11px] font-medium">
+                  API Key de {activeProviderMeta.name}
+                </label>
+                <span className="text-[10px] text-muted/80">Guardada localmente de forma segura</span>
+              </div>
+              <input
+                type="password"
+                value={apiKey}
+                onChange={(e) => handleKeyChange(e.target.value)}
+                placeholder={activeProviderMeta.placeholderKey}
+                className="w-full bg-input text-main border border-border-iron rounded px-3 py-1.5 text-xs focus:border-gold outline-none"
+              />
+              <p className="text-[11px] text-muted/90 mt-1">
+                {activeProviderMeta.helpText}
+              </p>
+            </div>
+
+            {/* Opciones Avanzadas: Endpoint URL */}
+            <div>
+              <button
+                type="button"
+                onClick={() => setShowAdvancedUrl(!showAdvancedUrl)}
+                className="text-[11px] text-muted hover:text-gold transition-colors flex items-center gap-1"
+              >
+                <span>{showAdvancedUrl ? "▾ Ocultar URL del Endpoint" : "▸ Ver / Editar URL del Endpoint"}</span>
+              </button>
+              {showAdvancedUrl && (
+                <div className="mt-2 pt-2 border-t border-border-iron/40 animate-fade-in">
+                  <label className="block text-muted text-[10px] mb-1">URL del Endpoint API</label>
+                  <input
+                    type="text"
+                    value={apiUrl}
+                    onChange={(e) => {
+                      setApiUrl(e.target.value);
+                      localStorage.setItem("dnd_ai_img_api_url", e.target.value.trim());
+                    }}
+                    placeholder="https://..."
+                    className="w-full bg-input text-main border border-border-iron rounded px-2.5 py-1 text-xs focus:border-gold outline-none font-mono"
+                  />
+                  <p className="text-[10px] text-muted/70 mt-1">
+                    Google AI Studio Imagen 3: <code className="text-gold">https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict</code>
+                  </p>
+                </div>
+              )}
+            </div>
+
             <div className="flex justify-end gap-2 pt-1">
               <button
                 onClick={handleSaveConfig}
@@ -368,7 +465,7 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
                     <ImageIcon className="w-8 h-8 mx-auto opacity-40 text-gold" />
                     <p className="text-[11px] font-medium">Sin previsualización</p>
                     <p className="text-[10px] text-muted/70">
-                      Genera con la API o pega una URL / Base64 abajo.
+                      Genera con la API de {activeProviderMeta.name} o pega una URL/Base64.
                     </p>
                   </div>
                 )}
@@ -417,7 +514,7 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
               className="px-4 py-2 rounded-lg bg-gold hover:bg-gold-hover disabled:opacity-50 text-canvas font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm active:scale-95"
             >
               <Sparkles className="w-4 h-4" />
-              <span>{loading ? "Generando..." : "Generar con API"}</span>
+              <span>{loading ? "Generando..." : `Generar con ${provider === "google" ? "Google Imagen 3" : provider === "openai" ? "DALL-E 3" : "IA"}`}</span>
             </button>
             <button
               onClick={handleCopyPrompt}

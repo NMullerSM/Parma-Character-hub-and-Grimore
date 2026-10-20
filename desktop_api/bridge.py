@@ -466,6 +466,144 @@ class DesktopBridge:
             "character": self._serialize_character(char),
         }
 
+    def generate_ai_portrait(
+        self,
+        prompt: str,
+        provider: str = "google",
+        api_key: str = "",
+        api_url: str = "",
+        model: str = ""
+    ) -> Dict[str, Any]:
+        """
+        Genera una imagen con IA llamando a Google AI Studio (Imagen 3 / Gemini),
+        OpenAI (DALL-E 3) o SD WebUI desde el backend (sin problemas de CORS en WebView).
+        """
+        import urllib.request
+        import urllib.error
+        import json
+
+        clean_key = (api_key or "").strip()
+        clean_url = (api_url or "").strip()
+        p = (provider or "").lower().strip()
+
+        # Detección inteligente por formato de clave o URL
+        if clean_key.startswith("AIzaSy") or "generativelanguage" in clean_url or p == "google":
+            p = "google"
+        elif clean_key.startswith("sk-") or "openai" in clean_url or p == "openai":
+            p = "openai"
+
+        try:
+            if p == "google":
+                # Google AI Studio - Imagen 3 oficial (predict)
+                # Modelo recomendado: imagen-3.0-generate-002
+                endpoint = clean_url or "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict"
+                if "?" not in endpoint and clean_key:
+                    endpoint = f"{endpoint}?key={clean_key}"
+
+                payload = {
+                    "instances": [{"prompt": prompt}],
+                    "parameters": {
+                        "sampleCount": 1,
+                        "aspectRatio": "1:1",
+                        "outputOptions": {"mimeType": "image/png"}
+                    }
+                }
+                req = urllib.request.Request(
+                    endpoint,
+                    data=json.dumps(payload).encode("utf-8"),
+                    headers={"Content-Type": "application/json"}
+                )
+                try:
+                    with urllib.request.urlopen(req, timeout=60) as resp:
+                        res_data = json.loads(resp.read().decode("utf-8"))
+                        preds = res_data.get("predictions", [])
+                        if preds and "bytesBase64Encoded" in preds[0]:
+                            b64 = preds[0]["bytesBase64Encoded"]
+                            return {"success": True, "image_base64": f"data:image/png;base64,{b64}"}
+                except urllib.error.HTTPError as he:
+                    err_body = he.read().decode("utf-8", errors="ignore")
+                    # Fallback secundario: endpoint OpenAI-compatible de Google AI Studio
+                    oa_endpoint = "https://generativelanguage.googleapis.com/v1beta/openai/images/generations"
+                    for fb_model in ["imagen-3.0-generate-002", "gemini-2.5-flash-image"]:
+                        try:
+                            oa_payload = {
+                                "model": fb_model,
+                                "prompt": prompt,
+                                "n": 1,
+                                "response_format": "b64_json"
+                            }
+                            oa_req = urllib.request.Request(
+                                oa_endpoint,
+                                data=json.dumps(oa_payload).encode("utf-8"),
+                                headers={
+                                    "Content-Type": "application/json",
+                                    "Authorization": f"Bearer {clean_key}"
+                                }
+                            )
+                            with urllib.request.urlopen(oa_req, timeout=60) as resp2:
+                                res_data2 = json.loads(resp2.read().decode("utf-8"))
+                                if res_data2.get("data") and res_data2["data"][0].get("b64_json"):
+                                    b64 = res_data2["data"][0]["b64_json"]
+                                    return {"success": True, "image_base64": f"data:image/png;base64,{b64}"}
+                        except Exception:
+                            continue
+                    return {"success": False, "error": f"Error de Google AI Studio: {err_body[:250]}"}
+
+            elif p == "openai":
+                endpoint = clean_url or "https://api.openai.com/v1/images/generations"
+                payload = {
+                    "model": model or "dall-e-3",
+                    "prompt": prompt,
+                    "n": 1,
+                    "size": "1024x1024",
+                    "response_format": "b64_json"
+                }
+                req = urllib.request.Request(
+                    endpoint,
+                    data=json.dumps(payload).encode("utf-8"),
+                    headers={
+                        "Content-Type": "application/json",
+                        "Authorization": f"Bearer {clean_key}"
+                    }
+                )
+                with urllib.request.urlopen(req, timeout=60) as resp:
+                    res_data = json.loads(resp.read().decode("utf-8"))
+                    if res_data.get("data") and res_data["data"][0].get("b64_json"):
+                        b64 = res_data["data"][0]["b64_json"]
+                        return {"success": True, "image_base64": f"data:image/png;base64,{b64}"}
+                    elif res_data.get("data") and res_data["data"][0].get("url"):
+                        return {"success": True, "image_base64": res_data["data"][0]["url"]}
+
+            else:
+                # Stable Diffusion / WebUI Local
+                endpoint = clean_url or "http://127.0.0.1:7860/sdapi/v1/txt2img"
+                payload = {
+                    "prompt": prompt,
+                    "steps": 25,
+                    "width": 512,
+                    "height": 512
+                }
+                headers = {"Content-Type": "application/json"}
+                if clean_key:
+                    headers["Authorization"] = f"Bearer {clean_key}"
+                req = urllib.request.Request(
+                    endpoint,
+                    data=json.dumps(payload).encode("utf-8"),
+                    headers=headers
+                )
+                with urllib.request.urlopen(req, timeout=60) as resp:
+                    res_data = json.loads(resp.read().decode("utf-8"))
+                    if res_data.get("images") and len(res_data["images"]) > 0:
+                        b64 = res_data["images"][0]
+                        return {"success": True, "image_base64": f"data:image/png;base64,{b64}"}
+
+            return {"success": False, "error": "No se reconoció el formato de respuesta del proveedor de imagen."}
+        except urllib.error.HTTPError as he:
+            err_msg = he.read().decode("utf-8", errors="ignore")
+            return {"success": False, "error": f"Error HTTP {he.code}: {err_msg[:250]}"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
     def export_character_json(self, char_id: int) -> Dict[str, Any]:
         """Exporta un personaje a un archivo JSON en data/characters/ (o mediante diálogo nativo)."""
         char = self._db.get_character_by_id(char_id)

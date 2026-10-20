@@ -263,6 +263,28 @@ export const api = {
     return { success: true, portrait_base64: imageBase64, character: mockActiveCharacter };
   },
 
+  async generateAiPortrait(params: {
+    prompt: string;
+    provider?: string;
+    apiKey?: string;
+    apiUrl?: string;
+    model?: string;
+  }): Promise<{ success: boolean; image_base64?: string; error?: string }> {
+    if (this.isNative()) {
+      return await window.pywebview!.api.generate_ai_portrait(
+        params.prompt,
+        params.provider || "google",
+        params.apiKey || "",
+        params.apiUrl || "",
+        params.model || ""
+      );
+    }
+    return {
+      success: false,
+      error: "Para generar imágenes por IA directamente, utiliza la aplicación de escritorio.",
+    };
+  },
+
   async exportCharacterJson(charId: number): Promise<{ success: boolean; path?: string; error?: string }> {
     if (this.isNative()) return await window.pywebview!.api.export_character_json(charId);
     return { success: true, path: "Artanis.json" };
