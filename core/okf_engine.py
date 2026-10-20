@@ -368,7 +368,8 @@ class OkfEngine:
                     if not matches:
                         continue
 
-                item_lvl = int(item.get("nivel", 3))
+                raw_lvl = item.get("nivel")
+                item_lvl = int(raw_lvl) if raw_lvl is not None and str(raw_lvl).isdigit() else 3
                 if item_lvl > max_level:
                     continue
 
@@ -472,7 +473,8 @@ class OkfEngine:
                 if not self._source_matches(item.get("fuente"), allowed_sources):
                     continue
 
-                lvl = int(item.get("nivel", 0))
+                raw_lvl = item.get("nivel")
+                lvl = int(raw_lvl) if raw_lvl is not None and str(raw_lvl).isdigit() else 0
                 if lvl < min_spell_level or lvl > max_spell_level:
                     continue
 

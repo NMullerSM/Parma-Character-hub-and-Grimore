@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import type { SpellItemData, SpellStatsData } from "../api/types";
 import { MarkdownViewer } from "./MarkdownViewer";
+import { useCharacter } from "../context/CharacterContext";
 import { X, Sparkles, Dices, Copy, Check } from "lucide-react";
 
 interface SpellDetailModalProps {
@@ -28,6 +29,7 @@ export const SpellDetailModal: React.FC<SpellDetailModalProps> = ({
 }) => {
   const [selectedSlotLevel, setSelectedSlotLevel] = useState<number>(1);
   const [copiedTs, setCopiedTs] = useState(false);
+  const { language } = useCharacter();
 
   useEffect(() => {
     if (spell) {
@@ -118,9 +120,13 @@ export const SpellDetailModal: React.FC<SpellDetailModalProps> = ({
                 </span>
               )}
             </div>
-            <h2 className="font-display font-bold text-xl text-gold">{spell.name}</h2>
+            <h2 className="font-display font-bold text-xl text-gold">
+              {language === "en" && spell.name_en ? spell.name_en : spell.name}
+            </h2>
             {spell.name_en && spell.name_en !== spell.name && (
-              <p className="text-xs text-muted italic">{spell.name_en}</p>
+              <p className="text-xs text-muted italic">
+                {language === "en" ? spell.name : spell.name_en}
+              </p>
             )}
           </div>
           <button

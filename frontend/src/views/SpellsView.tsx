@@ -50,7 +50,6 @@ export const SpellsView: React.FC = () => {
   } = activeCharacter;
 
   const hasSlots = Object.keys(spell_slots_total).length > 0;
-  const isCaster = spell_stats?.is_caster || hasSlots || spells.length > 0;
 
   const handleToggleSlot = (lvl: string, index: number) => {
     const used = spell_slots_used[lvl] || 0;
@@ -91,38 +90,7 @@ export const SpellsView: React.FC = () => {
     return s.level === selectedLevel;
   });
 
-  // Ley de Hick: Si la clase es puramente marcial y no posee conjuros, mostrar vista sintetizada limpia
-  if (!isCaster && !isAddingSpell) {
-    return (
-      <div className="h-full flex items-center justify-center p-8 max-w-xl mx-auto text-center">
-        <div className="bg-card border border-border-iron rounded-xl p-6 space-y-3">
-          <h2 className="font-display font-bold text-xl text-gold">
-            Clase Marcial ({char_class})
-          </h2>
-          <p className="text-xs text-muted leading-relaxed">
-            Este personaje no utiliza lanzamiento de conjuros por clase actualmente. Si obtuvo un
-            conjuro innato por Especie o Dote (como Iniciado en la Magia), puedes buscarlo en el
-            compendio o registrarlo manualmente.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
-            <button
-              onClick={() => setIsSpellManagerOpen(true)}
-              className="px-4 py-2 rounded bg-gold text-canvas hover:bg-gold-hover text-xs font-bold transition-colors inline-flex items-center gap-1.5"
-            >
-              <BookOpen className="w-3.5 h-3.5" />
-              Explorar Compendio OKF
-            </button>
-            <button
-              onClick={() => setIsAddingSpell(true)}
-              className="px-4 py-2 rounded bg-surface hover:bg-gold hover:text-canvas border border-gold text-gold text-xs font-semibold transition-colors"
-            >
-              + Manual
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+
 
   const spellAttackBonus = spell_stats?.attack_bonus ?? 0;
   const spellSaveDc = spell_stats?.dc ?? 10;
@@ -491,9 +459,9 @@ export const SpellsView: React.FC = () => {
       <SpellBookManagerModal
         isOpen={isSpellManagerOpen}
         onClose={() => setIsSpellManagerOpen(false)}
-        characterClass={char_class}
-        characterLevel={level}
-        currentSpells={spells}
+        characterClass={char_class || "Bardo"}
+        characterLevel={level || 1}
+        currentSpells={spells || []}
         onAddSpell={addSpell}
         onRemoveSpell={removeSpell}
       />

@@ -71,6 +71,17 @@ export interface SpellStatsData {
   is_caster?: boolean;
 }
 
+export interface ClassProgressionLimits {
+  is_caster: boolean;
+  edition: string;
+  cantrips_limit: number;
+  spells_limit: number;
+  max_spell_level: number;
+  spell_slots: Record<string, number>;
+  weapon_mastery_slots: number;
+  casting_ability: string;
+}
+
 export interface SessionLogData {
   id: number;
   date: string;

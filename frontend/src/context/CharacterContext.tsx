@@ -27,6 +27,7 @@ interface CharacterContextType {
   lastRollResult: RollResult | null;
   rollHistory: RollHistoryEntry[];
   toasts: ToastMessage[];
+  language: "es" | "en";
 
   // Animación física de dados
   isRollingAnimation: boolean;
@@ -50,6 +51,7 @@ interface CharacterContextType {
   addSpell: (spell: SpellItemData) => Promise<boolean>;
   removeSpell: (spellName: string) => Promise<boolean>;
   syncFeatures: () => Promise<void>;
+  setLanguage: (lang: "es" | "en") => void;
 }
 
 const CharacterContext = createContext<CharacterContextType | undefined>(undefined);
@@ -59,6 +61,9 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [characters, setCharacters] = useState<CharacterSummary[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [dndEdition, setEditionState] = useState<string>("5.5e");
+  const [language, setLanguageState] = useState<"es" | "en">(() => {
+    return (localStorage.getItem("dnd_sanctum_lang") as "es" | "en") || "es";
+  });
   const [talespireStatus, setTaleSpireStatus] = useState<TaleSpireStatus>({
     is_installed: false,
     is_running: false,
@@ -424,6 +429,12 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         addSpell,
         removeSpell,
         syncFeatures,
+        language,
+        setLanguage: (lang: "es" | "en") => {
+          setLanguageState(lang);
+          localStorage.setItem("dnd_sanctum_lang", lang);
+          showToast(`Idioma cambiado a ${lang === "es" ? "Español" : "English"}`, "info");
+        },
       }}
     >
       {children}

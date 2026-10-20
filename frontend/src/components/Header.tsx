@@ -34,14 +34,14 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
   ];
 
   return (
-    <header className="h-16 border-b border-border-iron bg-surface px-4 md:px-6 flex items-center justify-between shrink-0 select-none shadow-xs">
-      {/* Título de Marca y Selector de Versión D&D */}
-      <div className="flex items-center gap-3">
+    <header className="h-16 border-b border-border-iron bg-surface px-2 sm:px-4 md:px-6 flex items-center justify-between shrink-0 select-none shadow-xs gap-2">
+      {/* Título de Marca, Selector de Versión y Selector de Personaje Activo */}
+      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
         <div
           className="flex items-center gap-2 cursor-pointer"
           onClick={() => setActiveTab("sheet")}
         >
-          <span className="font-display font-bold text-xl md:text-2xl text-gold tracking-wide">
+          <span className="font-display font-bold text-lg sm:text-xl md:text-2xl text-gold tracking-wide">
             D&D Sanctum
           </span>
         </div>
@@ -51,7 +51,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
           <button
             onClick={() => setDndEdition("5.5e")}
             title="D&D 5.5e (Reglas 2024 / 2025)"
-            className={`px-2 py-0.5 rounded transition-all ${
+            className={`px-1.5 sm:px-2 py-0.5 rounded transition-all ${
               dndEdition === "5.5e"
                 ? "bg-gold text-canvas font-bold"
                 : "text-muted hover:text-main"
@@ -62,7 +62,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
           <button
             onClick={() => setDndEdition("5e")}
             title="D&D 5e (Reglas 2014 clásicas)"
-            className={`px-2 py-0.5 rounded transition-all ${
+            className={`px-1.5 sm:px-2 py-0.5 rounded transition-all ${
               dndEdition === "5e"
                 ? "bg-gold text-canvas font-bold"
                 : "text-muted hover:text-main"
@@ -72,13 +72,14 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
           </button>
         </div>
 
-        {/* Selector de personaje activo */}
+        {/* Selector de personaje activo (siempre visible con truncamiento responsivo) */}
         {characters.length > 0 && (
-          <div className="hidden lg:flex items-center gap-2 pl-3 border-l border-border-iron">
+          <div className="flex items-center gap-1.5 pl-2 sm:pl-3 border-l border-border-iron">
             <select
               value={activeCharacter?.id || ""}
               onChange={(e) => selectCharacter(Number(e.target.value))}
-              className="bg-card text-main border border-border-iron rounded px-2.5 py-1 text-xs focus:border-gold outline-none transition-colors"
+              className="bg-card text-main border border-border-iron rounded px-2 py-1 text-xs focus:border-gold outline-none transition-colors max-w-[110px] sm:max-w-[160px] md:max-w-[210px] truncate"
+              title="Seleccionar Personaje Activo"
             >
               {characters.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -90,15 +91,15 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
         )}
       </div>
 
-      {/* Navegación Táctica Principal */}
-      <nav className="flex items-center gap-1 bg-card/70 border border-border-iron/80 rounded-lg p-1 overflow-x-auto">
+      {/* Navegación Táctica Principal con márgenes claros para evitar solapamientos */}
+      <nav className="flex items-center gap-1 bg-card/70 border border-border-iron/80 rounded-lg p-1 overflow-x-auto mx-1 sm:mx-3 lg:mx-4 shrink min-w-0">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
           return (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-3 py-1.5 rounded text-xs font-medium tracking-wide transition-all whitespace-nowrap ${
+              className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded text-xs font-medium tracking-wide transition-all whitespace-nowrap ${
                 isActive
                   ? "bg-gold text-canvas font-bold shadow-xs"
                   : "text-muted hover:text-main hover:bg-surface/60"
@@ -110,8 +111,8 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
         })}
       </nav>
 
-      {/* Acciones de Utilidad Derecha */}
-      <div className="flex items-center gap-2">
+      {/* Acciones de Utilidad Derecha con shrink-0 */}
+      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
         {/* Estado TaleSpire */}
         <button
           onClick={connectTaleSpire}

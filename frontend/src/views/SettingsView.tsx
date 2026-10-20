@@ -14,6 +14,8 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
     characters,
     reloadCharacters,
     selectCharacter,
+    language,
+    setLanguage,
   } = useCharacter();
 
   const [settings, setSettings] = useState<AppSettings>({
@@ -156,6 +158,43 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
               <code className="text-gold">theme.json</code> en la carpeta{" "}
               <code className="text-gold">themes/</code>.
             </p>
+          </section>
+
+          {/* Idioma del Compendio & Tarjetas (ES / EN) */}
+          <section className="space-y-3 pt-3 border-t border-border-iron">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
+              Idioma del Compendio & Tarjetas (Language)
+            </h3>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => setLanguage("es")}
+                className={`p-3 rounded-lg border text-left transition-all ${
+                  language === "es"
+                    ? "border-gold bg-card ring-1 ring-gold shadow-sm"
+                    : "border-border-iron bg-card/40 hover:bg-card hover:border-gold/50"
+                }`}
+              >
+                <div className="font-semibold text-sm text-main flex items-center justify-between">
+                  <span>Español (ES)</span>
+                  {language === "es" && <span className="text-[10px] text-gold font-bold">Activo</span>}
+                </div>
+                <div className="text-xs text-muted mt-0.5">Nombres y descripciones en español</div>
+              </button>
+              <button
+                onClick={() => setLanguage("en")}
+                className={`p-3 rounded-lg border text-left transition-all ${
+                  language === "en"
+                    ? "border-gold bg-card ring-1 ring-gold shadow-sm"
+                    : "border-border-iron bg-card/40 hover:bg-card hover:border-gold/50"
+                }`}
+              >
+                <div className="font-semibold text-sm text-main flex items-center justify-between">
+                  <span>English (EN)</span>
+                  {language === "en" && <span className="text-[10px] text-gold font-bold">Active</span>}
+                </div>
+                <div className="text-xs text-muted mt-0.5">Original SRD English naming and rules</div>
+              </button>
+            </div>
           </section>
 
           {/* 2. Integración con TaleSpire */}

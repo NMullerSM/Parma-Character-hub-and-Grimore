@@ -23,6 +23,16 @@ import {
   Info,
 } from "lucide-react";
 
+const DEFAULT_CLASSES = [
+  "Bardo", "Bárbaro", "Clérigo", "Druida", "Explorador", "Guerrero",
+  "Hechicero", "Mago", "Monje", "Paladín", "Pícaro", "Brujo"
+];
+
+const DEFAULT_SPECIES = [
+  "Humano", "Elfo", "Enano", "Mediano", "Aasimar", "Dracónido",
+  "Gnomo", "Goliat", "Orco", "Tiefling"
+];
+
 type CreationMode = "hub" | "standard" | "quick" | "random";
 
 // Componente de Tarjeta de Conjuro Estilo D&D 5e
@@ -1169,9 +1179,12 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                 }}
                 className="w-full bg-input text-main border border-border-iron rounded px-3 py-2 text-sm focus:border-cyan-400 outline-none"
               >
-                {(catalog?.classes || []).map((c) => (
-                  <option key={c.name} value={c.name}>
-                    {c.name}
+                {((catalog?.classes && catalog.classes.length > 0)
+                  ? catalog.classes.map((c) => c.name)
+                  : DEFAULT_CLASSES
+                ).map((cName) => (
+                  <option key={cName} value={cName}>
+                    {cName}
                   </option>
                 ))}
               </select>
@@ -1189,9 +1202,12 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                 }}
                 className="w-full bg-input text-main border border-border-iron rounded px-3 py-2 text-sm focus:border-cyan-400 outline-none"
               >
-                {(catalog?.species || []).map((s) => (
-                  <option key={s.name} value={s.name}>
-                    {s.name}
+                {((catalog?.species && catalog.species.length > 0)
+                  ? catalog.species.map((s) => s.name)
+                  : DEFAULT_SPECIES
+                ).map((sName) => (
+                  <option key={sName} value={sName}>
+                    {sName}
                   </option>
                 ))}
               </select>

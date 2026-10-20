@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { api } from "../api/client";
 import type { SpellItemData } from "../api/types";
+import { useCharacter } from "../context/CharacterContext";
 import { X, Search, Plus, Trash2, Check, BookOpen } from "lucide-react";
 
 interface SpellBookManagerModalProps {
@@ -54,6 +55,7 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
   const [spells, setSpells] = useState<SpellItemData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [previewSpell, setPreviewSpell] = useState<SpellItemData | null>(null);
+  const { language } = useCharacter();
 
   useEffect(() => {
     if (characterClass) {
@@ -101,7 +103,12 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
 
   if (!isOpen) return null;
 
-  const currentNamesSet = new Set(currentSpells.map((s) => s.name.toLowerCase().trim()));
+  const safeCurrentSpells = Array.isArray(currentSpells) ? currentSpells : [];
+  const currentNamesSet = new Set(
+    safeCurrentSpells
+      .filter((s) => s && s.name)
+      .map((s) => String(s.name).toLowerCase().trim())
+  );
 
   return (
     <div
@@ -121,7 +128,7 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
                 Gestor del Grimorio & Compendio de Conjuros
               </h2>
               <p className="text-xs text-muted">
-                {currentSpells.length} conjuros en ficha ({characterClass} Nvl {characterLevel}) • Consulta la base de datos oficial OKF
+                {safeCurrentSpells.length} conjuros en ficha ({characterClass || "Personaje"} Nvl {characterLevel || 1}) • Consulta la base de datos oficial OKF
               </p>
             </div>
           </div>
@@ -233,8 +240,10 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
               </div>
             ) : (
               spells.map((sp, idx) => {
-                const isAdded = currentNamesSet.has(sp.name.toLowerCase().trim());
-                const isSelected = previewSpell?.name === sp.name;
+                if (!sp || !sp.name) return null;
+                const sName = sp.name;
+                const isAdded = currentNamesSet.has(sName.toLowerCase().trim());
+                const isSelected = previewSpell?.name === sName;
                 return (
                   <div
                     key={idx}
@@ -247,7 +256,9 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
                   >
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-xs text-main truncate">{sp.name}</span>
+                        <span className="font-semibold text-xs text-main truncate">
+                          {language === "en" && sp.name_en ? sp.name_en : sName}
+                        </span>
                         <span className="font-stat text-[10px] px-1.5 py-0.2 rounded bg-card border border-border-iron text-gold shrink-0">
                           {sp.level === 0 ? "Truco" : `Niv ${sp.level}`}
                         </span>
@@ -299,9 +310,13 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
                     </span>
                     <span className="text-[10px] text-muted">{previewSpell.school}</span>
                   </div>
-                  <h3 className="font-display font-bold text-lg text-gold">{previewSpell.name}</h3>
+                  <h3 className="font-display font-bold text-lg text-gold">
+                    {language === "en" && previewSpell.name_en ? previewSpell.name_en : previewSpell.name}
+                  </h3>
                   {previewSpell.name_en && previewSpell.name_en !== previewSpell.name && (
-                    <p className="text-xs text-muted italic">{previewSpell.name_en}</p>
+                    <p className="text-xs text-muted italic">
+                      {language === "en" ? previewSpell.name : previewSpell.name_en}
+                    </p>
                   )}
                 </div>
 
@@ -344,7 +359,7 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
             {/* Acción al pie de la columna derecha */}
             {previewSpell && (
               <div className="pt-3 border-t border-border-iron mt-3 flex items-center justify-between">
-                {currentNamesSet.has(previewSpell.name.toLowerCase().trim()) ? (
+                {previewSpell.name && currentNamesSet.has(previewSpell.name.toLowerCase().trim()) ? (
                   <button
                     onClick={() => onRemoveSpell(previewSpell.name)}
                     className="w-full py-1.5 rounded bg-crimson/20 border border-crimson text-crimson hover:bg-crimson hover:text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1.5"

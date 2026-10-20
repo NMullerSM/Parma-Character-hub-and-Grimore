@@ -15,6 +15,7 @@ import type {
   BuilderCatalog,
   PointBuyValidationResult,
   SpellItemData,
+  ClassProgressionLimits,
 } from "./types";
 
 declare global {
@@ -579,6 +580,22 @@ export const api = {
     if (options.level !== undefined) filtered = filtered.filter((s) => s.level === options.level);
     if (options.query) filtered = filtered.filter((s) => s.name.toLowerCase().includes(options.query!.toLowerCase()));
     return filtered;
+  },
+
+  async getClassProgressionLimits(className: string, level: number, edition: string = "5.5e"): Promise<ClassProgressionLimits> {
+    if (this.isNative()) {
+      return await window.pywebview!.api.get_class_progression_limits(className, level, edition);
+    }
+    return {
+      is_caster: true,
+      edition,
+      cantrips_limit: 3,
+      spells_limit: 7,
+      max_spell_level: 2,
+      spell_slots: { "1": 4, "2": 3 },
+      weapon_mastery_slots: 0,
+      casting_ability: "CAR",
+    };
   },
 
   async addSpellToCharacter(charId: number, spell: SpellItemData): Promise<{ success: boolean; character?: CharacterSheetData; error?: string }> {

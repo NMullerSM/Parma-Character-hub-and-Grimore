@@ -50,6 +50,7 @@ from core.rules import (
     perform_long_rest,
     roll_dice_pool,
     compute_dynamic_features,
+    get_class_progression_limits,
 )
 from core.session_ledger import SessionRollLedger
 from core.srd_importer import SrdImporter
@@ -850,6 +851,23 @@ class DesktopBridge:
             }
             for s in items
         ]
+
+    def get_class_progression_limits(
+        self,
+        class_name: str,
+        level: int,
+        edition: str = "5.5e",
+        ability_mod: int = 0,
+        has_magic_initiate: bool = False
+    ) -> Dict[str, Any]:
+        """Calcula los límites canónicos de conjuros conocidos/preparados y ranuras mágicas."""
+        return get_class_progression_limits(
+            class_name=class_name,
+            level=level,
+            edition=edition,
+            ability_mod=ability_mod,
+            has_magic_initiate=has_magic_initiate
+        )
 
     def get_available_spells(
         self,

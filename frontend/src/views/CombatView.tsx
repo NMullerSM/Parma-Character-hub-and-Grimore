@@ -837,9 +837,9 @@ export const CombatView: React.FC = () => {
       <SpellBookManagerModal
         isOpen={isSpellManagerOpen}
         onClose={() => setIsSpellManagerOpen(false)}
-        characterClass={char_class}
-        characterLevel={level}
-        currentSpells={spells}
+        characterClass={char_class || "Bardo"}
+        characterLevel={level || 1}
+        currentSpells={spells || []}
         onAddSpell={addSpell}
         onRemoveSpell={removeSpell}
       />
