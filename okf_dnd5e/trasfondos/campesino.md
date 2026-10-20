@@ -1,16 +1,16 @@
 ---
-id: "campesino"
-nombre: "Campesino"
-caracteristicas_clave: "Fuerza, Constitución, Sabiduría"
-dote_concedida: "Duro"
-habilidades_competentes: "Supervivencia, Trato con Animales"
-fuente: "PHB 2024"
+id: campesino
+nombre: Campesino
+caracteristicas_clave: Fuerza, Constitución, Sabiduría
+dote_concedida: Duro
+habilidades_competentes: Supervivencia, Trato con Animales
+fuente: PHB 2024
 pagina: 181
 tags:
-  - "trasfondo"
-  - "campesino"
+- trasfondo
+- campesino
+tipo: trasfondo
 ---
-
 # Trasfondo: Campesino
 
 - **Puntuaciones de Característica**: Fuerza, Constitución, Sabiduría

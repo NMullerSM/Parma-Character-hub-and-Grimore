@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useCharacter } from "../context/CharacterContext";
-import { Download, Upload } from "lucide-react";
+import { Download, Upload, Sparkles, Wand2, User } from "lucide-react";
 import { api } from "../api/client";
 import { FeatureDetailModal } from "../components/FeatureDetailModal";
+import { AiPortraitModal } from "../components/AiPortraitModal";
 import type { FeatureItemData } from "../api/types";
 
 export const SheetView: React.FC = () => {
@@ -15,6 +16,7 @@ export const SheetView: React.FC = () => {
   } = useCharacter();
 
   const [activeFeatureForModal, setActiveFeatureForModal] = useState<FeatureItemData | null>(null);
+  const [isAiPortraitModalOpen, setIsAiPortraitModalOpen] = useState<boolean>(false);
 
   if (!activeCharacter) {
     return (
@@ -51,6 +53,7 @@ export const SheetView: React.FC = () => {
     features,
     senses,
     languages,
+    appearance,
     portrait_base64,
   } = activeCharacter;
 
@@ -63,12 +66,14 @@ export const SheetView: React.FC = () => {
     if (!id) return;
     try {
       const res = await api.uploadCharacterPortrait(id);
-      if (res.success && res.portrait_base64) {
+      const newB64 = res.portrait_base64 || res.character?.portrait_base64;
+      if (res.success && newB64) {
         updateActiveCharacter({
-          portrait_path: res.portrait_path,
-          portrait_base64: res.portrait_base64,
+          portrait_path: res.portrait_path || res.character?.portrait_path,
+          portrait_base64: newB64,
+          ...(res.character || {}),
         });
-        showToast("Retrato del personaje actualizado", "success");
+        showToast("Retrato del personaje actualizado con éxito", "success");
       } else if (res.error && res.error !== "Selección cancelada.") {
         showToast(res.error, "warn");
       }
@@ -179,28 +184,66 @@ export const SheetView: React.FC = () => {
     <div className="h-full overflow-y-auto p-4 md:p-6 space-y-5 max-w-7xl mx-auto">
       {/* 1. Hero Header del Personaje */}
       <section className="bg-card border border-border-iron rounded-lg p-4 md:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          {/* Retrato del Personaje */}
-          <button
-            onClick={handleUploadPortrait}
-            title="Cambiar retrato del personaje"
-            className="relative w-14 h-14 rounded-lg border border-border-iron hover:border-gold bg-surface overflow-hidden shrink-0 flex items-center justify-center group transition-colors"
-          >
-            {portrait_base64 ? (
-              <img
-                src={portrait_base64}
-                alt={name}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <span className="font-display font-bold text-xl text-gold">
-                {name.slice(0, 2).toUpperCase()}
-              </span>
-            )}
-            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-              <Upload className="w-4 h-4 text-gold" />
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+          {/* Retrato del Personaje Heroico */}
+          <div className="relative group shrink-0">
+            <div className="w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-xl border-2 border-border-iron group-hover:border-gold bg-surface overflow-hidden flex items-center justify-center shadow-lg transition-all">
+              {portrait_base64 ? (
+                <img
+                  src={portrait_base64}
+                  alt={name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="flex flex-col items-center justify-center text-center p-2">
+                  <span className="font-display font-bold text-3xl text-gold">
+                    {name.slice(0, 2).toUpperCase()}
+                  </span>
+                  <span className="text-[10px] text-muted mt-1">Sin Retrato</span>
+                </div>
+              )}
+
+              {/* Overlay al pasar el cursor */}
+              <div className="absolute inset-0 bg-black/75 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-1.5 p-2 transition-opacity">
+                <button
+                  onClick={handleUploadPortrait}
+                  className="w-full px-2 py-1 bg-surface hover:bg-gold hover:text-canvas border border-border-iron rounded text-[11px] font-semibold text-main transition-colors flex items-center justify-center gap-1"
+                  title="Subir archivo de imagen desde disco"
+                >
+                  <Upload className="w-3 h-3" />
+                  <span>Subir</span>
+                </button>
+                <button
+                  onClick={() => setIsAiPortraitModalOpen(true)}
+                  className="w-full px-2 py-1 bg-gold hover:bg-gold-hover text-canvas rounded text-[11px] font-bold transition-colors flex items-center justify-center gap-1 shadow-sm"
+                  title="Generar retrato con IA basándose en apariencia"
+                >
+                  <Wand2 className="w-3 h-3" />
+                  <span>Retrato IA</span>
+                </button>
+              </div>
             </div>
-          </button>
+
+            {/* Acciones directas bajo el retrato */}
+            <div className="flex items-center justify-center gap-1.5 mt-2">
+              <button
+                onClick={handleUploadPortrait}
+                className="px-2 py-0.5 rounded bg-surface border border-border-iron hover:border-gold text-[10px] font-medium text-muted hover:text-main transition-colors flex items-center gap-1"
+                title="Subir imagen"
+              >
+                <Upload className="w-2.5 h-2.5" />
+                <span>Subir</span>
+              </button>
+              <button
+                onClick={() => setIsAiPortraitModalOpen(true)}
+                className="px-2 py-0.5 rounded bg-gold/15 border border-gold/40 hover:bg-gold hover:text-canvas text-[10px] font-bold text-gold transition-colors flex items-center gap-1"
+                title="Generador IA"
+              >
+                <Sparkles className="w-2.5 h-2.5" />
+                <span>IA</span>
+              </button>
+            </div>
+          </div>
 
           <div className="space-y-1">
             <div className="flex flex-wrap items-center gap-2.5">
@@ -366,7 +409,43 @@ export const SheetView: React.FC = () => {
         })}
       </section>
 
-      {/* 4. Columnas de Acciones de Combate y Habilidades */}
+      {/* 4. Apariencia y Rasgos Físicos (Para generación de Retratos) */}
+      <section className="bg-card border border-border-iron rounded-xl p-4 space-y-3">
+        <div className="flex items-center justify-between border-b border-border-iron pb-2 flex-wrap gap-2">
+          <div className="flex items-center gap-2">
+            <User className="w-4 h-4 text-gold" />
+            <h2 className="font-display font-semibold text-base text-gold">
+              Apariencia Física y Rasgos del Personaje
+            </h2>
+          </div>
+          <button
+            onClick={() => setIsAiPortraitModalOpen(true)}
+            className="px-3 py-1.5 rounded-lg bg-gold/15 hover:bg-gold hover:text-canvas border border-gold/40 text-gold text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs active:scale-95"
+            title="Generar ilustración del personaje con IA"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Generar Retrato con IA</span>
+          </button>
+        </div>
+
+        <div className="space-y-2">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-muted">
+            Descripción de Aspecto, Fisonomía y Marcas Distintivas
+          </label>
+          <textarea
+            value={appearance || ""}
+            onChange={(e) => updateActiveCharacter({ appearance: e.target.value })}
+            placeholder="Describe aquí la apariencia de tu personaje (altura, peso, ojos, cabello, tono de piel, vestimenta, armadura, cicatrices o expresión)..."
+            rows={3}
+            className="w-full bg-input text-main border border-border-iron rounded-lg p-2.5 text-xs focus:border-gold outline-none leading-relaxed transition-colors resize-none"
+          />
+          <p className="text-[11px] text-muted">
+            Este texto se transmite de forma automática al Generador de Retratos IA para componer el prompt visual en estilos como Pixel Art, Fantasía Épica u Óleo Clásico.
+          </p>
+        </div>
+      </section>
+
+      {/* 5. Columnas de Acciones de Combate y Habilidades */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Columna Izquierda: Acciones de Arma */}
         <div className="md:col-span-2 space-y-3">
@@ -566,6 +645,17 @@ export const SheetView: React.FC = () => {
             const s = match[2];
             openDiceDrawer({ dice: { [s]: cnt }, label });
           }
+        }}
+      />
+
+      {/* Modal de Generador de Retrato IA */}
+      <AiPortraitModal
+        isOpen={isAiPortraitModalOpen}
+        onClose={() => setIsAiPortraitModalOpen(false)}
+        character={activeCharacter}
+        onPortraitGenerated={(newImg) => {
+          updateActiveCharacter({ portrait_base64: newImg });
+          showToast("Retrato actualizado en la ficha", "success");
         }}
       />
     </div>

@@ -205,24 +205,33 @@ class SrdImporter:
                         if len(parts) >= 3:
                             import yaml
                             meta = yaml.safe_load(parts[1])
-                            if not isinstance(meta, dict):
-                                continue
-
-                            tipo = "conjuro" if "conjuros" in rel_path else (
-                                "dote" if "dotes" in rel_path else (
-                                    "subclase" if "subclases" in rel_path else (
-                                        "clase" if "clases" in rel_path else (
-                                            "especie" if "especies" in rel_path else "regla"
-                                        )
-                                    )
-                                )
-                            )
+                            # Determinar tipo canónico de entidad OKF
+                            tipo = meta.get("tipo")
+                            if not tipo:
+                                if "conjuros" in rel_path:
+                                    tipo = "conjuro"
+                                elif "dotes" in rel_path:
+                                    tipo = "dote"
+                                elif "subclases" in rel_path:
+                                    tipo = "subclase"
+                                elif "clases" in rel_path:
+                                    tipo = "clase"
+                                elif "especies" in rel_path:
+                                    tipo = "especie"
+                                elif "linajes" in rel_path:
+                                    tipo = "linaje"
+                                elif "trasfondos" in rel_path:
+                                    tipo = "trasfondo"
+                                elif "equipo" in rel_path:
+                                    tipo = "equipo"
+                                else:
+                                    tipo = "regla"
 
                             entry = {
                                 "id": meta.get("id", Path(file).stem),
                                 "nombre": meta.get("nombre", Path(file).stem.replace("_", " ").title()),
                                 "nombre_ingles": meta.get("nombre_ingles", meta.get("nombre", "")),
-                                "tipo": meta.get("tipo", tipo),
+                                "tipo": tipo,
                                 "nivel": meta.get("nivel"),
                                 "escuela": meta.get("escuela"),
                                 "clases": meta.get("clases", []),
@@ -230,6 +239,25 @@ class SrdImporter:
                                 "tags": meta.get("tags", []),
                                 "path": rel_path,
                             }
+                            if "dote_concedida" in meta:
+                                entry["dote_concedida"] = meta["dote_concedida"]
+                            if "caracteristicas_clave" in meta:
+                                entry["caracteristicas_clave"] = meta["caracteristicas_clave"]
+                            if "habilidades_competentes" in meta:
+                                entry["habilidades_competentes"] = meta["habilidades_competentes"]
+                            if "dado_golpe" in meta:
+                                entry["dado_golpe"] = meta["dado_golpe"]
+                            if "tiempo_lanzamiento" in meta:
+                                entry["tiempo_lanzamiento"] = meta["tiempo_lanzamiento"]
+                            if "alcance" in meta:
+                                entry["alcance"] = meta["alcance"]
+                            if "duracion" in meta:
+                                entry["duracion"] = meta["duracion"]
+                            if "concentracion" in meta:
+                                entry["concentracion"] = meta["concentracion"]
+                            if "ritual" in meta:
+                                entry["ritual"] = meta["ritual"]
+
                             entities.append(entry)
                 except Exception as e:
                     print(f"[SrdImporter] Error al procesar {rel_path}: {e}")

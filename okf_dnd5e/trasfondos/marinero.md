@@ -1,16 +1,16 @@
 ---
-id: "marinero"
-nombre: "Marinero"
-caracteristicas_clave: "Fuerza, Destreza, Sabiduría"
-dote_concedida: "Luchador de taberna"
-habilidades_competentes: "Atletismo, Percepción"
-fuente: "PHB 2024"
+id: marinero
+nombre: Marinero
+caracteristicas_clave: Fuerza, Destreza, Sabiduría
+dote_concedida: Luchador de taberna
+habilidades_competentes: Atletismo, Percepción
+fuente: PHB 2024
 pagina: 186
 tags:
-  - "trasfondo"
-  - "marinero"
+- trasfondo
+- marinero
+tipo: trasfondo
 ---
-
 # Trasfondo: Marinero
 
 - **Puntuaciones de Característica**: Fuerza, Destreza, Sabiduría

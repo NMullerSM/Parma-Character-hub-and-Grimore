@@ -3,6 +3,11 @@ import { api } from "../api/client";
 import type { SpellItemData } from "../api/types";
 import { useCharacter } from "../context/CharacterContext";
 import { X, Search, Plus, Trash2, Check, BookOpen } from "lucide-react";
+import {
+  formatRangeWithTiles,
+  formatDurationWithTurns,
+  formatComponents,
+} from "../utils/formatters";
 
 interface SpellBookManagerModalProps {
   isOpen: boolean;
@@ -87,12 +92,18 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
           query: searchQuery.trim(),
           school: selectedSchool === "Todas" ? undefined : selectedSchool,
         });
-        setSpells(results);
-        if (results.length > 0 && !previewSpell) {
-          setPreviewSpell(results[0]);
+        const safeResults = Array.isArray(results) ? results : [];
+        setSpells(safeResults);
+        if (safeResults.length > 0) {
+          setPreviewSpell((prev) => {
+            if (!prev) return safeResults[0];
+            const exists = safeResults.find((s) => s.name === prev.name);
+            return exists || safeResults[0];
+          });
         }
       } catch (e) {
         console.error("Error al cargar conjuros del compendio:", e);
+        setSpells([]);
       } finally {
         setLoading(false);
       }
@@ -265,7 +276,9 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
                         <span className="text-[10px] text-muted hidden sm:inline">{sp.school}</span>
                       </div>
                       <p className="text-[11px] text-muted truncate mt-0.5">
-                        {sp.cast_time} • {sp.range_area} • {sp.components}
+                        {sp.cast_time || sp.casting_time || "1 acción"} •{" "}
+                        {formatRangeWithTiles(sp.range_area || sp.range)} •{" "}
+                        {formatComponents(sp.components)}
                       </p>
                     </div>
 
@@ -323,30 +336,36 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
                 <div className="text-xs space-y-1 bg-surface p-2.5 rounded border border-border-iron">
                   <div>
                     <span className="text-muted">Tiempo de lanzamiento:</span>{" "}
-                    <span className="text-main font-medium">{previewSpell.cast_time}</span>
+                    <span className="text-main font-medium">{previewSpell.cast_time || previewSpell.casting_time || "1 acción"}</span>
                   </div>
                   <div>
                     <span className="text-muted">Alcance:</span>{" "}
-                    <span className="text-main font-medium">{previewSpell.range_area}</span>
+                    <span className="text-main font-medium">{formatRangeWithTiles(previewSpell.range_area || previewSpell.range)}</span>
                   </div>
                   <div>
                     <span className="text-muted">Componentes:</span>{" "}
-                    <span className="text-main font-medium">{previewSpell.components}</span>
+                    <span className="text-main font-medium">{formatComponents(previewSpell.components)}</span>
                   </div>
                   <div>
                     <span className="text-muted">Duración:</span>{" "}
-                    <span className="text-main font-medium">{previewSpell.duration}</span>
+                    <span className="text-main font-medium">{formatDurationWithTurns(previewSpell.duration)}</span>
                   </div>
                 </div>
 
                 <div className="text-xs text-muted leading-relaxed max-h-56 overflow-y-auto pr-1">
-                  {previewSpell.description || previewSpell.notes}
+                  {typeof (previewSpell.description || previewSpell.notes) === "string"
+                    ? previewSpell.description || previewSpell.notes
+                    : JSON.stringify(previewSpell.description || previewSpell.notes || "")}
                 </div>
 
                 {previewSpell.higher_levels && (
                   <div className="p-2 rounded bg-surface border border-border-iron text-xs">
                     <strong className="text-gold block mb-0.5">En Niveles Superiores:</strong>
-                    <p className="text-muted">{previewSpell.higher_levels}</p>
+                    <p className="text-muted">
+                      {typeof previewSpell.higher_levels === "string"
+                        ? previewSpell.higher_levels
+                        : JSON.stringify(previewSpell.higher_levels)}
+                    </p>
                   </div>
                 )}
               </div>

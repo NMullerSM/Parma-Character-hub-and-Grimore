@@ -146,6 +146,13 @@ export interface CharacterSheetData {
   network_edges: NetworkEdgeData[];
   senses?: string;
   languages?: string;
+  proficiencies_extra?: string;
+  appearance?: string;
+  history?: string;
+  personality_traits?: string;
+  ideals?: string;
+  bonds?: string;
+  flaws?: string;
   portrait_path?: string;
   portrait_base64?: string;
   theme_override?: string;

@@ -1,16 +1,16 @@
 ---
-id: "soldado"
-nombre: "Soldado"
-caracteristicas_clave: "Fuerza, Destreza, Constitución"
-dote_concedida: "Atacante salvaje"
-habilidades_competentes: "Atletismo, Intimidación"
-fuente: "PHB 2024"
+id: soldado
+nombre: Soldado
+caracteristicas_clave: Fuerza, Destreza, Constitución
+dote_concedida: Atacante salvaje
+habilidades_competentes: Atletismo, Intimidación
+fuente: PHB 2024
 pagina: 187
 tags:
-  - "trasfondo"
-  - "soldado"
+- trasfondo
+- soldado
+tipo: trasfondo
 ---
-
 # Trasfondo: Soldado
 
 - **Puntuaciones de Característica**: Fuerza, Destreza, Constitución

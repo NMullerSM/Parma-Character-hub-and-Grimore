@@ -250,9 +250,17 @@ export const api = {
     return true;
   },
 
-  async uploadCharacterPortrait(charId: number): Promise<{ success: boolean; portrait_path?: string; portrait_base64?: string; error?: string }> {
+  async uploadCharacterPortrait(charId: number): Promise<{ success: boolean; portrait_path?: string; portrait_base64?: string; character?: CharacterSheetData; error?: string }> {
     if (this.isNative()) return await window.pywebview!.api.upload_character_portrait(charId);
     return { success: false, error: "Función de diálogo nativo disponible solo en escritorio." };
+  },
+
+  async setCharacterPortraitBase64(charId: number, imageBase64: string): Promise<{ success: boolean; portrait_base64?: string; character?: CharacterSheetData; error?: string }> {
+    if (this.isNative()) return await window.pywebview!.api.set_character_portrait_base64(charId, imageBase64);
+    if (mockActiveCharacter) {
+      mockActiveCharacter = { ...mockActiveCharacter, portrait_base64: imageBase64 };
+    }
+    return { success: true, portrait_base64: imageBase64, character: mockActiveCharacter };
   },
 
   async exportCharacterJson(charId: number): Promise<{ success: boolean; path?: string; error?: string }> {
@@ -497,7 +505,7 @@ export const api = {
       { id: "clases", label: "Clases y Subclases", count: 12 },
       { id: "especies_y_linajes", label: "Especies y Linajes", count: 9 },
       { id: "conjuros", label: "Grimorio de Conjuros", count: 320 },
-      { id: "trasfondos", label: "Trasfondos", count: 16 },
+      { id: "trasfondos", label: "Trasfondos", count: 17 },
       { id: "dotes", label: "Dotes", count: 42 },
       { id: "equipo_y_armamento", label: "Equipo y Armamento", count: 85 },
       { id: "reglas_y_mecanicas", label: "Reglas y Mecánicas", count: 28 },
@@ -568,13 +576,14 @@ export const api = {
     school?: string;
   } = {}): Promise<SpellItemData[]> {
     if (this.isNative()) {
-      return await window.pywebview!.api.get_available_spells(
+      const res = await window.pywebview!.api.get_available_spells(
         options.className || null,
         options.maxLevel ?? null,
         options.query || "",
         options.school || null,
         options.level ?? null
       );
+      return Array.isArray(res) ? res : [];
     }
     let filtered = [...mockActiveCharacter.spells];
     if (options.level !== undefined) filtered = filtered.filter((s) => s.level === options.level);

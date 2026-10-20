@@ -446,7 +446,25 @@ class DesktopBridge:
             pass
 
         self._db.save_character(char, set_active=self._is_active_character_id(char_id))
-        return {"success": True, "character": self._serialize_character(char)}
+        return {
+            "success": True,
+            "portrait_path": char.portrait_path,
+            "portrait_base64": char.portrait_base64,
+            "character": self._serialize_character(char),
+        }
+
+    def set_character_portrait_base64(self, char_id: int, image_base64: str) -> Dict[str, Any]:
+        """Guarda un retrato en formato base64 directamente en la ficha del personaje."""
+        char = self._db.get_character_by_id(char_id)
+        if not char:
+            return {"success": False, "error": "Personaje no encontrado"}
+        char.portrait_base64 = image_base64
+        self._db.save_character(char, set_active=self._is_active_character_id(char_id))
+        return {
+            "success": True,
+            "portrait_base64": char.portrait_base64,
+            "character": self._serialize_character(char),
+        }
 
     def export_character_json(self, char_id: int) -> Dict[str, Any]:
         """Exporta un personaje a un archivo JSON en data/characters/ (o mediante diálogo nativo)."""
@@ -1494,7 +1512,7 @@ class DesktopBridge:
 
         category_type_map = {
             "clases": ["clase", "subclase"],
-            "especies_y_linajes": ["especie", "linaje"],
+            "especies_y_linajes": ["especie", "linaje", "especie_linaje"],
             "conjuros": "conjuro",
             "trasfondos": "trasfondo",
             "dotes": "dote",
@@ -1515,6 +1533,10 @@ class DesktopBridge:
                 snippet_parts.append(str(item["escuela"]))
             if "dado_golpe" in item and item["dado_golpe"]:
                 snippet_parts.append(f"DG: {item['dado_golpe']}")
+            if "dote_concedida" in item and item["dote_concedida"]:
+                snippet_parts.append(f"Dote: {item['dote_concedida']}")
+            if "caracteristicas_clave" in item and item["caracteristicas_clave"]:
+                snippet_parts.append(f"{item['caracteristicas_clave']}")
 
             results.append({
                 "id": item.get("id", ""),

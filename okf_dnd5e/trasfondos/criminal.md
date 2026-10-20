@@ -1,16 +1,16 @@
 ---
-id: "criminal"
-nombre: "Criminal"
-caracteristicas_clave: "Destreza, Constitución, Inteligencia"
-dote_concedida: "Alerta"
-habilidades_competentes: "Engaño, Sigilo"
-fuente: "PHB 2024"
+id: criminal
+nombre: Criminal
+caracteristicas_clave: Destreza, Constitución, Inteligencia
+dote_concedida: Alerta
+habilidades_competentes: Engaño, Sigilo
+fuente: PHB 2024
 pagina: 182
 tags:
-  - "trasfondo"
-  - "criminal"
+- trasfondo
+- criminal
+tipo: trasfondo
 ---
-
 # Trasfondo: Criminal
 
 - **Puntuaciones de Característica**: Destreza, Constitución, Inteligencia

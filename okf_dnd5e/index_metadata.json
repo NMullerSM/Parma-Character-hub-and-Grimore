@@ -15,7 +15,8 @@
         "clase",
         "barbaro"
       ],
-      "path": "clases/barbaro/barbaro_base.md"
+      "path": "clases/barbaro/barbaro_base.md",
+      "dado_golpe": "1d12"
     },
     {
       "id": "barbaro_arbol_del_mundo",
@@ -120,7 +121,8 @@
         "clase",
         "bardo"
       ],
-      "path": "clases/bardo/bardo_base.md"
+      "path": "clases/bardo/bardo_base.md",
+      "dado_golpe": "1d8"
     },
     {
       "id": "subclase_colegio_de_susurros",
@@ -245,7 +247,8 @@
         "clase",
         "brujo"
       ],
-      "path": "clases/brujo/brujo_base.md"
+      "path": "clases/brujo/brujo_base.md",
+      "dado_golpe": "1d8"
     },
     {
       "id": "brujo_celestial",
@@ -355,7 +358,8 @@
         "clase",
         "clerigo"
       ],
-      "path": "clases/clerigo/clerigo_base.md"
+      "path": "clases/clerigo/clerigo_base.md",
+      "dado_golpe": "1d8"
     },
     {
       "id": "clerigo_crepusculo",
@@ -480,7 +484,8 @@
         "clase",
         "druida"
       ],
-      "path": "clases/druida/druida_base.md"
+      "path": "clases/druida/druida_base.md",
+      "dado_golpe": "1d8"
     },
     {
       "id": "druida_estrellas",
@@ -569,7 +574,8 @@
         "clase",
         "explorador"
       ],
-      "path": "clases/explorador/explorador_base.md"
+      "path": "clases/explorador/explorador_base.md",
+      "dado_golpe": "1d10"
     },
     {
       "id": "explorador_acechador_sombrio",
@@ -659,7 +665,8 @@
         "clase",
         "guerrero"
       ],
-      "path": "clases/guerrero/guerrero_base.md"
+      "path": "clases/guerrero/guerrero_base.md",
+      "dado_golpe": "1d10"
     },
     {
       "id": "guerrero_caballero_runico",
@@ -766,7 +773,8 @@
         "clase",
         "hechicero"
       ],
-      "path": "clases/hechicero/hechicero_base.md"
+      "path": "clases/hechicero/hechicero_base.md",
+      "dado_golpe": "1d6"
     },
     {
       "id": "hechicero_alma_divina",
@@ -876,7 +884,8 @@
         "clase",
         "mago"
       ],
-      "path": "clases/mago/mago_base.md"
+      "path": "clases/mago/mago_base.md",
+      "dado_golpe": "1d6"
     },
     {
       "id": "mago_abjuracion",
@@ -983,7 +992,8 @@
         "clase",
         "monje"
       ],
-      "path": "clases/monje/monje_base.md"
+      "path": "clases/monje/monje_base.md",
+      "dado_golpe": "1d8"
     },
     {
       "id": "monje_cuatro_elementos",
@@ -1074,7 +1084,8 @@
         "clase",
         "paladin"
       ],
-      "path": "clases/paladin/paladin_base.md"
+      "path": "clases/paladin/paladin_base.md",
+      "dado_golpe": "1d10"
     },
     {
       "id": "paladin_antiguos",
@@ -1162,7 +1173,8 @@
         "clase",
         "picaro"
       ],
-      "path": "clases/picaro/picaro_base.md"
+      "path": "clases/picaro/picaro_base.md",
+      "dado_golpe": "1d8"
     },
     {
       "id": "picaro_asesino",
@@ -1273,7 +1285,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_0_trucos/agarre_electrizante.md"
+      "path": "conjuros/nivel_0_trucos/agarre_electrizante.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "amistad",
@@ -1298,7 +1315,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_0_trucos/amistad.md"
+      "path": "conjuros/nivel_0_trucos/amistad.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "3 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "burla_danina",
@@ -1316,7 +1338,12 @@
         "nivel_0",
         "bardo"
       ],
-      "path": "conjuros/nivel_0_trucos/burla_danina.md"
+      "path": "conjuros/nivel_0_trucos/burla_danina.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "crear_llama",
@@ -1334,7 +1361,12 @@
         "nivel_0",
         "druida"
       ],
-      "path": "conjuros/nivel_0_trucos/crear_llama.md"
+      "path": "conjuros/nivel_0_trucos/crear_llama.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "Lanzador",
+      "duracion": "10 minutos",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "descarga_de_fuego",
@@ -1354,7 +1386,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_0_trucos/descarga_de_fuego.md"
+      "path": "conjuros/nivel_0_trucos/descarga_de_fuego.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "descarga_sobrenatural",
@@ -1372,7 +1409,12 @@
         "nivel_0",
         "brujo"
       ],
-      "path": "conjuros/nivel_0_trucos/descarga_sobrenatural.md"
+      "path": "conjuros/nivel_0_trucos/descarga_sobrenatural.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "elementalismo",
@@ -1394,7 +1436,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_0_trucos/elementalismo.md"
+      "path": "conjuros/nivel_0_trucos/elementalismo.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "estallido_magico",
@@ -1412,7 +1459,12 @@
         "nivel_0",
         "hechicero"
       ],
-      "path": "conjuros/nivel_0_trucos/estallido_magico.md"
+      "path": "conjuros/nivel_0_trucos/estallido_magico.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "fragmento_mental",
@@ -1434,7 +1486,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_0_trucos/fragmento_mental.md"
+      "path": "conjuros/nivel_0_trucos/fragmento_mental.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "1 asalto",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "guardia_de_cuchillas",
@@ -1459,7 +1516,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_0_trucos/guardia_de_cuchillas.md"
+      "path": "conjuros/nivel_0_trucos/guardia_de_cuchillas.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "guia",
@@ -1480,7 +1542,12 @@
         "druida",
         "concentracion"
       ],
-      "path": "conjuros/nivel_0_trucos/guia.md"
+      "path": "conjuros/nivel_0_trucos/guia.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "ilusion_menor",
@@ -1504,7 +1571,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_0_trucos/ilusion_menor.md"
+      "path": "conjuros/nivel_0_trucos/ilusion_menor.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "1 minuto",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "impacto_certero",
@@ -1528,7 +1600,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_0_trucos/impacto_certero.md"
+      "path": "conjuros/nivel_0_trucos/impacto_certero.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "latigo_de_espinas",
@@ -1546,7 +1623,12 @@
         "nivel_0",
         "druida"
       ],
-      "path": "conjuros/nivel_0_trucos/latigo_de_espinas.md"
+      "path": "conjuros/nivel_0_trucos/latigo_de_espinas.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "llama_sagrada",
@@ -1564,7 +1646,12 @@
         "nivel_0",
         "clérigo"
       ],
-      "path": "conjuros/nivel_0_trucos/llama_sagrada.md"
+      "path": "conjuros/nivel_0_trucos/llama_sagrada.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "luces_danzantes",
@@ -1587,7 +1674,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_0_trucos/luces_danzantes.md"
+      "path": "conjuros/nivel_0_trucos/luces_danzantes.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "luz",
@@ -1611,7 +1703,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_0_trucos/luz.md"
+      "path": "conjuros/nivel_0_trucos/luz.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "mano_de_mago",
@@ -1635,7 +1732,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_0_trucos/mano_de_mago.md"
+      "path": "conjuros/nivel_0_trucos/mano_de_mago.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "1 minuto",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "mensaje",
@@ -1659,7 +1761,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_0_trucos/mensaje.md"
+      "path": "conjuros/nivel_0_trucos/mensaje.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "1 asalto",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "palabra_de_resplandor",
@@ -1677,7 +1784,12 @@
         "nivel_0",
         "clérigo"
       ],
-      "path": "conjuros/nivel_0_trucos/palabra_de_resplandor.md"
+      "path": "conjuros/nivel_0_trucos/palabra_de_resplandor.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "piedad_con_los_moribundos",
@@ -1697,7 +1809,12 @@
         "clérigo",
         "druida"
       ],
-      "path": "conjuros/nivel_0_trucos/piedad_con_los_moribundos.md"
+      "path": "conjuros/nivel_0_trucos/piedad_con_los_moribundos.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "4,5 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "prestidigitacion",
@@ -1721,7 +1838,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_0_trucos/prestidigitacion.md"
+      "path": "conjuros/nivel_0_trucos/prestidigitacion.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "3 m",
+      "duracion": "Hasta 1 hora",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "rayo_de_escarcha",
@@ -1741,7 +1863,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_0_trucos/rayo_de_escarcha.md"
+      "path": "conjuros/nivel_0_trucos/rayo_de_escarcha.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "reparar",
@@ -1767,7 +1894,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_0_trucos/reparar.md"
+      "path": "conjuros/nivel_0_trucos/reparar.md",
+      "tiempo_lanzamiento": "1 minuto",
+      "alcance": "Toque",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "resistencia",
@@ -1788,7 +1920,12 @@
         "druida",
         "concentracion"
       ],
-      "path": "conjuros/nivel_0_trucos/resistencia.md"
+      "path": "conjuros/nivel_0_trucos/resistencia.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "saber_druidico",
@@ -1806,7 +1943,12 @@
         "nivel_0",
         "druida"
       ],
-      "path": "conjuros/nivel_0_trucos/saber_druidico.md"
+      "path": "conjuros/nivel_0_trucos/saber_druidico.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "salpicadura_acida",
@@ -1826,7 +1968,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_0_trucos/salpicadura_acida.md"
+      "path": "conjuros/nivel_0_trucos/salpicadura_acida.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "shillelagh",
@@ -1844,7 +1991,12 @@
         "nivel_0",
         "druida"
       ],
-      "path": "conjuros/nivel_0_trucos/shillelagh.md"
+      "path": "conjuros/nivel_0_trucos/shillelagh.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "Lanzador",
+      "duracion": "1 minuto",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "tanido_por_los_muertos",
@@ -1866,7 +2018,12 @@
         "clérigo",
         "mago"
       ],
-      "path": "conjuros/nivel_0_trucos/tanido_por_los_muertos.md"
+      "path": "conjuros/nivel_0_trucos/tanido_por_los_muertos.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "taumaturgia",
@@ -1884,7 +2041,12 @@
         "nivel_0",
         "clérigo"
       ],
-      "path": "conjuros/nivel_0_trucos/taumaturgia.md"
+      "path": "conjuros/nivel_0_trucos/taumaturgia.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Hasta 1 minuto",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "toque_helado",
@@ -1906,7 +2068,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_0_trucos/toque_helado.md"
+      "path": "conjuros/nivel_0_trucos/toque_helado.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "tronar",
@@ -1932,7 +2099,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_0_trucos/tronar.md"
+      "path": "conjuros/nivel_0_trucos/tronar.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "voluta_estelar",
@@ -1952,7 +2124,12 @@
         "bardo",
         "druida"
       ],
-      "path": "conjuros/nivel_0_trucos/voluta_estelar.md"
+      "path": "conjuros/nivel_0_trucos/voluta_estelar.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "alarma",
@@ -1973,7 +2150,12 @@
         "mago",
         "ritual"
       ],
-      "path": "conjuros/nivel_1/alarma.md"
+      "path": "conjuros/nivel_1/alarma.md",
+      "tiempo_lanzamiento": "1 minuto o un ritual",
+      "alcance": "9 m",
+      "duracion": "8 horas",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "armadura_de_agathys",
@@ -1991,7 +2173,12 @@
         "nivel_1",
         "brujo"
       ],
-      "path": "conjuros/nivel_1/armadura_de_agathys.md"
+      "path": "conjuros/nivel_1/armadura_de_agathys.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "Lanzador",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "armadura_de_mago",
@@ -2011,7 +2198,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_1/armadura_de_mago.md"
+      "path": "conjuros/nivel_1/armadura_de_mago.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "8 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "bendicion",
@@ -2032,7 +2224,12 @@
         "paladín",
         "concentracion"
       ],
-      "path": "conjuros/nivel_1/bendicion.md"
+      "path": "conjuros/nivel_1/bendicion.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "brazos_de_hadar",
@@ -2050,7 +2247,12 @@
         "nivel_1",
         "brujo"
       ],
-      "path": "conjuros/nivel_1/brazos_de_hadar.md"
+      "path": "conjuros/nivel_1/brazos_de_hadar.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "buenas_bayas",
@@ -2070,7 +2272,12 @@
         "druida",
         "explorador"
       ],
-      "path": "conjuros/nivel_1/buenas_bayas.md"
+      "path": "conjuros/nivel_1/buenas_bayas.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "24 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "caida_de_pluma",
@@ -2092,7 +2299,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_1/caida_de_pluma.md"
+      "path": "conjuros/nivel_1/caida_de_pluma.md",
+      "tiempo_lanzamiento": "Reacción, que llevas a cabo cuando",
+      "alcance": "18 m",
+      "duracion": "1 minuto",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "castigo_abrasador",
@@ -2110,7 +2322,12 @@
         "nivel_1",
         "paladín"
       ],
-      "path": "conjuros/nivel_1/castigo_abrasador.md"
+      "path": "conjuros/nivel_1/castigo_abrasador.md",
+      "tiempo_lanzamiento": "Acción adicional, que realizas de",
+      "alcance": "Lanzador",
+      "duracion": "1 minuto",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "castigo_atronador",
@@ -2128,7 +2345,12 @@
         "nivel_1",
         "paladín"
       ],
-      "path": "conjuros/nivel_1/castigo_atronador.md"
+      "path": "conjuros/nivel_1/castigo_atronador.md",
+      "tiempo_lanzamiento": "Acción adicional, que realizas",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "castigo_divino",
@@ -2146,7 +2368,12 @@
         "nivel_1",
         "paladín"
       ],
-      "path": "conjuros/nivel_1/castigo_divino.md"
+      "path": "conjuros/nivel_1/castigo_divino.md",
+      "tiempo_lanzamiento": "Acción adicionál, que realizas",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "castigo_furioso",
@@ -2164,7 +2391,12 @@
         "nivel_1",
         "paladín"
       ],
-      "path": "conjuros/nivel_1/castigo_furioso.md"
+      "path": "conjuros/nivel_1/castigo_furioso.md",
+      "tiempo_lanzamiento": "Acción adicional, que realizas",
+      "alcance": "Lanzador",
+      "duracion": "1 minuto",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "crear_o_destruir_agua",
@@ -2184,7 +2416,12 @@
         "clérigo",
         "druida"
       ],
-      "path": "conjuros/nivel_1/crear_o_destruir_agua.md"
+      "path": "conjuros/nivel_1/crear_o_destruir_agua.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "cuchillo_de_hielo",
@@ -2206,7 +2443,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_1/cuchillo_de_hielo.md"
+      "path": "conjuros/nivel_1/cuchillo_de_hielo.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "curar_heridas",
@@ -2232,7 +2474,12 @@
         "explorador",
         "paladín"
       ],
-      "path": "conjuros/nivel_1/curar_heridas.md"
+      "path": "conjuros/nivel_1/curar_heridas.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "detectar_el_bien_y_el_mal",
@@ -2253,7 +2500,12 @@
         "paladín",
         "concentracion"
       ],
-      "path": "conjuros/nivel_1/detectar_el_bien_y_el_mal.md"
+      "path": "conjuros/nivel_1/detectar_el_bien_y_el_mal.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "detectar_magia",
@@ -2287,7 +2539,12 @@
         "concentracion",
         "ritual"
       ],
-      "path": "conjuros/nivel_1/detectar_magia.md"
+      "path": "conjuros/nivel_1/detectar_magia.md",
+      "tiempo_lanzamiento": "Acción o ritual",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": true
     },
     {
       "id": "detectar_venenos_y_enfermedades",
@@ -2313,7 +2570,12 @@
         "concentracion",
         "ritual"
       ],
-      "path": "conjuros/nivel_1/detectar_venenos_y_enfermedades.md"
+      "path": "conjuros/nivel_1/detectar_venenos_y_enfermedades.md",
+      "tiempo_lanzamiento": "Acción o ritual",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": true
     },
     {
       "id": "disco_flotante_de_tenser",
@@ -2332,7 +2594,12 @@
         "mago",
         "ritual"
       ],
-      "path": "conjuros/nivel_1/disco_flotante_de_tenser.md"
+      "path": "conjuros/nivel_1/disco_flotante_de_tenser.md",
+      "tiempo_lanzamiento": "Acción o ritual",
+      "alcance": "9 m",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "disfrazarse",
@@ -2354,7 +2621,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_1/disfrazarse.md"
+      "path": "conjuros/nivel_1/disfrazarse.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "dormir",
@@ -2377,7 +2649,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_1/dormir.md"
+      "path": "conjuros/nivel_1/dormir.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "duelo_forzado",
@@ -2396,7 +2673,12 @@
         "paladín",
         "concentracion"
       ],
-      "path": "conjuros/nivel_1/duelo_forzado.md"
+      "path": "conjuros/nivel_1/duelo_forzado.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "9 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "encantar_animal",
@@ -2418,7 +2700,12 @@
         "druida",
         "explorador"
       ],
-      "path": "conjuros/nivel_1/encantar_animal.md"
+      "path": "conjuros/nivel_1/encantar_animal.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "24 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "encontrar_familiar",
@@ -2437,7 +2724,12 @@
         "mago",
         "ritual"
       ],
-      "path": "conjuros/nivel_1/encontrar_familiar.md"
+      "path": "conjuros/nivel_1/encontrar_familiar.md",
+      "tiempo_lanzamiento": "1 hora o un ritual",
+      "alcance": "3 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "enmaranar",
@@ -2458,7 +2750,12 @@
         "explorador",
         "concentracion"
       ],
-      "path": "conjuros/nivel_1/enmaranar.md"
+      "path": "conjuros/nivel_1/enmaranar.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "27 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "entender_idiomas",
@@ -2483,7 +2780,12 @@
         "mago",
         "ritual"
       ],
-      "path": "conjuros/nivel_1/entender_idiomas.md"
+      "path": "conjuros/nivel_1/entender_idiomas.md",
+      "tiempo_lanzamiento": "Acción o ritual",
+      "alcance": "Lanzador",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "escudo_de_fe",
@@ -2504,7 +2806,12 @@
         "paladín",
         "concentracion"
       ],
-      "path": "conjuros/nivel_1/escudo_de_fe.md"
+      "path": "conjuros/nivel_1/escudo_de_fe.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "escupo",
@@ -2524,7 +2831,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_1/escupo.md"
+      "path": "conjuros/nivel_1/escupo.md",
+      "tiempo_lanzamiento": "Reacción, que llevas a cabo cuando",
+      "alcance": "Lanzador",
+      "duracion": "1 asalto",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "falsa_vida",
@@ -2544,7 +2856,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_1/falsa_vida.md"
+      "path": "conjuros/nivel_1/falsa_vida.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "favor_divino",
@@ -2562,7 +2879,12 @@
         "nivel_1",
         "paladín"
       ],
-      "path": "conjuros/nivel_1/favor_divino.md"
+      "path": "conjuros/nivel_1/favor_divino.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "Lanzador",
+      "duracion": "1 minuto",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "fuego_feerico",
@@ -2583,7 +2905,12 @@
         "druida",
         "concentracion"
       ],
-      "path": "conjuros/nivel_1/fuego_feerico.md"
+      "path": "conjuros/nivel_1/fuego_feerico.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "golpe_apresador",
@@ -2602,7 +2929,12 @@
         "explorador",
         "concentracion"
       ],
-      "path": "conjuros/nivel_1/golpe_apresador.md"
+      "path": "conjuros/nivel_1/golpe_apresador.md",
+      "tiempo_lanzamiento": "Acción adicional, que realizas",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "grasa",
@@ -2622,7 +2954,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_1/grasa.md"
+      "path": "conjuros/nivel_1/grasa.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "1 minuto",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "hablar_con_los_animales",
@@ -2647,7 +2984,12 @@
         "explorador",
         "ritual"
       ],
-      "path": "conjuros/nivel_1/hablar_con_los_animales.md"
+      "path": "conjuros/nivel_1/hablar_con_los_animales.md",
+      "tiempo_lanzamiento": "Acción o ritual",
+      "alcance": "Lanzador",
+      "duracion": "10 minutos",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "hechizar_persona",
@@ -2673,7 +3015,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_1/hechizar_persona.md"
+      "path": "conjuros/nivel_1/hechizar_persona.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "heroismo",
@@ -2694,7 +3041,12 @@
         "paladín",
         "concentracion"
       ],
-      "path": "conjuros/nivel_1/heroismo.md"
+      "path": "conjuros/nivel_1/heroismo.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "identificar",
@@ -2715,7 +3067,12 @@
         "mago",
         "ritual"
       ],
-      "path": "conjuros/nivel_1/identificar.md"
+      "path": "conjuros/nivel_1/identificar.md",
+      "tiempo_lanzamiento": "1 minuto o un ritual",
+      "alcance": "Toque",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "imagen_silenciosa",
@@ -2738,7 +3095,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_1/imagen_silenciosa.md"
+      "path": "conjuros/nivel_1/imagen_silenciosa.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "infligir_heridas",
@@ -2756,7 +3118,12 @@
         "nivel_1",
         "clérigo"
       ],
-      "path": "conjuros/nivel_1/infligir_heridas.md"
+      "path": "conjuros/nivel_1/infligir_heridas.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "maleficio",
@@ -2775,7 +3142,12 @@
         "brujo",
         "concentracion"
       ],
-      "path": "conjuros/nivel_1/maleficio.md"
+      "path": "conjuros/nivel_1/maleficio.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "27 m",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "manos_ardientes",
@@ -2795,7 +3167,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_1/manos_ardientes.md"
+      "path": "conjuros/nivel_1/manos_ardientes.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "marca_del_cazador",
@@ -2814,7 +3191,12 @@
         "explorador",
         "concentracion"
       ],
-      "path": "conjuros/nivel_1/marca_del_cazador.md"
+      "path": "conjuros/nivel_1/marca_del_cazador.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "27 m",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "nube_de_oscurecimiento",
@@ -2839,7 +3221,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_1/nube_de_oscurecimiento.md"
+      "path": "conjuros/nivel_1/nube_de_oscurecimiento.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "ola_atronadora",
@@ -2863,7 +3250,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_1/ola_atronadora.md"
+      "path": "conjuros/nivel_1/ola_atronadora.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "orbe_cromatico",
@@ -2883,7 +3275,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_1/orbe_cromatico.md"
+      "path": "conjuros/nivel_1/orbe_cromatico.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "27 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "orden_imperiosa",
@@ -2905,7 +3302,12 @@
         "clérigo",
         "paladín"
       ],
-      "path": "conjuros/nivel_1/orden_imperiosa.md"
+      "path": "conjuros/nivel_1/orden_imperiosa.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "palabra_de_curacion",
@@ -2927,7 +3329,12 @@
         "clérigo",
         "druida"
       ],
-      "path": "conjuros/nivel_1/palabra_de_curacion.md"
+      "path": "conjuros/nivel_1/palabra_de_curacion.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "perdicion",
@@ -2950,7 +3357,12 @@
         "brujo",
         "concentracion"
       ],
-      "path": "conjuros/nivel_1/perdicion.md"
+      "path": "conjuros/nivel_1/perdicion.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "proteccion_contra_el_bien_y_el_mal",
@@ -2977,7 +3389,12 @@
         "paladín",
         "concentracion"
       ],
-      "path": "conjuros/nivel_1/proteccion_contra_el_bien_y_el_mal.md"
+      "path": "conjuros/nivel_1/proteccion_contra_el_bien_y_el_mal.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "proyectil_magico",
@@ -2997,7 +3414,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_1/proyectil_magico.md"
+      "path": "conjuros/nivel_1/proyectil_magico.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "purificar_comida_y_bebida",
@@ -3020,7 +3442,12 @@
         "paladín",
         "ritual"
       ],
-      "path": "conjuros/nivel_1/purificar_comida_y_bebida.md"
+      "path": "conjuros/nivel_1/purificar_comida_y_bebida.md",
+      "tiempo_lanzamiento": "Acción o ritual",
+      "alcance": "3 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "rayo_de_hechiceria",
@@ -3043,7 +3470,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_1/rayo_de_hechiceria.md"
+      "path": "conjuros/nivel_1/rayo_de_hechiceria.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "rayo_nauseabundo",
@@ -3063,7 +3495,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_1/rayo_nauseabundo.md"
+      "path": "conjuros/nivel_1/rayo_nauseabundo.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "reprension_infernal",
@@ -3081,7 +3518,12 @@
         "nivel_1",
         "brujo"
       ],
-      "path": "conjuros/nivel_1/reprension_infernal.md"
+      "path": "conjuros/nivel_1/reprension_infernal.md",
+      "tiempo_lanzamiento": "Reacción, que llevas a cabo en",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "retirada_expeditiva",
@@ -3104,7 +3546,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_1/retirada_expeditiva.md"
+      "path": "conjuros/nivel_1/retirada_expeditiva.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "risa_espantosa_de_tasha",
@@ -3129,7 +3576,12 @@
         "incapacitado",
         "prono"
       ],
-      "path": "conjuros/nivel_1/risa_espantosa_de_tasha.md"
+      "path": "conjuros/nivel_1/risa_espantosa_de_tasha.md",
+      "tiempo_lanzamiento": "1 acción",
+      "alcance": "9 m / 30 pies",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "risa_horrible_de_tasha",
@@ -3152,7 +3604,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_1/risa_horrible_de_tasha.md"
+      "path": "conjuros/nivel_1/risa_horrible_de_tasha.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "saeta_guia",
@@ -3170,7 +3627,12 @@
         "nivel_1",
         "clérigo"
       ],
-      "path": "conjuros/nivel_1/saeta_guia.md"
+      "path": "conjuros/nivel_1/saeta_guia.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "1 asalto",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "salto",
@@ -3194,7 +3656,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_1/salto.md"
+      "path": "conjuros/nivel_1/salto.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "Toque",
+      "duracion": "1 minuto",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "santuario",
@@ -3212,7 +3679,12 @@
         "nivel_1",
         "clérigo"
       ],
-      "path": "conjuros/nivel_1/santuario.md"
+      "path": "conjuros/nivel_1/santuario.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "9 m",
+      "duracion": "1 minuto",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "sirviente_invisible",
@@ -3235,7 +3707,12 @@
         "mago",
         "ritual"
       ],
-      "path": "conjuros/nivel_1/sirviente_invisible.md"
+      "path": "conjuros/nivel_1/sirviente_invisible.md",
+      "tiempo_lanzamiento": "Acción o ritual",
+      "alcance": "18 m",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "susurros_discordantes",
@@ -3253,7 +3730,12 @@
         "nivel_1",
         "bardo"
       ],
-      "path": "conjuros/nivel_1/susurros_discordantes.md"
+      "path": "conjuros/nivel_1/susurros_discordantes.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "texto_ilusorio",
@@ -3276,7 +3758,12 @@
         "mago",
         "ritual"
       ],
-      "path": "conjuros/nivel_1/texto_ilusorio.md"
+      "path": "conjuros/nivel_1/texto_ilusorio.md",
+      "tiempo_lanzamiento": "1 minuto o un ritual",
+      "alcance": "Toque",
+      "duracion": "10 días",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "zancada_prodigiosa",
@@ -3300,7 +3787,12 @@
         "explorador",
         "mago"
       ],
-      "path": "conjuros/nivel_1/zancada_prodigiosa.md"
+      "path": "conjuros/nivel_1/zancada_prodigiosa.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "abrir",
@@ -3322,7 +3814,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_2/abrir.md"
+      "path": "conjuros/nivel_2/abrir.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "agrandarreducir",
@@ -3347,7 +3844,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/agrandarreducir.md"
+      "path": "conjuros/nivel_2/agrandarreducir.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "aliento_de_dragon",
@@ -3368,7 +3870,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/aliento_de_dragon.md"
+      "path": "conjuros/nivel_2/aliento_de_dragon.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "Toque",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "alterar_el_propio_aspecto",
@@ -3389,7 +3896,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/alterar_el_propio_aspecto.md"
+      "path": "conjuros/nivel_2/alterar_el_propio_aspecto.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "arma_espiritual",
@@ -3408,7 +3920,12 @@
         "clérigo",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/arma_espiritual.md"
+      "path": "conjuros/nivel_2/arma_espiritual.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "arma_magica",
@@ -3432,7 +3949,12 @@
         "mago",
         "paladín"
       ],
-      "path": "conjuros/nivel_2/arma_magica.md"
+      "path": "conjuros/nivel_2/arma_magica.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "Toque",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "augurio",
@@ -3455,7 +3977,12 @@
         "mago",
         "ritual"
       ],
-      "path": "conjuros/nivel_2/augurio.md"
+      "path": "conjuros/nivel_2/augurio.md",
+      "tiempo_lanzamiento": "1 minuto o un ritual",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "aura_magica_de_nystul",
@@ -3473,7 +4000,12 @@
         "nivel_2",
         "mago"
       ],
-      "path": "conjuros/nivel_2/aura_magica_de_nystul.md"
+      "path": "conjuros/nivel_2/aura_magica_de_nystul.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "24 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "auxilio",
@@ -3499,7 +4031,12 @@
         "explorador",
         "paladín"
       ],
-      "path": "conjuros/nivel_2/auxilio.md"
+      "path": "conjuros/nivel_2/auxilio.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "8 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "boca_magica",
@@ -3520,7 +4057,12 @@
         "mago",
         "ritual"
       ],
-      "path": "conjuros/nivel_2/boca_magica.md"
+      "path": "conjuros/nivel_2/boca_magica.md",
+      "tiempo_lanzamiento": "1 minuto o un ritual",
+      "alcance": "9 m",
+      "duracion": "Hasta que sea disipado",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "calentar_metal",
@@ -3541,7 +4083,12 @@
         "druida",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/calentar_metal.md"
+      "path": "conjuros/nivel_2/calentar_metal.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "calmar_emociones",
@@ -3562,7 +4109,12 @@
         "clérigo",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/calmar_emociones.md"
+      "path": "conjuros/nivel_2/calmar_emociones.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "cerradura_arcana",
@@ -3580,7 +4132,12 @@
         "nivel_2",
         "mago"
       ],
-      "path": "conjuros/nivel_2/cerradura_arcana.md"
+      "path": "conjuros/nivel_2/cerradura_arcana.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Hasta que sea disipado",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "clavo_mental",
@@ -3603,7 +4160,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/clavo_mental.md"
+      "path": "conjuros/nivel_2/clavo_mental.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "contorno_borroso",
@@ -3624,7 +4186,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/contorno_borroso.md"
+      "path": "conjuros/nivel_2/contorno_borroso.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "cordon_de_flechas",
@@ -3642,7 +4209,12 @@
         "nivel_2",
         "explorador"
       ],
-      "path": "conjuros/nivel_2/cordon_de_flechas.md"
+      "path": "conjuros/nivel_2/cordon_de_flechas.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "8 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "corona_de_la_locura",
@@ -3667,7 +4239,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/corona_de_la_locura.md"
+      "path": "conjuros/nivel_2/corona_de_la_locura.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "crecimiento_espinoso",
@@ -3688,7 +4265,12 @@
         "explorador",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/crecimiento_espinoso.md"
+      "path": "conjuros/nivel_2/crecimiento_espinoso.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "45 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "detectar_pensamientos",
@@ -3711,7 +4293,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/detectar_pensamientos.md"
+      "path": "conjuros/nivel_2/detectar_pensamientos.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "detectar_trampas",
@@ -3733,7 +4320,12 @@
         "druida",
         "explorador"
       ],
-      "path": "conjuros/nivel_2/detectar_trampas.md"
+      "path": "conjuros/nivel_2/detectar_trampas.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "dulce_descanso",
@@ -3756,7 +4348,12 @@
         "paladín",
         "ritual"
       ],
-      "path": "conjuros/nivel_2/dulce_descanso.md"
+      "path": "conjuros/nivel_2/dulce_descanso.md",
+      "tiempo_lanzamiento": "Acción o ritual",
+      "alcance": "Toque",
+      "duracion": "10 días",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "embelesar",
@@ -3777,7 +4374,12 @@
         "brujo",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/embelesar.md"
+      "path": "conjuros/nivel_2/embelesar.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "esfera_de_llamas",
@@ -3800,7 +4402,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/esfera_de_llamas.md"
+      "path": "conjuros/nivel_2/esfera_de_llamas.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "flecha_acida_de_melf",
@@ -3818,7 +4425,12 @@
         "nivel_2",
         "mago"
       ],
-      "path": "conjuros/nivel_2/flecha_acida_de_melf.md"
+      "path": "conjuros/nivel_2/flecha_acida_de_melf.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "27 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "fuerza_fantasmal",
@@ -3841,7 +4453,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/fuerza_fantasmal.md"
+      "path": "conjuros/nivel_2/fuerza_fantasmal.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "hacer_anicos",
@@ -3863,7 +4480,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_2/hacer_anicos.md"
+      "path": "conjuros/nivel_2/hacer_anicos.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "hallar_corcel",
@@ -3881,7 +4503,12 @@
         "nivel_2",
         "paladín"
       ],
-      "path": "conjuros/nivel_2/hallar_corcel.md"
+      "path": "conjuros/nivel_2/hallar_corcel.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "hoja_de_fuego",
@@ -3902,7 +4529,12 @@
         "hechicero",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/hoja_de_fuego.md"
+      "path": "conjuros/nivel_2/hoja_de_fuego.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "imagen_multiple",
@@ -3926,7 +4558,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_2/imagen_multiple.md"
+      "path": "conjuros/nivel_2/imagen_multiple.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "1 minuto",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "inmovilizar_persona",
@@ -3955,7 +4592,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/inmovilizar_persona.md"
+      "path": "conjuros/nivel_2/inmovilizar_persona.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "invisibilidad",
@@ -3980,7 +4622,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/invisibilidad.md"
+      "path": "conjuros/nivel_2/invisibilidad.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "invocar_bestia",
@@ -4001,7 +4648,12 @@
         "explorador",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/invocar_bestia.md"
+      "path": "conjuros/nivel_2/invocar_bestia.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "27 m",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "levitar",
@@ -4022,7 +4674,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/levitar.md"
+      "path": "conjuros/nivel_2/levitar.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "llama_permanente",
@@ -4044,7 +4701,12 @@
         "druida",
         "mago"
       ],
-      "path": "conjuros/nivel_2/llama_permanente.md"
+      "path": "conjuros/nivel_2/llama_permanente.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Hasta que sea disipado",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "localizar_animales_o_plantas",
@@ -4067,7 +4729,12 @@
         "explorador",
         "ritual"
       ],
-      "path": "conjuros/nivel_2/localizar_animales_o_plantas.md"
+      "path": "conjuros/nivel_2/localizar_animales_o_plantas.md",
+      "tiempo_lanzamiento": "Acción o ritual",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "localizar_objeto",
@@ -4096,7 +4763,12 @@
         "paladín",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/localizar_objeto.md"
+      "path": "conjuros/nivel_2/localizar_objeto.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "mensajero_animal",
@@ -4119,7 +4791,12 @@
         "explorador",
         "ritual"
       ],
-      "path": "conjuros/nivel_2/mensajero_animal.md"
+      "path": "conjuros/nivel_2/mensajero_animal.md",
+      "tiempo_lanzamiento": "Acción o ritual",
+      "alcance": "9 m",
+      "duracion": "24 horas",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "nube_de_dagas",
@@ -4144,7 +4821,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/nube_de_dagas.md"
+      "path": "conjuros/nivel_2/nube_de_dagas.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "oscuridad",
@@ -4167,7 +4849,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/oscuridad.md"
+      "path": "conjuros/nivel_2/oscuridad.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "pasar_sin_rastro",
@@ -4188,7 +4875,12 @@
         "explorador",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/pasar_sin_rastro.md"
+      "path": "conjuros/nivel_2/pasar_sin_rastro.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "paso_brumoso",
@@ -4210,7 +4902,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_2/paso_brumoso.md"
+      "path": "conjuros/nivel_2/paso_brumoso.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "piel_robliza",
@@ -4230,7 +4927,12 @@
         "druida",
         "explorador"
       ],
-      "path": "conjuros/nivel_2/piel_robliza.md"
+      "path": "conjuros/nivel_2/piel_robliza.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "Toque",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "plegaria_de_curacion",
@@ -4250,7 +4952,12 @@
         "clérigo",
         "paladín"
       ],
-      "path": "conjuros/nivel_2/plegaria_de_curacion.md"
+      "path": "conjuros/nivel_2/plegaria_de_curacion.md",
+      "tiempo_lanzamiento": "10 minutos",
+      "alcance": "9 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "potenciar_caracteristica",
@@ -4279,7 +4986,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/potenciar_caracteristica.md"
+      "path": "conjuros/nivel_2/potenciar_caracteristica.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "proteccion_contra_veneno",
@@ -4303,7 +5015,12 @@
         "explorador",
         "paladín"
       ],
-      "path": "conjuros/nivel_2/proteccion_contra_veneno.md"
+      "path": "conjuros/nivel_2/proteccion_contra_veneno.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "rafaga_de_viento",
@@ -4328,7 +5045,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/rafaga_de_viento.md"
+      "path": "conjuros/nivel_2/rafaga_de_viento.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "rayo_abrasador",
@@ -4348,7 +5070,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_2/rayo_abrasador.md"
+      "path": "conjuros/nivel_2/rayo_abrasador.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "rayo_debilitador",
@@ -4369,7 +5096,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/rayo_debilitador.md"
+      "path": "conjuros/nivel_2/rayo_debilitador.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "rayo_de_luna",
@@ -4388,7 +5120,12 @@
         "druida",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/rayo_de_luna.md"
+      "path": "conjuros/nivel_2/rayo_de_luna.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "restablecimiento_menor",
@@ -4414,7 +5151,12 @@
         "explorador",
         "paladín"
       ],
-      "path": "conjuros/nivel_2/restablecimiento_menor.md"
+      "path": "conjuros/nivel_2/restablecimiento_menor.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "Toque",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "sentidos_de_la_bestia",
@@ -4436,7 +5178,12 @@
         "concentracion",
         "ritual"
       ],
-      "path": "conjuros/nivel_2/sentidos_de_la_bestia.md"
+      "path": "conjuros/nivel_2/sentidos_de_la_bestia.md",
+      "tiempo_lanzamiento": "Acción o ritual",
+      "alcance": "Toque",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": true
     },
     {
       "id": "silencio",
@@ -4460,7 +5207,12 @@
         "concentracion",
         "ritual"
       ],
-      "path": "conjuros/nivel_2/silencio.md"
+      "path": "conjuros/nivel_2/silencio.md",
+      "tiempo_lanzamiento": "Acción o ritual",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": true
     },
     {
       "id": "sorderaceguera",
@@ -4484,7 +5236,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_2/sorderaceguera.md"
+      "path": "conjuros/nivel_2/sorderaceguera.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "1 minuto",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "sugestion",
@@ -4509,7 +5266,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/sugestion.md"
+      "path": "conjuros/nivel_2/sugestion.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Concentración, hasta 8 horas",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "telarana",
@@ -4530,7 +5292,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/telarana.md"
+      "path": "conjuros/nivel_2/telarana.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "trepar_cual_aracnido",
@@ -4553,7 +5320,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_2/trepar_cual_aracnido.md"
+      "path": "conjuros/nivel_2/trepar_cual_aracnido.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "ver_invisibilidad",
@@ -4575,7 +5347,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_2/ver_invisibilidad.md"
+      "path": "conjuros/nivel_2/ver_invisibilidad.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "vigor_arcano",
@@ -4595,7 +5372,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_2/vigor_arcano.md"
+      "path": "conjuros/nivel_2/vigor_arcano.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "vinculo_protector",
@@ -4615,7 +5397,12 @@
         "clérigo",
         "paladín"
       ],
-      "path": "conjuros/nivel_2/vinculo_protector.md"
+      "path": "conjuros/nivel_2/vinculo_protector.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "vision_en_la_oscuridad",
@@ -4639,7 +5426,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_2/vision_en_la_oscuridad.md"
+      "path": "conjuros/nivel_2/vision_en_la_oscuridad.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "8 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "zona_de_la_verdad",
@@ -4661,7 +5453,12 @@
         "clérigo",
         "paladín"
       ],
-      "path": "conjuros/nivel_2/zona_de_la_verdad.md"
+      "path": "conjuros/nivel_2/zona_de_la_verdad.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "10 minutos",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "acelerar",
@@ -4682,7 +5479,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/acelerar.md"
+      "path": "conjuros/nivel_3/acelerar.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "animar_a_los_muertos",
@@ -4702,7 +5504,12 @@
         "clérigo",
         "mago"
       ],
-      "path": "conjuros/nivel_3/animar_a_los_muertos.md"
+      "path": "conjuros/nivel_3/animar_a_los_muertos.md",
+      "tiempo_lanzamiento": "1 minuto",
+      "alcance": "3 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "arma_elemental",
@@ -4725,7 +5532,12 @@
         "paladín",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/arma_elemental.md"
+      "path": "conjuros/nivel_3/arma_elemental.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "aura_de_vitalidad",
@@ -4748,7 +5560,12 @@
         "paladín",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/aura_de_vitalidad.md"
+      "path": "conjuros/nivel_3/aura_de_vitalidad.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "bola_de_fuego",
@@ -4768,7 +5585,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_3/bola_de_fuego.md"
+      "path": "conjuros/nivel_3/bola_de_fuego.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "45 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "caminar_sobre_el_agua",
@@ -4793,7 +5615,12 @@
         "hechicero",
         "ritual"
       ],
-      "path": "conjuros/nivel_3/caminar_sobre_el_agua.md"
+      "path": "conjuros/nivel_3/caminar_sobre_el_agua.md",
+      "tiempo_lanzamiento": "Acción o ritual",
+      "alcance": "9 m",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "castigo_cegador",
@@ -4811,7 +5638,12 @@
         "nivel_3",
         "paladín"
       ],
-      "path": "conjuros/nivel_3/castigo_cegador.md"
+      "path": "conjuros/nivel_3/castigo_cegador.md",
+      "tiempo_lanzamiento": "Acción adicional, que realizas",
+      "alcance": "Lanzador",
+      "duracion": "1 minuto",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "circulo_magico",
@@ -4835,7 +5667,12 @@
         "mago",
         "paladín"
       ],
-      "path": "conjuros/nivel_3/circulo_magico.md"
+      "path": "conjuros/nivel_3/circulo_magico.md",
+      "tiempo_lanzamiento": "1 minuto",
+      "alcance": "3 m",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "clarividencia",
@@ -4860,7 +5697,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/clarividencia.md"
+      "path": "conjuros/nivel_3/clarividencia.md",
+      "tiempo_lanzamiento": "10 minutos",
+      "alcance": "1,5 km",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "conjurar_animales",
@@ -4881,7 +5723,12 @@
         "explorador",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/conjurar_animales.md"
+      "path": "conjuros/nivel_3/conjurar_animales.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "conjurar_descarga_de_proyectiles",
@@ -4899,7 +5746,12 @@
         "nivel_3",
         "explorador"
       ],
-      "path": "conjuros/nivel_3/conjurar_descarga_de_proyectiles.md"
+      "path": "conjuros/nivel_3/conjurar_descarga_de_proyectiles.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "contrahechizo",
@@ -4921,7 +5773,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_3/contrahechizo.md"
+      "path": "conjuros/nivel_3/contrahechizo.md",
+      "tiempo_lanzamiento": "Reacción, que llevas a cabo",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "corcel_fantasma",
@@ -4940,7 +5797,12 @@
         "mago",
         "ritual"
       ],
-      "path": "conjuros/nivel_3/corcel_fantasma.md"
+      "path": "conjuros/nivel_3/corcel_fantasma.md",
+      "tiempo_lanzamiento": "1 minuto o un ritual",
+      "alcance": "9 m",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "crear_comida_y_agua",
@@ -4960,7 +5822,12 @@
         "clérigo",
         "paladín"
       ],
-      "path": "conjuros/nivel_3/crear_comida_y_agua.md"
+      "path": "conjuros/nivel_3/crear_comida_y_agua.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "crecimiento_vegetal",
@@ -4982,7 +5849,12 @@
         "druida",
         "explorador"
       ],
-      "path": "conjuros/nivel_3/crecimiento_vegetal.md"
+      "path": "conjuros/nivel_3/crecimiento_vegetal.md",
+      "tiempo_lanzamiento": "Acción (sobrecrecimiento)",
+      "alcance": "45 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "desplazamiento",
@@ -5002,7 +5874,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_3/desplazamiento.md"
+      "path": "conjuros/nivel_3/desplazamiento.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "1 minuto",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "disipar_magia",
@@ -5034,7 +5911,12 @@
         "mago",
         "paladín"
       ],
-      "path": "conjuros/nivel_3/disipar_magia.md"
+      "path": "conjuros/nivel_3/disipar_magia.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "don_de_lenguas",
@@ -5060,7 +5942,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_3/don_de_lenguas.md"
+      "path": "conjuros/nivel_3/don_de_lenguas.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "espiritus_guardianes",
@@ -5079,7 +5966,12 @@
         "clérigo",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/espiritus_guardianes.md"
+      "path": "conjuros/nivel_3/espiritus_guardianes.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "fingir_muerte",
@@ -5104,7 +5996,12 @@
         "mago",
         "ritual"
       ],
-      "path": "conjuros/nivel_3/fingir_muerte.md"
+      "path": "conjuros/nivel_3/fingir_muerte.md",
+      "tiempo_lanzamiento": "Acción o ritual",
+      "alcance": "Toque",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "flecha_de_relampago",
@@ -5122,7 +6019,12 @@
         "nivel_3",
         "explorador"
       ],
-      "path": "conjuros/nivel_3/flecha_de_relampago.md"
+      "path": "conjuros/nivel_3/flecha_de_relampago.md",
+      "tiempo_lanzamiento": "Acción adicional, que realizas",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "forma_gaseosa",
@@ -5145,7 +6047,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/forma_gaseosa.md"
+      "path": "conjuros/nivel_3/forma_gaseosa.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "fundirse_con_la_piedra",
@@ -5168,7 +6075,12 @@
         "explorador",
         "ritual"
       ],
-      "path": "conjuros/nivel_3/fundirse_con_la_piedra.md"
+      "path": "conjuros/nivel_3/fundirse_con_la_piedra.md",
+      "tiempo_lanzamiento": "Acción o ritual",
+      "alcance": "Toque",
+      "duracion": "8 horas",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "glifo_custodio",
@@ -5190,7 +6102,12 @@
         "clérigo",
         "mago"
       ],
-      "path": "conjuros/nivel_3/glifo_custodio.md"
+      "path": "conjuros/nivel_3/glifo_custodio.md",
+      "tiempo_lanzamiento": "1 hora",
+      "alcance": "Toque",
+      "duracion": "Hasta que sea disipado o se active",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "hablar_con_las_plantas",
@@ -5212,7 +6129,12 @@
         "druida",
         "explorador"
       ],
-      "path": "conjuros/nivel_3/hablar_con_las_plantas.md"
+      "path": "conjuros/nivel_3/hablar_con_las_plantas.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "10 minutos",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "hablar_con_los_muertos",
@@ -5234,7 +6156,12 @@
         "clérigo",
         "mago"
       ],
-      "path": "conjuros/nivel_3/hablar_con_los_muertos.md"
+      "path": "conjuros/nivel_3/hablar_con_los_muertos.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "3 m",
+      "duracion": "10 minutos",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "hambre_de_hadar",
@@ -5253,7 +6180,12 @@
         "brujo",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/hambre_de_hadar.md"
+      "path": "conjuros/nivel_3/hambre_de_hadar.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "45 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "imagen_mayor",
@@ -5278,7 +6210,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/imagen_mayor.md"
+      "path": "conjuros/nivel_3/imagen_mayor.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "imponer_maldicion",
@@ -5301,7 +6238,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/imponer_maldicion.md"
+      "path": "conjuros/nivel_3/imponer_maldicion.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "indetectable",
@@ -5323,7 +6265,12 @@
         "explorador",
         "mago"
       ],
-      "path": "conjuros/nivel_3/indetectable.md"
+      "path": "conjuros/nivel_3/indetectable.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "8 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "invocar_feerico",
@@ -5348,7 +6295,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/invocar_feerico.md"
+      "path": "conjuros/nivel_3/invocar_feerico.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "27 m",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "invocar_muerto_viviente",
@@ -5369,7 +6321,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/invocar_muerto_viviente.md"
+      "path": "conjuros/nivel_3/invocar_muerto_viviente.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "27 m",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "levantar_maldicion",
@@ -5393,7 +6350,12 @@
         "mago",
         "paladín"
       ],
-      "path": "conjuros/nivel_3/levantar_maldicion.md"
+      "path": "conjuros/nivel_3/levantar_maldicion.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "llamar_al_relampago",
@@ -5412,7 +6374,12 @@
         "druida",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/llamar_al_relampago.md"
+      "path": "conjuros/nivel_3/llamar_al_relampago.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "luz_del_dia",
@@ -5438,7 +6405,12 @@
         "hechicero",
         "paladín"
       ],
-      "path": "conjuros/nivel_3/luz_del_dia.md"
+      "path": "conjuros/nivel_3/luz_del_dia.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "manto_del_cruzado",
@@ -5457,7 +6429,12 @@
         "paladín",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/manto_del_cruzado.md"
+      "path": "conjuros/nivel_3/manto_del_cruzado.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "muro_de_viento",
@@ -5478,7 +6455,12 @@
         "explorador",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/muro_de_viento.md"
+      "path": "conjuros/nivel_3/muro_de_viento.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "nube_apestosa",
@@ -5501,7 +6483,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/nube_apestosa.md"
+      "path": "conjuros/nivel_3/nube_apestosa.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "27 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "palabra_de_curacion_en_masa",
@@ -5521,7 +6508,12 @@
         "bardo",
         "clérigo"
       ],
-      "path": "conjuros/nivel_3/palabra_de_curacion_en_masa.md"
+      "path": "conjuros/nivel_3/palabra_de_curacion_en_masa.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "patron_hipnotico",
@@ -5546,7 +6538,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/patron_hipnotico.md"
+      "path": "conjuros/nivel_3/patron_hipnotico.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "pequena_choza_de_leomund",
@@ -5567,7 +6564,12 @@
         "mago",
         "ritual"
       ],
-      "path": "conjuros/nivel_3/pequena_choza_de_leomund.md"
+      "path": "conjuros/nivel_3/pequena_choza_de_leomund.md",
+      "tiempo_lanzamiento": "1 minuto o un ritual",
+      "alcance": "Lanzador",
+      "duracion": "8 horas",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "proteccion_contra_energia",
@@ -5594,7 +6596,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/proteccion_contra_energia.md"
+      "path": "conjuros/nivel_3/proteccion_contra_energia.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "ralentizar",
@@ -5617,7 +6624,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/ralentizar.md"
+      "path": "conjuros/nivel_3/ralentizar.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "recado",
@@ -5639,7 +6651,12 @@
         "clérigo",
         "mago"
       ],
-      "path": "conjuros/nivel_3/recado.md"
+      "path": "conjuros/nivel_3/recado.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Ilimitado",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "relampago",
@@ -5659,7 +6676,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_3/relampago.md"
+      "path": "conjuros/nivel_3/relampago.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "respirar_bajo_el_agua",
@@ -5684,7 +6706,12 @@
         "mago",
         "ritual"
       ],
-      "path": "conjuros/nivel_3/respirar_bajo_el_agua.md"
+      "path": "conjuros/nivel_3/respirar_bajo_el_agua.md",
+      "tiempo_lanzamiento": "Acción o ritual",
+      "alcance": "9 m",
+      "duracion": "24 horas",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "revivir",
@@ -5708,7 +6735,12 @@
         "explorador",
         "paladín"
       ],
-      "path": "conjuros/nivel_3/revivir.md"
+      "path": "conjuros/nivel_3/revivir.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "senal_de_esperanza",
@@ -5727,7 +6759,12 @@
         "clérigo",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/senal_de_esperanza.md"
+      "path": "conjuros/nivel_3/senal_de_esperanza.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "toque_vampirico",
@@ -5750,7 +6787,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/toque_vampirico.md"
+      "path": "conjuros/nivel_3/toque_vampirico.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "tormenta_de_aguanieve",
@@ -5773,7 +6815,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/tormenta_de_aguanieve.md"
+      "path": "conjuros/nivel_3/tormenta_de_aguanieve.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "45 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "volar",
@@ -5796,7 +6843,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_3/volar.md"
+      "path": "conjuros/nivel_3/volar.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "adivinacion",
@@ -5819,7 +6871,12 @@
         "mago",
         "ritual"
       ],
-      "path": "conjuros/nivel_4/adivinacion.md"
+      "path": "conjuros/nivel_4/adivinacion.md",
+      "tiempo_lanzamiento": "Acción o ritual",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "asesino_fantasmal",
@@ -5840,7 +6897,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/asesino_fantasmal.md"
+      "path": "conjuros/nivel_4/asesino_fantasmal.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "aura_de_pureza",
@@ -5861,7 +6923,12 @@
         "paladín",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/aura_de_pureza.md"
+      "path": "conjuros/nivel_4/aura_de_pureza.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "aura_de_vida",
@@ -5882,7 +6949,12 @@
         "paladín",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/aura_de_vida.md"
+      "path": "conjuros/nivel_4/aura_de_vida.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "castigo_abrumador",
@@ -5900,7 +6972,12 @@
         "nivel_4",
         "paladín"
       ],
-      "path": "conjuros/nivel_4/castigo_abrumador.md"
+      "path": "conjuros/nivel_4/castigo_abrumador.md",
+      "tiempo_lanzamiento": "Acción adicional, que realizas",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "cofre_oculto_de_leomund",
@@ -5918,7 +6995,12 @@
         "nivel_4",
         "mago"
       ],
-      "path": "conjuros/nivel_4/cofre_oculto_de_leomund.md"
+      "path": "conjuros/nivel_4/cofre_oculto_de_leomund.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Hasta que sea disipado",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "compulsion",
@@ -5937,7 +7019,12 @@
         "bardo",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/compulsion.md"
+      "path": "conjuros/nivel_4/compulsion.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "confusion",
@@ -5962,7 +7049,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/confusion.md"
+      "path": "conjuros/nivel_4/confusion.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "27 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "conjurar_elementales_menores",
@@ -5983,7 +7075,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/conjurar_elementales_menores.md"
+      "path": "conjuros/nivel_4/conjurar_elementales_menores.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "conjurar_seres_del_bosque",
@@ -6004,7 +7101,12 @@
         "explorador",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/conjurar_seres_del_bosque.md"
+      "path": "conjuros/nivel_4/conjurar_seres_del_bosque.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "controlar_agua",
@@ -6027,7 +7129,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/controlar_agua.md"
+      "path": "conjuros/nivel_4/controlar_agua.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "90 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "destierro",
@@ -6054,7 +7161,12 @@
         "paladín",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/destierro.md"
+      "path": "conjuros/nivel_4/destierro.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "de_mordenkainen",
@@ -6072,7 +7184,12 @@
         "nivel_4",
         "mago"
       ],
-      "path": "conjuros/nivel_4/de_mordenkainen.md"
+      "path": "conjuros/nivel_4/de_mordenkainen.md",
+      "tiempo_lanzamiento": "10 minutos",
+      "alcance": "36 m",
+      "duracion": "24 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "dominar_bestia",
@@ -6095,7 +7212,12 @@
         "hechicero",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/dominar_bestia.md"
+      "path": "conjuros/nivel_4/dominar_bestia.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "enredadera",
@@ -6116,7 +7238,12 @@
         "explorador",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/enredadera.md"
+      "path": "conjuros/nivel_4/enredadera.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "escudo_de_fuego",
@@ -6138,7 +7265,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_4/escudo_de_fuego.md"
+      "path": "conjuros/nivel_4/escudo_de_fuego.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "10 minutos",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "esfera_elastica_de_otiluke",
@@ -6157,7 +7289,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/esfera_elastica_de_otiluke.md"
+      "path": "conjuros/nivel_4/esfera_elastica_de_otiluke.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "esfera_vitriolica",
@@ -6177,7 +7314,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_4/esfera_vitriolica.md"
+      "path": "conjuros/nivel_4/esfera_vitriolica.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "45 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "fabricar",
@@ -6195,7 +7337,12 @@
         "nivel_4",
         "mago"
       ],
-      "path": "conjuros/nivel_4/fabricar.md"
+      "path": "conjuros/nivel_4/fabricar.md",
+      "tiempo_lanzamiento": "10 minutos",
+      "alcance": "36 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "fuente_de_luz_lunar",
@@ -6216,7 +7363,12 @@
         "druida",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/fuente_de_luz_lunar.md"
+      "path": "conjuros/nivel_4/fuente_de_luz_lunar.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "guarda_contra_la_muerte",
@@ -6236,7 +7388,12 @@
         "clérigo",
         "paladín"
       ],
-      "path": "conjuros/nivel_4/guarda_contra_la_muerte.md"
+      "path": "conjuros/nivel_4/guarda_contra_la_muerte.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "8 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "guardian_de_la_fe",
@@ -6254,7 +7411,12 @@
         "nivel_4",
         "clérigo"
       ],
-      "path": "conjuros/nivel_4/guardian_de_la_fe.md"
+      "path": "conjuros/nivel_4/guardian_de_la_fe.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "8 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "hechizar_monstruo",
@@ -6280,7 +7442,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_4/hechizar_monstruo.md"
+      "path": "conjuros/nivel_4/hechizar_monstruo.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "insecto_gigante",
@@ -6299,7 +7466,12 @@
         "druida",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/insecto_gigante.md"
+      "path": "conjuros/nivel_4/insecto_gigante.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "invisibilidad_mejorada",
@@ -6322,7 +7494,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/invisibilidad_mejorada.md"
+      "path": "conjuros/nivel_4/invisibilidad_mejorada.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "invocar_aberracion",
@@ -6343,7 +7520,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/invocar_aberracion.md"
+      "path": "conjuros/nivel_4/invocar_aberracion.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "27 m",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "invocar_automata",
@@ -6362,7 +7544,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/invocar_automata.md"
+      "path": "conjuros/nivel_4/invocar_automata.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "27 m",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "invocar_elemental",
@@ -6385,7 +7572,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/invocar_elemental.md"
+      "path": "conjuros/nivel_4/invocar_elemental.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "27 m",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "libertad_de_movimiento",
@@ -6409,7 +7601,12 @@
         "druida",
         "explorador"
       ],
-      "path": "conjuros/nivel_4/libertad_de_movimiento.md"
+      "path": "conjuros/nivel_4/libertad_de_movimiento.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "localizar_criatura",
@@ -6438,7 +7635,12 @@
         "paladín",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/localizar_criatura.md"
+      "path": "conjuros/nivel_4/localizar_criatura.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "marchitar",
@@ -6462,7 +7664,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_4/marchitar.md"
+      "path": "conjuros/nivel_4/marchitar.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "mastin_fiel_de_mordenkainen",
@@ -6480,7 +7687,12 @@
         "nivel_4",
         "mago"
       ],
-      "path": "conjuros/nivel_4/mastin_fiel_de_mordenkainen.md"
+      "path": "conjuros/nivel_4/mastin_fiel_de_mordenkainen.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "3 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "moldear_la_piedra",
@@ -6502,7 +7714,12 @@
         "druida",
         "mago"
       ],
-      "path": "conjuros/nivel_4/moldear_la_piedra.md"
+      "path": "conjuros/nivel_4/moldear_la_piedra.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "muro_de_fuego",
@@ -6525,7 +7742,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/muro_de_fuego.md"
+      "path": "conjuros/nivel_4/muro_de_fuego.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "ojo_arcano",
@@ -6544,7 +7766,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/ojo_arcano.md"
+      "path": "conjuros/nivel_4/ojo_arcano.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "piel_petrea",
@@ -6569,7 +7796,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/piel_petrea.md"
+      "path": "conjuros/nivel_4/piel_petrea.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "polimorfar",
@@ -6594,7 +7826,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/polimorfar.md"
+      "path": "conjuros/nivel_4/polimorfar.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "puerta_dimensional",
@@ -6618,7 +7855,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_4/puerta_dimensional.md"
+      "path": "conjuros/nivel_4/puerta_dimensional.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "150 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "tentaculos_negros_de_evard",
@@ -6637,7 +7879,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_4/tentaculos_negros_de_evard.md"
+      "path": "conjuros/nivel_4/tentaculos_negros_de_evard.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "27 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "terreno_alucinatorio",
@@ -6661,7 +7908,12 @@
         "druida",
         "mago"
       ],
-      "path": "conjuros/nivel_4/terreno_alucinatorio.md"
+      "path": "conjuros/nivel_4/terreno_alucinatorio.md",
+      "tiempo_lanzamiento": "10 minutos",
+      "alcance": "90 m",
+      "duracion": "24 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "tormenta_de_hielo",
@@ -6683,7 +7935,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_4/tormenta_de_hielo.md"
+      "path": "conjuros/nivel_4/tormenta_de_hielo.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "90 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "alterar_los_recuerdos",
@@ -6704,7 +7961,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_5/alterar_los_recuerdos.md"
+      "path": "conjuros/nivel_5/alterar_los_recuerdos.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "alzar_a_los_muertos",
@@ -6726,7 +7988,12 @@
         "clérigo",
         "paladín"
       ],
-      "path": "conjuros/nivel_5/alzar_a_los_muertos.md"
+      "path": "conjuros/nivel_5/alzar_a_los_muertos.md",
+      "tiempo_lanzamiento": "1 hora",
+      "alcance": "Toque",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "animar_objetos",
@@ -6749,7 +8016,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_5/animar_objetos.md"
+      "path": "conjuros/nivel_5/animar_objetos.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "apariencia",
@@ -6771,7 +8043,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_5/apariencia.md"
+      "path": "conjuros/nivel_5/apariencia.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "8 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "atadura_planar",
@@ -6797,7 +8074,12 @@
         "druida",
         "mago"
       ],
-      "path": "conjuros/nivel_5/atadura_planar.md"
+      "path": "conjuros/nivel_5/atadura_planar.md",
+      "tiempo_lanzamiento": "1 hora",
+      "alcance": "18 m",
+      "duracion": "24 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "caparazon_antivida",
@@ -6816,7 +8098,12 @@
         "druida",
         "concentracion"
       ],
-      "path": "conjuros/nivel_5/caparazon_antivida.md"
+      "path": "conjuros/nivel_5/caparazon_antivida.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "carcaj_veloz",
@@ -6835,7 +8122,12 @@
         "explorador",
         "concentracion"
       ],
-      "path": "conjuros/nivel_5/carcaj_veloz.md"
+      "path": "conjuros/nivel_5/carcaj_veloz.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "castigo_desterrador",
@@ -6854,7 +8146,12 @@
         "paladín",
         "concentracion"
       ],
-      "path": "conjuros/nivel_5/castigo_desterrador.md"
+      "path": "conjuros/nivel_5/castigo_desterrador.md",
+      "tiempo_lanzamiento": "Acción adicional, que realizas",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "circulo_de_poder",
@@ -6877,7 +8174,12 @@
         "paladín",
         "concentracion"
       ],
-      "path": "conjuros/nivel_5/circulo_de_poder.md"
+      "path": "conjuros/nivel_5/circulo_de_poder.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "circulo_de_teletransportacion",
@@ -6901,7 +8203,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_5/circulo_de_teletransportacion.md"
+      "path": "conjuros/nivel_5/circulo_de_teletransportacion.md",
+      "tiempo_lanzamiento": "1 acción",
+      "alcance": "3 m",
+      "duracion": "1 asalto",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "comunion",
@@ -6920,7 +8227,12 @@
         "clérigo",
         "ritual"
       ],
-      "path": "conjuros/nivel_5/comunion.md"
+      "path": "conjuros/nivel_5/comunion.md",
+      "tiempo_lanzamiento": "1 minuto o un ritual",
+      "alcance": "Lanzador",
+      "duracion": "1 minuto",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "comunion_con_la_naturaleza",
@@ -6941,7 +8253,12 @@
         "explorador",
         "ritual"
       ],
-      "path": "conjuros/nivel_5/comunion_con_la_naturaleza.md"
+      "path": "conjuros/nivel_5/comunion_con_la_naturaleza.md",
+      "tiempo_lanzamiento": "1 minuto o un ritual",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "conjurar_elemental",
@@ -6962,7 +8279,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_5/conjurar_elemental.md"
+      "path": "conjuros/nivel_5/conjurar_elemental.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "conjurar_lluvia_de_flechas",
@@ -6980,7 +8302,12 @@
         "nivel_5",
         "explorador"
       ],
-      "path": "conjuros/nivel_5/conjurar_lluvia_de_flechas.md"
+      "path": "conjuros/nivel_5/conjurar_lluvia_de_flechas.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "45 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "conocer_las_leyendas",
@@ -7002,7 +8329,12 @@
         "clérigo",
         "mago"
       ],
-      "path": "conjuros/nivel_5/conocer_las_leyendas.md"
+      "path": "conjuros/nivel_5/conocer_las_leyendas.md",
+      "tiempo_lanzamiento": "10 minutos",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "cono_de_frio",
@@ -7024,7 +8356,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_5/cono_de_frio.md"
+      "path": "conjuros/nivel_5/cono_de_frio.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "consagrar",
@@ -7042,7 +8379,12 @@
         "nivel_5",
         "clérigo"
       ],
-      "path": "conjuros/nivel_5/consagrar.md"
+      "path": "conjuros/nivel_5/consagrar.md",
+      "tiempo_lanzamiento": "24 horas",
+      "alcance": "Toque",
+      "duracion": "Hasta que sea disipado",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "contactar_con_otro_plano",
@@ -7063,7 +8405,12 @@
         "mago",
         "ritual"
       ],
-      "path": "conjuros/nivel_5/contactar_con_otro_plano.md"
+      "path": "conjuros/nivel_5/contactar_con_otro_plano.md",
+      "tiempo_lanzamiento": "1 minuto o un ritual",
+      "alcance": "Lanzador",
+      "duracion": "1 minuto",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "contagio",
@@ -7083,7 +8430,12 @@
         "clérigo",
         "druida"
       ],
-      "path": "conjuros/nivel_5/contagio.md"
+      "path": "conjuros/nivel_5/contagio.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "7 días",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "creacion",
@@ -7103,7 +8455,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_5/creacion.md"
+      "path": "conjuros/nivel_5/creacion.md",
+      "tiempo_lanzamiento": "1 minuto",
+      "alcance": "9 m",
+      "duracion": "Especial",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "curar_heridas_en_masa",
@@ -7125,7 +8482,12 @@
         "clérigo",
         "druida"
       ],
-      "path": "conjuros/nivel_5/curar_heridas_en_masa.md"
+      "path": "conjuros/nivel_5/curar_heridas_en_masa.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "despertar",
@@ -7145,7 +8507,12 @@
         "bardo",
         "druida"
       ],
-      "path": "conjuros/nivel_5/despertar.md"
+      "path": "conjuros/nivel_5/despertar.md",
+      "tiempo_lanzamiento": "8 horas",
+      "alcance": "Toque",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "disipar_el_bien_y_el_mal",
@@ -7166,7 +8533,12 @@
         "paladín",
         "concentracion"
       ],
-      "path": "conjuros/nivel_5/disipar_el_bien_y_el_mal.md"
+      "path": "conjuros/nivel_5/disipar_el_bien_y_el_mal.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "dominar_persona",
@@ -7189,7 +8561,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_5/dominar_persona.md"
+      "path": "conjuros/nivel_5/dominar_persona.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "enganar",
@@ -7212,7 +8589,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_5/enganar.md"
+      "path": "conjuros/nivel_5/enganar.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "enlace_telepatico_de_rary",
@@ -7233,7 +8615,12 @@
         "mago",
         "ritual"
       ],
-      "path": "conjuros/nivel_5/enlace_telepatico_de_rary.md"
+      "path": "conjuros/nivel_5/enlace_telepatico_de_rary.md",
+      "tiempo_lanzamiento": "Acción o ritual",
+      "alcance": "9 m",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "ensueno",
@@ -7255,7 +8642,12 @@
         "brujo",
         "mago"
       ],
-      "path": "conjuros/nivel_5/ensueno.md"
+      "path": "conjuros/nivel_5/ensueno.md",
+      "tiempo_lanzamiento": "1 minuto",
+      "alcance": "Especial",
+      "duracion": "8 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "escudrinar",
@@ -7282,7 +8674,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_5/escudrinar.md"
+      "path": "conjuros/nivel_5/escudrinar.md",
+      "tiempo_lanzamiento": "10 minutos",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "estatica_sinaptica",
@@ -7306,7 +8703,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_5/estatica_sinaptica.md"
+      "path": "conjuros/nivel_5/estatica_sinaptica.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "geas",
@@ -7332,7 +8734,12 @@
         "mago",
         "paladín"
       ],
-      "path": "conjuros/nivel_5/geas.md"
+      "path": "conjuros/nivel_5/geas.md",
+      "tiempo_lanzamiento": "1 minuto",
+      "alcance": "18 m",
+      "duracion": "30 días",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "golpe_de_viento_acerado",
@@ -7352,7 +8759,12 @@
         "explorador",
         "mago"
       ],
-      "path": "conjuros/nivel_5/golpe_de_viento_acerado.md"
+      "path": "conjuros/nivel_5/golpe_de_viento_acerado.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "golpe_flamigero",
@@ -7370,7 +8782,12 @@
         "nivel_5",
         "clérigo"
       ],
-      "path": "conjuros/nivel_5/golpe_flamigero.md"
+      "path": "conjuros/nivel_5/golpe_flamigero.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "inmovilizar_monstruo",
@@ -7395,7 +8812,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_5/inmovilizar_monstruo.md"
+      "path": "conjuros/nivel_5/inmovilizar_monstruo.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "27 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "invocar_celestial",
@@ -7416,7 +8838,12 @@
         "paladín",
         "concentracion"
       ],
-      "path": "conjuros/nivel_5/invocar_celestial.md"
+      "path": "conjuros/nivel_5/invocar_celestial.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "27 m",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "invocar_dragon",
@@ -7435,7 +8862,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_5/invocar_dragon.md"
+      "path": "conjuros/nivel_5/invocar_dragon.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "mano_de_bigby",
@@ -7456,7 +8888,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_5/mano_de_bigby.md"
+      "path": "conjuros/nivel_5/mano_de_bigby.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "muro_de_fuerza",
@@ -7475,7 +8912,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_5/muro_de_fuerza.md"
+      "path": "conjuros/nivel_5/muro_de_fuerza.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "muro_de_piedra",
@@ -7498,7 +8940,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_5/muro_de_piedra.md"
+      "path": "conjuros/nivel_5/muro_de_piedra.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "nube_aniquiladora",
@@ -7519,7 +8966,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_5/nube_aniquiladora.md"
+      "path": "conjuros/nivel_5/nube_aniquiladora.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "ola_destructora",
@@ -7537,7 +8989,12 @@
         "nivel_5",
         "paladín"
       ],
-      "path": "conjuros/nivel_5/ola_destructora.md"
+      "path": "conjuros/nivel_5/ola_destructora.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "pasamuros",
@@ -7555,7 +9012,12 @@
         "nivel_5",
         "mago"
       ],
-      "path": "conjuros/nivel_5/pasamuros.md"
+      "path": "conjuros/nivel_5/pasamuros.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "paso_arboreo",
@@ -7576,7 +9038,12 @@
         "explorador",
         "concentracion"
       ],
-      "path": "conjuros/nivel_5/paso_arboreo.md"
+      "path": "conjuros/nivel_5/paso_arboreo.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "plaga_de_insectos",
@@ -7599,7 +9066,12 @@
         "hechicero",
         "concentracion"
       ],
-      "path": "conjuros/nivel_5/plaga_de_insectos.md"
+      "path": "conjuros/nivel_5/plaga_de_insectos.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "90 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "presencia_regia_de_yolande",
@@ -7620,7 +9092,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_5/presencia_regia_de_yolande.md"
+      "path": "conjuros/nivel_5/presencia_regia_de_yolande.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "reencarnar",
@@ -7638,7 +9115,12 @@
         "nivel_5",
         "druida"
       ],
-      "path": "conjuros/nivel_5/reencarnar.md"
+      "path": "conjuros/nivel_5/reencarnar.md",
+      "tiempo_lanzamiento": "1 hora",
+      "alcance": "Toque",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "restablecimiento_mayor",
@@ -7664,7 +9146,12 @@
         "explorador",
         "paladín"
       ],
-      "path": "conjuros/nivel_5/restablecimiento_mayor.md"
+      "path": "conjuros/nivel_5/restablecimiento_mayor.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "tormenta_resplandeciente_de_jallarzi",
@@ -7685,7 +9172,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_5/tormenta_resplandeciente_de_jallarzi.md"
+      "path": "conjuros/nivel_5/tormenta_resplandeciente_de_jallarzi.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "aliado_planar",
@@ -7703,7 +9195,12 @@
         "nivel_6",
         "clérigo"
       ],
-      "path": "conjuros/nivel_6/aliado_planar.md"
+      "path": "conjuros/nivel_6/aliado_planar.md",
+      "tiempo_lanzamiento": "10 minutos",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "baile_irresistible_de_otto",
@@ -7724,7 +9221,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_6/baile_irresistible_de_otto.md"
+      "path": "conjuros/nivel_6/baile_irresistible_de_otto.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "barrera_de_cuchillas",
@@ -7743,7 +9245,12 @@
         "clérigo",
         "concentracion"
       ],
-      "path": "conjuros/nivel_6/barrera_de_cuchillas.md"
+      "path": "conjuros/nivel_6/barrera_de_cuchillas.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "27 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "caldero_burbujeante_de_tasha",
@@ -7763,7 +9270,12 @@
         "brujo",
         "mago"
       ],
-      "path": "conjuros/nivel_6/caldero_burbujeante_de_tasha.md"
+      "path": "conjuros/nivel_6/caldero_burbujeante_de_tasha.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "1,5 m",
+      "duracion": "10 minutos",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "circulo_de_muerte",
@@ -7785,7 +9297,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_6/circulo_de_muerte.md"
+      "path": "conjuros/nivel_6/circulo_de_muerte.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "45 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "conjurar_feerico",
@@ -7804,7 +9321,12 @@
         "druida",
         "concentracion"
       ],
-      "path": "conjuros/nivel_6/conjurar_feerico.md"
+      "path": "conjuros/nivel_6/conjurar_feerico.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "contingencia",
@@ -7822,7 +9344,12 @@
         "nivel_6",
         "mago"
       ],
-      "path": "conjuros/nivel_6/contingencia.md"
+      "path": "conjuros/nivel_6/contingencia.md",
+      "tiempo_lanzamiento": "10 minutos",
+      "alcance": "Lanzador",
+      "duracion": "10 días",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "crear_muerto_viviente",
@@ -7844,7 +9371,12 @@
         "clérigo",
         "mago"
       ],
-      "path": "conjuros/nivel_6/crear_muerto_viviente.md"
+      "path": "conjuros/nivel_6/crear_muerto_viviente.md",
+      "tiempo_lanzamiento": "1 minuto",
+      "alcance": "3 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "curar",
@@ -7864,7 +9396,12 @@
         "clérigo",
         "druida"
       ],
-      "path": "conjuros/nivel_6/curar.md"
+      "path": "conjuros/nivel_6/curar.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "danar",
@@ -7882,7 +9419,12 @@
         "nivel_6",
         "clérigo"
       ],
-      "path": "conjuros/nivel_6/danar.md"
+      "path": "conjuros/nivel_6/danar.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "desintegrar",
@@ -7902,7 +9444,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_6/desintegrar.md"
+      "path": "conjuros/nivel_6/desintegrar.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "de_la_carne_a_la_piedra",
@@ -7925,7 +9472,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_6/de_la_carne_a_la_piedra.md"
+      "path": "conjuros/nivel_6/de_la_carne_a_la_piedra.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "encontrar_el_camino",
@@ -7948,7 +9500,12 @@
         "druida",
         "concentracion"
       ],
-      "path": "conjuros/nivel_6/encontrar_el_camino.md"
+      "path": "conjuros/nivel_6/encontrar_el_camino.md",
+      "tiempo_lanzamiento": "1 minuto",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 día",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "esfera_congelante_de_otiluke",
@@ -7968,7 +9525,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_6/esfera_congelante_de_otiluke.md"
+      "path": "conjuros/nivel_6/esfera_congelante_de_otiluke.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "90 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "festin_de_heroes",
@@ -7990,7 +9552,12 @@
         "clérigo",
         "druida"
       ],
-      "path": "conjuros/nivel_6/festin_de_heroes.md"
+      "path": "conjuros/nivel_6/festin_de_heroes.md",
+      "tiempo_lanzamiento": "10 minutos",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "globo_de_invulnerabilidad",
@@ -8011,7 +9578,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_6/globo_de_invulnerabilidad.md"
+      "path": "conjuros/nivel_6/globo_de_invulnerabilidad.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "guardas_y_guardias",
@@ -8031,7 +9603,12 @@
         "bardo",
         "mago"
       ],
-      "path": "conjuros/nivel_6/guardas_y_guardias.md"
+      "path": "conjuros/nivel_6/guardas_y_guardias.md",
+      "tiempo_lanzamiento": "1 hora",
+      "alcance": "Toque",
+      "duracion": "24 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "ilusion_programada",
@@ -8051,7 +9628,12 @@
         "bardo",
         "mago"
       ],
-      "path": "conjuros/nivel_6/ilusion_programada.md"
+      "path": "conjuros/nivel_6/ilusion_programada.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Hasta que sea disipado",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "invocacion_instantanea_de_drawmij",
@@ -8070,7 +9652,12 @@
         "mago",
         "ritual"
       ],
-      "path": "conjuros/nivel_6/invocacion_instantanea_de_drawmij.md"
+      "path": "conjuros/nivel_6/invocacion_instantanea_de_drawmij.md",
+      "tiempo_lanzamiento": "1 minuto o un ritual",
+      "alcance": "Toque",
+      "duracion": "Hasta que sea disipado",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "invocar_infernal",
@@ -8091,7 +9678,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_6/invocar_infernal.md"
+      "path": "conjuros/nivel_6/invocar_infernal.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "27 m",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "mal_de_ojo",
@@ -8116,7 +9708,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_6/mal_de_ojo.md"
+      "path": "conjuros/nivel_6/mal_de_ojo.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "mover_la_tierra",
@@ -8139,7 +9736,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_6/mover_la_tierra.md"
+      "path": "conjuros/nivel_6/mover_la_tierra.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 2 horas",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "muro_de_espinas",
@@ -8158,7 +9760,12 @@
         "druida",
         "concentracion"
       ],
-      "path": "conjuros/nivel_6/muro_de_espinas.md"
+      "path": "conjuros/nivel_6/muro_de_espinas.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "muro_de_hielo",
@@ -8177,7 +9784,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_6/muro_de_hielo.md"
+      "path": "conjuros/nivel_6/muro_de_hielo.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "palabra_de_regreso",
@@ -8195,7 +9807,12 @@
         "nivel_6",
         "clérigo"
       ],
-      "path": "conjuros/nivel_6/palabra_de_regreso.md"
+      "path": "conjuros/nivel_6/palabra_de_regreso.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "1,5 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "prohibicion",
@@ -8214,7 +9831,12 @@
         "clérigo",
         "ritual"
       ],
-      "path": "conjuros/nivel_6/prohibicion.md"
+      "path": "conjuros/nivel_6/prohibicion.md",
+      "tiempo_lanzamiento": "10 minutos o un ritual",
+      "alcance": "Toque",
+      "duracion": "1 día",
+      "concentracion": false,
+      "ritual": true
     },
     {
       "id": "puerta_arcana",
@@ -8237,7 +9859,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_6/puerta_arcana.md"
+      "path": "conjuros/nivel_6/puerta_arcana.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "150 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "rayo_solar",
@@ -8262,7 +9889,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_6/rayo_solar.md"
+      "path": "conjuros/nivel_6/rayo_solar.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "relampago_en_cadena",
@@ -8282,7 +9914,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_6/relampago_en_cadena.md"
+      "path": "conjuros/nivel_6/relampago_en_cadena.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "45 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "sugestion_en_masa",
@@ -8304,7 +9941,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_6/sugestion_en_masa.md"
+      "path": "conjuros/nivel_6/sugestion_en_masa.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "24 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "urna_magica",
@@ -8322,7 +9964,12 @@
         "nivel_6",
         "mago"
       ],
-      "path": "conjuros/nivel_6/urna_magica.md"
+      "path": "conjuros/nivel_6/urna_magica.md",
+      "tiempo_lanzamiento": "1 minuto",
+      "alcance": "Lanzador",
+      "duracion": "Hasta que sea disipado",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "viajar_con_el_viento",
@@ -8340,7 +9987,12 @@
         "nivel_6",
         "druida"
       ],
-      "path": "conjuros/nivel_6/viajar_con_el_viento.md"
+      "path": "conjuros/nivel_6/viajar_con_el_viento.md",
+      "tiempo_lanzamiento": "1 minuto",
+      "alcance": "9 m",
+      "duracion": "8 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "viajar_mediante_plantas",
@@ -8358,7 +10010,12 @@
         "nivel_6",
         "druida"
       ],
-      "path": "conjuros/nivel_6/viajar_mediante_plantas.md"
+      "path": "conjuros/nivel_6/viajar_mediante_plantas.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "3 m",
+      "duracion": "1 minuto",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "vision_veraz",
@@ -8384,7 +10041,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_6/vision_veraz.md"
+      "path": "conjuros/nivel_6/vision_veraz.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "bola_de_fuego_de_explosion_retardada",
@@ -8405,7 +10067,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_7/bola_de_fuego_de_explosion_retardada.md"
+      "path": "conjuros/nivel_7/bola_de_fuego_de_explosion_retardada.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "45 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "conjurar_celestial",
@@ -8424,7 +10091,12 @@
         "clérigo",
         "concentracion"
       ],
-      "path": "conjuros/nivel_7/conjurar_celestial.md"
+      "path": "conjuros/nivel_7/conjurar_celestial.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "27 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "dedo_de_la_muerte",
@@ -8446,7 +10118,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_7/dedo_de_la_muerte.md"
+      "path": "conjuros/nivel_7/dedo_de_la_muerte.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "desplazamiento_entre_planos",
@@ -8472,7 +10149,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_7/desplazamiento_entre_planos.md"
+      "path": "conjuros/nivel_7/desplazamiento_entre_planos.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "espada_de_mordenkainen",
@@ -8493,7 +10175,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_7/espada_de_mordenkainen.md"
+      "path": "conjuros/nivel_7/espada_de_mordenkainen.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "27 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "espejismo_arcano",
@@ -8515,7 +10202,12 @@
         "druida",
         "mago"
       ],
-      "path": "conjuros/nivel_7/espejismo_arcano.md"
+      "path": "conjuros/nivel_7/espejismo_arcano.md",
+      "tiempo_lanzamiento": "10 minutos",
+      "alcance": "Vista",
+      "duracion": "10 días",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "excursion_eterea",
@@ -8541,7 +10233,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_7/excursion_eterea.md"
+      "path": "conjuros/nivel_7/excursion_eterea.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Hasta 8 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "invertir_la_gravedad",
@@ -8564,7 +10261,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_7/invertir_la_gravedad.md"
+      "path": "conjuros/nivel_7/invertir_la_gravedad.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "30 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "jaula_de_fuerza",
@@ -8587,7 +10289,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_7/jaula_de_fuerza.md"
+      "path": "conjuros/nivel_7/jaula_de_fuerza.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "30 m",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "mansion_magnifica_de_mordenkainen",
@@ -8607,7 +10314,12 @@
         "bardo",
         "mago"
       ],
-      "path": "conjuros/nivel_7/mansion_magnifica_de_mordenkainen.md"
+      "path": "conjuros/nivel_7/mansion_magnifica_de_mordenkainen.md",
+      "tiempo_lanzamiento": "1 minuto",
+      "alcance": "90 m",
+      "duracion": "24 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "palabra_divina",
@@ -8625,7 +10337,12 @@
         "nivel_7",
         "clérigo"
       ],
-      "path": "conjuros/nivel_7/palabra_divina.md"
+      "path": "conjuros/nivel_7/palabra_divina.md",
+      "tiempo_lanzamiento": "Acción adicional",
+      "alcance": "9 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "proyectar_imagen",
@@ -8646,7 +10363,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_7/proyectar_imagen.md"
+      "path": "conjuros/nivel_7/proyectar_imagen.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "750 km",
+      "duracion": "Concentración, hasta 1 día",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "recluir",
@@ -8664,7 +10386,12 @@
         "nivel_7",
         "mago"
       ],
-      "path": "conjuros/nivel_7/recluir.md"
+      "path": "conjuros/nivel_7/recluir.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "Hasta que sea disipado",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "regenerar",
@@ -8686,7 +10413,12 @@
         "clérigo",
         "druida"
       ],
-      "path": "conjuros/nivel_7/regenerar.md"
+      "path": "conjuros/nivel_7/regenerar.md",
+      "tiempo_lanzamiento": "1 minuto",
+      "alcance": "Toque",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "resurreccion",
@@ -8706,7 +10438,12 @@
         "bardo",
         "clérigo"
       ],
-      "path": "conjuros/nivel_7/resurreccion.md"
+      "path": "conjuros/nivel_7/resurreccion.md",
+      "tiempo_lanzamiento": "1 hora",
+      "alcance": "Toque",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "rociada_prismatica",
@@ -8728,7 +10465,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_7/rociada_prismatica.md"
+      "path": "conjuros/nivel_7/rociada_prismatica.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "simbolo",
@@ -8752,7 +10494,12 @@
         "druida",
         "mago"
       ],
-      "path": "conjuros/nivel_7/simbolo.md"
+      "path": "conjuros/nivel_7/simbolo.md",
+      "tiempo_lanzamiento": "1 minuto",
+      "alcance": "Toque",
+      "duracion": "Hasta que sea disipado o se active",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "simulacro",
@@ -8770,7 +10517,12 @@
         "nivel_7",
         "mago"
       ],
-      "path": "conjuros/nivel_7/simulacro.md"
+      "path": "conjuros/nivel_7/simulacro.md",
+      "tiempo_lanzamiento": "12 horas",
+      "alcance": "Toque",
+      "duracion": "Hasta que sea disipado",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "teletransporte",
@@ -8792,7 +10544,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_7/teletransporte.md"
+      "path": "conjuros/nivel_7/teletransporte.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "3 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "tormenta_de_fuego",
@@ -8814,7 +10571,12 @@
         "druida",
         "hechicero"
       ],
-      "path": "conjuros/nivel_7/tormenta_de_fuego.md"
+      "path": "conjuros/nivel_7/tormenta_de_fuego.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "45 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "antipatiasimpatia",
@@ -8836,7 +10598,12 @@
         "druida",
         "mago"
       ],
-      "path": "conjuros/nivel_8/antipatiasimpatia.md"
+      "path": "conjuros/nivel_8/antipatiasimpatia.md",
+      "tiempo_lanzamiento": "1 hora",
+      "alcance": "18 m",
+      "duracion": "10 días",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "aspectos_animales",
@@ -8854,7 +10621,12 @@
         "nivel_8",
         "druida"
       ],
-      "path": "conjuros/nivel_8/aspectos_animales.md"
+      "path": "conjuros/nivel_8/aspectos_animales.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "24 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "aura_sagrada",
@@ -8873,7 +10645,12 @@
         "clérigo",
         "concentracion"
       ],
-      "path": "conjuros/nivel_8/aura_sagrada.md"
+      "path": "conjuros/nivel_8/aura_sagrada.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "campo_antimagia",
@@ -8894,7 +10671,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_8/campo_antimagia.md"
+      "path": "conjuros/nivel_8/campo_antimagia.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "clon",
@@ -8912,7 +10694,12 @@
         "nivel_8",
         "mago"
       ],
-      "path": "conjuros/nivel_8/clon.md"
+      "path": "conjuros/nivel_8/clon.md",
+      "tiempo_lanzamiento": "1 hora",
+      "alcance": "Toque",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "controlar_el_clima",
@@ -8935,7 +10722,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_8/controlar_el_clima.md"
+      "path": "conjuros/nivel_8/controlar_el_clima.md",
+      "tiempo_lanzamiento": "10 minutos",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 8 horas",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "dominar_monstruo",
@@ -8960,7 +10752,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_8/dominar_monstruo.md"
+      "path": "conjuros/nivel_8/dominar_monstruo.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "explosion_solar",
@@ -8984,7 +10781,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_8/explosion_solar.md"
+      "path": "conjuros/nivel_8/explosion_solar.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "45 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "laberinto",
@@ -9003,7 +10805,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_8/laberinto.md"
+      "path": "conjuros/nivel_8/laberinto.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 10 minutos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "labia",
@@ -9023,7 +10830,12 @@
         "bardo",
         "brujo"
       ],
-      "path": "conjuros/nivel_8/labia.md"
+      "path": "conjuros/nivel_8/labia.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "mente_en_blanco",
@@ -9043,7 +10855,12 @@
         "bardo",
         "mago"
       ],
-      "path": "conjuros/nivel_8/mente_en_blanco.md"
+      "path": "conjuros/nivel_8/mente_en_blanco.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Toque",
+      "duracion": "24 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "nube_incendiaria",
@@ -9066,7 +10883,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_8/nube_incendiaria.md"
+      "path": "conjuros/nivel_8/nube_incendiaria.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "45 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "ofuscacion",
@@ -9090,7 +10912,12 @@
         "druida",
         "mago"
       ],
-      "path": "conjuros/nivel_8/ofuscacion.md"
+      "path": "conjuros/nivel_8/ofuscacion.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "45 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "semiplano",
@@ -9112,7 +10939,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_8/semiplano.md"
+      "path": "conjuros/nivel_8/semiplano.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "1 hora",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "telepatia",
@@ -9130,7 +10962,12 @@
         "nivel_8",
         "mago"
       ],
-      "path": "conjuros/nivel_8/telepatia.md"
+      "path": "conjuros/nivel_8/telepatia.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "limitado",
+      "duracion": "24 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "tsunami",
@@ -9149,7 +10986,12 @@
         "druida",
         "concentracion"
       ],
-      "path": "conjuros/nivel_8/tsunami.md"
+      "path": "conjuros/nivel_8/tsunami.md",
+      "tiempo_lanzamiento": "1 minuto",
+      "alcance": "1,5 km",
+      "duracion": "Concentración, hasta 6 asaltos",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "cambiar_de_forma",
@@ -9170,7 +11012,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_9/cambiar_de_forma.md"
+      "path": "conjuros/nivel_9/cambiar_de_forma.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "cautiverio",
@@ -9190,7 +11037,12 @@
         "brujo",
         "mago"
       ],
-      "path": "conjuros/nivel_9/cautiverio.md"
+      "path": "conjuros/nivel_9/cautiverio.md",
+      "tiempo_lanzamiento": "1 minuto",
+      "alcance": "9 m",
+      "duracion": "Hasta que sea disipado",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "curar_en_masa",
@@ -9208,7 +11060,12 @@
         "nivel_9",
         "clérigo"
       ],
-      "path": "conjuros/nivel_9/curar_en_masa.md"
+      "path": "conjuros/nivel_9/curar_en_masa.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "deseo",
@@ -9228,7 +11085,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_9/deseo.md"
+      "path": "conjuros/nivel_9/deseo.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "muro_prismatico",
@@ -9248,7 +11110,12 @@
         "bardo",
         "mago"
       ],
-      "path": "conjuros/nivel_9/muro_prismatico.md"
+      "path": "conjuros/nivel_9/muro_prismatico.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "10 minutos",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "parar_el_tiempo",
@@ -9268,7 +11135,12 @@
         "hechicero",
         "mago"
       ],
-      "path": "conjuros/nivel_9/parar_el_tiempo.md"
+      "path": "conjuros/nivel_9/parar_el_tiempo.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "Lanzador",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "polimorfar_verdadero",
@@ -9291,7 +11163,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_9/polimorfar_verdadero.md"
+      "path": "conjuros/nivel_9/polimorfar_verdadero.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "9 m",
+      "duracion": "Concentración, hasta 1 hora",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "portal",
@@ -9316,7 +11193,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_9/portal.md"
+      "path": "conjuros/nivel_9/portal.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "18 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "presciencia",
@@ -9340,7 +11222,12 @@
         "druida",
         "mago"
       ],
-      "path": "conjuros/nivel_9/presciencia.md"
+      "path": "conjuros/nivel_9/presciencia.md",
+      "tiempo_lanzamiento": "1 minuto",
+      "alcance": "Toque",
+      "duracion": "8 horas",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "proyeccion_astral",
@@ -9362,7 +11249,12 @@
         "clérigo",
         "mago"
       ],
-      "path": "conjuros/nivel_9/proyeccion_astral.md"
+      "path": "conjuros/nivel_9/proyeccion_astral.md",
+      "tiempo_lanzamiento": "1 hora",
+      "alcance": "3 m",
+      "duracion": "Hasta que sea disipado",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "resurreccion_verdadera",
@@ -9382,7 +11274,12 @@
         "clérigo",
         "druida"
       ],
-      "path": "conjuros/nivel_9/resurreccion_verdadera.md"
+      "path": "conjuros/nivel_9/resurreccion_verdadera.md",
+      "tiempo_lanzamiento": "1 hora",
+      "alcance": "Toque",
+      "duracion": "Instantáneo",
+      "concentracion": false,
+      "ritual": false
     },
     {
       "id": "terror_abyecto",
@@ -9403,7 +11300,12 @@
         "mago",
         "concentracion"
       ],
-      "path": "conjuros/nivel_9/terror_abyecto.md"
+      "path": "conjuros/nivel_9/terror_abyecto.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "36 m",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "tormenta_de_la_venganza",
@@ -9422,7 +11324,12 @@
         "druida",
         "concentracion"
       ],
-      "path": "conjuros/nivel_9/tormenta_de_la_venganza.md"
+      "path": "conjuros/nivel_9/tormenta_de_la_venganza.md",
+      "tiempo_lanzamiento": "Acción",
+      "alcance": "1,5 km",
+      "duracion": "Concentración, hasta 1 minuto",
+      "concentracion": true,
+      "ritual": false
     },
     {
       "id": "dote_afortunado",
@@ -11191,7 +13098,7 @@
       "id": "acolito",
       "nombre": "Acólito",
       "nombre_ingles": "Acólito",
-      "tipo": "regla",
+      "tipo": "trasfondo",
       "nivel": null,
       "escuela": null,
       "clases": [],
@@ -11200,13 +13107,16 @@
         "trasfondo",
         "acolito"
       ],
-      "path": "trasfondos/acolito.md"
+      "path": "trasfondos/acolito.md",
+      "dote_concedida": "Iniciado en la magia (Clérigo)",
+      "caracteristicas_clave": "Sabiduría, Inteligencia, Carisma",
+      "habilidades_competentes": "Perspicacia, Religión"
     },
     {
       "id": "animador",
       "nombre": "Animador",
       "nombre_ingles": "Animador",
-      "tipo": "regla",
+      "tipo": "trasfondo",
       "nivel": null,
       "escuela": null,
       "clases": [],
@@ -11215,13 +13125,16 @@
         "trasfondo",
         "animador"
       ],
-      "path": "trasfondos/animador.md"
+      "path": "trasfondos/animador.md",
+      "dote_concedida": "Músico",
+      "caracteristicas_clave": "Fuerza, Destreza, Carisma",
+      "habilidades_competentes": "Acrobacias, Interpretación"
     },
     {
       "id": "artesano",
       "nombre": "Artesano",
       "nombre_ingles": "Artesano",
-      "tipo": "regla",
+      "tipo": "trasfondo",
       "nivel": null,
       "escuela": null,
       "clases": [],
@@ -11230,13 +13143,16 @@
         "trasfondo",
         "artesano"
       ],
-      "path": "trasfondos/artesano.md"
+      "path": "trasfondos/artesano.md",
+      "dote_concedida": "Fabricante",
+      "caracteristicas_clave": "Fuerza, Destreza, Inteligencia",
+      "habilidades_competentes": "Investigación, Persuasión"
     },
     {
       "id": "campesino",
       "nombre": "Campesino",
       "nombre_ingles": "Campesino",
-      "tipo": "regla",
+      "tipo": "trasfondo",
       "nivel": null,
       "escuela": null,
       "clases": [],
@@ -11245,13 +13161,16 @@
         "trasfondo",
         "campesino"
       ],
-      "path": "trasfondos/campesino.md"
+      "path": "trasfondos/campesino.md",
+      "dote_concedida": "Duro",
+      "caracteristicas_clave": "Fuerza, Constitución, Sabiduría",
+      "habilidades_competentes": "Supervivencia, Trato con Animales"
     },
     {
       "id": "charlatan",
       "nombre": "Charlatán",
       "nombre_ingles": "Charlatán",
-      "tipo": "regla",
+      "tipo": "trasfondo",
       "nivel": null,
       "escuela": null,
       "clases": [],
@@ -11260,13 +13179,16 @@
         "trasfondo",
         "charlatan"
       ],
-      "path": "trasfondos/charlatan.md"
+      "path": "trasfondos/charlatan.md",
+      "dote_concedida": "Habilidoso",
+      "caracteristicas_clave": "Destreza, Constitución, Carisma",
+      "habilidades_competentes": "Engaño, Juego de Manos"
     },
     {
       "id": "comerciante",
       "nombre": "Comerciante",
       "nombre_ingles": "Comerciante",
-      "tipo": "regla",
+      "tipo": "trasfondo",
       "nivel": null,
       "escuela": null,
       "clases": [],
@@ -11275,13 +13197,16 @@
         "trasfondo",
         "comerciante"
       ],
-      "path": "trasfondos/comerciante.md"
+      "path": "trasfondos/comerciante.md",
+      "dote_concedida": "Afortunado",
+      "caracteristicas_clave": "Constitución, Inteligencia, Carisma",
+      "habilidades_competentes": "Persuasión, Perspicacia"
     },
     {
       "id": "criminal",
       "nombre": "Criminal",
       "nombre_ingles": "Criminal",
-      "tipo": "regla",
+      "tipo": "trasfondo",
       "nivel": null,
       "escuela": null,
       "clases": [],
@@ -11290,13 +13215,16 @@
         "trasfondo",
         "criminal"
       ],
-      "path": "trasfondos/criminal.md"
+      "path": "trasfondos/criminal.md",
+      "dote_concedida": "Alerta",
+      "caracteristicas_clave": "Destreza, Constitución, Inteligencia",
+      "habilidades_competentes": "Engaño, Sigilo"
     },
     {
       "id": "ermitano",
       "nombre": "Ermitaño",
       "nombre_ingles": "Ermitaño",
-      "tipo": "regla",
+      "tipo": "trasfondo",
       "nivel": null,
       "escuela": null,
       "clases": [],
@@ -11305,13 +13233,16 @@
         "trasfondo",
         "ermitano"
       ],
-      "path": "trasfondos/ermitano.md"
+      "path": "trasfondos/ermitano.md",
+      "dote_concedida": "Sanador",
+      "caracteristicas_clave": "Constitución, Sabiduría, Carisma",
+      "habilidades_competentes": "Medicina, Religión"
     },
     {
       "id": "escribano",
       "nombre": "Escribano",
       "nombre_ingles": "Escribano",
-      "tipo": "regla",
+      "tipo": "trasfondo",
       "nivel": null,
       "escuela": null,
       "clases": [],
@@ -11320,13 +13251,16 @@
         "trasfondo",
         "escribano"
       ],
-      "path": "trasfondos/escribano.md"
+      "path": "trasfondos/escribano.md",
+      "dote_concedida": "Habilidoso",
+      "caracteristicas_clave": "Inteligencia, Sabiduría, Carisma",
+      "habilidades_competentes": "Historia, Investigación"
     },
     {
       "id": "granjero",
       "nombre": "Granjero",
       "nombre_ingles": "Granjero",
-      "tipo": "regla",
+      "tipo": "trasfondo",
       "nivel": null,
       "escuela": null,
       "clases": [],
@@ -11335,13 +13269,16 @@
         "trasfondo",
         "granjero"
       ],
-      "path": "trasfondos/granjero.md"
+      "path": "trasfondos/granjero.md",
+      "dote_concedida": "Duro",
+      "caracteristicas_clave": "Fuerza, Constitución, Sabiduría",
+      "habilidades_competentes": "Naturaleza, Trato con Animales"
     },
     {
       "id": "guardia",
       "nombre": "Guardia",
       "nombre_ingles": "Guardia",
-      "tipo": "regla",
+      "tipo": "trasfondo",
       "nivel": null,
       "escuela": null,
       "clases": [],
@@ -11350,13 +13287,16 @@
         "trasfondo",
         "guardia"
       ],
-      "path": "trasfondos/guardia.md"
+      "path": "trasfondos/guardia.md",
+      "dote_concedida": "Alerta",
+      "caracteristicas_clave": "Fuerza, Inteligencia, Sabiduría",
+      "habilidades_competentes": "Atletismo, Percepción"
     },
     {
       "id": "guia",
       "nombre": "Guía",
       "nombre_ingles": "Guía",
-      "tipo": "regla",
+      "tipo": "trasfondo",
       "nivel": null,
       "escuela": null,
       "clases": [],
@@ -11365,13 +13305,16 @@
         "trasfondo",
         "guia"
       ],
-      "path": "trasfondos/guia.md"
+      "path": "trasfondos/guia.md",
+      "dote_concedida": "Iniciado en la magia (Druida)",
+      "caracteristicas_clave": "Destreza, Constitución, Sabiduría",
+      "habilidades_competentes": "Sigilo, Supervivencia"
     },
     {
       "id": "marinero",
       "nombre": "Marinero",
       "nombre_ingles": "Marinero",
-      "tipo": "regla",
+      "tipo": "trasfondo",
       "nivel": null,
       "escuela": null,
       "clases": [],
@@ -11380,13 +13323,16 @@
         "trasfondo",
         "marinero"
       ],
-      "path": "trasfondos/marinero.md"
+      "path": "trasfondos/marinero.md",
+      "dote_concedida": "Luchador de taberna",
+      "caracteristicas_clave": "Fuerza, Destreza, Sabiduría",
+      "habilidades_competentes": "Atletismo, Percepción"
     },
     {
       "id": "noble",
       "nombre": "Noble",
       "nombre_ingles": "Noble",
-      "tipo": "regla",
+      "tipo": "trasfondo",
       "nivel": null,
       "escuela": null,
       "clases": [],
@@ -11395,13 +13341,16 @@
         "trasfondo",
         "noble"
       ],
-      "path": "trasfondos/noble.md"
+      "path": "trasfondos/noble.md",
+      "dote_concedida": "Habilidoso",
+      "caracteristicas_clave": "Fuerza, Inteligencia, Carisma",
+      "habilidades_competentes": "Historia, Persuasión"
     },
     {
       "id": "sabio",
       "nombre": "Sabio",
       "nombre_ingles": "Sabio",
-      "tipo": "regla",
+      "tipo": "trasfondo",
       "nivel": null,
       "escuela": null,
       "clases": [],
@@ -11410,13 +13359,16 @@
         "trasfondo",
         "sabio"
       ],
-      "path": "trasfondos/sabio.md"
+      "path": "trasfondos/sabio.md",
+      "dote_concedida": "Iniciado en la magia (Mago)",
+      "caracteristicas_clave": "Constitución, Inteligencia, Sabiduría",
+      "habilidades_competentes": "Arcanos, Historia"
     },
     {
       "id": "soldado",
       "nombre": "Soldado",
       "nombre_ingles": "Soldado",
-      "tipo": "regla",
+      "tipo": "trasfondo",
       "nivel": null,
       "escuela": null,
       "clases": [],
@@ -11425,13 +13377,16 @@
         "trasfondo",
         "soldado"
       ],
-      "path": "trasfondos/soldado.md"
+      "path": "trasfondos/soldado.md",
+      "dote_concedida": "Atacante salvaje",
+      "caracteristicas_clave": "Fuerza, Destreza, Constitución",
+      "habilidades_competentes": "Atletismo, Intimidación"
     },
     {
       "id": "vagabundo",
       "nombre": "Vagabundo",
       "nombre_ingles": "Vagabundo",
-      "tipo": "regla",
+      "tipo": "trasfondo",
       "nivel": null,
       "escuela": null,
       "clases": [],
@@ -11440,7 +13395,10 @@
         "trasfondo",
         "vagabundo"
       ],
-      "path": "trasfondos/vagabundo.md"
+      "path": "trasfondos/vagabundo.md",
+      "dote_concedida": "Afortunado",
+      "caracteristicas_clave": "Destreza, Sabiduría, Carisma",
+      "habilidades_competentes": "Perspicacia, Sigilo"
     }
   ]
 }

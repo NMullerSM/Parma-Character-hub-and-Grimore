@@ -4,6 +4,11 @@ import type { SpellItemData } from "../api/types";
 import { X, BookOpen, Sparkles } from "lucide-react";
 import { SpellDetailModal } from "../components/SpellDetailModal";
 import { SpellBookManagerModal } from "../components/SpellBookManagerModal";
+import {
+  formatRangeWithTiles,
+  formatDurationWithTurns,
+  formatComponents,
+} from "../utils/formatters";
 
 export const SpellsView: React.FC = () => {
   const {
@@ -371,16 +376,16 @@ export const SpellsView: React.FC = () => {
 
                 <div className="grid grid-cols-2 gap-2 text-[11px] text-muted pt-1 border-t border-border-iron/40 font-stat">
                   <div>
-                    <span className="font-medium text-main">Tiempo:</span> {spell.cast_time}
+                    <span className="font-medium text-main">Tiempo:</span> {spell.cast_time || spell.casting_time || "1 acción"}
                   </div>
                   <div>
-                    <span className="font-medium text-main">Alcance:</span> {spell.range_area}
+                    <span className="font-medium text-main">Alcance:</span> {formatRangeWithTiles(spell.range_area || spell.range)}
                   </div>
                   <div>
-                    <span className="font-medium text-main">Componentes:</span> {spell.components}
+                    <span className="font-medium text-main">Componentes:</span> {formatComponents(spell.components)}
                   </div>
                   <div>
-                    <span className="font-medium text-main">Duración:</span> {spell.duration}
+                    <span className="font-medium text-main">Duración:</span> {formatDurationWithTurns(spell.duration)}
                   </div>
                 </div>
 

@@ -487,6 +487,81 @@ class OkfEngine:
         spells.sort(key=lambda s: (s.get("nivel", 0), s.get("nombre", "")))
         return spells
 
+    @staticmethod
+    def _format_components(comp: Any) -> str:
+        """Formatea componentes de conjuro garantizando siempre un string seguro."""
+        if not comp:
+            return "V, S"
+        if isinstance(comp, str):
+            return comp.strip() or "V, S"
+        if isinstance(comp, dict):
+            parts = []
+            if comp.get("verbal") or comp.get("v"):
+                parts.append("V")
+            if comp.get("somatico") or comp.get("s"):
+                parts.append("S")
+            if comp.get("material") or comp.get("m"):
+                desc = comp.get("material_desc") or comp.get("descripcion_material") or comp.get("desc") or ""
+                if desc:
+                    parts.append(f"M ({str(desc).strip()})")
+                else:
+                    parts.append("M")
+            return ", ".join(parts) if parts else "V, S"
+        if isinstance(comp, list):
+            return ", ".join(str(c) for c in comp)
+        return str(comp)
+
+    @staticmethod
+    def _format_range_with_tiles(range_val: Any) -> str:
+        """Formatea el alcance en metros añadiendo su equivalente exacto en casillas (tiles)."""
+        import re
+        if not range_val:
+            return "18 m (12 casillas)"
+        r_str = str(range_val).strip()
+        if "casilla" in r_str.lower() or "tile" in r_str.lower():
+            return r_str
+        if r_str.lower() == "toque":
+            return "Toque (1 casilla)"
+
+        def _sub_m(m):
+            num_str = m.group(1).replace(",", ".")
+            try:
+                meters = float(num_str)
+                tiles = max(1, round(meters / 1.5))
+                t_label = "casilla" if tiles == 1 else "casillas"
+                return f"{meters:g} m ({tiles} {t_label})"
+            except Exception:
+                return m.group(0)
+
+        res = re.sub(r'(\d+(?:[.,]\d+)?)\s*(?:m|metros|metro)\b', _sub_m, r_str, flags=re.IGNORECASE)
+        return res
+
+    @staticmethod
+    def _format_duration_with_turns(dur_val: Any) -> str:
+        """Formatea la duración indicando el número de turnos/asaltos cuando aplique."""
+        import re
+        if not dur_val:
+            return "Instantáneo"
+        d_str = str(dur_val).strip()
+        if re.search(r'\(\d+\s*(?:turno|asalt|round)', d_str, re.IGNORECASE):
+            return d_str
+
+        res = d_str
+        if re.search(r'\b1\s*(?:minuto|min)\b', res, re.IGNORECASE):
+            res = re.sub(r'\b1\s*(?:minuto|min)\b', '1 minuto (10 turnos)', res, flags=re.IGNORECASE)
+        elif re.search(r'\b10\s*(?:minutos|mins)\b', res, re.IGNORECASE):
+            res = re.sub(r'\b10\s*(?:minutos|mins)\b', '10 minutos (100 turnos)', res, flags=re.IGNORECASE)
+        elif re.search(r'\b1\s*(?:hora|hr)\b', res, re.IGNORECASE):
+            res = re.sub(r'\b1\s*(?:hora|hr)\b', '1 hora (600 turnos)', res, flags=re.IGNORECASE)
+        elif re.search(r'\b8\s*(?:horas|hrs)\b', res, re.IGNORECASE):
+            res = re.sub(r'\b8\s*(?:horas|hrs)\b', '8 horas (4800 turnos)', res, flags=re.IGNORECASE)
+        elif re.search(r'\b24\s*(?:horas|hrs)\b', res, re.IGNORECASE):
+            res = re.sub(r'\b24\s*(?:horas|hrs)\b', '24 horas (14400 turnos)', res, flags=re.IGNORECASE)
+        elif re.search(r'\b1\s*(?:asalto|round)\b', res, re.IGNORECASE) and "turno" not in res.lower():
+            res = re.sub(r'\b1\s*(?:asalto|round)\b', '1 asalto (1 turno)', res, flags=re.IGNORECASE)
+
+        return res
+
     def search_available_spells(
         self,
         query: str = "",
@@ -542,8 +617,26 @@ class OkfEngine:
             data = full_data or item
 
             body_md = data.get("body_markdown", data.get("descripcion", ""))
-            # Generar snippet si es muy largo
+            if not isinstance(body_md, str):
+                body_md = str(body_md or "")
             snippet = body_md[:200] + "..." if len(body_md) > 200 else body_md
+
+            raw_range = data.get("alcance", item.get("alcance", "18 m"))
+            formatted_range = self._format_range_with_tiles(raw_range)
+
+            raw_dur = data.get("duracion", item.get("duracion", "Instantáneo"))
+            formatted_dur = self._format_duration_with_turns(raw_dur)
+
+            raw_comp = data.get("componentes", item.get("componentes", "V, S"))
+            formatted_comp = self._format_components(raw_comp)
+
+            hl = data.get("niveles_superiores", "")
+            if isinstance(hl, list):
+                hl = "\n".join(str(x) for x in hl)
+            elif isinstance(hl, dict):
+                hl = "\n".join(f"{k}: {v}" for k, v in hl.items())
+            else:
+                hl = str(hl or "")
 
             results.append({
                 "id": item.get("id"),
@@ -553,10 +646,10 @@ class OkfEngine:
                 "school": data.get("escuela", item.get("escuela", "Evocación")),
                 "cast_time": data.get("tiempo_lanzamiento", "1 acción"),
                 "casting_time": data.get("tiempo_lanzamiento", "1 acción"),
-                "range_area": data.get("alcance", "18 m"),
-                "range": data.get("alcance", "18 m"),
-                "components": data.get("componentes", "V, S"),
-                "duration": data.get("duracion", "Instantáneo"),
+                "range_area": formatted_range,
+                "range": formatted_range,
+                "components": formatted_comp,
+                "duration": formatted_dur,
                 "concentration": bool(data.get("concentracion", False)),
                 "ritual": bool(data.get("ritual", False)),
                 "classes": data.get("clases", item.get("clases", [])),
@@ -564,7 +657,7 @@ class OkfEngine:
                 "notes": body_md,
                 "description": body_md,
                 "snippet": snippet,
-                "higher_levels": data.get("niveles_superiores", ""),
+                "higher_levels": hl,
                 "source": data.get("fuente", item.get("fuente", "PHB 2024")),
                 "path": rel_path
             })

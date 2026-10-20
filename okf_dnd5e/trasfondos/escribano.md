@@ -1,16 +1,16 @@
 ---
-id: "escribano"
-nombre: "Escribano"
-caracteristicas_clave: "Inteligencia, Sabiduría, Carisma"
-dote_concedida: "Habilidoso"
-habilidades_competentes: "Historia, Investigación"
-fuente: "PHB 2024"
+id: escribano
+nombre: Escribano
+caracteristicas_clave: Inteligencia, Sabiduría, Carisma
+dote_concedida: Habilidoso
+habilidades_competentes: Historia, Investigación
+fuente: PHB 2024
 pagina: 183
 tags:
-  - "trasfondo"
-  - "escribano"
+- trasfondo
+- escribano
+tipo: trasfondo
 ---
-
 # Trasfondo: Escribano
 
 - **Puntuaciones de Característica**: Inteligencia, Sabiduría, Carisma

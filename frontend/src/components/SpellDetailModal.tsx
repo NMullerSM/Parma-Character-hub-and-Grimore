@@ -3,6 +3,11 @@ import type { SpellItemData, SpellStatsData } from "../api/types";
 import { MarkdownViewer } from "./MarkdownViewer";
 import { useCharacter } from "../context/CharacterContext";
 import { X, Sparkles, Dices, Copy, Check } from "lucide-react";
+import {
+  formatRangeWithTiles,
+  formatDurationWithTurns,
+  formatComponents,
+} from "../utils/formatters";
 
 interface SpellDetailModalProps {
   spell: SpellItemData | null;
@@ -146,17 +151,17 @@ export const SpellDetailModal: React.FC<SpellDetailModalProps> = ({
           </div>
           <div>
             <span className="text-muted block text-[10px] uppercase">Alcance / Área:</span>
-            <span className="font-medium text-main">{spell.range_area || spell.range || "18 m"}</span>
+            <span className="font-medium text-main">{formatRangeWithTiles(spell.range_area || spell.range)}</span>
           </div>
           <div>
             <span className="text-muted block text-[10px] uppercase">Componentes:</span>
-            <span className="font-medium text-main truncate block" title={spell.components}>
-              {spell.components || "V, S"}
+            <span className="font-medium text-main truncate block" title={formatComponents(spell.components)}>
+              {formatComponents(spell.components)}
             </span>
           </div>
           <div>
             <span className="text-muted block text-[10px] uppercase">Duración:</span>
-            <span className="font-medium text-main">{spell.duration || "Instantáneo"}</span>
+            <span className="font-medium text-main">{formatDurationWithTurns(spell.duration)}</span>
           </div>
         </div>
 

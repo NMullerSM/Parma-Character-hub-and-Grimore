@@ -5,6 +5,7 @@ import { FeatureDetailModal } from "../components/FeatureDetailModal";
 import { SpellDetailModal } from "../components/SpellDetailModal";
 import { SpellBookManagerModal } from "../components/SpellBookManagerModal";
 import { BookOpen } from "lucide-react";
+import { formatRangeWithTiles } from "../utils/formatters";
 
 const DND_CONDITIONS = [
   "Apresado",
@@ -669,10 +670,10 @@ export const CombatView: React.FC = () => {
 
                       <div className="flex flex-wrap items-center gap-1.5 text-[10px] text-muted mb-1.5">
                         <span className="px-1.5 py-0.5 rounded bg-card/80 border border-border-iron">
-                          {spell.cast_time}
+                          {spell.cast_time || spell.casting_time || "1 acción"}
                         </span>
                         <span className="px-1.5 py-0.5 rounded bg-card/80 border border-border-iron">
-                          {spell.range_area}
+                          {formatRangeWithTiles(spell.range_area || spell.range)}
                         </span>
                         {isConcentration && (
                           <span className="px-1.5 py-0.5 rounded bg-gold/15 text-gold border border-gold/40 font-semibold">
