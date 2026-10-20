@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { X, Sparkles, Copy, Check, Wand2, Image as ImageIcon, Settings2, ExternalLink } from "lucide-react";
+import { X, Sparkles, Copy, Check, Wand2, Image as ImageIcon, Settings2, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
 import { api } from "../api/client";
 import type { CharacterSheetData } from "../api/types";
 
@@ -18,8 +18,41 @@ interface StyleOption {
   id: ArtStyle;
   label: string;
   badge: string;
-  promptModifier: string;
+  hint: string;
 }
+
+const STYLE_OPTIONS: StyleOption[] = [
+  {
+    id: "pixelart",
+    label: "Pixel Art (16-bit RPG)",
+    badge: "Retro",
+    hint: "Sprite 16-bit nítido con píxeles definidos estilo SNES / GBA",
+  },
+  {
+    id: "fantasy",
+    label: "Fantasía Épica Digital",
+    badge: "Digital Art",
+    hint: "Ilustración oficial moderna de manual D&D 5e",
+  },
+  {
+    id: "oil",
+    label: "Pintura al Óleo Clásica",
+    badge: "Clásico",
+    hint: "Óleo renacentista con claroscuro y textura de lienzo",
+  },
+  {
+    id: "sketch",
+    label: "Boceto a Tinta / Pergamino",
+    badge: "Manual D&D",
+    hint: "Grabado a tinta sepia sobre pergamino envejecido",
+  },
+  {
+    id: "cinematic",
+    label: "Cinemático Realista",
+    badge: "Fotorealista",
+    hint: "Retrato hiperrealista en 8k con iluminación volumétrica",
+  },
+];
 
 interface ProviderMeta {
   id: AiProvider;
@@ -34,10 +67,10 @@ interface ProviderMeta {
 const PROVIDER_OPTIONS: ProviderMeta[] = [
   {
     id: "pollinations",
-    name: "Gratis / Sin Clave (Pollinations)",
+    name: "Gratis / Instantáneo (Recomendado)",
     defaultUrl: "https://image.pollinations.ai",
     placeholderKey: "No requiere clave",
-    helpText: "Generador instantáneo y gratuito. No requiere registro, tarjeta ni API Key.",
+    helpText: "Generador gratuito sin registros ni límites de tarjeta. Listo para usar.",
     isFree: true,
   },
   {
@@ -45,7 +78,7 @@ const PROVIDER_OPTIONS: ProviderMeta[] = [
     name: "Google AI Studio (Imagen 3)",
     defaultUrl: "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict",
     placeholderKey: "AIzaSy...",
-    helpText: "Requiere proyecto de Google Cloud con facturación activa para Imagen 3 (de lo contrario da 403 PERMISSION_DENIED).",
+    helpText: "Requiere proyecto de Google Cloud con facturación activa para Imagen 3.",
     helpLink: "https://aistudio.google.com/app/apikey",
   },
   {
@@ -53,7 +86,7 @@ const PROVIDER_OPTIONS: ProviderMeta[] = [
     name: "OpenAI (DALL-E 3)",
     defaultUrl: "https://api.openai.com/v1/images/generations",
     placeholderKey: "sk-...",
-    helpText: "Usa tu clave oficial de OpenAI (platform.openai.com) con saldo de créditos.",
+    helpText: "Usa tu clave oficial de OpenAI (platform.openai.com) con saldo disponible.",
     helpLink: "https://platform.openai.com/api-keys",
   },
   {
@@ -61,49 +94,39 @@ const PROVIDER_OPTIONS: ProviderMeta[] = [
     name: "Stable Diffusion Local (WebUI)",
     defaultUrl: "http://127.0.0.1:7860/sdapi/v1/txt2img",
     placeholderKey: "Opcional",
-    helpText: "Ejecutando en tu PC (requiere A1111 o ComfyUI con argumento --api).",
+    helpText: "A1111 o ComfyUI ejecutándose en tu PC con el argumento --api.",
   },
   {
     id: "custom",
     name: "Endpoint Personalizado",
     defaultUrl: "",
     placeholderKey: "Token o API Key",
-    helpText: "Configura manualmente cualquier proxy o API compatible.",
+    helpText: "Cualquier proxy o servicio compatible con REST.",
   },
 ];
 
-const STYLE_OPTIONS: StyleOption[] = [
-  {
-    id: "pixelart",
-    label: "Pixel Art (16-bit RPG)",
-    badge: "Retro",
-    promptModifier: "16-bit pixel art portrait, retro RPG character sprite, vibrant palette, detailed pixel shading, fantasy icon style, solid dark background",
-  },
-  {
-    id: "fantasy",
-    label: "Fantasía Épica Digital",
-    badge: "Digital Art",
-    promptModifier: "Detailed digital fantasy illustration, high quality character portrait, D&D 5e official art style, dramatic lighting, artstation trending",
-  },
-  {
-    id: "oil",
-    label: "Pintura al Óleo Clásica",
-    badge: "Clásico",
-    promptModifier: "Renaissance oil painting, chiaroscuro lighting, rich canvas texture, majestic fantasy hero portrait, Rembrandt style",
-  },
-  {
-    id: "sketch",
-    label: "Boceto a Tinta / Pergamino",
-    badge: "Manual D&D",
-    promptModifier: "Detailed ink and graphite sketch on aged parchment, crosshatching, classic tabletop RPG manual illustration",
-  },
-  {
-    id: "cinematic",
-    label: "Cinemático Realista",
-    badge: "Fotorealista",
-    promptModifier: "Cinematic portrait, realistic fantasy character, 8k resolution, photorealistic skin and armor texture, volumetric lighting, unreal engine render",
-  },
-];
+// Generador de plantillas internas optimizadas para modelos de difusión
+function buildInternalPrompt(style: ArtStyle, char: CharacterSheetData): string {
+  const name = char.name || "Adventurer";
+  const race = char.race || "Human";
+  const charClass = char.char_class || "Warrior";
+  const identity = `${name}, ${race} ${charClass}`;
+  const rawAppearance = (char.appearance || "").trim();
+  const appearanceText = rawAppearance ? `Physical appearance, face and equipment: ${rawAppearance}.` : "";
+
+  switch (style) {
+    case "pixelart":
+      return `16-bit pixel art character portrait, authentic retro RPG sprite, crisp square pixels, pixelated art, detailed pixel shading, Fire Emblem and Chrono Trigger sprite style: ${identity}. ${appearanceText} Clean pixel outlines, sharp pixel details, vibrant 16-bit color palette, solid dark background, centered portrait icon.`;
+    case "fantasy":
+      return `Masterpiece digital fantasy illustration, official D&D 5e character portrait art: ${identity}. ${appearanceText} Dramatic cinematic lighting, rich textures, sharp focus, highly detailed face and armor, epic fantasy atmosphere, ArtStation trending.`;
+    case "oil":
+      return `Classical Renaissance oil painting on canvas, masterwork portrait of a fantasy hero: ${identity}. ${appearanceText} Dramatic chiaroscuro lighting, rich impasto brushstrokes, Rembrandt style, aged canvas texture, majestic pose.`;
+    case "sketch":
+      return `Detailed ink and graphite sketch on antique aged parchment, vintage tabletop RPG manual illustration: ${identity}. ${appearanceText} Fine crosshatching, sepia and black ink wash, hand-drawn medieval etching, high contrast lineart.`;
+    case "cinematic":
+      return `Cinematic hyperrealistic fantasy portrait, 8k resolution, Unreal Engine 5 render: ${identity}. ${appearanceText} Volumetric studio lighting, photorealistic skin and armor textures, shallow depth of field, atmospheric depth.`;
+  }
+}
 
 export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
   isOpen,
@@ -112,11 +135,10 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
   onPortraitGenerated,
   initialConfigOpen = false,
 }) => {
-  const [selectedStyle, setSelectedStyle] = useState<ArtStyle>("fantasy");
+  const [selectedStyle, setSelectedStyle] = useState<ArtStyle>("pixelart");
   const [prompt, setPrompt] = useState<string>("");
   const [isCopied, setIsCopied] = useState<boolean>(false);
-  const [showConfig, setShowConfig] = useState<boolean>(initialConfigOpen);
-  const [showAdvancedUrl, setShowAdvancedUrl] = useState<boolean>(false);
+  const [showAdvancedProviders, setShowAdvancedProviders] = useState<boolean>(initialConfigOpen);
 
   const [provider, setProvider] = useState<AiProvider>(() => {
     return (localStorage.getItem("dnd_ai_img_provider") as AiProvider) || "pollinations";
@@ -133,46 +155,13 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
 
   useEffect(() => {
     if (initialConfigOpen) {
-      setShowConfig(true);
+      setShowAdvancedProviders(true);
     }
   }, [initialConfigOpen]);
 
-  // Auto-detectar proveedor si la clave pegada es de Google u OpenAI
-  const handleKeyChange = (val: string) => {
-    const trimmed = val.trim();
-    setApiKey(trimmed);
-    localStorage.setItem("dnd_ai_img_api_key", trimmed);
-
-    if (trimmed.startsWith("AIzaSy") && provider !== "google") {
-      setProvider("google");
-      setApiUrl("https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict");
-      localStorage.setItem("dnd_ai_img_provider", "google");
-      localStorage.setItem("dnd_ai_img_api_url", "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict");
-    } else if (trimmed.startsWith("sk-") && provider !== "openai") {
-      setProvider("openai");
-      setApiUrl("https://api.openai.com/v1/images/generations");
-      localStorage.setItem("dnd_ai_img_provider", "openai");
-      localStorage.setItem("dnd_ai_img_api_url", "https://api.openai.com/v1/images/generations");
-    }
-  };
-
-  const handleProviderSelect = (newProv: AiProvider) => {
-    setProvider(newProv);
-    localStorage.setItem("dnd_ai_img_provider", newProv);
-    const meta = PROVIDER_OPTIONS.find((p) => p.id === newProv);
-    if (meta && meta.defaultUrl) {
-      setApiUrl(meta.defaultUrl);
-      localStorage.setItem("dnd_ai_img_api_url", meta.defaultUrl);
-    }
-  };
-
-  // Construir prompt dinámico según estilo y datos del personaje
+  // Sincronizar prompt con la plantilla interna cuando cambia el estilo o la apariencia
   useEffect(() => {
-    const styleObj = STYLE_OPTIONS.find((s) => s.id === selectedStyle) || STYLE_OPTIONS[0];
-    const identity = `${character.name || "Aventurero"}, ${character.race || "Humano"} ${character.char_class || "Guerrero"}`;
-    const appearanceText = character.appearance ? ` Apariencia física: ${character.appearance.trim()}.` : "";
-    
-    const constructed = `Retrato de personaje de D&D 5e: ${identity}.${appearanceText} Estilo: ${styleObj.promptModifier}. Centrado, primer plano del rostro y torso, iluminación dramática.`;
+    const constructed = buildInternalPrompt(selectedStyle, character);
     setPrompt(constructed);
   }, [selectedStyle, character.name, character.race, character.char_class, character.appearance]);
 
@@ -196,27 +185,45 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
     setTimeout(() => setIsCopied(false), 2000);
   };
 
-  const handleSaveConfig = () => {
-    localStorage.setItem("dnd_ai_img_provider", provider);
-    localStorage.setItem("dnd_ai_img_api_url", apiUrl.trim());
-    localStorage.setItem("dnd_ai_img_api_key", apiKey.trim());
-    setShowConfig(false);
-    setStatusMessage("Configuración de API guardada.");
-    setTimeout(() => setStatusMessage(""), 3000);
+  const handleProviderSelect = (newProv: AiProvider) => {
+    setProvider(newProv);
+    localStorage.setItem("dnd_ai_img_provider", newProv);
+    const meta = PROVIDER_OPTIONS.find((p) => p.id === newProv);
+    if (meta && meta.defaultUrl) {
+      setApiUrl(meta.defaultUrl);
+      localStorage.setItem("dnd_ai_img_api_url", meta.defaultUrl);
+    }
   };
 
-  // Generación por llamada nativa sin problemas de CORS
+  const handleKeyChange = (val: string) => {
+    const trimmed = val.trim();
+    setApiKey(trimmed);
+    localStorage.setItem("dnd_ai_img_api_key", trimmed);
+
+    if (trimmed.startsWith("AIzaSy") && provider !== "google") {
+      setProvider("google");
+      setApiUrl("https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict");
+      localStorage.setItem("dnd_ai_img_provider", "google");
+      localStorage.setItem("dnd_ai_img_api_url", "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict");
+    } else if (trimmed.startsWith("sk-") && provider !== "openai") {
+      setProvider("openai");
+      setApiUrl("https://api.openai.com/v1/images/generations");
+      localStorage.setItem("dnd_ai_img_provider", "openai");
+      localStorage.setItem("dnd_ai_img_api_url", "https://api.openai.com/v1/images/generations");
+    }
+  };
+
   const handleGenerate = async () => {
     const cleanKey = apiKey.trim();
 
     if (!cleanKey && (provider === "google" || provider === "openai" || provider === "custom")) {
-      setStatusMessage(`Ingresa tu API Key de ${activeProviderMeta.name} o selecciona la opción 'Gratis / Sin Clave'.`);
-      setShowConfig(true);
+      setStatusMessage(`Ingresa tu API Key de ${PROVIDER_OPTIONS.find(p => p.id === provider)?.name || "proveedor"} o usa el generador gratuito.`);
+      setShowAdvancedProviders(true);
       return;
     }
 
     setLoading(true);
-    setStatusMessage(`Generando retrato mediante ${activeProviderMeta.name}...`);
+    setStatusMessage("Generando retrato con IA (espera unos segundos)...");
 
     try {
       const res = await api.generateAiPortrait({
@@ -276,155 +283,31 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
                 Generador de Retrato IA de Personaje
               </h2>
               <p className="text-xs text-muted">
-                Crea ilustraciones personalizadas para {character.name || "tu héroe"} usando IA.
+                Crea una ilustración basada en los rasgos y apariencia de {character.name || "tu héroe"}.
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setShowConfig(!showConfig)}
-              className={`px-2.5 py-1.5 rounded-lg border text-xs transition-colors flex items-center gap-1.5 ${
-                showConfig
-                  ? "bg-gold text-canvas border-gold font-semibold"
-                  : "bg-surface border-border-iron text-muted hover:text-main hover:border-gold"
-              }`}
-              title="Configurar Proveedor y API Key"
-            >
-              <Settings2 className="w-4 h-4" />
-              <span>Configuración</span>
-            </button>
-            <button
-              onClick={onClose}
-              className="p-1.5 rounded-lg border border-border-iron hover:border-gold text-muted hover:text-main transition-colors"
-              title="Cerrar (Esc)"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-lg border border-border-iron hover:border-gold text-muted hover:text-main transition-colors"
+            title="Cerrar (Esc)"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
-
-        {/* Panel de Configuración de API (Colapsable o Inicial) */}
-        {showConfig && (
-          <div className="p-4 bg-surface border-b border-border-iron space-y-3.5 shrink-0 animate-fade-in">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-gold flex items-center gap-1.5">
-                <Settings2 className="w-3.5 h-3.5" />
-                Configuración del Proveedor IA
-              </h3>
-              {activeProviderMeta.helpLink && (
-                <a
-                  href={activeProviderMeta.helpLink}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-[11px] text-gold hover:underline flex items-center gap-1 font-medium"
-                >
-                  <span>Obtener clave aquí</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              )}
-            </div>
-
-            {/* Selector de Proveedor */}
-            <div>
-              <label className="block text-muted text-[11px] mb-1 font-medium">Proveedor de Imagen</label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
-                {PROVIDER_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.id}
-                    onClick={() => handleProviderSelect(opt.id)}
-                    type="button"
-                    className={`px-2.5 py-1.5 text-xs rounded border text-center transition-all ${
-                      provider === opt.id
-                        ? "bg-gold text-canvas border-gold font-bold shadow-sm"
-                        : "bg-card border-border-iron text-muted hover:text-main hover:border-gold/50"
-                    }`}
-                  >
-                    {opt.id === "pollinations" && "Gratis / Sin Clave"}
-                    {opt.id === "google" && "Google AI Studio"}
-                    {opt.id === "openai" && "OpenAI"}
-                    {opt.id === "sd_local" && "Stable Diffusion"}
-                    {opt.id === "custom" && "Personalizado"}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Campo Clave de API (si el proveedor la requiere) */}
-            {!activeProviderMeta.isFree ? (
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="block text-muted text-[11px] font-medium">
-                    API Key de {activeProviderMeta.name}
-                  </label>
-                  <span className="text-[10px] text-muted/80">Guardada localmente de forma segura</span>
-                </div>
-                <input
-                  type="password"
-                  value={apiKey}
-                  onChange={(e) => handleKeyChange(e.target.value)}
-                  placeholder={activeProviderMeta.placeholderKey}
-                  className="w-full bg-input text-main border border-border-iron rounded px-3 py-1.5 text-xs focus:border-gold outline-none"
-                />
-                <p className="text-[11px] text-muted/90 mt-1">
-                  {activeProviderMeta.helpText}
-                </p>
-              </div>
-            ) : (
-              <div className="p-2.5 rounded bg-card/60 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-2">
-                <Check className="w-4 h-4 shrink-0" />
-                <span>
-                  <strong>Listo para generar:</strong> Esta opción es 100% gratuita y no requiere ninguna clave ni tarjeta.
-                </span>
-              </div>
-            )}
-
-            {/* Opciones Avanzadas: Endpoint URL */}
-            <div>
-              <button
-                type="button"
-                onClick={() => setShowAdvancedUrl(!showAdvancedUrl)}
-                className="text-[11px] text-muted hover:text-gold transition-colors flex items-center gap-1"
-              >
-                <span>{showAdvancedUrl ? "▾ Ocultar URL del Endpoint" : "▸ Ver / Editar URL del Endpoint"}</span>
-              </button>
-              {showAdvancedUrl && (
-                <div className="mt-2 pt-2 border-t border-border-iron/40 animate-fade-in space-y-1">
-                  <label className="block text-muted text-[10px]">URL del Endpoint API</label>
-                  <input
-                    type="text"
-                    value={apiUrl}
-                    onChange={(e) => {
-                      setApiUrl(e.target.value);
-                      localStorage.setItem("dnd_ai_img_api_url", e.target.value.trim());
-                    }}
-                    placeholder="https://..."
-                    className="w-full bg-input text-main border border-border-iron rounded px-2.5 py-1 text-xs focus:border-gold outline-none font-mono"
-                  />
-                  <p className="text-[10px] text-muted/70">
-                    Google AI Studio Imagen 3: <code className="text-gold">https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict</code>
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <div className="flex justify-end gap-2 pt-1">
-              <button
-                onClick={handleSaveConfig}
-                className="px-3 py-1 bg-gold hover:bg-gold-hover text-canvas font-semibold text-xs rounded transition-colors"
-              >
-                Guardar Configuración
-              </button>
-            </div>
-          </div>
-        )}
 
         {/* Cuerpo del Modal */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {/* 1. Selector de Estilo Artístico */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-muted mb-2">
-              Estilo Visual de Ilustración
-            </label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-muted">
+                Estilo Visual de Ilustración
+              </label>
+              <span className="text-[11px] text-gold/80 font-medium">
+                {STYLE_OPTIONS.find(s => s.id === selectedStyle)?.hint}
+              </span>
+            </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
               {STYLE_OPTIONS.map((style) => {
                 const isSelected = selectedStyle === style.id;
@@ -455,9 +338,16 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
           {/* 2. Prompt Generado & Editor */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold uppercase tracking-wider text-muted">
-                Prompt de Generación (Editable)
-              </label>
+              <div className="flex items-center gap-1.5">
+                <label className="text-xs font-semibold uppercase tracking-wider text-muted">
+                  Prompt Optimizado para el Estilo
+                </label>
+                {character.appearance && (
+                  <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                    ✓ Integra Apariencia Física
+                  </span>
+                )}
+              </div>
               <button
                 onClick={handleCopyPrompt}
                 className="text-xs text-gold hover:text-gold-hover flex items-center gap-1 font-semibold transition-colors"
@@ -472,8 +362,11 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
               onChange={(e) => setPrompt(e.target.value)}
               rows={3}
               placeholder="Describe los rasgos visuales, vestimenta, colores y pose de tu personaje..."
-              className="w-full bg-input text-main border border-border-iron rounded-lg p-2.5 text-xs focus:border-gold outline-none leading-relaxed transition-colors resize-none"
+              className="w-full bg-input text-main border border-border-iron rounded-lg p-2.5 text-xs focus:border-gold outline-none leading-relaxed transition-colors resize-none font-mono"
             />
+            <p className="text-[10px] text-muted">
+              La plantilla incluye automáticamente la apariencia física que definiste en la ficha. Puedes editar el texto directamente si deseas agregar detalles extra.
+            </p>
           </div>
 
           {/* 3. Panel de Previsualización & Pegar Imagen Externa */}
@@ -492,7 +385,7 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
                     <ImageIcon className="w-8 h-8 mx-auto opacity-40 text-gold" />
                     <p className="text-[11px] font-medium">Sin previsualización</p>
                     <p className="text-[10px] text-muted/70">
-                      Genera con {activeProviderMeta.name} o pega una URL/Base64.
+                      Presiona "Generar Retrato con IA" abajo para crear tu ilustración.
                     </p>
                   </div>
                 )}
@@ -512,7 +405,7 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
                   O pega una URL o Base64 directamente:
                 </h4>
                 <p className="text-[11px] text-muted mb-2">
-                  Si generaste tu imagen en Midjourney, ChatGPT o NovelAI, pega el enlace o código aquí:
+                  Si ya tienes una imagen generada en Midjourney o guardada en la web:
                 </p>
                 <input
                   type="text"
@@ -530,6 +423,74 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
               )}
             </div>
           </div>
+
+          {/* 4. Opciones Avanzadas de Proveedores (Ocultas por defecto para evitar sobrecarga) */}
+          <div className="pt-2 border-t border-border-iron/60">
+            <button
+              type="button"
+              onClick={() => setShowAdvancedProviders(!showAdvancedProviders)}
+              className="text-xs text-muted hover:text-gold flex items-center gap-1.5 font-medium transition-colors"
+            >
+              <Settings2 className="w-3.5 h-3.5" />
+              <span>Opciones Avanzadas de Proveedor (Google AI Studio / OpenAI / Local)</span>
+              {showAdvancedProviders ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+            </button>
+
+            {showAdvancedProviders && (
+              <div className="mt-3 p-3 bg-surface/70 border border-border-iron rounded-lg space-y-3 animate-fade-in text-xs">
+                <div>
+                  <label className="block text-muted text-[11px] mb-1 font-medium">Seleccionar Proveedor</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                    {PROVIDER_OPTIONS.map((opt) => (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => handleProviderSelect(opt.id)}
+                        className={`px-2 py-1.5 text-xs rounded border text-center transition-all ${
+                          provider === opt.id
+                            ? "bg-gold text-canvas border-gold font-bold shadow-sm"
+                            : "bg-card border-border-iron text-muted hover:text-main"
+                        }`}
+                      >
+                        {opt.name.split(" ")[0]} {opt.id === "pollinations" ? "(Gratis)" : ""}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {!activeProviderMeta.isFree ? (
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <label className="text-[11px] text-muted font-medium">API Key ({activeProviderMeta.name})</label>
+                      {activeProviderMeta.helpLink && (
+                        <a
+                          href={activeProviderMeta.helpLink}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-[10px] text-gold hover:underline flex items-center gap-1"
+                        >
+                          <span>Obtener clave</span>
+                          <ExternalLink className="w-2.5 h-2.5" />
+                        </a>
+                      )}
+                    </div>
+                    <input
+                      type="password"
+                      value={apiKey}
+                      onChange={(e) => handleKeyChange(e.target.value)}
+                      placeholder={activeProviderMeta.placeholderKey}
+                      className="w-full bg-input text-main border border-border-iron rounded px-2.5 py-1 text-xs focus:border-gold outline-none"
+                    />
+                    <p className="text-[10px] text-muted/80">{activeProviderMeta.helpText}</p>
+                  </div>
+                ) : (
+                  <p className="text-[11px] text-emerald-400">
+                    ✓ El proveedor gratuito (Pollinations) está activo y no requiere ninguna clave.
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Pie del Modal con Acciones */}
@@ -541,7 +502,7 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
               className="px-4 py-2 rounded-lg bg-gold hover:bg-gold-hover disabled:opacity-50 text-canvas font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm active:scale-95"
             >
               <Sparkles className="w-4 h-4" />
-              <span>{loading ? "Generando..." : `Generar con ${provider === "pollinations" ? "IA Gratis" : provider === "google" ? "Google Imagen 3" : provider === "openai" ? "DALL-E 3" : "IA"}`}</span>
+              <span>{loading ? "Generando..." : "Generar Retrato con IA"}</span>
             </button>
             <button
               onClick={handleCopyPrompt}

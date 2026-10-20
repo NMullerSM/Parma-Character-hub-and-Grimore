@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useCharacter } from "../context/CharacterContext";
-import { Download, Upload, Sparkles, Wand2, User, X, Settings2, Trash2 } from "lucide-react";
+import { Download, Upload, Sparkles, Wand2, User, X, Trash2 } from "lucide-react";
 import { api } from "../api/client";
 import { FeatureDetailModal } from "../components/FeatureDetailModal";
 import { AiPortraitModal } from "../components/AiPortraitModal";
@@ -17,8 +17,20 @@ export const SheetView: React.FC = () => {
 
   const [activeFeatureForModal, setActiveFeatureForModal] = useState<FeatureItemData | null>(null);
   const [isPortraitMenuOpen, setIsPortraitMenuOpen] = useState<boolean>(false);
+  const [isPortraitLightboxOpen, setIsPortraitLightboxOpen] = useState<boolean>(false);
   const [isAiPortraitModalOpen, setIsAiPortraitModalOpen] = useState<boolean>(false);
   const [isAiConfigOpen, setIsAiConfigOpen] = useState<boolean>(false);
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (isPortraitLightboxOpen) setIsPortraitLightboxOpen(false);
+        if (isPortraitMenuOpen) setIsPortraitMenuOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isPortraitLightboxOpen, isPortraitMenuOpen]);
 
   if (!activeCharacter) {
     return (
@@ -190,9 +202,15 @@ export const SheetView: React.FC = () => {
           {/* Retrato del Personaje Heroico */}
           <div className="flex flex-col items-center shrink-0">
             <div
-              onClick={() => setIsPortraitMenuOpen(true)}
+              onClick={() => {
+                if (portrait_base64) {
+                  setIsPortraitLightboxOpen(true);
+                } else {
+                  setIsPortraitMenuOpen(true);
+                }
+              }}
               className="w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-xl border-2 border-border-iron hover:border-gold hover:shadow-md hover:shadow-gold/10 bg-surface overflow-hidden flex items-center justify-center shadow-lg transition-all cursor-pointer relative group"
-              title="Haz clic para cambiar o generar el retrato"
+              title={portrait_base64 ? "Haz clic para ver el retrato en grande" : "Haz clic para añadir un retrato"}
             >
               {portrait_base64 ? (
                 <img
@@ -616,22 +634,23 @@ export const SheetView: React.FC = () => {
                   <Wand2 className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-gold">Generar con IA</div>
-                  <div className="text-[11px] text-muted">Gratis (Pollinations), Google Imagen 3 u OpenAI</div>
+                  <div className="text-xs font-bold text-gold">Generar con IA (Gratis)</div>
+                  <div className="text-[11px] text-muted">Crea un retrato usando la apariencia del personaje</div>
                 </div>
               </button>
 
-              <button
-                onClick={() => {
-                  setIsPortraitMenuOpen(false);
-                  setIsAiConfigOpen(true);
-                  setIsAiPortraitModalOpen(true);
-                }}
-                className="w-full p-2.5 rounded-lg bg-surface/50 border border-border-iron hover:border-gold/60 text-left flex items-center gap-3 transition-colors text-muted hover:text-main"
-              >
-                <Settings2 className="w-4 h-4 text-muted" />
-                <span className="text-xs font-medium">Configurar Claves y Proveedor de IA</span>
-              </button>
+              {portrait_base64 && (
+                <button
+                  onClick={() => {
+                    setIsPortraitMenuOpen(false);
+                    setIsPortraitLightboxOpen(true);
+                  }}
+                  className="w-full p-2.5 rounded-lg bg-surface/50 border border-border-iron hover:border-gold/60 text-left flex items-center gap-3 transition-colors text-muted hover:text-main"
+                >
+                  <User className="w-4 h-4 text-muted" />
+                  <span className="text-xs font-medium">Ver Retrato en Grande</span>
+                </button>
+              )}
 
               {portrait_base64 && (
                 <button
@@ -646,6 +665,62 @@ export const SheetView: React.FC = () => {
                   <span>Quitar retrato actual</span>
                 </button>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Lightbox / Visor de Retrato en Grande */}
+      {isPortraitLightboxOpen && portrait_base64 && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-canvas/85 backdrop-blur-md animate-fade-in"
+          onClick={() => setIsPortraitLightboxOpen(false)}
+        >
+          <div
+            className="relative max-w-md w-full bg-card border border-border-iron rounded-2xl overflow-hidden shadow-2xl flex flex-col animate-scale-in"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Cabecera */}
+            <div className="flex items-center justify-between p-3.5 border-b border-border-iron bg-surface/60">
+              <div>
+                <h3 className="font-display font-bold text-base text-gold">{name}</h3>
+                <p className="text-[11px] text-muted">{race} • {char_class} {subclass && `(${subclass})`}</p>
+              </div>
+              <button
+                onClick={() => setIsPortraitLightboxOpen(false)}
+                className="p-1.5 rounded-lg border border-border-iron hover:border-gold text-muted hover:text-main transition-colors"
+                title="Cerrar (Esc)"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Imagen en Grande */}
+            <div className="p-3 sm:p-4 flex items-center justify-center bg-black/40">
+              <img
+                src={portrait_base64}
+                alt={name}
+                className="max-h-[60vh] w-auto max-w-full rounded-xl object-contain shadow-2xl border border-border-iron/50"
+              />
+            </div>
+
+            {/* Pie con Acciones */}
+            <div className="p-3 border-t border-border-iron bg-surface/60 flex items-center justify-between gap-2">
+              <button
+                onClick={() => {
+                  setIsPortraitLightboxOpen(false);
+                  setIsPortraitMenuOpen(true);
+                }}
+                className="px-3 py-1.5 rounded-lg bg-surface border border-border-iron hover:border-gold text-xs font-semibold text-main hover:text-gold transition-colors flex items-center gap-1.5"
+              >
+                <span>Cambiar Retrato</span>
+              </button>
+              <button
+                onClick={() => setIsPortraitLightboxOpen(false)}
+                className="px-4 py-1.5 rounded-lg bg-gold hover:bg-gold-hover text-canvas text-xs font-bold transition-colors"
+              >
+                Cerrar
+              </button>
             </div>
           </div>
         </div>
