@@ -38,11 +38,22 @@ def is_windows_taskbar_light() -> bool:
 
 def get_taskbar_icon_path(base_dir: str) -> str:
     """
-    Selecciona el icono de escudo para la barra de tareas adaptándose al tema:
-    - Barra oscura: Escudo blanco (parma_taskbar_light.ico)
-    - Barra clara: Escudo negro (parma_taskbar_dark.ico)
-    Ambos contienen exclusivamente el blasón heráldico sin tipografía.
+    Selecciona el icono de la ventana adaptándose al sistema operativo y tema:
+    - En Linux (WebKitGTK): GDK pixbuf no soporta archivos .ico comprimidos.
+      Se utiliza siempre un archivo PNG nativo (parma.png).
+    - En Windows: Iconos .ico adaptados a la barra de tareas (clara/oscura).
     """
+    if sys.platform != "win32":
+        for png_candidate in [
+            os.path.join(base_dir, "parma.png"),
+            os.path.join(base_dir, "brand", "es", "icon-256.png"),
+            os.path.join(base_dir, "brand", "es", "icon-512.png"),
+        ]:
+            if os.path.exists(png_candidate):
+                print(f"[Parma Linux] Usando icono PNG nativo para GTK: {os.path.basename(png_candidate)}")
+                return png_candidate
+        return None
+
     is_light = is_windows_taskbar_light()
     chosen_name = "parma_taskbar_dark.ico" if is_light else "parma_taskbar_light.ico"
     candidate = os.path.join(base_dir, chosen_name)
@@ -205,7 +216,14 @@ def start_app():
         apply_win32_icon(window, icon_path)
 
     # Iniciar el bucle de eventos del WebView nativo con el icono asignado
-    webview.start(func=on_app_started, debug=args.dev, icon=icon_path)
+    try:
+        webview.start(func=on_app_started, debug=args.dev, icon=icon_path)
+    except Exception as e:
+        if icon_path:
+            print(f"[Parma] Aviso: Falló al inicializar ventana con icono ({e}). Reintentando sin icono...")
+            webview.start(func=on_app_started, debug=args.dev)
+        else:
+            raise
 
 
 if __name__ == "__main__":

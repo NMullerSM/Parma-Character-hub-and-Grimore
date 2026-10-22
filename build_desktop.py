@@ -44,13 +44,16 @@ def build():
     if os.path.exists(themes_dir):
         add_data_args.append(f"--add-data={themes_dir}{sep}themes")
 
+    icon_name = "parma.ico" if is_windows else "parma.png"
+    icon_path = os.path.join(base_dir, icon_name)
+
     cmd = [
         sys.executable,
         "-m",
         "PyInstaller",
         "--noconsole",
         "--name=Parma",
-        f"--icon={os.path.join(base_dir, 'parma.ico')}",
+        f"--icon={icon_path}",
         f"--distpath={dist_dir}",
         f"--workpath={build_dir}",
         f"--paths={base_dir}",
