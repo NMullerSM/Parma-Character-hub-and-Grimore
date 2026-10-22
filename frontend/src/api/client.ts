@@ -771,11 +771,11 @@ export const api = {
   // DM ONLINE & CLOUDFLARE TUNNELS
   // =========================================================================
 
-  async startDmSession(name: string = "Sesión de Campaña", campaignName: string = "Campaña Principal"): Promise<DmSessionStatus> {
-    if (this.isNative()) return await window.pywebview!.api.start_dm_session(name, campaignName);
+  async startDmSession(name: string = "Sesión de Campaña", campaignName: string = "Campaña Principal", sessionId?: string): Promise<DmSessionStatus> {
+    if (this.isNative()) return await window.pywebview!.api.start_dm_session(name, campaignName, sessionId);
     return {
       is_running: true,
-      session_id: "mock_session_1",
+      session_id: sessionId || "mock_session_1",
       session_name: name,
       campaign_name: campaignName,
       tunnel_url: "https://parma-preview.trycloudflare.com",
@@ -784,6 +784,11 @@ export const api = {
       players: [],
       connected_count: 0,
     };
+  },
+
+  async dmListSessions(): Promise<any[]> {
+    if (this.isNative()) return await window.pywebview!.api.dm_list_sessions();
+    return [];
   },
 
   async stopDmSession(): Promise<{ success: boolean }> {
@@ -836,9 +841,14 @@ export const api = {
     return [];
   },
 
-  async dmSaveSessionNotes(notes: string): Promise<boolean> {
-    if (this.isNative()) return await window.pywebview!.api.dm_save_session_notes(notes);
+  async dmSaveSessionNotes(notes: string, sessionId?: string): Promise<boolean> {
+    if (this.isNative()) return await window.pywebview!.api.dm_save_session_notes(notes, sessionId);
     return true;
+  },
+
+  async dmGetSessionNotes(sessionId?: string): Promise<string> {
+    if (this.isNative()) return await window.pywebview!.api.dm_get_session_notes(sessionId);
+    return "";
   },
 };
 

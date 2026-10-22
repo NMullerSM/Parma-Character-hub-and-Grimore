@@ -4,11 +4,19 @@ import { useCharacter } from "../context/CharacterContext";
 import { useTranslation } from "../i18n";
 import { api } from "../api/client";
 import type { AppSettings } from "../api/types";
-import { X, Upload } from "lucide-react";
+import { X, Upload, Palette, Sun, Moon } from "lucide-react";
 
 export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-  const { theme, setTheme, availableThemes } = useTheme();
   const {
+    theme,
+    isDark,
+    activeFamily,
+    themeFamilies,
+    setActiveFamily,
+    toggleTheme,
+  } = useTheme();
+  const {
+    setUserRole,
     talespireStatus,
     connectTaleSpire,
     showToast,
@@ -54,8 +62,7 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
 
   const handleModeChange = async (mode: "dm" | "player") => {
     setSettings((prev) => ({ ...prev, talespire_mode: mode }));
-    await api.setSetting("talespire_mode", mode);
-    showToast(`${t("settings.modeUpdated")} ${mode.toUpperCase()}`, "info");
+    await setUserRole(mode);
   };
 
   const handleTestGesture = async () => {
@@ -128,35 +135,62 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
 
         {/* Contenido con Scroll */}
         <div className="p-6 overflow-y-auto space-y-6">
-          {/* 1. Selector de Tema Visual */}
+          {/* 1. Selector de Tema Visual (Combobox unificado con soporte Homebrew y alternancia Claro/Oscuro) */}
           <section className="space-y-3">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
-              {t("settings.visualTheme")}
-            </h3>
-
-            <div className="grid grid-cols-2 gap-3">
-              {availableThemes.map((tItem) => (
-                <button
-                  key={tItem.id}
-                  onClick={() => setTheme(tItem.id)}
-                  className={`p-3.5 rounded-lg border text-left transition-all ${
-                    theme === tItem.id
-                      ? "border-gold bg-card shadow-[0_0_12px_rgba(201,164,92,0.15)] ring-1 ring-gold"
-                      : "border-border-iron bg-card/40 hover:bg-card hover:border-gold/50"
-                  }`}
-                >
-                  <div className="font-semibold text-sm text-main">{tItem.name}</div>
-                  <div className="text-xs text-muted mt-0.5">
-                    {tItem.is_dark
-                      ? t("settings.themeDarkObsidianDesc")
-                      : t("settings.themeLightParchmentDesc")}
-                  </div>
-                </button>
-              ))}
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted flex items-center gap-2">
+                <Palette className="w-3.5 h-3.5 text-gold" />
+                <span>{t("settings.visualTheme")}</span>
+              </h3>
+              <button
+                onClick={toggleTheme}
+                className="flex items-center gap-1.5 px-3 py-1 text-xs rounded-lg border border-border-iron bg-card/60 hover:bg-card hover:border-gold/60 text-main transition-colors shadow-xs"
+                title="Alternar entre variante Clara y Oscura de la familia seleccionada"
+              >
+                {isDark ? (
+                  <>
+                    <Sun className="w-3.5 h-3.5 text-amber-300" />
+                    <span>Variante: <strong>Oscuro</strong></span>
+                  </>
+                ) : (
+                  <>
+                    <Moon className="w-3.5 h-3.5 text-sky-400" />
+                    <span>Variante: <strong>Claro</strong></span>
+                  </>
+                )}
+              </button>
             </div>
-            <p className="text-[11px] text-muted">
-              {t("settings.themeCustomTip")}
-            </p>
+
+            <div className="space-y-1.5">
+              <label className="text-xs text-muted block">
+                Familia visual o tema personalizado (incluye temas creados en la carpeta <code className="text-gold font-mono">themes/</code>):
+              </label>
+              <div className="relative">
+                <select
+                  value={activeFamily}
+                  onChange={(e) => setActiveFamily(e.target.value)}
+                  className="w-full bg-card text-main border border-border-iron rounded-xl px-4 py-3 text-sm font-semibold focus:border-gold outline-none transition-colors appearance-none cursor-pointer pr-10 shadow-xs"
+                >
+                  {themeFamilies.map((fam) => (
+                    <option key={fam.id} value={fam.id} className="bg-surface text-main py-1.5">
+                      {fam.name} {fam.id === "obsidian" || fam.id === "parchment" || fam.id === "amethyst" || fam.id === "mithril" ? "" : "⭐ [Homebrew]"}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted text-xs">
+                  ▼
+                </div>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-xl bg-card/40 border border-border-iron text-xs text-muted flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+              <div>
+                Tema activo: <span className="font-semibold text-main">{theme}</span>
+              </div>
+              <div className="text-[11px] text-muted">
+                💡 Alterna claro/oscuro fácilmente con el botón de sol/luna ☀️/🌙 en la barra superior.
+              </div>
+            </div>
           </section>
 
           {/* Selector de Idioma de la Interfaz & Compendio (ES / EN) */}

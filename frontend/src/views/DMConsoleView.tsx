@@ -3,7 +3,6 @@ import { useCharacter } from "../context/CharacterContext";
 import { api } from "../api/client";
 import type { DmSessionStatus, DmSessionPlayer, DmHomebrewItem, DmSessionEventLog } from "../api/types";
 import {
-  Globe,
   Wifi,
   WifiOff,
   Copy,
@@ -18,10 +17,12 @@ import {
   BookOpen,
   X,
   FileText,
+  Tag,
 } from "lucide-react";
 
 export const DMConsoleView: React.FC = () => {
-  const { showToast } = useCharacter();
+  const { showToast, setActiveSessionId } = useCharacter();
+
   const [sessionStatus, setSessionStatus] = useState<DmSessionStatus>({
     is_running: false,
     session_id: null,
@@ -34,8 +35,14 @@ export const DMConsoleView: React.FC = () => {
     connected_count: 0,
   });
 
+  const [pastSessions, setPastSessions] = useState<any[]>([]);
+  const [selectedSessionId, setSelectedSessionId] = useState<string>("new");
+  const [sessionNameInput, setSessionNameInput] = useState<string>("Sesión de Campaña");
+  const [campaignNameInput, setCampaignNameInput] = useState<string>("Campaña Principal");
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [copiedUrl, setCopiedUrl] = useState<boolean>(false);
+  const [copiedId, setCopiedId] = useState<boolean>(false);
   const [isQrModalOpen, setIsQrModalOpen] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<"party" | "forge" | "ledger" | "notes">("party");
 
@@ -62,8 +69,12 @@ export const DMConsoleView: React.FC = () => {
   const [eventLogs, setEventLogs] = useState<DmSessionEventLog[]>([]);
   const [sessionNotes, setSessionNotes] = useState<string>("");
 
+  // Jugadores seguros contra null
+  const players = sessionStatus?.players || [];
+
   useEffect(() => {
     loadStatus();
+    loadPastSessions();
     loadHomebrewItems();
     const interval = setInterval(loadStatus, 4000);
     return () => clearInterval(interval);
@@ -73,30 +84,72 @@ export const DMConsoleView: React.FC = () => {
     try {
       const status = await api.getDmSessionStatus();
       setSessionStatus(status);
+      if (status.is_running && status.session_id) {
+        setActiveSessionId(status.session_id);
+      }
       if (status.session_id) {
         const logs = await api.dmGetSessionLogs(status.session_id);
-        setEventLogs(logs);
+        setEventLogs(logs || []);
+        // Si no se han cargado notas aún o corresponden a la sesión activa
+        const notes = await api.dmGetSessionNotes(status.session_id);
+        if (notes !== undefined) {
+          setSessionNotes(notes);
+        }
       }
     } catch (e) {
       console.error("Error al cargar estado de sesión DM:", e);
     }
   };
 
+  const loadPastSessions = async () => {
+    try {
+      const list = await api.dmListSessions();
+      setPastSessions(list || []);
+    } catch (e) {
+      console.error("Error al listar sesiones históricas:", e);
+    }
+  };
+
   const loadHomebrewItems = async () => {
     try {
       const items = await api.dmListHomebrewItems();
-      setHomebrewItems(items);
+      setHomebrewItems(items || []);
     } catch (e) {
       console.error("Error al cargar objetos homebrew:", e);
+    }
+  };
+
+  // Cambio de sesión en el selector
+  const handleSelectSession = async (sessId: string) => {
+    setSelectedSessionId(sessId);
+    if (sessId === "new") {
+      setSessionNameInput("Nueva Sesión");
+      setCampaignNameInput("Campaña Principal");
+      setSessionNotes("");
+    } else {
+      const found = pastSessions.find((s) => s.id === sessId);
+      if (found) {
+        setSessionNameInput(found.name || "Sesión");
+        setCampaignNameInput(found.campaign_name || "Campaña Principal");
+      }
+      try {
+        const notes = await api.dmGetSessionNotes(sessId);
+        setSessionNotes(notes || "");
+      } catch (_) {}
     }
   };
 
   const handleStartSession = async () => {
     setIsLoading(true);
     try {
-      const res = await api.startDmSession(sessionStatus.session_name, sessionStatus.campaign_name);
+      const sid = selectedSessionId !== "new" ? selectedSessionId : undefined;
+      const res = await api.startDmSession(sessionNameInput.trim() || "Sesión de Campaña", campaignNameInput.trim() || "Campaña Principal", sid);
       setSessionStatus(res);
-      showToast("Túnel de Cloudflare iniciado. ¡Partida lista para compartir!", "success");
+      if (res.session_id) {
+        setActiveSessionId(res.session_id);
+      }
+      await loadPastSessions();
+      showToast("¡Túnel Cloudflare iniciado! Partida en línea lista para compartir.", "success");
     } catch (e) {
       showToast("Error al iniciar el túnel de Cloudflare", "warn");
     } finally {
@@ -111,6 +164,7 @@ export const DMConsoleView: React.FC = () => {
         await api.stopDmSession();
         setSessionStatus((prev) => ({ ...prev, is_running: false, tunnel_url: null, qr_code: "" }));
         showToast("Sesión finalizada y túnel cerrado.", "info");
+        await loadPastSessions();
       } catch (e) {
         showToast("Error al detener la sesión", "warn");
       } finally {
@@ -123,8 +177,17 @@ export const DMConsoleView: React.FC = () => {
     if (!sessionStatus.tunnel_url) return;
     navigator.clipboard.writeText(sessionStatus.tunnel_url);
     setCopiedUrl(true);
-    showToast("Enlace de partida copiado al portapapeles", "success");
-    setTimeout(() => setCopiedUrl(false), 2500);
+    showToast("¡Enlace público de la partida copiado al portapapeles!", "success");
+    setTimeout(() => setCopiedUrl(false), 3000);
+  };
+
+  const handleCopySessionId = () => {
+    const sid = sessionStatus.session_id || (selectedSessionId !== "new" ? selectedSessionId : null);
+    if (!sid) return;
+    navigator.clipboard.writeText(sid);
+    setCopiedId(true);
+    showToast("ID de sesión copiado al portapapeles", "success");
+    setTimeout(() => setCopiedId(false), 3000);
   };
 
   const handleHpChange = async (playerToken: string, delta: number, charName: string) => {
@@ -173,7 +236,7 @@ export const DMConsoleView: React.FC = () => {
       showToast("Selecciona a qué jugador deseas entregar el objeto", "warn");
       return;
     }
-    const targetPlayer = sessionStatus.players.find((p) => p.player_token === selectedRecipientToken);
+    const targetPlayer = players.find((p) => p.player_token === selectedRecipientToken);
     try {
       await api.dmGiftItem(selectedRecipientToken, item);
       showToast(`¡"${item.name}" entregado a ${targetPlayer?.character_name || "jugador"}!`, "success");
@@ -182,6 +245,8 @@ export const DMConsoleView: React.FC = () => {
       showToast("Error al entregar objeto al jugador", "warn");
     }
   };
+
+  const effectiveSessionId = sessionStatus.session_id || (selectedSessionId !== "new" ? selectedSessionId : null);
 
   return (
     <div className="h-full flex flex-col bg-canvas text-main overflow-hidden select-none">
@@ -197,15 +262,15 @@ export const DMConsoleView: React.FC = () => {
           />
           <div>
             <h1 className="font-display font-bold text-lg text-gold flex items-center gap-2">
-              <span>{sessionStatus.session_name}</span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-surface border border-border-iron text-muted font-normal">
-                {sessionStatus.campaign_name}
+              <span>{sessionStatus.session_name || sessionNameInput}</span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-card border border-border-iron text-muted font-normal">
+                {sessionStatus.campaign_name || campaignNameInput}
               </span>
             </h1>
             <p className="text-xs text-muted">
               {sessionStatus.is_running
                 ? `En línea vía Cloudflare • ${sessionStatus.connected_count} jugadores conectados`
-                : "Túnel desconectado. Inicia la sesión para permitir que los jugadores se unan."}
+                : "Túnel desconectado. Selecciona o crea una sesión para iniciar el túnel Cloudflare."}
             </p>
           </div>
         </div>
@@ -213,38 +278,14 @@ export const DMConsoleView: React.FC = () => {
         {/* Acciones de Conectividad */}
         <div className="flex items-center gap-2.5">
           {sessionStatus.is_running ? (
-            <>
-              {sessionStatus.tunnel_url && (
-                <div className="flex items-center gap-1.5 bg-card px-3 py-1.5 rounded-lg border border-border-iron text-xs font-mono text-muted">
-                  <Globe className="w-3.5 h-3.5 text-gold shrink-0" />
-                  <span className="truncate max-w-[220px] text-main">{sessionStatus.tunnel_url}</span>
-                  <button
-                    onClick={handleCopyLink}
-                    className="p-1 rounded hover:bg-surface text-muted hover:text-gold transition-colors ml-1"
-                    title="Copiar enlace público"
-                  >
-                    {copiedUrl ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                  </button>
-                  {sessionStatus.qr_code && (
-                    <button
-                      onClick={() => setIsQrModalOpen(true)}
-                      className="p-1 rounded hover:bg-surface text-muted hover:text-gold transition-colors"
-                      title="Ver código QR para móviles"
-                    >
-                      <QrCode className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-                </div>
-              )}
-              <button
-                onClick={handleStopSession}
-                disabled={isLoading}
-                className="px-3 py-1.5 rounded-lg bg-crimson/15 border border-crimson hover:bg-crimson hover:text-white text-crimson text-xs font-semibold transition-colors flex items-center gap-1.5"
-              >
-                <WifiOff className="w-3.5 h-3.5" />
-                <span>Terminar Sesión</span>
-              </button>
-            </>
+            <button
+              onClick={handleStopSession}
+              disabled={isLoading}
+              className="px-3.5 py-1.5 rounded-lg bg-crimson/15 border border-crimson hover:bg-crimson hover:text-white text-crimson text-xs font-semibold transition-colors flex items-center gap-1.5"
+            >
+              <WifiOff className="w-3.5 h-3.5" />
+              <span>{isLoading ? "Cerrando..." : "Terminar Sesión"}</span>
+            </button>
           ) : (
             <button
               onClick={handleStartSession}
@@ -252,11 +293,131 @@ export const DMConsoleView: React.FC = () => {
               className="px-4 py-2 rounded-lg bg-gold hover:bg-gold-hover text-canvas font-bold text-xs shadow-md transition-all flex items-center gap-2 active:scale-95"
             >
               <Wifi className="w-4 h-4" />
-              <span>{isLoading ? "Iniciando Túnel..." : "Iniciar Sesión Online"}</span>
+              <span>{isLoading ? "Iniciando Túnel..." : (selectedSessionId !== "new" ? "Reanudar Sesión Online" : "Iniciar Sesión Online")}</span>
             </button>
           )}
         </div>
       </div>
+
+      {/* BANNER DESTACADO DE INVITACIÓN (Visible cuando el túnel está activo) */}
+      {sessionStatus.is_running && (
+        <div className="bg-gradient-to-r from-emerald-950/40 via-card to-emerald-950/20 border-b border-emerald-500/40 px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 shadow-sm shrink-0">
+          <div className="flex items-center gap-3">
+            <span className="flex h-3 w-3 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+            </span>
+            <div>
+              <div className="text-xs font-bold text-emerald-300 flex items-center gap-2">
+                <span>Enlace Público de Partida</span>
+                {sessionStatus.session_id && (
+                  <span className="text-[11px] font-mono text-muted bg-surface/90 px-2 py-0.5 rounded border border-border-iron">
+                    ID: {sessionStatus.session_id}
+                  </span>
+                )}
+                {sessionStatus.session_id && (
+                  <button
+                    onClick={handleCopySessionId}
+                    className="text-[11px] text-gold hover:underline font-mono"
+                    title="Copiar ID de la sesión"
+                  >
+                    {copiedId ? "✓ ID Copiado" : "Copiar ID"}
+                  </button>
+                )}
+              </div>
+              <div className="text-xs text-main font-mono truncate max-w-sm sm:max-w-md md:max-w-xl select-all mt-0.5">
+                {sessionStatus.tunnel_url || "Estableciendo túnel de Cloudflare..."}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleCopyLink}
+              disabled={!sessionStatus.tunnel_url}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-2 active:scale-95 ${
+                copiedUrl
+                  ? "bg-emerald-500 text-canvas font-bold"
+                  : "bg-gold hover:bg-gold-hover text-canvas"
+              }`}
+            >
+              {copiedUrl ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              <span>{copiedUrl ? "¡Enlace Copiado!" : "Copiar Enlace de Partida"}</span>
+            </button>
+
+            {sessionStatus.qr_code && (
+              <button
+                onClick={() => setIsQrModalOpen(true)}
+                className="px-3 py-2 rounded-xl border border-border-iron bg-surface hover:bg-card text-muted hover:text-gold text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs"
+                title="Mostrar código QR para celulares"
+              >
+                <QrCode className="w-4 h-4" />
+                <span className="hidden sm:inline">Código QR</span>
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* SELECTOR Y GESTOR DE SESIÓN (Visible cuando no está en línea para reanudar o crear nueva) */}
+      {!sessionStatus.is_running && (
+        <div className="bg-card/70 border-b border-border-iron px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 shrink-0">
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted font-medium">Sesión en SQLite:</span>
+              <select
+                value={selectedSessionId}
+                onChange={(e) => handleSelectSession(e.target.value)}
+                className="bg-surface text-main border border-border-iron rounded-lg px-3 py-1.5 text-xs font-semibold focus:border-gold outline-none"
+              >
+                <option value="new">+ Crear Nueva Sesión...</option>
+                {pastSessions.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name} ({s.campaign_name}) — {s.created_at ? s.created_at.split(" ")[0] : s.id}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {selectedSessionId === "new" ? (
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={sessionNameInput}
+                  onChange={(e) => setSessionNameInput(e.target.value)}
+                  placeholder="Nombre de la Sesión"
+                  className="bg-surface text-main border border-border-iron rounded-lg px-2.5 py-1 text-xs focus:border-gold outline-none w-44"
+                />
+                <input
+                  type="text"
+                  value={campaignNameInput}
+                  onChange={(e) => setCampaignNameInput(e.target.value)}
+                  placeholder="Campaña"
+                  className="bg-surface text-main border border-border-iron rounded-lg px-2.5 py-1 text-xs focus:border-gold outline-none w-36"
+                />
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 text-xs text-muted">
+                <span className="font-mono bg-surface px-2 py-0.5 rounded border border-border-iron">
+                  ID: {selectedSessionId}
+                </span>
+                <button
+                  onClick={handleCopySessionId}
+                  className="text-gold hover:underline text-[11px]"
+                >
+                  {copiedId ? "✓ Copiado" : "Copiar ID"}
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="text-xs text-muted">
+            {selectedSessionId !== "new"
+              ? "Reanudarás esta sesión existente con sus notas y bitácora previas."
+              : "Se creará un registro separado en la base de datos local para esta sesión."}
+          </div>
+        </div>
+      )}
 
       {/* 2. Pestañas de Navegación del DM */}
       <div className="px-6 border-b border-border-iron bg-card/40 flex gap-2 shrink-0">
@@ -269,7 +430,7 @@ export const DMConsoleView: React.FC = () => {
           }`}
         >
           <Users className="w-3.5 h-3.5" />
-          <span>Mesa de Jugadores ({sessionStatus.players.length})</span>
+          <span>Mesa de Jugadores ({players.length})</span>
         </button>
         <button
           onClick={() => setActiveTab("forge")}
@@ -303,6 +464,9 @@ export const DMConsoleView: React.FC = () => {
         >
           <FileText className="w-3.5 h-3.5" />
           <span>Notas del DM</span>
+          {effectiveSessionId && (
+            <span className="w-1.5 h-1.5 rounded-full bg-gold" />
+          )}
         </button>
       </div>
 
@@ -311,7 +475,7 @@ export const DMConsoleView: React.FC = () => {
         {/* PESTAÑA 1: MESA DE JUGADORES */}
         {activeTab === "party" && (
           <div className="space-y-4">
-            {sessionStatus.players.length === 0 ? (
+            {players.length === 0 ? (
               <div className="p-12 text-center border border-dashed border-border-iron rounded-2xl bg-card/20 space-y-3">
                 <Users className="w-10 h-10 text-muted mx-auto opacity-50" />
                 <h3 className="font-display font-semibold text-base text-main">No hay jugadores en la sesión aún</h3>
@@ -323,16 +487,16 @@ export const DMConsoleView: React.FC = () => {
                 {sessionStatus.is_running && sessionStatus.tunnel_url && (
                   <button
                     onClick={handleCopyLink}
-                    className="px-3.5 py-1.5 rounded-lg bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-medium text-main inline-flex items-center gap-2 transition-colors"
+                    className="px-4 py-2 rounded-xl bg-gold hover:bg-gold-hover text-canvas font-bold text-xs inline-flex items-center gap-2 transition-all shadow-sm active:scale-95"
                   >
-                    <Copy className="w-3.5 h-3.5 text-gold" />
-                    <span>Copiar Enlace para Jugadores</span>
+                    {copiedUrl ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedUrl ? "¡Enlace Copiado!" : "Copiar Enlace para Jugadores"}</span>
                   </button>
                 )}
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {sessionStatus.players.map((p) => {
+                {players.map((p) => {
                   const hpPct = Math.max(0, Math.min(100, (p.hp_current / (p.hp_max || 1)) * 100));
                   const isDead = p.status === "DEAD";
                   const isUnconscious = p.hp_current <= 0 || p.status === "UNCONSCIOUS";
@@ -643,7 +807,7 @@ export const DMConsoleView: React.FC = () => {
                   Biblioteca de Objetos del DM ({homebrewItems.length})
                 </h3>
 
-                {sessionStatus.players.length > 0 && (
+                {players.length > 0 && (
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-muted">Destinatario:</span>
                     <select
@@ -652,7 +816,7 @@ export const DMConsoleView: React.FC = () => {
                       className="bg-card text-main border border-border-iron rounded px-2.5 py-1 text-xs focus:border-gold outline-none"
                     >
                       <option value="">Selecciona un jugador</option>
-                      {sessionStatus.players.map((p) => (
+                      {players.map((p) => (
                         <option key={p.player_token} value={p.player_token}>
                           {p.character_name}
                         </option>
@@ -747,13 +911,13 @@ export const DMConsoleView: React.FC = () => {
                       <span className="font-semibold text-main">{log.actor_name}:</span>
                       <span className="text-muted">
                         {log.event_type === "ROLL"
-                          ? `Total: ${log.details.total || log.details.result || "Tirada"} (${log.details.label || "Dado"})`
+                          ? `Total: ${log.details?.total || log.details?.result || "Tirada"} (${log.details?.label || "Dado"})`
                           : log.event_type === "DAMAGE"
-                          ? `Infligió ${log.details.delta} daño`
+                          ? `Infligió ${log.details?.delta} daño`
                           : log.event_type === "HEAL"
-                          ? `Curó ${log.details.delta} vida`
+                          ? `Curó ${log.details?.delta} vida`
                           : log.event_type === "ITEM_GIFT"
-                          ? `Entregó: ${log.details.item_name}`
+                          ? `Entregó: ${log.details?.item_name}`
                           : "Evento de sesión"}
                       </span>
                     </div>
@@ -764,31 +928,42 @@ export const DMConsoleView: React.FC = () => {
           </div>
         )}
 
-        {/* PESTAÑA 4: NOTAS DEL DM */}
+        {/* PESTAÑA 4: NOTAS DEL DM (Guardadas por session_id) */}
         {activeTab === "notes" && (
           <div className="space-y-4 max-w-3xl">
-            <div>
-              <h3 className="font-display font-semibold text-base text-main">Notas de Campaña del DM</h3>
-              <p className="text-xs text-muted">
-                Escribe apuntes, descubrimientos o secretos. Se guardan automáticamente en la base de datos de la sesión.
-              </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-display font-semibold text-base text-main">Notas de Campaña del DM</h3>
+                <p className="text-xs text-muted">
+                  Escribe apuntes, descubrimientos o secretos. Se guardan vinculadas al ID de la sesión en SQLite.
+                </p>
+              </div>
+              {effectiveSessionId && (
+                <div className="flex items-center gap-1.5 bg-surface border border-border-iron rounded-lg px-2.5 py-1 text-xs font-mono text-gold">
+                  <Tag className="w-3.5 h-3.5 text-muted" />
+                  <span>ID: {effectiveSessionId}</span>
+                </div>
+              )}
             </div>
             <textarea
               rows={12}
               value={sessionNotes}
               onChange={(e) => setSessionNotes(e.target.value)}
-              placeholder="Notas de los encuentros, diálogos de NPCs, pistas descubiertas..."
+              placeholder="Notas de los encuentros, diálogos de NPCs, pistas descubiertas para esta sesión..."
               className="w-full bg-card text-main border border-border-iron rounded-xl p-4 text-xs focus:border-gold outline-none resize-none font-mono"
             />
-            <div className="flex justify-end">
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-muted">
+                {effectiveSessionId ? `Guardando para sesión ${effectiveSessionId}` : "Inicia o selecciona una sesión para vincular estas notas"}
+              </span>
               <button
                 onClick={async () => {
-                  await api.dmSaveSessionNotes(sessionNotes);
-                  showToast("Notas de la sesión guardadas", "success");
+                  await api.dmSaveSessionNotes(sessionNotes, effectiveSessionId || undefined);
+                  showToast("Notas de la sesión guardadas en la base de datos", "success");
                 }}
-                className="px-4 py-2 rounded-lg bg-gold hover:bg-gold-hover text-canvas font-bold text-xs transition-colors"
+                className="px-4 py-2 rounded-lg bg-gold hover:bg-gold-hover text-canvas font-bold text-xs transition-colors shadow-sm"
               >
-                Guardar Notas
+                Guardar Notas de Sesión
               </button>
             </div>
           </div>
@@ -797,11 +972,11 @@ export const DMConsoleView: React.FC = () => {
 
       {/* MODAL DE CÓDIGO QR PARA CELULARES */}
       {isQrModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs select-none">
           <div className="relative bg-surface border border-border-iron rounded-2xl p-6 max-w-sm w-full flex flex-col items-center space-y-4 shadow-2xl">
             <button
               onClick={() => setIsQrModalOpen(false)}
-              className="absolute top-4 right-4 p-1 text-muted hover:text-main"
+              className="absolute top-4 right-4 p-1 text-muted hover:text-main rounded hover:bg-card transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -817,13 +992,20 @@ export const DMConsoleView: React.FC = () => {
             <div className="text-[11px] font-mono text-muted text-center break-all">
               {sessionStatus.tunnel_url}
             </div>
+            <button
+              onClick={handleCopyLink}
+              className="w-full py-2 rounded-xl bg-gold hover:bg-gold-hover text-canvas font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+            >
+              <Copy className="w-3.5 h-3.5" />
+              <span>Copiar Enlace</span>
+            </button>
           </div>
         </div>
       )}
 
-      {/* MODAL DE CONCORDANCIA / AUDITORÍA DE FICHA COMPLETA DEL JUGADOR */}
+      {/* MODAL DE AUDITORÍA / CONCORDANCIA DE FICHA DEL JUGADOR */}
       {inspectedPlayer && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs select-none">
           <div className="relative bg-surface border border-border-iron rounded-2xl p-6 max-w-2xl w-full flex flex-col max-h-[85vh] space-y-4 shadow-2xl overflow-hidden">
             <div className="flex items-center justify-between border-b border-border-iron pb-3">
               <div>
@@ -836,7 +1018,7 @@ export const DMConsoleView: React.FC = () => {
               </div>
               <button
                 onClick={() => setInspectedPlayer(null)}
-                className="p-1 text-muted hover:text-main"
+                className="p-1 text-muted hover:text-main rounded hover:bg-card transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>

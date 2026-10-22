@@ -1416,6 +1416,7 @@ class DesktopBridge:
                 "summary": s.summary,
                 "loot": s.loot,
                 "xp_gained": int(s.xp_gained),
+                "session_id": getattr(s, "session_id", "") or "",
             }
             for idx, s in enumerate(char.sessions)
         ]
@@ -1428,12 +1429,16 @@ class DesktopBridge:
 
         sess_id = str(journal_data.get("id", len(char.sessions) + 1))
         existing = next((s for s in char.sessions if str(s.id) == sess_id), None)
+        active_session_id = str(journal_data.get("session_id") or getattr(self._session_server, "current_session_id", "") or "")
+
         if existing:
             existing.date = journal_data.get("date", existing.date)
             existing.title = journal_data.get("title", existing.title)
             existing.summary = journal_data.get("summary", existing.summary)
             existing.loot = journal_data.get("loot", existing.loot)
             existing.xp_gained = int(journal_data.get("xp_gained", existing.xp_gained))
+            if "session_id" in journal_data or active_session_id:
+                existing.session_id = str(journal_data.get("session_id", getattr(existing, "session_id", active_session_id)))
         else:
             char.sessions.append(
                 SessionLog(
@@ -1443,6 +1448,7 @@ class DesktopBridge:
                     summary=journal_data.get("summary", ""),
                     loot=journal_data.get("loot", ""),
                     xp_gained=int(journal_data.get("xp_gained", 0)),
+                    session_id=str(journal_data.get("session_id", active_session_id)),
                 )
             )
 
@@ -2160,43 +2166,33 @@ class DesktopBridge:
     # MÉTODOS DE SESIÓN ONLINE DEL DM Y CLOUDFLARE TUNNELS
     # =========================================================================
 
-    def start_dm_session(self, name: str = "Sesión de Campaña", campaign_name: str = "Campaña Principal") -> Dict[str, Any]:
+    def start_dm_session(self, name: str = "Sesión de Campaña", campaign_name: str = "Campaña Principal", session_id: Optional[str] = None) -> Dict[str, Any]:
         """Inicia el servidor local WebSocket y levanta el túnel Cloudflare seguro."""
         import uuid
-        session_id = f"sess_{uuid.uuid4().hex[:8]}"
+        sid = session_id or f"sess_{uuid.uuid4().hex[:8]}"
+
+        existing = self._db.get_dm_session(sid)
+        if existing:
+            name = existing.get("name") or name
+            campaign_name = existing.get("campaign_name") or campaign_name
 
         # 1. Iniciar servidor FastAPI embebido
-        port = self._session_server.start(session_id, name, campaign_name)
+        port = self._session_server.start(sid, name, campaign_name)
 
-        # 2. Registrar en SQLite
-        self._db.create_dm_session(session_id, name, campaign_name)
+        # 2. Registrar o reactivar en SQLite
+        self._db.create_dm_session(sid, name, campaign_name)
 
-        # 3. Iniciar Cloudflare Quick Tunnel en hilo secundario
+        # 3. Iniciar Cloudflare Quick Tunnel en hilo secundario sin congelar el hilo de renderizado
         def on_url_ready(url: str):
-            self._db.update_dm_session_tunnel(session_id, url)
+            self._db.update_dm_session_tunnel(sid, url)
 
         self._tunnel_mgr.start_tunnel(port, on_url=on_url_ready)
 
-        # Si ya hay URL o esperamos un momento
-        import time
-        for _ in range(10):
-            if self._tunnel_mgr.tunnel_url:
-                break
-            time.sleep(0.3)
+        return self.get_dm_session_status()
 
-        tunnel_url = self._tunnel_mgr.tunnel_url or f"http://127.0.0.1:{port}"
-        qr_code = self._tunnel_mgr.generate_qr_base64(tunnel_url)
-
-        return {
-            "success": True,
-            "session_id": session_id,
-            "name": name,
-            "campaign_name": campaign_name,
-            "port": port,
-            "tunnel_url": tunnel_url,
-            "qr_code": qr_code,
-            "is_running": True,
-        }
+    def dm_list_sessions(self) -> List[Dict[str, Any]]:
+        """Lista las sesiones históricas para poder reanudarlas."""
+        return self._db.list_dm_sessions()
 
     def stop_dm_session(self) -> Dict[str, Any]:
         """Cierra el túnel Cloudflare y marca la sesión como terminada."""
@@ -2285,10 +2281,24 @@ class DesktopBridge:
                 return []
         return self._db.get_session_logs(sess)
 
-    def dm_save_session_notes(self, notes: str) -> bool:
-        """Guarda las notas del DM para la sesión activa."""
-        session_id = self._session_server.current_session_id
-        if not session_id:
+    def dm_save_session_notes(self, notes: str, session_id: Optional[str] = None) -> bool:
+        """Guarda las notas del DM para la sesión activa o especificada."""
+        sid = session_id or self._session_server.current_session_id
+        if not sid:
             return False
-        return self._db.save_dm_session_notes(session_id, notes)
+        return self._db.save_dm_session_notes(sid, notes)
+
+    def dm_get_session_notes(self, session_id: Optional[str] = None) -> str:
+        """Obtiene las notas del DM guardadas para la sesión indicada o la activa."""
+        sid = session_id or self._session_server.current_session_id
+        if not sid:
+            sessions = self._db.list_dm_sessions()
+            if sessions:
+                sid = sessions[0]["id"]
+            else:
+                return ""
+        session_info = self._db.get_dm_session(sid)
+        if session_info and session_info.get("notes"):
+            return str(session_info["notes"])
+        return ""
 

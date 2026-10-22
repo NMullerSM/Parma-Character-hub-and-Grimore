@@ -56,6 +56,16 @@ interface CharacterContextType {
   removeSpell: (spellName: string) => Promise<boolean>;
   syncFeatures: () => Promise<void>;
   setLanguage: (lang: "es" | "en") => void;
+
+  // Modo de usuario (DM vs Jugador) y Estado de Sesión Online
+  userRole: "dm" | "player";
+  setUserRole: (role: "dm" | "player") => Promise<void>;
+  activeSessionId: string | null;
+  setActiveSessionId: (id: string | null) => void;
+  sessionScopeActive: boolean;
+  setSessionScopeActive: (active: boolean) => void;
+  toggleSessionScope: () => void;
+  displayedCharacters: CharacterSummary[];
 }
 
 const CharacterContext = createContext<CharacterContextType | undefined>(undefined);
@@ -89,6 +99,11 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [vignetteFlash, setVignetteFlash] = useState<"damage" | "heal" | null>(null);
   const vignetteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Estados de Rol y Sesión Online
+  const [userRole, setUserRoleState] = useState<"dm" | "player">("dm");
+  const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
+  const [sessionScopeActive, setSessionScopeActive] = useState<boolean>(false);
 
   const triggerVignetteFlash = useCallback((type: "damage" | "heal") => {
     if (vignetteTimerRef.current) {
@@ -143,6 +158,15 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         setLanguageState(settings.language);
         localStorage.setItem("dnd_sanctum_lang", settings.language);
       }
+      if (settings.talespire_mode && (settings.talespire_mode === "dm" || settings.talespire_mode === "player")) {
+        setUserRoleState(settings.talespire_mode);
+      }
+      try {
+        const sessStatus = await api.getDmSessionStatus();
+        if (sessStatus.is_running && sessStatus.session_id) {
+          setActiveSessionId(sessStatus.session_id);
+        }
+      } catch (_) {}
     } catch (e) {
       console.error("Error loading character data:", e);
     } finally {
@@ -158,6 +182,37 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       console.error("Error checking TaleSpire:", e);
     }
   }, []);
+
+  const setUserRole = async (role: "dm" | "player") => {
+    setUserRoleState(role);
+    try {
+      await api.setSetting("talespire_mode", role);
+      showToast(role === "dm" ? "Modo DM activado" : "Modo Jugador activado", "info");
+    } catch (e) {
+      console.error("Error al guardar rol:", e);
+    }
+  };
+
+  const toggleSessionScope = useCallback(() => {
+    setSessionScopeActive((prev) => {
+      const next = !prev;
+      showToast(
+        next
+          ? "Recursos de Sesión: ACTIVADO (Filtrando contenido por sesión activa)"
+          : "Recursos de Sesión: DESACTIVADO (Mostrando todos los recursos)",
+        "info"
+      );
+      return next;
+    });
+  }, [showToast]);
+
+  const displayedCharacters = React.useMemo(() => {
+    if (!sessionScopeActive || !activeSessionId) {
+      return characters;
+    }
+    const filtered = characters.filter((c) => c.session_id === activeSessionId);
+    return filtered.length > 0 ? filtered : characters;
+  }, [characters, sessionScopeActive, activeSessionId]);
 
   useEffect(() => {
     const initAll = () => {
@@ -485,6 +540,14 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             "info"
           );
         },
+        userRole,
+        setUserRole,
+        activeSessionId,
+        setActiveSessionId,
+        sessionScopeActive,
+        setSessionScopeActive,
+        toggleSessionScope,
+        displayedCharacters,
       }}
     >
       {children}

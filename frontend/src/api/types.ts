@@ -9,6 +9,7 @@ export interface CharacterSummary {
   hp_max: number;
   portrait_path?: string;
   is_active: number;
+  session_id?: string;
   updated_at: string;
 }
 
@@ -92,6 +93,7 @@ export interface SessionLogData {
   summary: string;
   loot: string;
   xp_gained: number;
+  session_id?: string;
 }
 
 export interface NetworkNodeData {
@@ -145,6 +147,7 @@ export interface CharacterSheetData {
   weapon_actions: WeaponActionData[];
   features: FeatureItemData[];
   sessions: SessionLogData[];
+  session_id?: string;
   network_nodes: NetworkNodeData[];
   network_edges: NetworkEdgeData[];
   senses?: string;

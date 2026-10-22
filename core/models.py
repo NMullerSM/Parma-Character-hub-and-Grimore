@@ -83,6 +83,7 @@ class SessionLog:
     summary: str = ""
     loot: str = ""
     xp_gained: int = 0
+    session_id: str = ""
 
 
 @dataclass
@@ -198,6 +199,9 @@ class CharacterSheet:
 
     # Diario de Campaña
     sessions: List[SessionLog] = field(default_factory=list)
+
+    # Identificador de Sesión Online / Campaña Asignada
+    session_id: str = ""
 
     # Red de Personajes (Campaña)
     network_nodes: List[NetworkNode] = field(default_factory=list)
