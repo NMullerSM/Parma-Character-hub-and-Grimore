@@ -18,6 +18,8 @@ build/
 ejecutables/*/Parma/
 ejecutables/*/*.exe
 ejecutables/*/_internal/
+ejecutables/*/*.zip
+ejecutables/*/*.tar.gz
 
 # IDE y Sistema Operativo
 .vscode/

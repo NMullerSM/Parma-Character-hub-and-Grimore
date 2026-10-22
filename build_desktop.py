@@ -8,9 +8,18 @@ import sys
 import subprocess
 
 
+import argparse
+import shutil
+
+
 def build():
+    parser = argparse.ArgumentParser(description="Compilador Parma Desktop — PyWebView + React 18")
+    parser.add_argument("--onefile", action="store_true", help="Genera un único archivo ejecutable autocontenido (sin carpeta _internal)")
+    args = parser.parse_args()
+
     print("=" * 65)
     print(" Compilador Parma Desktop — PyWebView + React 18")
+    print(f" Modo: {'Ejecutable Único (--onefile)' if args.onefile else 'Carpeta Portable (--onedir)'}")
     print("=" * 65)
 
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -52,11 +61,14 @@ def build():
     icon_name = "parma.ico" if is_windows else "parma.png"
     icon_path = os.path.join(base_dir, icon_name)
 
+    mode_arg = "--onefile" if args.onefile else "--onedir"
+
     cmd = [
         sys.executable,
         "-m",
         "PyInstaller",
         "--noconsole",
+        mode_arg,
         "--name=Parma",
         f"--icon={icon_path}",
         f"--distpath={dist_dir}",
@@ -86,6 +98,19 @@ def build():
         print(" [Éxito] Compilación completada exitosamente.")
         print(f" Binario generado en: {dist_dir}")
         print("=" * 65)
+
+        # Generar ZIP portable para compartir fácilmente entre computadores
+        if not args.onefile:
+            archive_dir = os.path.join(dist_dir, "Parma")
+            if os.path.exists(archive_dir):
+                zip_name = "Parma-Windows-Portable" if is_windows else "Parma-Linux-Portable"
+                archive_format = "zip" if is_windows else "gztar"
+                ext = ".zip" if is_windows else ".tar.gz"
+                print(f"\n[Parma] Generando paquete comprimido listo para compartir: {zip_name}{ext}...")
+                archive_output = os.path.join(dist_dir, zip_name)
+                shutil.make_archive(archive_output, archive_format, root_dir=dist_dir, base_dir="Parma")
+                print(f"[Parma] ¡Paquete portable listo en: {archive_output}{ext}!")
+
     except subprocess.CalledProcessError as e:
         print(f"\n[Error] La compilación falló con código {e.returncode}")
         sys.exit(e.returncode)
