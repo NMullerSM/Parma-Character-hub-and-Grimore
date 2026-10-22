@@ -10,6 +10,59 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <script>
+      (function() {
+        window.__errors = [];
+        window.onerror = function(msg, url, line, col, error) {
+          window.__errors.push({msg: String(msg), url: String(url), line: line, col: col, stack: error ? String(error.stack) : ''});
+          console.error('[Parma Error]', msg, error);
+        };
+        window.addEventListener('unhandledrejection', function(event) {
+          window.__errors.push({msg: 'Unhandled Rejection: ' + String(event.reason), stack: event.reason && event.reason.stack ? String(event.reason.stack) : ''});
+          console.error('[Parma Unhandled Rejection]', event.reason);
+        });
+
+        // Polyfill defensivo para localStorage en WebKitGTK / entornos sandbox
+        try {
+          var testKey = '__parma_ls_probe__';
+          window.localStorage.setItem(testKey, testKey);
+          window.localStorage.removeItem(testKey);
+        } catch (e) {
+          console.warn('[Parma] window.localStorage no disponible de forma nativa. Activando almacenamiento en memoria resiliente.');
+          var memStore = {};
+          var storageMock = {
+            getItem: function(key) {
+              return Object.prototype.hasOwnProperty.call(memStore, key) ? memStore[key] : null;
+            },
+            setItem: function(key, val) {
+              memStore[key] = String(val);
+            },
+            removeItem: function(key) {
+              delete memStore[key];
+            },
+            clear: function() {
+              memStore = {};
+            },
+            get length() {
+              return Object.keys(memStore).length;
+            },
+            key: function(i) {
+              return Object.keys(memStore)[i] || null;
+            }
+          };
+          try {
+            Object.defineProperty(window, 'localStorage', {
+              value: storageMock,
+              configurable: true,
+              enumerable: true,
+              writable: true
+            });
+          } catch (defErr) {
+            window.localStorage = storageMock;
+          }
+        }
+      })();
+    </script>
   </head>
   <body class="bg-canvas text-main font-body antialiased select-none overflow-hidden h-screen w-screen">
     <div id="root" class="h-full w-full"></div>

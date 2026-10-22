@@ -224,12 +224,29 @@ def start_app():
     def on_app_started():
         apply_win32_icon(window, icon_path)
 
+    # Configuración de persistencia de datos (Local Storage, caché y perfiles)
+    # En Linux WebKitGTK, private_mode=True (por defecto de pywebview) desactiva enable_html5_local_storage
+    # causando pantalla negra por ReferenceError en React. private_mode=False habilita almacenamiento completo.
+    if sys.platform.startswith("linux"):
+        storage_base = os.environ.get("XDG_DATA_HOME", os.path.expanduser("~/.local/share"))
+        storage_path = os.path.join(storage_base, "parma")
+    else:
+        storage_base = os.environ.get("APPDATA", os.path.expanduser("~"))
+        storage_path = os.path.join(storage_base, "Parma")
+
+    try:
+        os.makedirs(storage_path, exist_ok=True)
+    except Exception as e:
+        print(f"[Parma] Warning al preparar directorio de almacenamiento: {e}")
+
     # Iniciar el bucle de eventos del WebView nativo
     # http_server=True activa el servidor Bottle interno para servir ES Modules de Vite sin bloqueos CORS en Linux
     start_kwargs = {
         "func": on_app_started,
         "debug": args.dev,
         "http_server": True,
+        "private_mode": False,
+        "storage_path": storage_path,
     }
     if icon_path:
         start_kwargs["icon"] = icon_path
