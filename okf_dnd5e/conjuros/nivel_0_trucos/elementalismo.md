@@ -1,26 +1,32 @@
 ---
-id: "elementalismo"
-nombre: "Elementalismo"
+id: elementalismo
+nombre: Elementalismo
 nivel: 0
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 277
 tags:
-  - "transmutación"
-  - "nivel_0"
-  - "druida"
-  - "hechicero"
-  - "mago"
+- transmutación
+- nivel_0
+- druida
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Elementalism
 ---
 
 # Elementalismo

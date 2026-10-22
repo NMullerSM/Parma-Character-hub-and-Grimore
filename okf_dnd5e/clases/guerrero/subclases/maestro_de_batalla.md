@@ -1,12 +1,21 @@
 ---
-id: "guerrero_maestro_de_batalla"
-nombre: "Maestro de Batalla"
-nombre_ingles: "Battle Master"
-tipo: "subclase"
-clase_padre: "Guerrero"
+id: guerrero_maestro_de_batalla
+nombre: Maestro de Batalla
+nombre_ingles: Battle Master
+tipo: subclase
+clase_padre: Guerrero
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["guerrero", "maniobras", "dados de superioridad", "táctica", "phb2024"]
+fuente: PHB 2024
+tags:
+- guerrero
+- maniobras
+- dados de superioridad
+- táctica
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Maestro de Batalla (Battle Master)

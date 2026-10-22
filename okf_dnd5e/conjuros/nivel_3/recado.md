@@ -1,26 +1,32 @@
 ---
-id: "recado"
-nombre: "Recado"
+id: recado
+nombre: Recado
 nivel: 3
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Ilimitado"
-componentes: "V, S, M (un alambre de cobre)"
-duracion: "Instantáneo"
+- Bardo
+- Clérigo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Ilimitado
+componentes: V, S, M (un alambre de cobre)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 328
 tags:
-  - "adivinación"
-  - "nivel_3"
-  - "bardo"
-  - "clérigo"
-  - "mago"
+- adivinación
+- nivel_3
+- bardo
+- clérigo
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Sending
 ---
 
 # Recado

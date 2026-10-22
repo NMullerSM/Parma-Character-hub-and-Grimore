@@ -1,24 +1,30 @@
 ---
-id: "guarda_contra_la_muerte"
-nombre: "Guarda Contra La Muerte"
+id: guarda_contra_la_muerte
+nombre: Guarda Contra La Muerte
 nivel: 4
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Clérigo"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S"
-duracion: "8 horas"
+- Clérigo
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S
+duracion: 8 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 289
 tags:
-  - "abjuración"
-  - "nivel_4"
-  - "clérigo"
-  - "paladín"
+- abjuración
+- nivel_4
+- clérigo
+- paladín
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Death Ward
 ---
 
 # Guarda Contra La Muerte

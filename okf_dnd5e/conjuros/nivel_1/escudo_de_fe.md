@@ -1,25 +1,31 @@
 ---
-id: "escudo_de_fe"
-nombre: "Escudo De Fe"
+id: escudo_de_fe
+nombre: Escudo De Fe
 nivel: 1
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Clérigo"
-  - "Paladín"
-tiempo_lanzamiento: "Acción adicional"
-alcance: "18 m"
-componentes: "V, S, M (un pergamino de plegarias)"
-duracion: "Concentración, hasta 10 minutos"
+- Clérigo
+- Paladín
+tiempo_lanzamiento: Acción adicional
+alcance: 18 m
+componentes: V, S, M (un pergamino de plegarias)
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 280
 tags:
-  - "abjuración"
-  - "nivel_1"
-  - "clérigo"
-  - "paladín"
-  - "concentracion"
+- abjuración
+- nivel_1
+- clérigo
+- paladín
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Shield of Faith
 ---
 
 # Escudo De Fe

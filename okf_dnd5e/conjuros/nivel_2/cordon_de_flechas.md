@@ -1,22 +1,28 @@
 ---
-id: "cordon_de_flechas"
-nombre: "Cordón De Flechas"
+id: cordon_de_flechas
+nombre: Cordón De Flechas
 nivel: 2
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Explorador"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S, M (una trenza ornamental)"
-duracion: "8 horas"
+- Explorador
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S, M (una trenza ornamental)
+duracion: 8 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 267
 tags:
-  - "transmutación"
-  - "nivel_2"
-  - "explorador"
+- transmutación
+- nivel_2
+- explorador
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Cordon of Arrows
 ---
 
 # Cordón De Flechas

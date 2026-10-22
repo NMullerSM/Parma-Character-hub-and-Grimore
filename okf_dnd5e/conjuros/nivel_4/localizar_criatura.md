@@ -1,33 +1,39 @@
 ---
-id: "localizar_criatura"
-nombre: "Localizar Criatura"
+id: localizar_criatura
+nombre: Localizar Criatura
 nivel: 4
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Druida"
-  - "Explorador"
-  - "Mago"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S, M (pelaje de un sabueso)"
-duracion: "Concentración, hasta 1 hora"
+- Bardo
+- Clérigo
+- Druida
+- Explorador
+- Mago
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S, M (pelaje de un sabueso)
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 307
 tags:
-  - "adivinación"
-  - "nivel_4"
-  - "bardo"
-  - "clérigo"
-  - "druida"
-  - "explorador"
-  - "mago"
-  - "paladín"
-  - "concentracion"
+- adivinación
+- nivel_4
+- bardo
+- clérigo
+- druida
+- explorador
+- mago
+- paladín
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Locate Creature
 ---
 
 # Localizar Criatura

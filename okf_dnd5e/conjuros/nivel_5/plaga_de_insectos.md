@@ -1,27 +1,33 @@
 ---
-id: "plaga_de_insectos"
-nombre: "Plaga De Insectos"
+id: plaga_de_insectos
+nombre: Plaga De Insectos
 nivel: 5
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Clérigo"
-  - "Druida"
-  - "Hechicero"
-tiempo_lanzamiento: "Acción"
-alcance: "90 m"
-componentes: "V, S, M (una langosta)"
-duracion: "Concentración, hasta 10 minutos"
+- Clérigo
+- Druida
+- Hechicero
+tiempo_lanzamiento: Acción
+alcance: 90 m
+componentes: V, S, M (una langosta)
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 321
 tags:
-  - "conjuración"
-  - "nivel_5"
-  - "clérigo"
-  - "druida"
-  - "hechicero"
-  - "concentracion"
+- conjuración
+- nivel_5
+- clérigo
+- druida
+- hechicero
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Insect Plague
 ---
 
 # Plaga De Insectos

@@ -1,19 +1,25 @@
 ---
-id: "enano"
-nombre: "Enano"
-tipo_criatura: "humanoide"
-tamano: "Mediano"
-velocidad: "9 m"
-sentidos: "Visión en la oscuridad 36 m"
-fuente: "PHB 2024"
+id: enano
+nombre: Enano
+tipo_criatura: humanoide
+tamano: Mediano
+velocidad: 9 m
+sentidos: Visión en la oscuridad 36 m
+fuente: PHB 2024
 pagina: 192
 rasgos_principales:
-  - "Resistencia enana"
-  - "Afinidad con la piedra"
-  - "Tenacidad enana"
+- Resistencia enana
+- Afinidad con la piedra
+- Tenacidad enana
 tags:
-  - "especie"
-  - "enano"
+- especie
+- enano
+- spanish
+- es
+- español
+idioma: es
+tipo: especie
+nombre_ingles: Dwarf
 ---
 
 # Especie: Enano

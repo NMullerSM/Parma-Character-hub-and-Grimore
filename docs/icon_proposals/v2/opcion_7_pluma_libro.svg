@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
+  <!-- Opción 7: La Pluma & El Libro -->
+  <g stroke="currentColor" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Libro en la base -->
+    <path d="M 44 186 C 80 166 110 168 128 184 C 146 168 176 166 212 186 L 212 118 C 176 98 146 100 128 116 C 110 100 80 98 44 118 Z"/>
+    <!-- Línea del lomo -->
+    <line x1="128" y1="116" x2="128" y2="184"/>
+    <!-- Pluma de escriba estilizada cruzando diagonalmente con elegancia -->
+    <path d="M 186 38 C 160 56 142 94 136 124 M 186 38 C 194 72 174 104 156 120" stroke-width="6"/>
+    <line x1="186" y1="38" x2="134" y2="128" stroke-width="4"/>
+  </g>
+</svg>

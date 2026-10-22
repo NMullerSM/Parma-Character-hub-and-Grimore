@@ -1,28 +1,35 @@
 ---
-id: "circulo_de_teletransportacion"
-nombre: "Círculo De Teletransportación"
+id: circulo_de_teletransportacion
+nombre: Círculo De Teletransportación
 nivel: 5
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "1 acción"
-alcance: "3 m"
-componentes: "V, M (tintas inusuales que valgan al menos  50 po, que se consumen como parte del conjuro)"
-duracion: "1 asalto"
+- Bardo
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: 1 acción
+alcance: 3 m
+componentes: V, M (tintas inusuales que valgan al menos  50 po, que se consumen como
+  parte del conjuro)
+duracion: 1 asalto
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 258
 tags:
-  - "conjuración"
-  - "nivel_5"
-  - "bardo"
-  - "brujo"
-  - "hechicero"
-  - "mago"
+- conjuración
+- nivel_5
+- bardo
+- brujo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Teleportation Circle
 ---
 
 # Círculo De Teletransportación

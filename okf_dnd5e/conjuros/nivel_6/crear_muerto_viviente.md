@@ -1,26 +1,32 @@
 ---
-id: "crear_muerto_viviente"
-nombre: "Crear Muerto Viviente"
+id: crear_muerto_viviente
+nombre: Crear Muerto Viviente
 nivel: 6
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Brujo"
-  - "Clérigo"
-  - "Mago"
-tiempo_lanzamiento: "1 minuto"
-alcance: "3 m"
-componentes: "V, S, M (un ónice negro que valga al menos  150 po por cada cadáver)"
-duracion: "Instantáneo"
+- Brujo
+- Clérigo
+- Mago
+tiempo_lanzamiento: 1 minuto
+alcance: 3 m
+componentes: V, S, M (un ónice negro que valga al menos  150 po por cada cadáver)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 268
 tags:
-  - "nigromancia"
-  - "nivel_6"
-  - "brujo"
-  - "clérigo"
-  - "mago"
+- nigromancia
+- nivel_6
+- brujo
+- clérigo
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Create Undead
 ---
 
 # Crear Muerto Viviente

@@ -9,8 +9,14 @@ pagina: 186
 tags:
 - trasfondo
 - marinero
+- spanish
+- es
+- español
 tipo: trasfondo
+idioma: es
+nombre_ingles: Sailor
 ---
+
 # Trasfondo: Marinero
 
 - **Puntuaciones de Característica**: Fuerza, Destreza, Sabiduría

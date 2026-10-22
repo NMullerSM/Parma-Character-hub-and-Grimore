@@ -1,22 +1,28 @@
 ---
-id: "guardian_de_la_fe"
-nombre: "Guardián De La Fe"
+id: guardian_de_la_fe
+nombre: Guardián De La Fe
 nivel: 4
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Clérigo"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V"
-duracion: "8 horas"
+- Clérigo
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V
+duracion: 8 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 290
 tags:
-  - "conjuración"
-  - "nivel_4"
-  - "clérigo"
+- conjuración
+- nivel_4
+- clérigo
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Guardian of Faith
 ---
 
 # Guardián De La Fe

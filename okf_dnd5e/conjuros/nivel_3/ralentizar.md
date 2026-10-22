@@ -1,27 +1,33 @@
 ---
-id: "ralentizar"
-nombre: "Ralentizar"
+id: ralentizar
+nombre: Ralentizar
 nivel: 3
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Bardo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S, M (una gota de melaza)"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S, M (una gota de melaza)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 326
 tags:
-  - "transmutación"
-  - "nivel_3"
-  - "bardo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- transmutación
+- nivel_3
+- bardo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Slow
 ---
 
 # Ralentizar

@@ -1,28 +1,35 @@
 ---
-id: "circulo_magico"
-nombre: "Círculo Mágico"
+id: circulo_magico
+nombre: Círculo Mágico
 nivel: 3
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Brujo"
-  - "Clérigo"
-  - "Mago"
-  - "Paladín"
-tiempo_lanzamiento: "1 minuto"
-alcance: "3 m"
-componentes: "V, S, M (sal y plata en polvo que valga al  menos 100 po, que se consumen como parte del conjuro)"
-duracion: "1 hora"
+- Brujo
+- Clérigo
+- Mago
+- Paladín
+tiempo_lanzamiento: 1 minuto
+alcance: 3 m
+componentes: V, S, M (sal y plata en polvo que valga al  menos 100 po, que se consumen
+  como parte del conjuro)
+duracion: 1 hora
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 258
 tags:
-  - "abjuración"
-  - "nivel_3"
-  - "brujo"
-  - "clérigo"
-  - "mago"
-  - "paladín"
+- abjuración
+- nivel_3
+- brujo
+- clérigo
+- mago
+- paladín
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Magic Circle
 ---
 
 # Círculo Mágico

@@ -1,30 +1,36 @@
 ---
-id: "luz_del_dia"
-nombre: "Luz Del Día"
+id: luz_del_dia
+nombre: Luz Del Día
 nivel: 3
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Clérigo"
-  - "Druida"
-  - "Explorador"
-  - "Hechicero"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "1 hora"
+- Clérigo
+- Druida
+- Explorador
+- Hechicero
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S
+duracion: 1 hora
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 309
 tags:
-  - "evocación"
-  - "nivel_3"
-  - "clérigo"
-  - "druida"
-  - "explorador"
-  - "hechicero"
-  - "paladín"
+- evocación
+- nivel_3
+- clérigo
+- druida
+- explorador
+- hechicero
+- paladín
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Daylight
 ---
 
 # Luz Del Día

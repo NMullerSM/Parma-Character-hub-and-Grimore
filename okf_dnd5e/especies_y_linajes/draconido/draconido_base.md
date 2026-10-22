@@ -1,20 +1,26 @@
 ---
-id: "draconido"
-nombre: "Dracónido"
-tipo_criatura: "humanoide"
-tamano: "Mediano"
-velocidad: "9 m"
-sentidos: "Visión en la oscuridad 18 m"
-fuente: "PHB 2024"
+id: draconido
+nombre: Dracónido
+tipo_criatura: humanoide
+tamano: Mediano
+velocidad: 9 m
+sentidos: Visión en la oscuridad 18 m
+fuente: PHB 2024
 pagina: 189
 rasgos_principales:
-  - "Ascendencia dracónica"
-  - "Arma de aliento"
-  - "Resistencia al daño"
-  - "Vuelo dracónico"
+- Ascendencia dracónica
+- Arma de aliento
+- Resistencia al daño
+- Vuelo dracónico
 tags:
-  - "especie"
-  - "draconido"
+- especie
+- draconido
+- spanish
+- es
+- español
+idioma: es
+tipo: especie
+nombre_ingles: Dragonborn
 ---
 
 # Especie: Dracónido

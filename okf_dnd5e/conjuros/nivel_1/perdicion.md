@@ -1,27 +1,33 @@
 ---
-id: "perdicion"
-nombre: "Perdición"
+id: perdicion
+nombre: Perdición
 nivel: 1
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Brujo"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S, M (una gota de sangre)"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Clérigo
+- Brujo
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S, M (una gota de sangre)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 321
 tags:
-  - "encantamiento"
-  - "nivel_1"
-  - "bardo"
-  - "clérigo"
-  - "brujo"
-  - "concentracion"
+- encantamiento
+- nivel_1
+- bardo
+- clérigo
+- brujo
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Bane
 ---
 
 # Perdición

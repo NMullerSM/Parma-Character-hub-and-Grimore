@@ -1,25 +1,31 @@
 ---
-id: "comunion_con_la_naturaleza"
-nombre: "Comunión Con La Naturaleza"
+id: comunion_con_la_naturaleza
+nombre: Comunión Con La Naturaleza
 nivel: 5
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Druida"
-  - "Explorador"
-tiempo_lanzamiento: "1 minuto o un ritual"
-alcance: "Lanzador"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Druida
+- Explorador
+tiempo_lanzamiento: 1 minuto o un ritual
+alcance: Lanzador
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 260
 tags:
-  - "adivinación"
-  - "nivel_5"
-  - "druida"
-  - "explorador"
-  - "ritual"
+- adivinación
+- nivel_5
+- druida
+- explorador
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Commune with Nature
 ---
 
 # Comunión Con La Naturaleza

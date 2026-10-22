@@ -1,19 +1,23 @@
 ---
-id: "elfo_alto_elfo"
-nombre: "Alto Elfo (Linaje Solar y Lunar)"
-nombre_ingles: "High Elf"
-fuente: "Manual del Jugador 2024"
+id: elfo_alto_elfo
+nombre: Alto Elfo (Linaje Solar y Lunar)
+nombre_ingles: High Elf
+fuente: Manual del Jugador 2024
 pagina: 190
-tipo: "especie_linaje"
-velocidad: "9 m (30 pies)"
-tamano: "Mediano"
-vision_oscuridad: "18 m (60 pies)"
+tipo: especie_linaje
+velocidad: 9 m (30 pies)
+tamano: Mediano
+vision_oscuridad: 18 m (60 pies)
 tags:
-  - "especie"
-  - "elfo"
-  - "alto_elfo"
-  - "linaje"
-  - "arcano"
+- especie
+- elfo
+- alto_elfo
+- linaje
+- arcano
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Especie: Alto Elfo (High Elf)

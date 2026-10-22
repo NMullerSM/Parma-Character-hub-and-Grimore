@@ -1,22 +1,29 @@
 ---
-id: "reencarnar"
-nombre: "Reencarnar"
+id: reencarnar
+nombre: Reencarnar
 nivel: 5
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Druida"
-tiempo_lanzamiento: "1 hora"
-alcance: "Toque"
-componentes: "V, S, M (aceites raros que valgan al menos  1000 po, que se consumen como parte del conjuro)"
-duracion: "Instantáneo"
+- Druida
+tiempo_lanzamiento: 1 hora
+alcance: Toque
+componentes: V, S, M (aceites raros que valgan al menos  1000 po, que se consumen
+  como parte del conjuro)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 329
 tags:
-  - "nigromancia"
-  - "nivel_5"
-  - "druida"
+- nigromancia
+- nivel_5
+- druida
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Reincarnate
 ---
 
 # Reencarnar

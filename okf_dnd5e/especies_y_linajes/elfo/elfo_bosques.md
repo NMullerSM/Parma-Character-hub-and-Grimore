@@ -1,19 +1,23 @@
 ---
-id: "elfo_bosques"
-nombre: "Elfo de los Bosques (Linaje Silvano)"
-nombre_ingles: "Wood Elf"
-fuente: "Manual del Jugador 2024"
+id: elfo_bosques
+nombre: Elfo de los Bosques (Linaje Silvano)
+nombre_ingles: Wood Elf
+fuente: Manual del Jugador 2024
 pagina: 191
-tipo: "especie_linaje"
-velocidad: "10.5 m (35 pies)"
-tamano: "Mediano"
-vision_oscuridad: "18 m (60 pies)"
+tipo: especie_linaje
+velocidad: 10.5 m (35 pies)
+tamano: Mediano
+vision_oscuridad: 18 m (60 pies)
 tags:
-  - "especie"
-  - "elfo"
-  - "bosques"
-  - "linaje"
-  - "silvano"
+- especie
+- elfo
+- bosques
+- linaje
+- silvano
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Especie: Elfo de los Bosques (Wood Elf)

@@ -1,24 +1,30 @@
 ---
-id: "rayo_nauseabundo"
-nombre: "Rayo Nauseabundo"
+id: rayo_nauseabundo
+nombre: Rayo Nauseabundo
 nivel: 1
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 328
 tags:
-  - "nigromancia"
-  - "nivel_1"
-  - "hechicero"
-  - "mago"
+- nigromancia
+- nivel_1
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Ray of Sickness
 ---
 
 # Rayo Nauseabundo

@@ -1,26 +1,32 @@
 ---
-id: "circulo_de_muerte"
-nombre: "Círculo De Muerte"
+id: circulo_de_muerte
+nombre: Círculo De Muerte
 nivel: 6
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "45 m"
-componentes: "V, S, M (una perla negra pulverizada que  valga al menos 500 po)"
-duracion: "Instantáneo"
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 45 m
+componentes: V, S, M (una perla negra pulverizada que  valga al menos 500 po)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 258
 tags:
-  - "nigromancia"
-  - "nivel_6"
-  - "brujo"
-  - "hechicero"
-  - "mago"
+- nigromancia
+- nivel_6
+- brujo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Circle of Death
 ---
 
 # Círculo De Muerte

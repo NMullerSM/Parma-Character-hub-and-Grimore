@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useCharacter } from "../context/CharacterContext";
+import { useTranslation } from "../i18n";
 import type { SpellItemData, FeatureItemData } from "../api/types";
 import { FeatureDetailModal } from "../components/FeatureDetailModal";
 import { SpellDetailModal } from "../components/SpellDetailModal";
@@ -7,7 +8,7 @@ import { SpellBookManagerModal } from "../components/SpellBookManagerModal";
 import { BookOpen } from "lucide-react";
 import { formatRangeWithTiles } from "../utils/formatters";
 
-const DND_CONDITIONS = [
+const STANDARD_CONDITIONS = [
   "Apresado",
   "Asustado",
   "Aturdido",
@@ -31,7 +32,24 @@ export const CombatView: React.FC = () => {
     showToast,
     addSpell,
     removeSpell,
+    language,
   } = useCharacter();
+
+  const {
+    t,
+    translateClass,
+    translateCondition,
+    translateDamageType,
+    translateSchool,
+    translateWeapon,
+    translateSpellName,
+    translateSpellDescription,
+    translateFeatureName,
+    translateFeatureSource,
+    translateFeatureDescription,
+    translateFeatureRecharge,
+  } = useTranslation();
+
   const [shortRestDiceToSpend, setShortRestDiceToSpend] = useState<number>(1);
   const [selectedSpellLevel, setSelectedSpellLevel] = useState<number | "all">("all");
   const [selectedActionFilter, setSelectedActionFilter] = useState<"all" | "action" | "bonus" | "reaction">("all");
@@ -43,7 +61,7 @@ export const CombatView: React.FC = () => {
     return (
       <div className="h-full flex items-center justify-center p-8 text-center text-muted">
         <p className="font-display text-xl text-gold">
-          Selecciona un personaje para el modo combate táctico.
+          {t("combat.noCharacter")}
         </p>
       </div>
     );
@@ -125,9 +143,16 @@ export const CombatView: React.FC = () => {
       {/* 1. Header Táctico */}
       <div className="flex items-center justify-between border-b border-border-iron pb-3">
         <div>
-          <h1 className="font-display font-bold text-2xl text-gold">{name} — Modo Combate</h1>
+          <h1 className="font-display font-bold text-2xl text-gold">
+            {t("combat.title", { name })}
+          </h1>
           <p className="text-xs text-muted">
-            Nivel {level} {char_class} • CA {ac} • Velocidad {speed} pies
+            {t("combat.subtitle", {
+              level,
+              charClass: translateClass(char_class),
+              ac,
+              speed,
+            })}
           </p>
         </div>
 
@@ -140,7 +165,7 @@ export const CombatView: React.FC = () => {
               : "bg-card text-muted border-border-iron hover:border-gold/50"
           }`}
         >
-          {inspiration ? "★ Inspiración Activa" : "☆ Sin Inspiración"}
+          {inspiration ? t("combat.inspirationActive") : t("combat.noInspiration")}
         </button>
       </div>
 
@@ -148,8 +173,8 @@ export const CombatView: React.FC = () => {
       <section className="grid grid-cols-1 md:grid-cols-3 gap-5">
         <div className="md:col-span-2 bg-card border border-border-iron rounded-xl p-5 flex flex-col justify-between space-y-4">
           <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-muted">
-            <span>Puntos de Golpe en Combate</span>
-            <span>Máximo: {hp_max} PG</span>
+            <span>{t("combat.hpTitle")}</span>
+            <span>{t("combat.hpMax", { max: hp_max })}</span>
           </div>
 
           <div className="flex items-center justify-center my-2 gap-4">
@@ -166,21 +191,21 @@ export const CombatView: React.FC = () => {
             </span>
             <div className="flex flex-col items-start gap-1">
               <span className="font-stat font-bold text-sm text-gold border border-gold/40 px-2 py-0.5 rounded bg-surface">
-                +{hp_temp || 0} PG Temp
+                {t("combat.tempHp", { temp: hp_temp || 0 })}
               </span>
               <div className="flex gap-1">
                 <button
                   onClick={() => handleTempHpDelta(5)}
                   className="px-1.5 py-0.5 rounded border border-border-iron hover:border-gold text-[10px] font-stat text-muted hover:text-gold bg-surface"
                 >
-                  +5 Temp
+                  {t("combat.tempButton")}
                 </button>
                 {hp_temp > 0 && (
                   <button
                     onClick={() => updateActiveCharacter({ hp_temp: 0 })}
                     className="px-1.5 py-0.5 rounded border border-border-iron hover:border-crimson text-[10px] font-stat text-muted hover:text-crimson bg-surface"
                   >
-                    Limpiar
+                    {t("combat.clearTemp")}
                   </button>
                 )}
               </div>
@@ -193,25 +218,25 @@ export const CombatView: React.FC = () => {
               onClick={() => handleHpDelta(-5)}
               className="py-2.5 rounded bg-surface hover:bg-card border border-border-iron hover:border-crimson text-crimson font-stat font-bold text-sm transition-colors"
             >
-              -5 Daño
+              {t("combat.damageMinus5")}
             </button>
             <button
               onClick={() => handleHpDelta(-1)}
               className="py-2.5 rounded bg-surface hover:bg-card border border-border-iron hover:border-crimson text-crimson font-stat font-bold text-sm transition-colors"
             >
-              -1 Daño
+              {t("combat.damageMinus1")}
             </button>
             <button
               onClick={() => handleHpDelta(1)}
               className="py-2.5 rounded bg-surface hover:bg-card border border-border-iron hover:border-emerald-500 text-emerald-400 font-stat font-bold text-sm transition-colors"
             >
-              +1 Cura
+              {t("combat.healPlus1")}
             </button>
             <button
               onClick={() => handleHpDelta(5)}
               className="py-2.5 rounded bg-surface hover:bg-card border border-border-iron hover:border-emerald-500 text-emerald-400 font-stat font-bold text-sm transition-colors"
             >
-              +5 Cura
+              {t("combat.healPlus5")}
             </button>
           </div>
         </div>
@@ -221,11 +246,11 @@ export const CombatView: React.FC = () => {
           {/* Salvaciones de Muerte */}
           <div className="bg-card border border-border-iron rounded-xl p-4">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted mb-3">
-              Salvaciones de Muerte
+              {t("combat.deathSavesTitle")}
             </h3>
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-muted">Éxitos:</span>
+                <span className="text-muted">{t("combat.successes")}</span>
                 <div className="flex gap-2">
                   {[0, 1, 2].map((i) => (
                     <button
@@ -242,7 +267,7 @@ export const CombatView: React.FC = () => {
               </div>
 
               <div className="flex items-center justify-between text-xs">
-                <span className="text-muted">Fallos:</span>
+                <span className="text-muted">{t("combat.failures")}</span>
                 <div className="flex gap-2">
                   {[0, 1, 2].map((i) => (
                     <button
@@ -264,7 +289,7 @@ export const CombatView: React.FC = () => {
                 openDiceDrawer({
                   dice: { "20": 1 },
                   modifier: 0,
-                  label: "Tirada de Salvación contra Muerte",
+                  label: t("dice.deathSaveToggle"),
                   dc: 10,
                   is_death_save: true,
                   is_saving_throw: true,
@@ -272,7 +297,7 @@ export const CombatView: React.FC = () => {
               }
               className="w-full mt-3 py-1.5 rounded border border-border-iron hover:border-gold text-xs text-main bg-surface transition-colors font-medium flex items-center justify-center gap-1"
             >
-              <span>Tirar Salvación de Muerte (CD 10)</span>
+              <span>{t("dice.deathSaveToggle")} (DC 10)</span>
             </button>
           </div>
 
@@ -280,7 +305,7 @@ export const CombatView: React.FC = () => {
           <div className="bg-card border border-border-iron rounded-xl p-4 space-y-2.5">
             <div className="flex items-center justify-between">
               <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
-                Dados de Golpe & Descansos
+                {t("combat.restsTitle")}
               </h3>
               <span className="font-stat font-bold text-xs text-gold">
                 {hit_dice_current || `${currentHdCount}d${hdFaces}`} /{" "}
@@ -289,7 +314,7 @@ export const CombatView: React.FC = () => {
             </div>
 
             <div className="flex items-center justify-between text-xs bg-surface px-2.5 py-1.5 rounded border border-border-iron">
-              <span className="text-muted">Gastar en Desc. Corto:</span>
+              <span className="text-muted">{t("combat.hitDice")}</span>
               <div className="flex items-center gap-1.5 font-stat">
                 <button
                   onClick={() => setShortRestDiceToSpend((v) => Math.max(0, v - 1))}
@@ -311,18 +336,24 @@ export const CombatView: React.FC = () => {
 
             <div className="grid grid-cols-2 gap-2">
               <button
-                onClick={() =>
-                  performRestAction("short", Math.min(shortRestDiceToSpend, currentHdCount))
-                }
+                onClick={() => {
+                  performRestAction("short", Math.min(shortRestDiceToSpend, currentHdCount));
+                  showToast(t("combat.restSuccess"), "success");
+                }}
                 className="py-2 rounded border border-border-iron hover:border-gold bg-surface text-xs font-semibold text-main transition-colors"
+                title={t("combat.shortRestHint")}
               >
-                Descanso Corto
+                {t("combat.shortRest")}
               </button>
               <button
-                onClick={() => performRestAction("long")}
+                onClick={() => {
+                  performRestAction("long");
+                  showToast(t("combat.restSuccess"), "success");
+                }}
                 className="py-2 rounded bg-gold hover:bg-gold-hover text-canvas text-xs font-semibold transition-colors shadow-sm"
+                title={t("combat.longRestHint")}
               >
-                Descanso Largo
+                {t("combat.longRest")}
               </button>
             </div>
           </div>
@@ -333,20 +364,21 @@ export const CombatView: React.FC = () => {
       <section className="bg-card border border-border-iron rounded-xl p-4 space-y-2.5">
         <div className="flex items-center justify-between">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-muted">
-            Estados y Condiciones Activas
+            {t("combat.conditionsTitle")}
           </h2>
           {conditions.length > 0 && (
             <button
               onClick={() => updateActiveCharacter({ conditions: [] })}
               className="text-xs text-crimson hover:underline"
             >
-              Limpiar estados ({conditions.length})
+              {t("common.delete")} ({conditions.length})
             </button>
           )}
         </div>
         <div className="flex flex-wrap gap-1.5">
-          {DND_CONDITIONS.map((cond) => {
+          {STANDARD_CONDITIONS.map((cond) => {
             const isActive = conditions.includes(cond);
+            const localized = translateCondition(cond);
             return (
               <button
                 key={cond}
@@ -359,7 +391,7 @@ export const CombatView: React.FC = () => {
                     : "border-border-iron bg-surface text-muted hover:text-main"
                 }`}
               >
-                {cond}
+                {localized}
               </button>
             );
           })}
@@ -368,7 +400,7 @@ export const CombatView: React.FC = () => {
 
       {/* 4. Acciones de Ataque Rápido */}
       <section className="space-y-3">
-        <h2 className="font-display font-semibold text-lg text-gold">Acciones Rápidas en Turno</h2>
+        <h2 className="font-display font-semibold text-lg text-gold">{t("combat.weaponsTitle")}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
           {weapon_actions?.map((w, idx) => (
             <div
@@ -377,17 +409,19 @@ export const CombatView: React.FC = () => {
                 openDiceDrawer({
                   dice: { "20": 1 },
                   modifier: parseInt(String(w.hit_dc).replace("+", ""), 10) || 0,
-                  label: `Ataque: ${w.name}`,
+                  label: `${t("sheet.attackWith", { name: translateWeapon(w.name) })}`,
                 })
               }
               className="bg-card border border-border-iron hover:border-gold rounded-lg p-3 cursor-pointer transition-all hover:scale-[1.01]"
             >
               <div className="flex items-center justify-between mb-1">
-                <h4 className="font-semibold text-sm text-main">{w.name}</h4>
-                <span className="font-stat font-bold text-xs text-gold">{w.hit_dc} impacto</span>
+                <h4 className="font-semibold text-sm text-main">{translateWeapon(w.name)}</h4>
+                <span className="font-stat font-bold text-xs text-gold">
+                  {w.hit_dc} {t("combat.impact")}
+                </span>
               </div>
               <p className="font-stat text-xs text-muted">
-                {w.damage_dice} {w.damage_type}
+                {w.damage_dice} {translateDamageType(w.damage_type)}
               </p>
             </div>
           ))}
@@ -398,19 +432,19 @@ export const CombatView: React.FC = () => {
               openDiceDrawer({
                 dice: { "20": 1 },
                 modifier: initiative,
-                label: "Tirada de Iniciativa",
+                label: t("sheet.initiative"),
               })
             }
             className="bg-card border border-border-iron hover:border-gold rounded-lg p-3 cursor-pointer transition-all hover:scale-[1.01] flex flex-col justify-between"
           >
             <div className="flex items-center justify-between">
-              <h4 className="font-semibold text-sm text-main">Tirar Iniciativa</h4>
+              <h4 className="font-semibold text-sm text-main">{t("sheet.initiative")}</h4>
               <span className="font-stat font-bold text-xs text-gold">
                 {initiative >= 0 ? `+${initiative}` : initiative}
               </span>
             </div>
             <p className="text-xs text-muted mt-1">
-              Lanza 1d20 + Bono de Destreza al inicio del combate.
+              1d20 + {initiative}
             </p>
           </div>
         </div>
@@ -422,14 +456,11 @@ export const CombatView: React.FC = () => {
           <div className="flex items-center justify-between border-b border-border-iron/80 pb-2.5">
             <div>
               <h2 className="font-display font-semibold text-lg text-gold flex items-center gap-2">
-                <span>Rasgos & Habilidades Tácticas</span>
+                <span>{t("sheet.traitsTitle")}</span>
                 <span className="font-stat text-xs px-2 py-0.5 rounded bg-surface border border-border-iron text-muted">
-                  {features.length} disponibles
+                  {features.length}
                 </span>
               </h2>
-              <p className="text-xs text-muted">
-                Haz clic en cualquier tarjeta para proyectarla hacia adelante con tiradas y control de usos.
-              </p>
             </div>
           </div>
 
@@ -447,22 +478,22 @@ export const CombatView: React.FC = () => {
                   <div>
                     <div className="flex items-start justify-between gap-1 mb-1">
                       <h4 className="font-semibold text-xs text-main group-hover:text-gold transition-colors truncate">
-                        {f.name}
+                        {translateFeatureName(f.name)}
                       </h4>
-                      <span className="text-[10px] text-gold font-stat shrink-0">{f.source}</span>
+                      <span className="text-[10px] text-gold font-stat shrink-0">{translateFeatureSource(f.source)}</span>
                     </div>
                     <p className="text-xs text-muted line-clamp-2 leading-relaxed">
-                      {f.description}
+                      {translateFeatureDescription(f.description)}
                     </p>
                   </div>
 
                   <div className="flex items-center justify-between pt-1.5 border-t border-border-iron/40 text-[10px]">
                     <span className="text-muted">
-                      {f.recharge ? `Recarga: ${f.recharge}` : "Pasivo"}
+                      {f.recharge ? `${t("sheet.uses", { recharge: translateFeatureRecharge(f.recharge) })}` : t("common.none")}
                     </span>
                     {hasUses && (
                       <span className="font-stat font-bold text-gold px-1.5 py-0.5 rounded bg-card border border-border-iron">
-                        {cur}/{maxUses} usos
+                        {cur}/{maxUses}
                       </span>
                     )}
                   </div>
@@ -478,16 +509,13 @@ export const CombatView: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border-iron/80 pb-3">
           <div>
             <h2 className="font-display font-semibold text-lg text-gold flex items-center gap-2">
-              <span>Hechizos & Grimorio de Combate</span>
+              <span>{t("combat.spellsTitle")}</span>
               {spells.length > 0 && (
                 <span className="font-stat text-xs px-2 py-0.5 rounded bg-surface border border-border-iron text-muted">
-                  {spells.length} conjuros
+                  {spells.length}
                 </span>
               )}
             </h2>
-            <p className="text-xs text-muted">
-              Lanzamiento táctico con gestión inmediata de ranuras mágicas.
-            </p>
           </div>
 
           {/* Estadísticas de conjuros compactas y botón de gestión */}
@@ -495,23 +523,22 @@ export const CombatView: React.FC = () => {
             {spell_stats && (
               <div className="flex items-center gap-2 text-xs">
                 <span className="px-2 py-1 rounded bg-surface border border-border-iron font-semibold text-muted">
-                  Aptitud: <strong className="text-gold">{spell_stats.ability || "INT"}</strong>
+                  {t("spells.spellcastingAbility")}: <strong className="text-gold">{spell_stats.ability || "INT"}</strong>
                 </span>
                 <span className="px-2 py-1 rounded bg-surface border border-border-iron font-semibold text-muted">
-                  CD: <strong className="text-main">{spell_stats.dc || 10}</strong>
+                  {t("spells.spellSaveDc")}: <strong className="text-main">{spell_stats.dc || 10}</strong>
                 </span>
                 <button
                   onClick={() =>
                     openDiceDrawer({
                       dice: { "20": 1 },
                       modifier: spell_stats.attack_bonus || 0,
-                      label: "Ataque Mágico",
+                      label: t("spells.spellAttackBonus"),
                     })
                   }
                   className="px-2.5 py-1 rounded bg-surface hover:bg-gold hover:text-canvas border border-border-iron hover:border-gold font-semibold text-gold transition-colors"
-                  title="Tirar Ataque de Conjuro (1d20 + Bono)"
                 >
-                  Atq: {spell_stats.attack_bonus >= 0 ? `+${spell_stats.attack_bonus}` : spell_stats.attack_bonus}
+                  {t("spells.spellAttackBonus")}: {spell_stats.attack_bonus >= 0 ? `+${spell_stats.attack_bonus}` : spell_stats.attack_bonus}
                 </button>
               </div>
             )}
@@ -520,7 +547,7 @@ export const CombatView: React.FC = () => {
               className="px-3 py-1 rounded bg-gold/15 hover:bg-gold hover:text-canvas border border-gold/40 text-gold font-semibold text-xs flex items-center gap-1.5 transition-colors"
             >
               <BookOpen className="w-3.5 h-3.5" />
-              <span>Gestionar Grimorio</span>
+              <span>{t("spells.openManager")}</span>
             </button>
           </div>
         </div>
@@ -529,7 +556,7 @@ export const CombatView: React.FC = () => {
         {Object.keys(spell_slots_total).length > 0 && (
           <div className="space-y-2">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
-              Ranuras de Conjuro en Combate
+              {t("spells.slotsTitle")}
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
               {Object.entries(spell_slots_total).map(([lvl, total]) => {
@@ -540,7 +567,7 @@ export const CombatView: React.FC = () => {
                     className="bg-surface border border-border-iron/80 rounded-lg p-2 text-center"
                   >
                     <div className="text-[10px] font-semibold text-muted uppercase tracking-wider mb-1">
-                      Nivel {lvl}
+                      {t("spells.slotLevel", { lvl })}
                     </div>
                     <div className="flex items-center justify-center gap-1.5">
                       {Array.from({ length: total }).map((_, idx) => (
@@ -555,11 +582,6 @@ export const CombatView: React.FC = () => {
                               },
                             });
                           }}
-                          title={
-                            idx < used
-                              ? "Ranura Gastada (Clic para recuperar)"
-                              : "Ranura Disponible (Clic para gastar)"
-                          }
                           className={`w-3.5 h-3.5 rounded-full border transition-all ${
                             idx < used
                               ? "border-border-iron bg-card/60 opacity-30"
@@ -591,7 +613,7 @@ export const CombatView: React.FC = () => {
                     : "bg-surface border border-border-iron text-muted hover:text-main"
                 }`}
               >
-                Todos
+                {t("combat.filterAll")}
               </button>
               {Array.from(new Set(spells.map((s) => s.level)))
                 .sort((a, b) => a - b)
@@ -605,7 +627,7 @@ export const CombatView: React.FC = () => {
                         : "bg-surface border border-border-iron text-muted hover:text-main"
                     }`}
                   >
-                    {lvl === 0 ? "Trucos" : `Niv ${lvl}`}
+                    {lvl === 0 ? t("spells.filterCantrips") : `${t("combat.levelShort")} ${lvl}`}
                   </button>
                 ))}
             </div>
@@ -614,10 +636,10 @@ export const CombatView: React.FC = () => {
             <div className="flex items-center gap-1">
               {(
                 [
-                  { id: "all", label: "Cualquiera" },
-                  { id: "action", label: "Acción" },
-                  { id: "bonus", label: "Bonus" },
-                  { id: "reaction", label: "Reacción" },
+                  { id: "all", label: t("combat.filterAll") },
+                  { id: "action", label: t("combat.filterAction") },
+                  { id: "bonus", label: t("combat.filterBonus") },
+                  { id: "reaction", label: t("combat.filterReaction") },
                 ] as const
               ).map((f) => (
                 <button
@@ -652,6 +674,9 @@ export const CombatView: React.FC = () => {
               })
               .map((spell: SpellItemData, sIdx: number) => {
                 const isConcentration = (spell.duration || "").toLowerCase().includes("concentra");
+                const spellDisplayName = (language === "en" && spell.name_en && spell.name_en !== spell.name)
+                  ? spell.name_en
+                  : translateSpellName(spell.name);
                 return (
                   <div
                     key={sIdx}
@@ -660,44 +685,44 @@ export const CombatView: React.FC = () => {
                   >
                     <div>
                       <div className="flex items-start justify-between gap-1 mb-1">
-                        <h4 className="font-semibold text-sm text-main group-hover:text-gold transition-colors truncate" title={spell.name}>
-                          {spell.name}
+                        <h4 className="font-semibold text-sm text-main group-hover:text-gold transition-colors truncate" title={spellDisplayName}>
+                          {spellDisplayName}
                         </h4>
                         <span className="font-stat text-[10px] px-1.5 py-0.5 rounded bg-card border border-border-iron text-gold shrink-0">
-                          {spell.level === 0 ? "Truco" : `Nivel ${spell.level}`}
+                          {spell.level === 0 ? t("spells.filterCantrips") : `${t("combat.levelShort")} ${spell.level}`}
                         </span>
                       </div>
 
                       <div className="flex flex-wrap items-center gap-1.5 text-[10px] text-muted mb-1.5">
                         <span className="px-1.5 py-0.5 rounded bg-card/80 border border-border-iron">
-                          {spell.cast_time || spell.casting_time || "1 acción"}
+                          {spell.cast_time || spell.casting_time || (language === "en" ? "1 Action" : "1 Acción")}
                         </span>
                         <span className="px-1.5 py-0.5 rounded bg-card/80 border border-border-iron">
-                          {formatRangeWithTiles(spell.range_area || spell.range)}
+                          {formatRangeWithTiles(spell.range_area || spell.range, language)}
                         </span>
                         {isConcentration && (
                           <span className="px-1.5 py-0.5 rounded bg-gold/15 text-gold border border-gold/40 font-semibold">
-                            Concentración
+                            {translateCondition("Concentración")}
                           </span>
                         )}
                       </div>
 
-                      {spell.notes && (
+                      {translateSpellDescription(spell, language) && (
                         <p className="text-xs text-muted/90 line-clamp-2 leading-tight">
-                          {spell.notes}
+                          {translateSpellDescription(spell, language)}
                         </p>
                       )}
                     </div>
 
                     <div className="pt-2 border-t border-border-iron/40 flex items-center justify-between" onClick={(e) => e.stopPropagation()}>
                       <span className="text-[10px] text-muted italic truncate max-w-[100px]">
-                        {spell.school}
+                        {translateSchool(spell.school)}
                       </span>
                       <button
                         onClick={() => setActiveSpellForModal(spell)}
                         className="px-3 py-1 rounded bg-crimson hover:bg-crimson-hover text-white text-xs font-semibold transition-colors shadow-xs"
                       >
-                        {spell.level > 0 ? "Lanzar / Ver" : "Ver Truco"}
+                        {spell.level > 0 ? t("modals.spellDetail.castSpell") : t("common.details")}
                       </button>
                     </div>
                   </div>
@@ -706,16 +731,13 @@ export const CombatView: React.FC = () => {
           </div>
         ) : (
           <div className="text-center py-8 text-muted text-xs bg-surface/50 rounded-lg border border-dashed border-border-iron p-6 space-y-3">
-            <p className="text-sm font-semibold text-main">No hay conjuros registrados en el grimorio de este personaje.</p>
-            <p className="text-xs text-muted max-w-md mx-auto">
-              Puedes seleccionar y añadir conjuros oficiales de {char_class} o cualquier otra clase directamente desde la base de datos OKF.
-            </p>
+            <p className="text-sm font-semibold text-main">{t("combat.noSpells")}</p>
             <button
               onClick={() => setIsSpellManagerOpen(true)}
               className="px-4 py-2 rounded-lg bg-gold hover:bg-gold-hover text-canvas font-bold text-xs inline-flex items-center gap-2 shadow-sm transition-all active:scale-95"
             >
               <BookOpen className="w-4 h-4" />
-              <span>Explorar y Añadir Conjuros desde el Compendio Oficial</span>
+              <span>{t("spells.openManager")}</span>
             </button>
           </div>
         )}
@@ -739,7 +761,7 @@ export const CombatView: React.FC = () => {
               next[idx] = target;
               updateActiveCharacter({ features: next });
               setActiveFeatureForModal(target);
-              showToast(`1 uso de ${target.name} consumido`, "info");
+              showToast(t("sheet.featureSpent", { name: target.name }), "info");
             }
           }
         }}
@@ -756,7 +778,7 @@ export const CombatView: React.FC = () => {
               next[idx] = target;
               updateActiveCharacter({ features: next });
               setActiveFeatureForModal(target);
-              showToast(`1 uso de ${target.name} recuperado`, "info");
+              showToast(t("sheet.featureRecovered", { name: target.name }), "info");
             }
           }
         }}
@@ -800,7 +822,7 @@ export const CombatView: React.FC = () => {
             const total = spell_slots_total[lvlStr] || 0;
             const used = spell_slots_used[lvlStr] || 0;
             if (used >= total) {
-              showToast(`No te quedan ranuras de nivel ${slotLevel}`, "warn");
+              showToast(t("combat.noSpells"), "warn");
               return;
             }
             updateActiveCharacter({
@@ -809,9 +831,9 @@ export const CombatView: React.FC = () => {
                 [lvlStr]: used + 1,
               },
             });
-            showToast(`Lanzado: ${activeSpellForModal.name} (Ranura Nvl ${slotLevel})`, "success");
+            showToast(t("combat.spellSlotUsed", { lvl: slotLevel }), "success");
           } else {
-            showToast(`Lanzado truco: ${activeSpellForModal.name}`, "success");
+            showToast(activeSpellForModal.name, "success");
           }
           setActiveSpellForModal(null);
         }}
@@ -820,7 +842,7 @@ export const CombatView: React.FC = () => {
           openDiceDrawer({
             dice: { "20": 1 },
             modifier: spell_stats?.attack_bonus || 0,
-            label: `Ataque Mágico: ${activeSpellForModal.name}`,
+            label: `${t("spells.spellAttackBonus")}: ${activeSpellForModal.name}`,
             dc: spell_stats?.dc,
           });
         }}
@@ -847,4 +869,3 @@ export const CombatView: React.FC = () => {
     </div>
   );
 };
-

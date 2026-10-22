@@ -1,26 +1,32 @@
 ---
-id: "toque_helado"
-nombre: "Toque Helado"
+id: toque_helado
+nombre: Toque Helado
 nivel: 0
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 340
 tags:
-  - "nigromancia"
-  - "nivel_0"
-  - "brujo"
-  - "hechicero"
-  - "mago"
+- nigromancia
+- nivel_0
+- brujo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Chill Touch
 ---
 
 # Toque Helado

@@ -1,14 +1,20 @@
 ---
-id: "combate_con_armas_a_dos_manos"
-nombre: "Combate Con Armas A Dos Manos"
-categoria: "Estilo de Combate"
-encabezado: "Dote de estilo de combate (requisitos: rasgo Estilo de combate)"
-fuente: "PHB 2024"
+id: combate_con_armas_a_dos_manos
+nombre: Combate Con Armas A Dos Manos
+categoria: Estilo de Combate
+encabezado: 'Dote de estilo de combate (requisitos: rasgo Estilo de combate)'
+fuente: PHB 2024
 pagina: 211
 tags:
-  - "dote"
-  - "estilo_combate"
-  - "combate_con_armas_a_dos_manos"
+- dote
+- estilo_combate
+- combate_con_armas_a_dos_manos
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Great Weapon Fighting
 ---
 
 # Combate Con Armas A Dos Manos

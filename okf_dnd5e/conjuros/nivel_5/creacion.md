@@ -1,24 +1,30 @@
 ---
-id: "creacion"
-nombre: "Creación"
+id: creacion
+nombre: Creación
 nivel: 5
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "1 minuto"
-alcance: "9 m"
-componentes: "V, S, M (un pincel)"
-duracion: "Especial"
+- Hechicero
+- Mago
+tiempo_lanzamiento: 1 minuto
+alcance: 9 m
+componentes: V, S, M (un pincel)
+duracion: Especial
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 267
 tags:
-  - "ilusionismo"
-  - "nivel_5"
-  - "hechicero"
-  - "mago"
+- ilusionismo
+- nivel_5
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Creation
 ---
 
 # Creación

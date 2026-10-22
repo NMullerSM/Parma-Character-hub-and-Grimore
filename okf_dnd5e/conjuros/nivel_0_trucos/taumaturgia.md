@@ -1,22 +1,28 @@
 ---
-id: "taumaturgia"
-nombre: "Taumaturgia"
+id: taumaturgia
+nombre: Taumaturgia
 nivel: 0
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Clérigo"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V"
-duracion: "Hasta 1 minuto"
+- Clérigo
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V
+duracion: Hasta 1 minuto
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 336
 tags:
-  - "transmutación"
-  - "nivel_0"
-  - "clérigo"
+- transmutación
+- nivel_0
+- clérigo
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Thaumaturgy
 ---
 
 # Taumaturgia

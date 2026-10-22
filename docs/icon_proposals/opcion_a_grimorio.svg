@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
+  <!-- Grimoire Cover -->
+  <rect x="44" y="32" width="168" height="192" rx="14" fill="#181424" stroke="#c9a45c" stroke-width="8"/>
+  <!-- Spine Shadow -->
+  <rect x="44" y="32" width="28" height="192" rx="6" fill="#100e17" stroke="#c9a45c" stroke-width="4"/>
+  <!-- Corner Metal Reinforcements -->
+  <path d="M44 68 L68 44 M44 188 L68 212 M188 44 L212 68 M188 212 L212 188" stroke="#e5c07b" stroke-width="6" stroke-linecap="round"/>
+  <!-- Arcane Diamond / Rune Center -->
+  <polygon points="142,88 178,128 142,168 106,128" fill="#e63946" stroke="#f1c40f" stroke-width="6"/>
+  <!-- Inner Star / Glow -->
+  <polygon points="142,106 158,128 142,150 126,128" fill="#fff" opacity="0.9"/>
+  <!-- Bookmark Ribbon -->
+  <path d="M142 32 V54 L134 46 L126 54 V32" fill="#e63946"/>
+</svg>

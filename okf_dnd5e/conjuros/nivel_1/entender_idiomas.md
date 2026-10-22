@@ -1,29 +1,35 @@
 ---
-id: "entender_idiomas"
-nombre: "Entender Idiomas"
+id: entender_idiomas
+nombre: Entender Idiomas
 nivel: 1
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción o ritual"
-alcance: "Lanzador"
-componentes: "V, S, M (una pizca de hollín y sal)"
-duracion: "1 hora"
+- Bardo
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción o ritual
+alcance: Lanzador
+componentes: V, S, M (una pizca de hollín y sal)
+duracion: 1 hora
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 280
 tags:
-  - "adivinación"
-  - "nivel_1"
-  - "bardo"
-  - "brujo"
-  - "hechicero"
-  - "mago"
-  - "ritual"
+- adivinación
+- nivel_1
+- bardo
+- brujo
+- hechicero
+- mago
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Comprehend Languages
 ---
 
 # Entender Idiomas

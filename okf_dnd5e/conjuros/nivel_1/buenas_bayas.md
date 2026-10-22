@@ -1,24 +1,30 @@
 ---
-id: "buenas_bayas"
-nombre: "Buenas Bayas"
+id: buenas_bayas
+nombre: Buenas Bayas
 nivel: 1
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Druida"
-  - "Explorador"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S, M (una rama de muérdago)"
-duracion: "24 horas"
+- Druida
+- Explorador
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S, M (una rama de muérdago)
+duracion: 24 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 251
 tags:
-  - "conjuración"
-  - "nivel_1"
-  - "druida"
-  - "explorador"
+- conjuración
+- nivel_1
+- druida
+- explorador
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Goodberry
 ---
 
 # Buenas Bayas

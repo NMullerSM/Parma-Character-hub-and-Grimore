@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useCharacter } from "../context/CharacterContext";
+import { useTranslation } from "../i18n";
 
 interface DieSvgProps {
   sides: number;
@@ -115,6 +116,7 @@ const PolyhedralDieSvg: React.FC<DieSvgProps> = ({ sides, roll, isNat20, isNat1 
 
 export const DiceRollAnimation: React.FC = () => {
   const { isRollingAnimation, currentRollingData } = useCharacter();
+  const { t } = useTranslation();
   const [animState, setAnimState] = useState<"launch" | "settle">("launch");
 
   useEffect(() => {
@@ -130,6 +132,7 @@ export const DiceRollAnimation: React.FC = () => {
   if (!isRollingAnimation || !currentRollingData) return null;
 
   const { dice_rolls, total, label, modifier } = currentRollingData;
+  const displayLabel = label === "Tirada Rápida" || label === "Quick Roll" ? t("dice.quickRoll") : label;
 
   return (
     <div className="fixed inset-0 z-50 pointer-events-none flex items-center justify-center p-4">
@@ -140,7 +143,7 @@ export const DiceRollAnimation: React.FC = () => {
       <div className="relative z-10 flex flex-col items-center gap-5 max-w-2xl w-full">
         {/* Motivo de la tirada */}
         <div className="px-5 py-1.5 rounded-full bg-surface/95 border border-border-iron shadow-xl text-xs font-semibold text-gold tracking-wider uppercase animate-in fade-in duration-300">
-          {label}
+          {displayLabel}
         </div>
 
         {/* Mesa de Dados: Dispersión limpia sin colisiones ni superposiciones */}
@@ -185,7 +188,7 @@ export const DiceRollAnimation: React.FC = () => {
             animState === "settle" ? "scale-100 opacity-100 translate-y-0" : "scale-80 opacity-0 translate-y-4"
           }`}
         >
-          <span className="text-xs font-semibold uppercase text-muted tracking-wider">Total:</span>
+          <span className="text-xs font-semibold uppercase text-muted tracking-wider">{t("dice.total")}</span>
           <span className="font-stat font-bold text-4xl md:text-5xl text-gold">{total}</span>
           {modifier !== 0 && (
             <span className="text-xs font-stat text-muted">

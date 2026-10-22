@@ -1,30 +1,36 @@
 ---
-id: "hechizar_monstruo"
-nombre: "Hechizar Monstruo"
+id: hechizar_monstruo
+nombre: Hechizar Monstruo
 nivel: 4
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S"
-duracion: "1 hora"
+- Bardo
+- Brujo
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S
+duracion: 1 hora
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 293
 tags:
-  - "encantamiento"
-  - "nivel_4"
-  - "bardo"
-  - "brujo"
-  - "druida"
-  - "hechicero"
-  - "mago"
+- encantamiento
+- nivel_4
+- bardo
+- brujo
+- druida
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Charm Monster
 ---
 
 # Hechizar Monstruo

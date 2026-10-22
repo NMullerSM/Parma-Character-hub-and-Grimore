@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useTranslation } from "../i18n";
 import { api } from "../api/client";
 import type { PdfDocumentSummary, PdfDocumentInfo, PdfTocItem, PdfLinkItem } from "../api/types";
 import {
@@ -8,7 +9,6 @@ import {
   ZoomOut,
   Maximize2,
   Minimize2,
-  FolderOpen,
   List,
   PenTool,
   Eraser,
@@ -16,8 +16,10 @@ import {
 } from "lucide-react";
 
 export const PdfViewerView: React.FC = () => {
+  const { t, language } = useTranslation();
   const [docList, setDocList] = useState<PdfDocumentSummary[]>([]);
   const [selectedPath, setSelectedPath] = useState<string>("");
+  const [docLangFilter, setDocLangFilter] = useState<"all" | "es" | "en">(language);
   const [docInfo, setDocInfo] = useState<PdfDocumentInfo | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [zoom, setZoom] = useState<number>(1.0);
@@ -31,7 +33,7 @@ export const PdfViewerView: React.FC = () => {
 
   // Herramienta de Rotulador / Dibujo sobre el PDF
   const [isPenActive, setIsPenActive] = useState<boolean>(false);
-  const [pageAnnotations, setPageAnnotations] = useState<Record<number, string>>({}); // page -> dataUrl
+  const [pageAnnotations, setPageAnnotations] = useState<Record<number, string>>({});
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
 
@@ -99,18 +101,17 @@ export const PdfViewerView: React.FC = () => {
       console.error("Error rendering page:", e);
     } finally {
       setLoading(false);
-      // Volver el scroll al tope de la página
-      if (viewportRef.current) {
-        viewportRef.current.scrollTop = 0;
-      }
     }
   };
 
-  const gotoPage = async (p: number) => {
-    if (!docInfo) return;
-    const target = Math.max(1, Math.min(docInfo.page_count, p));
-    setCurrentPage(target);
-    await renderPage(target, zoom, trimMargins);
+  const gotoPage = async (page: number) => {
+    if (!docInfo || page < 1 || page > docInfo.page_count) return;
+    saveCurrentAnnotation();
+    setCurrentPage(page);
+    await renderPage(page, zoom, trimMargins);
+    if (viewportRef.current) {
+      viewportRef.current.scrollTop = 0;
+    }
   };
 
   const handleZoom = async (delta: number) => {
@@ -119,96 +120,126 @@ export const PdfViewerView: React.FC = () => {
     await renderPage(currentPage, nextZoom, trimMargins);
   };
 
-  // ==========================================
-  // CANVAS DE ANOTACIONES / ROTULADOR
-  // ==========================================
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const existing = pageAnnotations[currentPage];
-    if (existing) {
-      const img = new Image();
-      img.onload = () => ctx.drawImage(img, 0, 0);
-      img.src = existing;
+  // Guardar y restaurar trazos del Canvas sobre la página
+  const saveCurrentAnnotation = () => {
+    if (canvasRef.current && isPenActive) {
+      const dataUrl = canvasRef.current.toDataURL();
+      setPageAnnotations((prev) => ({ ...prev, [currentPage]: dataUrl }));
     }
-  }, [currentPage, pageAnnotations, pageDims]);
+  };
+
+  const clearCurrentAnnotation = () => {
+    if (canvasRef.current) {
+      const ctx = canvasRef.current.getContext("2d");
+      if (ctx) ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      setPageAnnotations((prev) => {
+        const next = { ...prev };
+        delete next[currentPage];
+        return next;
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const saved = pageAnnotations[currentPage];
+      if (saved) {
+        const img = new Image();
+        img.onload = () => ctx.drawImage(img, 0, 0);
+        img.src = saved;
+      }
+    }
+  }, [currentPage, pageBase64]);
 
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isPenActive) return;
-    setIsDrawing(true);
+    if (!isPenActive || !canvasRef.current) return;
     const canvas = canvasRef.current;
-    if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+    const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+    ctx.strokeStyle = "rgba(234, 179, 8, 0.45)";
+    ctx.lineWidth = 14;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
     ctx.beginPath();
-    ctx.moveTo((e.clientX - rect.left) * (canvas.width / rect.width), (e.clientY - rect.top) * (canvas.height / rect.height));
+    ctx.moveTo(x, y);
+    setIsDrawing(true);
   };
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDrawing || !isPenActive) return;
+    if (!isDrawing || !isPenActive || !canvasRef.current) return;
     const canvas = canvasRef.current;
-    if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     const rect = canvas.getBoundingClientRect();
-
-    ctx.strokeStyle = "rgba(230, 57, 70, 0.75)"; // Carmesí traslúcido
-    ctx.lineWidth = 4;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    ctx.lineTo((e.clientX - rect.left) * (canvas.width / rect.width), (e.clientY - rect.top) * (canvas.height / rect.height));
+    const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+    const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+    ctx.lineTo(x, y);
     ctx.stroke();
   };
 
   const stopDrawing = () => {
     if (!isDrawing) return;
     setIsDrawing(false);
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const dataUrl = canvas.toDataURL();
-    setPageAnnotations((prev) => ({ ...prev, [currentPage]: dataUrl }));
+    saveCurrentAnnotation();
   };
 
-  const clearCurrentAnnotation = () => {
-    const canvas = canvasRef.current;
-    if (canvas) {
-      const ctx = canvas.getContext("2d");
-      ctx?.clearRect(0, 0, canvas.width, canvas.height);
-    }
-    setPageAnnotations((prev) => {
-      const next = { ...prev };
-      delete next[currentPage];
-      return next;
-    });
-  };
-
-  // Filtrar capítulos principales para el combobox comprimido
   const majorChapters = (docInfo?.toc || []).filter((item) => item.level <= 2);
 
+  const filteredDocs = docList.filter((d) => {
+    if (docLangFilter === "all") return true;
+    return d.lang === docLangFilter || d.lang === "all";
+  });
+
   return (
-    <div
-      className={`h-full flex flex-col p-3 md:p-5 space-y-3 mx-auto overflow-hidden ${
-        isZen ? "fixed inset-0 z-50 bg-canvas p-4" : "max-w-7xl"
-      }`}
-    >
-      {/* 1. Barra de Herramientas Ergonómica y Comprimida */}
+    <div className={`h-full flex flex-col p-2 sm:p-4 space-y-2 select-none overflow-hidden ${isZen ? "fixed inset-0 z-50 bg-canvas p-0" : ""}`}>
+      {/* 1. Barra de Controles Tácticos Superiores */}
       <div className="bg-card border border-border-iron rounded-xl p-2.5 flex flex-wrap items-center justify-between gap-2.5 shrink-0 select-none shadow-xs">
         {/* Selector de Manual y Combobox de Capítulos */}
         <div className="flex items-center gap-2">
+          {/* Selector de Filtro de Idioma de Manuales */}
+          <div className="flex items-center rounded border border-border-iron bg-surface p-0.5 text-[10px] font-semibold">
+            <button
+              onClick={() => setDocLangFilter("all")}
+              className={`px-1.5 py-0.5 rounded transition-colors ${
+                docLangFilter === "all" ? "bg-gold text-canvas" : "text-muted hover:text-main"
+              }`}
+            >
+              {t("common.all")}
+            </button>
+            <button
+              onClick={() => setDocLangFilter("es")}
+              className={`px-1.5 py-0.5 rounded transition-colors ${
+                docLangFilter === "es" ? "bg-gold text-canvas" : "text-muted hover:text-main"
+              }`}
+            >
+              ES
+            </button>
+            <button
+              onClick={() => setDocLangFilter("en")}
+              className={`px-1.5 py-0.5 rounded transition-colors ${
+                docLangFilter === "en" ? "bg-gold text-canvas" : "text-muted hover:text-main"
+              }`}
+            >
+              EN
+            </button>
+          </div>
+
           {/* Selector de Archivo PDF */}
           <select
             value={selectedPath}
             onChange={(e) => loadDocument(e.target.value)}
             className="bg-surface text-main border border-border-iron rounded px-2.5 py-1 text-xs focus:border-gold outline-none max-w-[200px] truncate"
           >
-            {docList.map((d) => (
+            {filteredDocs.map((d) => (
               <option key={d.path} value={d.path}>
-                📄 {d.name}
+                {d.lang === "en" ? "[EN] " : d.lang === "es" ? "[ES] " : "📄 "}{d.name}
               </option>
             ))}
           </select>
@@ -221,7 +252,7 @@ export const PdfViewerView: React.FC = () => {
                 onChange={(e) => gotoPage(Number(e.target.value))}
                 value={majorChapters.reduce((acc, curr) => (curr.page <= currentPage ? curr.page : acc), majorChapters[0]?.page || 1)}
                 className="bg-surface text-main border border-border-iron rounded px-2 py-1 text-xs focus:border-gold outline-none max-w-[190px] md:max-w-[240px] truncate font-medium"
-                title="Saltar a Capítulo o Sección"
+                title={t("pdf.toc")}
               >
                 {majorChapters.map((ch, idx) => (
                   <option key={idx} value={ch.page}>
@@ -232,11 +263,11 @@ export const PdfViewerView: React.FC = () => {
             </div>
           )}
 
-          {/* Botón para alternar el árbol de índice lateral si se desea navegación completa */}
+          {/* Botón para alternar el árbol de índice lateral */}
           {docInfo?.toc && docInfo.toc.length > 0 && (
             <button
               onClick={() => setShowToc(!showToc)}
-              title={showToc ? "Ocultar Índice Lateral" : "Ver Índice Completo"}
+              title={t("pdf.toc")}
               className={`p-1.5 rounded border transition-colors ${
                 showToc ? "border-gold bg-gold/10 text-gold" : "border-border-iron text-muted hover:text-main"
               }`}
@@ -252,7 +283,7 @@ export const PdfViewerView: React.FC = () => {
             onClick={() => gotoPage(currentPage - 1)}
             disabled={currentPage <= 1}
             className="p-1 rounded border border-border-iron hover:border-gold disabled:opacity-30 text-main transition-colors"
-            title="Página Anterior (←)"
+            title={t("pdf.prevPage")}
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
@@ -271,7 +302,7 @@ export const PdfViewerView: React.FC = () => {
             onClick={() => gotoPage(currentPage + 1)}
             disabled={!docInfo || currentPage >= docInfo.page_count}
             className="p-1 rounded border border-border-iron hover:border-gold disabled:opacity-30 text-main transition-colors"
-            title="Página Siguiente (→)"
+            title={t("pdf.nextPage")}
           >
             <ChevronRight className="w-4 h-4" />
           </button>
@@ -279,22 +310,21 @@ export const PdfViewerView: React.FC = () => {
 
         {/* Herramientas de Rotulador, Zoom y Pantalla Completa */}
         <div className="flex items-center gap-1.5">
-          {/* Rotulador de Anotaciones */}
           <button
             onClick={() => setIsPenActive(!isPenActive)}
-            title={isPenActive ? "Desactivar Marcador" : "Activar Rotulador para Rayar / Marcar"}
+            title={t("pdf.penTool")}
             className={`p-1.5 rounded border transition-all flex items-center gap-1 text-xs ${
               isPenActive ? "border-crimson bg-crimson/20 text-crimson font-bold shadow-xs" : "border-border-iron text-muted hover:text-main"
             }`}
           >
             <PenTool className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Marcar</span>
+            <span className="hidden sm:inline">{t("pdf.penTool")}</span>
           </button>
 
           {pageAnnotations[currentPage] && (
             <button
               onClick={clearCurrentAnnotation}
-              title="Borrar anotaciones de esta página"
+              title={t("pdf.clearDrawings")}
               className="p-1.5 rounded border border-border-iron hover:border-crimson text-muted hover:text-crimson transition-colors"
             >
               <Eraser className="w-3.5 h-3.5" />
@@ -306,7 +336,7 @@ export const PdfViewerView: React.FC = () => {
           {/* Zoom */}
           <button
             onClick={() => handleZoom(-0.2)}
-            title="Reducir Zoom"
+            title={t("pdf.zoomOut")}
             className="p-1.5 rounded border border-border-iron hover:border-gold text-muted hover:text-main"
           >
             <ZoomOut className="w-3.5 h-3.5" />
@@ -314,37 +344,33 @@ export const PdfViewerView: React.FC = () => {
           <span className="text-xs font-stat text-muted min-w-[40px] text-center">{Math.round(zoom * 100)}%</span>
           <button
             onClick={() => handleZoom(0.2)}
-            title="Aumentar Zoom"
+            title={t("pdf.zoomIn")}
             className="p-1.5 rounded border border-border-iron hover:border-gold text-muted hover:text-main"
           >
             <ZoomIn className="w-3.5 h-3.5" />
           </button>
 
-          {/* Alternar Limpieza de Bordes / Escaneo */}
+          {/* Alternar Limpieza de Bordes */}
           <button
             onClick={async () => {
               const nextTrim = !trimMargins;
               setTrimMargins(nextTrim);
               await renderPage(currentPage, zoom, nextTrim);
             }}
-            title={
-              trimMargins
-                ? "Bordes limpios activos (Recorta marcos de imprenta). Clic para ver original"
-                : "Bordes originales activos. Clic para recortar marcos negros/rojos de escaneo"
-            }
+            title={t("pdf.trimMargins")}
             className={`px-2 py-1 rounded border text-[11px] font-medium transition-colors ${
               trimMargins
                 ? "border-gold/60 bg-gold/15 text-gold"
                 : "border-border-iron text-muted hover:text-main"
             }`}
           >
-            {trimMargins ? "Sin Marcos" : "Con Marcos"}
+            {t("pdf.trimMargins")}
           </button>
 
           {/* Pantalla Completa */}
           <button
             onClick={() => setIsZen(!isZen)}
-            title={isZen ? "Salir de Pantalla Completa" : "Pantalla Completa Zen"}
+            title={t("pdf.zenMode")}
             className="p-1.5 rounded border border-border-iron hover:border-gold text-muted hover:text-main ml-1"
           >
             {isZen ? <Minimize2 className="w-3.5 h-3.5 text-crimson" /> : <Maximize2 className="w-3.5 h-3.5" />}
@@ -358,24 +384,27 @@ export const PdfViewerView: React.FC = () => {
         {showToc && docInfo?.toc && docInfo.toc.length > 0 && (
           <aside className="w-64 bg-card border border-border-iron rounded-xl p-3 overflow-y-auto space-y-1 shrink-0 select-none animate-in fade-in duration-200">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted mb-2 pb-1 border-b border-border-iron/60 flex items-center justify-between">
-              <span>Índice Completo</span>
-              <span className="font-stat text-[10px] text-muted">({docInfo.toc.length})</span>
+              <span>{t("pdf.toc")}</span>
+              <span className="font-stat text-[10px] text-gold">{docInfo.toc.length}</span>
             </h3>
             <div className="space-y-0.5">
               {docInfo.toc.map((item: PdfTocItem, idx: number) => {
-                const indent = Math.max(0, (item.level - 1) * 12);
                 const isActive = item.page === currentPage;
                 return (
                   <button
                     key={idx}
                     onClick={() => gotoPage(item.page)}
-                    style={{ paddingLeft: `${indent + 8}px` }}
-                    className={`w-full text-left py-1 pr-2 rounded text-xs truncate flex items-center justify-between transition-colors ${
-                      isActive ? "bg-surface text-gold font-semibold" : "text-muted hover:text-main hover:bg-surface/40"
+                    style={{ paddingLeft: `${Math.max(4, (item.level - 1) * 12)}px` }}
+                    className={`w-full text-left py-1 px-2 rounded text-xs transition-colors flex items-center justify-between group ${
+                      isActive
+                        ? "bg-gold/15 text-gold font-bold border-l-2 border-gold"
+                        : "text-muted hover:text-main hover:bg-surface/60"
                     }`}
                   >
-                    <span className="truncate">{item.title}</span>
-                    <span className="font-stat text-[10px] text-muted/70 ml-1 shrink-0">{item.page}</span>
+                    <span className="truncate pr-1">{item.title}</span>
+                    <span className="text-[10px] font-stat text-muted/60 group-hover:text-gold shrink-0">
+                      {item.page}
+                    </span>
                   </button>
                 );
               })}
@@ -383,76 +412,75 @@ export const PdfViewerView: React.FC = () => {
           </aside>
         )}
 
-        {/* Viewport de Página: Con Scroll Natural desde Arriba hacia Abajo */}
-        <main
+        {/* Visor Central de la Página Renderizada */}
+        <div
           ref={viewportRef}
-          className="flex-1 bg-input border border-border-iron rounded-xl overflow-y-auto overflow-x-auto flex flex-col items-center justify-start p-4 relative"
+          className="flex-1 bg-surface/30 border border-border-iron rounded-xl overflow-auto flex items-start justify-center p-2 sm:p-4 relative"
         >
           {loading && (
-            <div className="sticky top-2 z-30 bg-card/95 border border-border-iron px-3 py-1 rounded text-xs text-gold shadow-md">
-              Renderizando página...
+            <div className="absolute inset-0 bg-canvas/60 backdrop-blur-xs flex items-center justify-center z-30">
+              <div className="flex flex-col items-center gap-2">
+                <span className="w-7 h-7 border-2 border-gold border-t-transparent rounded-full animate-spin" />
+                <span className="text-xs text-gold font-medium">{t("pdf.loadingPage")}</span>
+              </div>
             </div>
           )}
 
           {pageBase64 ? (
-            <div className="relative shadow-2xl rounded-sm inline-block overflow-hidden bg-canvas">
-              {/* Imagen de la Página Renderizada */}
+            <div className="relative shadow-2xl rounded overflow-hidden select-none inline-block">
               <img
-                src={`data:image/png;base64,${pageBase64}`}
-                alt={`Página ${currentPage}`}
-                className="block max-w-none rounded-sm select-none"
-                style={{
-                  width: `${pageDims.width * zoom}px`,
-                  height: `${pageDims.height * zoom}px`,
-                }}
+                src={pageBase64.startsWith("data:") ? pageBase64 : `data:image/png;base64,${pageBase64}`}
+                alt={t("pdf.pageNav", { current: currentPage, total: docInfo?.page_count || docInfo?.total_pages || 1 })}
+                style={{ width: pageDims.width * zoom, height: pageDims.height * zoom }}
+                className="max-w-none block pointer-events-none"
               />
 
-              {/* Capa de Enlaces Interactivos del PDF (TOC interno, referencias cruzadas) */}
-              {!isPenActive &&
-                pageLinks.map((link, lIdx) => {
-                  const [x0, y0, x1, y1] = link.rect;
-                  // En PyMuPDF, las coordenadas de rect son en puntos desde la esquina superior izquierda
-                  const leftPct = (x0 / pageDims.width) * 100;
-                  const topPct = (y0 / pageDims.height) * 100;
-                  const widthPct = ((x1 - x0) / pageDims.width) * 100;
-                  const heightPct = ((y1 - y0) / pageDims.height) * 100;
+              {/* Capa de Enlaces Interactivos del PDF */}
+              {pageLinks.map((link, idx) => {
+                const scaleX = (pageDims.width * zoom) / pageDims.width;
+                const scaleY = (pageDims.height * zoom) / pageDims.height;
+                return (
+                  <div
+                    key={idx}
+                    onClick={() => {
+                      if (link.target_page) gotoPage(link.target_page);
+                      else if (link.uri) window.open(link.uri, "_blank");
+                    }}
+                    style={{
+                      left: link.rect[0] * scaleX,
+                      top: link.rect[1] * scaleY,
+                      width: (link.rect[2] - link.rect[0]) * scaleX,
+                      height: (link.rect[3] - link.rect[1]) * scaleY,
+                    }}
+                    className="absolute cursor-pointer border border-transparent hover:border-gold hover:bg-gold/15 transition-all rounded"
+                    title={link.uri || `Ir a página ${link.target_page}`}
+                  />
+                );
+              })}
 
-                  return (
-                    <button
-                      key={lIdx}
-                      onClick={() => gotoPage(link.target_page)}
-                      title={`Saltar a página ${link.target_page}`}
-                      style={{
-                        left: `${leftPct}%`,
-                        top: `${topPct}%`,
-                        width: `${widthPct}%`,
-                        height: `${heightPct}%`,
-                      }}
-                      className="absolute z-10 bg-transparent hover:bg-gold/20 border border-transparent hover:border-gold/50 rounded-xs transition-colors cursor-pointer"
-                    />
-                  );
-                })}
-
-              {/* Capa Canvas para Rotulador / Anotaciones */}
+              {/* Capa de Dibujo / Rotulador de Anotaciones */}
               <canvas
                 ref={canvasRef}
-                width={pageDims.width * zoom}
-                height={pageDims.height * zoom}
+                width={pageDims.width}
+                height={pageDims.height}
+                style={{
+                  width: pageDims.width * zoom,
+                  height: pageDims.height * zoom,
+                  pointerEvents: isPenActive ? "auto" : "none",
+                }}
                 onMouseDown={startDrawing}
                 onMouseMove={draw}
                 onMouseUp={stopDrawing}
                 onMouseLeave={stopDrawing}
-                className={`absolute inset-0 z-20 ${isPenActive ? "cursor-crosshair pointer-events-auto" : "pointer-events-none"}`}
+                className="absolute inset-0 z-20 cursor-crosshair"
               />
             </div>
           ) : (
-            <div className="text-center text-xs text-muted space-y-2 p-12 my-auto">
-              <FolderOpen className="w-10 h-10 text-muted mx-auto opacity-50" />
-              <p className="font-semibold text-main text-sm">Visor de Manuales Oficiales D&D 5e</p>
-              <p>Selecciona un PDF de la lista superior para comenzar tu lectura.</p>
+            <div className="h-full flex items-center justify-center text-xs text-muted">
+              {t("pdf.noPdfs")}
             </div>
           )}
-        </main>
+        </div>
       </div>
     </div>
   );

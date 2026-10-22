@@ -1,28 +1,34 @@
 ---
-id: "ilusion_menor"
-nombre: "Ilusión Menor"
+id: ilusion_menor
+nombre: Ilusión Menor
 nivel: 0
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "S, M (un poco de vellón)"
-duracion: "1 minuto"
+- Bardo
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: S, M (un poco de vellón)
+duracion: 1 minuto
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 294
 tags:
-  - "ilusionismo"
-  - "nivel_0"
-  - "bardo"
-  - "brujo"
-  - "hechicero"
-  - "mago"
+- ilusionismo
+- nivel_0
+- bardo
+- brujo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Minor Illusion
 ---
 
 # Ilusión Menor

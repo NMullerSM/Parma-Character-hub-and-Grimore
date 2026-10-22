@@ -1,14 +1,20 @@
 ---
-id: "perforador"
-nombre: "Perforador"
-categoria: "General"
-encabezado: "Dote general (requisitos: nivel"
-fuente: "PHB 2024"
+id: perforador
+nombre: Perforador
+categoria: General
+encabezado: 'Dote general (requisitos: nivel'
+fuente: PHB 2024
 pagina: 209
 tags:
-  - "dote"
-  - "generales"
-  - "perforador"
+- dote
+- generales
+- perforador
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Piercer
 ---
 
 # Perforador

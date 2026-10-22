@@ -1,24 +1,30 @@
 ---
-id: "mente_en_blanco"
-nombre: "Mente En Blanco"
+id: mente_en_blanco
+nombre: Mente En Blanco
 nivel: 8
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Bardo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S"
-duracion: "24 horas"
+- Bardo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S
+duracion: 24 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 312
 tags:
-  - "abjuración"
-  - "nivel_8"
-  - "bardo"
-  - "mago"
+- abjuración
+- nivel_8
+- bardo
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Mind Blank
 ---
 
 # Mente En Blanco

@@ -1,24 +1,30 @@
 ---
-id: "labia"
-nombre: "Labia"
+id: labia
+nombre: Labia
 nivel: 8
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Brujo"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V"
-duracion: "1 hora"
+- Bardo
+- Brujo
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V
+duracion: 1 hora
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 306
 tags:
-  - "encantamiento"
-  - "nivel_8"
-  - "bardo"
-  - "brujo"
+- encantamiento
+- nivel_8
+- bardo
+- brujo
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Glibness
 ---
 
 # Labia

@@ -1,19 +1,23 @@
 ---
-id: "tiefling_abisal"
-nombre: "Tiefling (Linaje Abisal)"
-nombre_ingles: "Abyssal Tiefling"
-fuente: "Manual del Jugador 2024"
+id: tiefling_abisal
+nombre: Tiefling (Linaje Abisal)
+nombre_ingles: Abyssal Tiefling
+fuente: Manual del Jugador 2024
 pagina: 198
-tipo: "especie_linaje"
-velocidad: "9 m (30 pies)"
-tamano: "Mediano"
-vision_oscuridad: "18 m (60 pies)"
+tipo: especie_linaje
+velocidad: 9 m (30 pies)
+tamano: Mediano
+vision_oscuridad: 18 m (60 pies)
 tags:
-  - "especie"
-  - "tiefling"
-  - "abisal"
-  - "linaje"
-  - "caos"
+- especie
+- tiefling
+- abisal
+- linaje
+- caos
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Especie: Tiefling (Linaje Abisal)

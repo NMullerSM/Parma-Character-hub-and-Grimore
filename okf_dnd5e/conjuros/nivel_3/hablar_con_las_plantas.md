@@ -1,26 +1,32 @@
 ---
-id: "hablar_con_las_plantas"
-nombre: "Hablar Con Las Plantas"
+id: hablar_con_las_plantas
+nombre: Hablar Con Las Plantas
 nivel: 3
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Bardo"
-  - "Druida"
-  - "Explorador"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S"
-duracion: "10 minutos"
+- Bardo
+- Druida
+- Explorador
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S
+duracion: 10 minutos
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 291
 tags:
-  - "transmutación"
-  - "nivel_3"
-  - "bardo"
-  - "druida"
-  - "explorador"
+- transmutación
+- nivel_3
+- bardo
+- druida
+- explorador
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Speak with Plants
 ---
 
 # Hablar Con Las Plantas

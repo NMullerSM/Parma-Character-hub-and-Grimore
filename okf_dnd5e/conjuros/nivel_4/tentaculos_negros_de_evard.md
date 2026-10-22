@@ -1,23 +1,29 @@
 ---
-id: "tentaculos_negros_de_evard"
-nombre: "Tentáculos Negros De Evard"
+id: tentaculos_negros_de_evard
+nombre: Tentáculos Negros De Evard
 nivel: 4
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "27 m"
-componentes: "V, S, M (un tentáculo)"
-duracion: "Concentración, hasta 1 minuto"
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 27 m
+componentes: V, S, M (un tentáculo)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 339
 tags:
-  - "conjuración"
-  - "nivel_4"
-  - "mago"
-  - "concentracion"
+- conjuración
+- nivel_4
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Evard's Black Tentacles
 ---
 
 # Tentáculos Negros De Evard

@@ -1,24 +1,30 @@
 ---
-id: "relampago_en_cadena"
-nombre: "Relámpago En Cadena"
+id: relampago_en_cadena
+nombre: Relámpago En Cadena
 nivel: 6
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "45 m"
-componentes: "V, S, M (tres alfileres de plata)"
-duracion: "Instantáneo"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 45 m
+componentes: V, S, M (tres alfileres de plata)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 329
 tags:
-  - "evocación"
-  - "nivel_6"
-  - "hechicero"
-  - "mago"
+- evocación
+- nivel_6
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Chain Lightning
 ---
 
 # Relámpago En Cadena

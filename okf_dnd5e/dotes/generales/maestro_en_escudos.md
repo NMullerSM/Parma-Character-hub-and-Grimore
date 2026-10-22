@@ -1,14 +1,20 @@
 ---
-id: "maestro_en_escudos"
-nombre: "Maestro En Escudos"
-categoria: "General"
-encabezado: "Dote general (requisitos: nivel 4 o más, entrenamiento"
-fuente: "PHB 2024"
+id: maestro_en_escudos
+nombre: Maestro En Escudos
+categoria: General
+encabezado: 'Dote general (requisitos: nivel 4 o más, entrenamiento'
+fuente: PHB 2024
 pagina: 208
 tags:
-  - "dote"
-  - "generales"
-  - "maestro_en_escudos"
+- dote
+- generales
+- maestro_en_escudos
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Maestro En Escudos
 ---
 
 # Maestro En Escudos

@@ -1,25 +1,31 @@
 ---
-id: "alterar_el_propio_aspecto"
-nombre: "Alterar El Propio Aspecto"
+id: alterar_el_propio_aspecto
+nombre: Alterar El Propio Aspecto
 nivel: 2
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 hora"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 242
 tags:
-  - "transmutación"
-  - "nivel_2"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- transmutación
+- nivel_2
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Alter Self
 ---
 
 # Alterar El Propio Aspecto

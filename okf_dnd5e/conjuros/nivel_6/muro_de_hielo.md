@@ -1,23 +1,29 @@
 ---
-id: "muro_de_hielo"
-nombre: "Muro De Hielo"
+id: muro_de_hielo
+nombre: Muro De Hielo
 nivel: 6
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S, M (un trozo de cuarzo)"
-duracion: "Concentración, hasta 10 minutos"
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S, M (un trozo de cuarzo)
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 314
 tags:
-  - "evocación"
-  - "nivel_6"
-  - "mago"
-  - "concentracion"
+- evocación
+- nivel_6
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Wall of Ice
 ---
 
 # Muro De Hielo

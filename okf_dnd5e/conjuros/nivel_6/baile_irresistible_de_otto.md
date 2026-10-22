@@ -1,25 +1,31 @@
 ---
-id: "baile_irresistible_de_otto"
-nombre: "Baile Irresistible De Otto"
+id: baile_irresistible_de_otto
+nombre: Baile Irresistible De Otto
 nivel: 6
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 249
 tags:
-  - "encantamiento"
-  - "nivel_6"
-  - "bardo"
-  - "mago"
-  - "concentracion"
+- encantamiento
+- nivel_6
+- bardo
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Otto's Irresistible Dance
 ---
 
 # Baile Irresistible De Otto

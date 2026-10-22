@@ -1,12 +1,21 @@
 ---
-id: "barbaro_corazon_salvaje"
-nombre: "Senda del Corazón Salvaje"
-nombre_ingles: "Path of the Wild Heart"
-tipo: "subclase"
-clase_padre: "Bárbaro"
+id: barbaro_corazon_salvaje
+nombre: Senda del Corazón Salvaje
+nombre_ingles: Path of the Wild Heart
+tipo: subclase
+clase_padre: Bárbaro
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["bárbaro", "totem", "animal", "resistencia", "phb2024"]
+fuente: PHB 2024
+tags:
+- bárbaro
+- totem
+- animal
+- resistencia
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Senda del Corazón Salvaje (Path of the Wild Heart)

@@ -1,22 +1,28 @@
 ---
-id: "flecha_acida_de_melf"
-nombre: "Flecha Ácida De Melf"
+id: flecha_acida_de_melf
+nombre: Flecha Ácida De Melf
 nivel: 2
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "27 m"
-componentes: "V, S, M (ruibarbo en polvo)"
-duracion: "Instantáneo"
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 27 m
+componentes: V, S, M (ruibarbo en polvo)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 285
 tags:
-  - "evocación"
-  - "nivel_2"
-  - "mago"
+- evocación
+- nivel_2
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Melf's Acid Arrow
 ---
 
 # Flecha Ácida De Melf

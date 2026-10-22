@@ -1,24 +1,30 @@
 ---
-id: "mansion_magnifica_de_mordenkainen"
-nombre: "Mansión Magnífica De Mordenkainen"
+id: mansion_magnifica_de_mordenkainen
+nombre: Mansión Magnífica De Mordenkainen
 nivel: 7
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Bardo"
-  - "Mago"
-tiempo_lanzamiento: "1 minuto"
-alcance: "90 m"
-componentes: "V, S, M (una puerta en miniatura que valga  al menos 15 po)"
-duracion: "24 horas"
+- Bardo
+- Mago
+tiempo_lanzamiento: 1 minuto
+alcance: 90 m
+componentes: V, S, M (una puerta en miniatura que valga  al menos 15 po)
+duracion: 24 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 311
 tags:
-  - "conjuración"
-  - "nivel_7"
-  - "bardo"
-  - "mago"
+- conjuración
+- nivel_7
+- bardo
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Mordenkainen's Magnificent Mansion
 ---
 
 # Mansión Magnífica De Mordenkainen

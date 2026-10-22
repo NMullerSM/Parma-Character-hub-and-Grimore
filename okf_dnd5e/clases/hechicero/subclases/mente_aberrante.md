@@ -1,12 +1,22 @@
 ---
-id: "hechicero_mente_aberrante"
-nombre: "Mente Aberrante"
-nombre_ingles: "Aberrant Mind"
-tipo: "subclase"
-clase_padre: "Hechicero"
+id: hechicero_mente_aberrante
+nombre: Mente Aberrante
+nombre_ingles: Aberrant Mind
+tipo: subclase
+clase_padre: Hechicero
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["hechicero", "psiónico", "tentáculos", "telepatía", "phb2024", "tasha"]
+fuente: PHB 2024
+tags:
+- hechicero
+- psiónico
+- tentáculos
+- telepatía
+- phb2024
+- tasha
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Mente Aberrante (Aberrant Mind)

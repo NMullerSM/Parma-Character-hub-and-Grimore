@@ -1,24 +1,30 @@
 ---
-id: "esfera_congelante_de_otiluke"
-nombre: "Esfera Congelante De Otiluke"
+id: esfera_congelante_de_otiluke
+nombre: Esfera Congelante De Otiluke
 nivel: 6
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "90 m"
-componentes: "V, S, M (una esfera de cristal en miniatura)"
-duracion: "Instantáneo"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 90 m
+componentes: V, S, M (una esfera de cristal en miniatura)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 281
 tags:
-  - "evocación"
-  - "nivel_6"
-  - "hechicero"
-  - "mago"
+- evocación
+- nivel_6
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Otiluke's Freezing Sphere
 ---
 
 # Esfera Congelante De Otiluke

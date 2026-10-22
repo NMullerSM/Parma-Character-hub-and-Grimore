@@ -1,26 +1,32 @@
 ---
-id: "hacer_anicos"
-nombre: "Hacer Añicos"
+id: hacer_anicos
+nombre: Hacer Añicos
 nivel: 2
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Bardo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S, M (una lasca de mica)"
-duracion: "Instantáneo"
+- Bardo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S, M (una lasca de mica)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 292
 tags:
-  - "evocación"
-  - "nivel_2"
-  - "bardo"
-  - "hechicero"
-  - "mago"
+- evocación
+- nivel_2
+- bardo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Shatter
 ---
 
 # Hacer Añicos

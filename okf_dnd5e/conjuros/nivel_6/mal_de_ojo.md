@@ -1,29 +1,35 @@
 ---
-id: "mal_de_ojo"
-nombre: "Mal De Ojo"
+id: mal_de_ojo
+nombre: Mal De Ojo
 nivel: 6
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 309
 tags:
-  - "nigromancia"
-  - "nivel_6"
-  - "bardo"
-  - "brujo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- nigromancia
+- nivel_6
+- bardo
+- brujo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Eyebite
 ---
 
 # Mal De Ojo

@@ -1,12 +1,21 @@
 ---
-id: "picaro_ladron"
-nombre: "Ladrón"
-nombre_ingles: "Thief"
-tipo: "subclase"
-clase_padre: "Pícaro"
+id: picaro_ladron
+nombre: Ladrón
+nombre_ingles: Thief
+tipo: subclase
+clase_padre: Pícaro
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["pícaro", "manos rápidas", "usar objeto", "sigilo supremo", "phb2024"]
+fuente: PHB 2024
+tags:
+- pícaro
+- manos rápidas
+- usar objeto
+- sigilo supremo
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Ladrón (Thief)

@@ -187,92 +187,13 @@ class SrdImporter:
         }
 
     def rebuild_master_index(self) -> int:
-        """Escanea todos los archivos Markdown de okf_dnd5e y reconstruye index_metadata.json."""
-        entities = []
-        for root, _, files in os.walk(self.okf_root):
-            for file in files:
-                if not file.endswith(".md") or file.upper() == "README.MD":
-                    continue
-                full_path = os.path.join(root, file)
-                rel_path = os.path.relpath(full_path, self.okf_root).replace("\\", "/")
-
-                try:
-                    with open(full_path, "r", encoding="utf-8") as f:
-                        content = f.read()
-
-                    if content.startswith("---"):
-                        parts = content.split("---", 2)
-                        if len(parts) >= 3:
-                            import yaml
-                            meta = yaml.safe_load(parts[1])
-                            # Determinar tipo canónico de entidad OKF
-                            tipo = meta.get("tipo")
-                            if not tipo:
-                                if "conjuros" in rel_path:
-                                    tipo = "conjuro"
-                                elif "dotes" in rel_path:
-                                    tipo = "dote"
-                                elif "subclases" in rel_path:
-                                    tipo = "subclase"
-                                elif "clases" in rel_path:
-                                    tipo = "clase"
-                                elif "especies" in rel_path:
-                                    tipo = "especie"
-                                elif "linajes" in rel_path:
-                                    tipo = "linaje"
-                                elif "trasfondos" in rel_path:
-                                    tipo = "trasfondo"
-                                elif "equipo" in rel_path:
-                                    tipo = "equipo"
-                                else:
-                                    tipo = "regla"
-
-                            entry = {
-                                "id": meta.get("id", Path(file).stem),
-                                "nombre": meta.get("nombre", Path(file).stem.replace("_", " ").title()),
-                                "nombre_ingles": meta.get("nombre_ingles", meta.get("nombre", "")),
-                                "tipo": tipo,
-                                "nivel": meta.get("nivel"),
-                                "escuela": meta.get("escuela"),
-                                "clases": meta.get("clases", []),
-                                "fuente": meta.get("fuente", "PHB 2024"),
-                                "tags": meta.get("tags", []),
-                                "path": rel_path,
-                            }
-                            if "dote_concedida" in meta:
-                                entry["dote_concedida"] = meta["dote_concedida"]
-                            if "caracteristicas_clave" in meta:
-                                entry["caracteristicas_clave"] = meta["caracteristicas_clave"]
-                            if "habilidades_competentes" in meta:
-                                entry["habilidades_competentes"] = meta["habilidades_competentes"]
-                            if "dado_golpe" in meta:
-                                entry["dado_golpe"] = meta["dado_golpe"]
-                            if "tiempo_lanzamiento" in meta:
-                                entry["tiempo_lanzamiento"] = meta["tiempo_lanzamiento"]
-                            if "alcance" in meta:
-                                entry["alcance"] = meta["alcance"]
-                            if "duracion" in meta:
-                                entry["duracion"] = meta["duracion"]
-                            if "concentracion" in meta:
-                                entry["concentracion"] = meta["concentracion"]
-                            if "ritual" in meta:
-                                entry["ritual"] = meta["ritual"]
-
-                            entities.append(entry)
-                except Exception as e:
-                    print(f"[SrdImporter] Error al procesar {rel_path}: {e}")
-
-        # Guardar en index_metadata.json
-        index_data = {
-            "version": "2.0.0",
-            "total_entities": len(entities),
-            "entities": entities,
-        }
-        with open(INDEX_PATH, "w", encoding="utf-8") as f:
-            json.dump(index_data, f, ensure_ascii=False, indent=2)
-
-        print(f"[SrdImporter] Índice reconstruido con {len(entities)} entidades.")
-        return len(entities)
+        """Escanea todos los archivos Markdown de okf_dnd5e y reconstruye index_metadata.json con catálogo dual ES/EN."""
+        try:
+            from .bilingual_okf_builder import build_full_bilingual_compendium
+            return build_full_bilingual_compendium()
+        except Exception as e:
+            print(f"[SrdImporter] Error al reconstruir índice bilingüe: {e}")
+            return 0
 
 
 if __name__ == "__main__":

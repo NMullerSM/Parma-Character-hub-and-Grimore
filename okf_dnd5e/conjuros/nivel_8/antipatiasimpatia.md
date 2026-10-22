@@ -1,26 +1,32 @@
 ---
-id: "antipatiasimpatia"
-nombre: "Antipatía/Simpatía"
+id: antipatiasimpatia
+nombre: Antipatía/Simpatía
 nivel: 8
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Druida"
-  - "Mago"
-tiempo_lanzamiento: "1 hora"
-alcance: "18 m"
-componentes: "V, S, M (una mezcla de vinagre y miel)  |"
-duracion: "10 días"
+- Bardo
+- Druida
+- Mago
+tiempo_lanzamiento: 1 hora
+alcance: 18 m
+componentes: V, S, M (una mezcla de vinagre y miel)  |
+duracion: 10 días
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 244
 tags:
-  - "encantamiento"
-  - "nivel_8"
-  - "bardo"
-  - "druida"
-  - "mago"
+- encantamiento
+- nivel_8
+- bardo
+- druida
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Antipathy/Sympathy
 ---
 
 # Antipatía/Simpatía

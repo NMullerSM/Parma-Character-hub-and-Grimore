@@ -1,19 +1,23 @@
 ---
-id: "gnomo_rocas"
-nombre: "Gnomo de las Rocas"
-nombre_ingles: "Rock Gnome"
-fuente: "Manual del Jugador 2024"
+id: gnomo_rocas
+nombre: Gnomo de las Rocas
+nombre_ingles: Rock Gnome
+fuente: Manual del Jugador 2024
 pagina: 193
-tipo: "especie_linaje"
-velocidad: "9 m (30 pies)"
-tamano: "Pequeño"
-vision_oscuridad: "18 m (60 pies)"
+tipo: especie_linaje
+velocidad: 9 m (30 pies)
+tamano: Pequeño
+vision_oscuridad: 18 m (60 pies)
 tags:
-  - "especie"
-  - "gnomo"
-  - "rocas"
-  - "linaje"
-  - "artifice"
+- especie
+- gnomo
+- rocas
+- linaje
+- artifice
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Especie: Gnomo de las Rocas (Rock Gnome)

@@ -1,24 +1,30 @@
 ---
-id: "cautiverio"
-nombre: "Cautiverio"
+id: cautiverio
+nombre: Cautiverio
 nivel: 9
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Brujo"
-  - "Mago"
-tiempo_lanzamiento: "1 minuto"
-alcance: "9 m"
-componentes: "V, S, M (una estatuilla del objetivo que valga  al menos 5000 po)"
-duracion: "Hasta que sea disipado"
+- Brujo
+- Mago
+tiempo_lanzamiento: 1 minuto
+alcance: 9 m
+componentes: V, S, M (una estatuilla del objetivo que valga  al menos 5000 po)
+duracion: Hasta que sea disipado
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 257
 tags:
-  - "abjuración"
-  - "nivel_9"
-  - "brujo"
-  - "mago"
+- abjuración
+- nivel_9
+- brujo
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Imprisonment
 ---
 
 # Cautiverio

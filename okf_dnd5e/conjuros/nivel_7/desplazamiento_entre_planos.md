@@ -1,30 +1,37 @@
 ---
-id: "desplazamiento_entre_planos"
-nombre: "Desplazamiento Entre Planos"
+id: desplazamiento_entre_planos
+nombre: Desplazamiento Entre Planos
 nivel: 7
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Brujo"
-  - "Clérigo"
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S, M (una vara de metal con forma de  horquilla que valga al menos 250 po y esté sintonizada  con un plano de existencia)"
-duracion: "Instantáneo"
+- Brujo
+- Clérigo
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S, M (una vara de metal con forma de  horquilla que valga al menos
+  250 po y esté sintonizada  con un plano de existencia)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 272
 tags:
-  - "conjuración"
-  - "nivel_7"
-  - "brujo"
-  - "clérigo"
-  - "druida"
-  - "hechicero"
-  - "mago"
+- conjuración
+- nivel_7
+- brujo
+- clérigo
+- druida
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Plane Shift
 ---
 
 # Desplazamiento Entre Planos

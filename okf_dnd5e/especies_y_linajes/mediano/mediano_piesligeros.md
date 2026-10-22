@@ -1,19 +1,23 @@
 ---
-id: "mediano_piesligeros"
-nombre: "Mediano Piesligeros"
-nombre_ingles: "Lightfoot Halfling"
-fuente: "Manual del Jugador 2024"
+id: mediano_piesligeros
+nombre: Mediano Piesligeros
+nombre_ingles: Lightfoot Halfling
+fuente: Manual del Jugador 2024
 pagina: 188
-tipo: "especie_linaje"
-velocidad: "9 m (30 pies)"
-tamano: "Pequeño"
-vision_oscuridad: "No"
+tipo: especie_linaje
+velocidad: 9 m (30 pies)
+tamano: Pequeño
+vision_oscuridad: 'No'
 tags:
-  - "especie"
-  - "mediano"
-  - "piesligeros"
-  - "linaje"
-  - "sigilo"
+- especie
+- mediano
+- piesligeros
+- linaje
+- sigilo
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Especie: Mediano Piesligeros (Lightfoot Halfling)

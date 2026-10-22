@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { useCharacter } from "../context/CharacterContext";
+import { useTranslation } from "../i18n";
 import type { SpellItemData } from "../api/types";
-import { X, BookOpen, Sparkles } from "lucide-react";
+import { BookOpen, Sparkles, Trash2 } from "lucide-react";
 import { SpellDetailModal } from "../components/SpellDetailModal";
 import { SpellBookManagerModal } from "../components/SpellBookManagerModal";
 import {
   formatRangeWithTiles,
   formatDurationWithTurns,
-  formatComponents,
 } from "../utils/formatters";
 
 export const SpellsView: React.FC = () => {
@@ -18,7 +18,16 @@ export const SpellsView: React.FC = () => {
     showToast,
     addSpell,
     removeSpell,
+    language,
   } = useCharacter();
+
+  const {
+    t,
+    translateSchool,
+    translateSpellName,
+    translateSpellDescription,
+  } = useTranslation();
+
   const [selectedLevel, setSelectedLevel] = useState<number | "all">("all");
   const [isAddingSpell, setIsAddingSpell] = useState<boolean>(false);
   const [isSpellManagerOpen, setIsSpellManagerOpen] = useState<boolean>(false);
@@ -39,7 +48,7 @@ export const SpellsView: React.FC = () => {
     return (
       <div className="h-full flex items-center justify-center p-8 text-center text-muted">
         <p className="font-display text-xl text-gold">
-          Selecciona un personaje para consultar su grimorio.
+          {t("spells.noCharacter")}
         </p>
       </div>
     );
@@ -69,7 +78,7 @@ export const SpellsView: React.FC = () => {
 
   const handleAddSpell = () => {
     if (!newSpell.name.trim()) {
-      showToast("Ingresa el nombre del conjuro", "warn");
+      showToast(t("spells.spellNameRequired"), "warn");
       return;
     }
     const updatedSpells = [...spells, { ...newSpell, name: newSpell.name.trim() }];
@@ -78,127 +87,110 @@ export const SpellsView: React.FC = () => {
       name: "",
       level: 0,
       school: "Evocación",
-      cast_time: "1 Acción",
-      range_area: "60 pies",
+      cast_time: language === "en" ? "1 Action" : "1 Acción",
+      range_area: language === "en" ? "60 ft" : "18 m",
       components: "V, S",
-      duration: "Instantáneo",
+      duration: language === "en" ? "Instantaneous" : "Instantáneo",
       prepared: true,
       notes: "",
     });
     setIsAddingSpell(false);
-    showToast("Conjuro añadido al grimorio", "success");
+    showToast(t("spells.spellAdded"), "success");
   };
-
 
   const filteredSpells = spells.filter((s) => {
     if (selectedLevel === "all") return true;
     return s.level === selectedLevel;
   });
 
-
-
-  const spellAttackBonus = spell_stats?.attack_bonus ?? 0;
-  const spellSaveDc = spell_stats?.dc ?? 10;
-  const spellAbility = spell_stats?.ability || "INT";
-
   return (
     <div className="h-full overflow-y-auto p-4 md:p-6 space-y-6 max-w-6xl mx-auto">
-      {/* 1. Header del Grimorio & Estadísticas Mágicas */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border-iron pb-4">
+      {/* 1. Header del Grimorio & Estadísticas Mágicas (Hick's Law Layout) */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-border-iron pb-4">
         <div>
           <h1 className="font-display font-bold text-2xl text-gold">
-            Grimorio & Ranuras de Conjuro
+            {t("spells.title")}
           </h1>
           <p className="text-xs text-muted">
-            Gestiona tus hechizos preparados, consulta el compendio 5e SRD y usa ranuras mágicas.
+            {t("spells.subtitle")}
           </p>
         </div>
 
-        {/* Estadísticas de Lanzamiento de Conjuros (Aptitud, CD, Ataque Mágico) */}
+        {/* Barra de Estadísticas Mágicas y Acciones */}
         <div className="flex flex-wrap items-center gap-2.5">
-          <div className="px-3 py-1.5 rounded bg-card border border-border-iron text-center">
-            <div className="text-[10px] uppercase text-muted font-semibold">Aptitud Mágica</div>
-            <div className="font-stat font-bold text-sm text-gold">{spellAbility}</div>
-          </div>
-          <div className="px-3 py-1.5 rounded bg-card border border-border-iron text-center">
-            <div className="text-[10px] uppercase text-muted font-semibold">CD Salvación</div>
-            <div className="font-stat font-bold text-sm text-main">{spellSaveDc}</div>
-          </div>
-          <button
-            onClick={() =>
-              openDiceDrawer({
-                dice: { "20": 1 },
-                modifier: spellAttackBonus,
-                label: "Ataque de Conjuro",
-              })
-            }
-            className="px-3 py-1.5 rounded bg-card hover:border-gold border border-border-iron text-center transition-colors"
-            title="Clic para tirar Ataque de Conjuro (1d20)"
-          >
-            <div className="text-[10px] uppercase text-muted font-semibold">Ataque Mágico</div>
-            <div className="font-stat font-bold text-sm text-gold">
-              {spellAttackBonus >= 0 ? `+${spellAttackBonus}` : spellAttackBonus}
+          <div className="flex items-center gap-2 shrink-0">
+            <div className="px-3 py-1.5 rounded-lg bg-card border border-border-iron text-center min-w-[70px]">
+              <div className="text-[10px] uppercase text-muted font-semibold tracking-wider">{t("spells.spellcastingAbility")}</div>
+              <div className="font-stat font-bold text-sm text-gold">
+                {spell_stats?.ability || "INT"}
+              </div>
             </div>
-          </button>
-          
-          <button
-            onClick={() => setIsSpellManagerOpen(true)}
-            className="px-3 py-2 rounded bg-gold hover:bg-gold-hover text-canvas text-xs font-bold transition-colors inline-flex items-center gap-1.5 shadow-[0_0_8px_rgba(201,164,92,0.3)]"
-            title="Buscar y añadir conjuros oficiales del Compendio SRD"
-          >
-            <BookOpen className="w-3.5 h-3.5" />
-            + Compendio OKF
-          </button>
-          <button
-            onClick={() => setIsAddingSpell(true)}
-            className="px-3 py-2 rounded bg-surface border border-border-iron hover:border-gold text-muted hover:text-main text-xs font-medium transition-colors"
-          >
-            + Manual
-          </button>
+            <div className="px-3 py-1.5 rounded-lg bg-card border border-border-iron text-center min-w-[70px]">
+              <div className="text-[10px] uppercase text-muted font-semibold tracking-wider">{t("spells.spellSaveDc")}</div>
+              <div className="font-stat font-bold text-sm text-main">{spell_stats?.dc ?? 10}</div>
+            </div>
+            <div className="px-3 py-1.5 rounded-lg bg-card border border-border-iron text-center min-w-[70px]">
+              <div className="text-[10px] uppercase text-muted font-semibold tracking-wider">{t("spells.spellAttackBonus")}</div>
+              <div className="font-stat font-bold text-sm text-gold">
+                {(spell_stats?.attack_bonus ?? 0) >= 0
+                  ? `+${spell_stats?.attack_bonus ?? 0}`
+                  : spell_stats?.attack_bonus}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0 sm:border-l sm:border-border-iron sm:pl-2.5">
+            <button
+              onClick={() => setIsSpellManagerOpen(true)}
+              className="px-3 py-2 rounded-lg bg-gold/15 hover:bg-gold hover:text-canvas border border-gold/40 text-gold text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs whitespace-nowrap"
+            >
+              <BookOpen className="w-4 h-4 shrink-0" />
+              <span>{t("spells.openManager")}</span>
+            </button>
+            <button
+              onClick={() => setIsAddingSpell(!isAddingSpell)}
+              className="px-3 py-2 rounded-lg bg-surface hover:bg-card border border-border-iron text-xs font-semibold text-main transition-colors whitespace-nowrap"
+            >
+              {isAddingSpell ? t("common.cancel") : t("spells.addCustomSpell")}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Modal / Formulario de Nuevo Conjuro con Salida Clara */}
+      {/* Formulario Desplegable para Agregar Conjuro Manual */}
       {isAddingSpell && (
-        <section className="bg-card border border-gold rounded-xl p-4 space-y-3">
-          <div className="flex items-center justify-between border-b border-border-iron pb-2">
-            <h3 className="font-display font-bold text-base text-gold">Añadir Conjuro al Grimorio</h3>
-            <button
-              onClick={() => setIsAddingSpell(false)}
-              className="p-1 text-muted hover:text-main"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-            <div className="sm:col-span-2">
-              <label className="block text-[11px] uppercase text-muted mb-1">Nombre</label>
+        <section className="bg-card border border-border-iron rounded-xl p-4 space-y-3">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
+            {t("spells.addCustomSpell")}
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label className="block text-[11px] uppercase text-muted mb-1">{t("spells.nameLabel")}</label>
               <input
                 type="text"
                 value={newSpell.name}
                 onChange={(e) => setNewSpell({ ...newSpell, name: e.target.value })}
-                placeholder="Ej: Bola de Fuego"
+                placeholder="Bola de Fuego / Fireball"
                 className="w-full bg-input text-main border border-border-iron rounded px-2.5 py-1.5 text-xs focus:border-gold outline-none"
               />
             </div>
             <div>
-              <label className="block text-[11px] uppercase text-muted mb-1">Nivel (0=Truco)</label>
-              <input
-                type="number"
-                min={0}
-                max={9}
+              <label className="block text-[11px] uppercase text-muted mb-1">{t("spells.levelLabel")}</label>
+              <select
                 value={newSpell.level}
-                onChange={(e) =>
-                  setNewSpell({
-                    ...newSpell,
-                    level: Math.max(0, Math.min(9, parseInt(e.target.value, 10) || 0)),
-                  })
-                }
-                className="w-full bg-input text-main border border-border-iron rounded px-2.5 py-1.5 text-xs font-stat focus:border-gold outline-none"
-              />
+                onChange={(e) => setNewSpell({ ...newSpell, level: parseInt(e.target.value, 10) })}
+                className="w-full bg-input text-main border border-border-iron rounded px-2.5 py-1.5 text-xs focus:border-gold outline-none"
+              >
+                <option value={0}>{t("spells.filterCantrips")}</option>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((lvl) => (
+                  <option key={lvl} value={lvl}>
+                    {t("spells.slotLevel", { lvl })}
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
-              <label className="block text-[11px] uppercase text-muted mb-1">Escuela</label>
+              <label className="block text-[11px] uppercase text-muted mb-1">{t("spells.schoolLabel")}</label>
               <input
                 type="text"
                 value={newSpell.school}
@@ -209,7 +201,7 @@ export const SpellsView: React.FC = () => {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="block text-[11px] uppercase text-muted mb-1">Tiempo</label>
+              <label className="block text-[11px] uppercase text-muted mb-1">{t("spells.castTimeLabel")}</label>
               <input
                 type="text"
                 value={newSpell.cast_time}
@@ -218,7 +210,7 @@ export const SpellsView: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block text-[11px] uppercase text-muted mb-1">Alcance</label>
+              <label className="block text-[11px] uppercase text-muted mb-1">{t("spells.rangeLabel")}</label>
               <input
                 type="text"
                 value={newSpell.range_area}
@@ -227,7 +219,7 @@ export const SpellsView: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block text-[11px] uppercase text-muted mb-1">Duración</label>
+              <label className="block text-[11px] uppercase text-muted mb-1">{t("spells.durationLabel")}</label>
               <input
                 type="text"
                 value={newSpell.duration}
@@ -237,12 +229,12 @@ export const SpellsView: React.FC = () => {
             </div>
           </div>
           <div>
-            <label className="block text-[11px] uppercase text-muted mb-1">Efecto / Notas</label>
+            <label className="block text-[11px] uppercase text-muted mb-1">{t("spells.notesLabel")}</label>
             <input
               type="text"
               value={newSpell.notes}
               onChange={(e) => setNewSpell({ ...newSpell, notes: e.target.value })}
-              placeholder="Ej: 8d6 daño por fuego en radio de 20 pies (Salv. DES mitad)."
+              placeholder="Ej: 8d6 fire damage / Daño por fuego"
               className="w-full bg-input text-main border border-border-iron rounded px-2.5 py-1.5 text-xs focus:border-gold outline-none"
             />
           </div>
@@ -251,13 +243,13 @@ export const SpellsView: React.FC = () => {
               onClick={() => setIsAddingSpell(false)}
               className="px-3 py-1.5 rounded border border-border-iron text-xs text-muted hover:text-main"
             >
-              Cancelar
+              {t("common.cancel")}
             </button>
             <button
               onClick={handleAddSpell}
               className="px-4 py-1.5 rounded bg-crimson text-white text-xs font-semibold"
             >
-              Guardar Conjuro
+              {t("spells.saveSpell")}
             </button>
           </div>
         </section>
@@ -267,7 +259,7 @@ export const SpellsView: React.FC = () => {
       {hasSlots && (
         <section className="bg-card border border-border-iron rounded-xl p-4">
           <h3 className="text-xs font-semibold uppercase tracking-wider text-muted mb-3">
-            Ranuras de Conjuro Disponibles
+            {t("spells.slotsTitle")}
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
             {Object.entries(spell_slots_total).map(([lvl, total]) => {
@@ -278,18 +270,13 @@ export const SpellsView: React.FC = () => {
                   className="bg-surface border border-border-iron/80 rounded-lg p-2.5 text-center"
                 >
                   <div className="text-[11px] font-semibold text-muted uppercase tracking-wider mb-1.5">
-                    Nivel {lvl}
+                    {t("spells.slotLevel", { lvl })}
                   </div>
                   <div className="flex items-center justify-center gap-1.5">
                     {Array.from({ length: total }).map((_, idx) => (
                       <button
                         key={idx}
                         onClick={() => handleToggleSlot(lvl, idx)}
-                        title={
-                          idx < used
-                            ? "Ranura Gastada (Clic para recuperar)"
-                            : "Ranura Disponible (Clic para gastar)"
-                        }
                         className={`w-4 h-4 rounded-full border transition-all ${
                           idx < used
                             ? "border-border-iron bg-card/60 opacity-40"
@@ -299,7 +286,7 @@ export const SpellsView: React.FC = () => {
                     ))}
                   </div>
                   <div className="text-[10px] text-muted font-stat mt-1">
-                    {total - used} de {total}
+                    {total - used} / {total}
                   </div>
                 </div>
               );
@@ -318,7 +305,7 @@ export const SpellsView: React.FC = () => {
               : "bg-card text-muted hover:text-main"
           }`}
         >
-          Todos ({spells.length})
+          {t("spells.filterAll")} ({spells.length})
         </button>
         {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((lvl) => (
           <button
@@ -330,88 +317,96 @@ export const SpellsView: React.FC = () => {
                 : "bg-card text-muted hover:text-main"
             }`}
           >
-            {lvl === 0 ? "Trucos" : `Nvl ${lvl}`}
+            {lvl === 0 ? t("spells.filterCantrips") : `${t("combat.levelShort")} ${lvl}`}
           </button>
         ))}
       </div>
 
-      {/* 3. Catálogo de Hechizos Preparados */}
+      {/* 3. Catálogo de Hechizos */}
       <section className="space-y-3">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {filteredSpells.length > 0 ? (
-            filteredSpells.map((spell: SpellItemData, idx: number) => (
-              <div
-                key={idx}
-                onClick={() => setActiveSpellForModal(spell)}
-                className="bg-card border border-border-iron rounded-lg p-4 space-y-2 hover:border-gold cursor-pointer transition-all hover:scale-[1.01] hover:shadow-[0_4px_16px_rgba(201,164,92,0.15)] group relative"
-              >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="font-semibold text-main text-sm group-hover:text-gold transition-colors flex items-center gap-1.5">
-                      {spell.name}
-                      <Sparkles className="w-3 h-3 text-gold/60 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </h3>
-                    <p className="text-xs text-gold">
-                      {spell.level === 0 ? "Truco" : `Nivel ${spell.level}`} • Escuela de{" "}
-                      {spell.school}
+            filteredSpells.map((spell: SpellItemData, idx: number) => {
+              const spellDisplayName = (language === "en" && spell.name_en && spell.name_en !== spell.name)
+                ? spell.name_en
+                : translateSpellName(spell.name);
+              return (
+                <div
+                  key={idx}
+                  onClick={() => setActiveSpellForModal(spell)}
+                  className="bg-card border border-border-iron rounded-lg p-4 space-y-2 hover:border-gold cursor-pointer transition-all hover:scale-[1.01] hover:shadow-[0_4px_16px_rgba(201,164,92,0.15)] group relative"
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h3 className="font-semibold text-main text-sm group-hover:text-gold transition-colors flex items-center gap-1.5">
+                        {spellDisplayName}
+                        <Sparkles className="w-3 h-3 text-gold/60 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </h3>
+                      <p className="text-xs text-gold">
+                        {spell.level === 0 ? t("spells.filterCantrips") : `${t("combat.levelShort")} ${spell.level}`} •{" "}
+                        {translateSchool(spell.school)}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                      <button
+                        onClick={() => {
+                          const updated = spells.map((s, i) =>
+                            i === idx ? { ...s, prepared: !s.prepared } : s
+                          );
+                          updateActiveCharacter({ spells: updated });
+                        }}
+                        className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-colors ${
+                          spell.prepared
+                            ? "bg-gold text-canvas"
+                            : "bg-surface border border-border-iron text-muted"
+                        }`}
+                      >
+                        {spell.prepared ? t("spells.preparedBadge") : t("spells.unpreparedBadge")}
+                      </button>
+                      <button
+                        onClick={() => {
+                          removeSpell(spell.name);
+                        }}
+                        className="p-1 rounded text-muted hover:text-crimson hover:bg-surface transition-colors"
+                        title={t("common.delete")}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-1 text-[11px] text-muted pt-1 border-t border-border-iron/40">
+                    <div>
+                      <span className="font-medium text-main">{t("spells.castTimeLabel")}:</span>{" "}
+                      {spell.cast_time || (language === "en" ? "1 Action" : "1 Acción")}
+                    </div>
+                    <div>
+                      <span className="font-medium text-main">{t("spells.rangeLabel")}:</span>{" "}
+                      {formatRangeWithTiles(spell.range_area, language)}
+                    </div>
+                    <div>
+                      <span className="font-medium text-main">{t("spells.durationLabel")}:</span>{" "}
+                      {formatDurationWithTurns(spell.duration, language)}
+                    </div>
+                  </div>
+
+                  {translateSpellDescription(spell, language) && (
+                    <p className="text-xs text-muted/90 line-clamp-2 leading-relaxed pt-1">
+                      {translateSpellDescription(spell, language)}
                     </p>
-                  </div>
-                  <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
-                    <button
-                      onClick={() => setActiveSpellForModal(spell)}
-                      className="px-2.5 py-1 rounded bg-surface hover:bg-gold hover:text-canvas border border-border-iron text-xs font-semibold text-muted transition-colors"
-                      title="Abrir ficha detallada (Pop-forward)"
-                    >
-                      Ver / Lanzar
-                    </button>
-                    <button
-                      onClick={() => removeSpell(spell.name)}
-                      className="p-1 text-muted hover:text-crimson transition-colors"
-                      title="Eliminar conjuro del grimorio"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
+                  )}
                 </div>
-
-                <div className="grid grid-cols-2 gap-2 text-[11px] text-muted pt-1 border-t border-border-iron/40 font-stat">
-                  <div>
-                    <span className="font-medium text-main">Tiempo:</span> {spell.cast_time || spell.casting_time || "1 acción"}
-                  </div>
-                  <div>
-                    <span className="font-medium text-main">Alcance:</span> {formatRangeWithTiles(spell.range_area || spell.range)}
-                  </div>
-                  <div>
-                    <span className="font-medium text-main">Componentes:</span> {formatComponents(spell.components)}
-                  </div>
-                  <div>
-                    <span className="font-medium text-main">Duración:</span> {formatDurationWithTurns(spell.duration)}
-                  </div>
-                </div>
-
-                {spell.notes && (
-                  <p className="text-xs text-muted/90 pt-1 leading-relaxed bg-surface/40 p-2 rounded border border-border-iron/30 line-clamp-2">
-                    {spell.notes}
-                  </p>
-                )}
-              </div>
-            ))
+              );
+            })
           ) : (
-            <div className="col-span-2 bg-card border border-border-iron rounded-xl p-8 text-center text-muted text-sm space-y-3">
-              <p>No hay conjuros que coincidan con el nivel seleccionado.</p>
-              <button
-                onClick={() => setIsSpellManagerOpen(true)}
-                className="px-4 py-2 rounded bg-gold text-canvas hover:bg-gold-hover text-xs font-bold inline-flex items-center gap-1.5"
-              >
-                <BookOpen className="w-3.5 h-3.5" />
-                Abrir Compendio Mágico SRD
-              </button>
+            <div className="col-span-2 bg-card border border-border-iron rounded-lg p-6 text-center text-xs text-muted">
+              {t("spells.noSpellsFound")}
             </div>
           )}
         </div>
       </section>
 
-      {/* Modales Pop-Forward & Compendio */}
+      {/* Modales */}
       <SpellDetailModal
         spell={activeSpellForModal}
         isOpen={!!activeSpellForModal}
@@ -419,14 +414,14 @@ export const SpellsView: React.FC = () => {
         spellStats={spell_stats}
         spellSlotsTotal={spell_slots_total}
         spellSlotsUsed={spell_slots_used}
-        onCastSpell={(slotLevel: number) => {
+        onCastSpell={(slotLevel) => {
           if (!activeSpellForModal) return;
           if (slotLevel > 0) {
             const lvlStr = String(slotLevel);
             const total = spell_slots_total[lvlStr] || 0;
             const used = spell_slots_used[lvlStr] || 0;
             if (used >= total) {
-              showToast(`No te quedan ranuras de nivel ${slotLevel}`, "warn");
+              showToast(t("combat.noSpells"), "warn");
               return;
             }
             updateActiveCharacter({
@@ -435,9 +430,9 @@ export const SpellsView: React.FC = () => {
                 [lvlStr]: used + 1,
               },
             });
-            showToast(`Lanzado: ${activeSpellForModal.name} (Ranura Nvl ${slotLevel})`, "success");
+            showToast(t("combat.spellSlotUsed", { lvl: slotLevel }), "success");
           } else {
-            showToast(`Lanzado truco: ${activeSpellForModal.name}`, "success");
+            showToast(activeSpellForModal.name, "success");
           }
           setActiveSpellForModal(null);
         }}
@@ -446,7 +441,7 @@ export const SpellsView: React.FC = () => {
           openDiceDrawer({
             dice: { "20": 1 },
             modifier: spell_stats?.attack_bonus || 0,
-            label: `Ataque Mágico: ${activeSpellForModal.name}`,
+            label: `${t("spells.spellAttackBonus")}: ${activeSpellForModal.name}`,
             dc: spell_stats?.dc,
           });
         }}

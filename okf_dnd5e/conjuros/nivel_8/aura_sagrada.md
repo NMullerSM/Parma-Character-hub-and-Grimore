@@ -1,23 +1,29 @@
 ---
-id: "aura_sagrada"
-nombre: "Aura Sagrada"
+id: aura_sagrada
+nombre: Aura Sagrada
 nivel: 8
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Clérigo"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S, M (un relicario que valga al menos  1000 po)"
-duracion: "Concentración, hasta 1 minuto"
+- Clérigo
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S, M (un relicario que valga al menos  1000 po)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 249
 tags:
-  - "abjuración"
-  - "nivel_8"
-  - "clérigo"
-  - "concentracion"
+- abjuración
+- nivel_8
+- clérigo
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Holy Aura
 ---
 
 # Aura Sagrada

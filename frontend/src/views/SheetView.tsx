@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useCharacter } from "../context/CharacterContext";
+import { useTranslation } from "../i18n";
 import { Download, Upload, Sparkles, Wand2, User, X, Trash2 } from "lucide-react";
 import { api } from "../api/client";
 import { FeatureDetailModal } from "../components/FeatureDetailModal";
 import { AiPortraitModal } from "../components/AiPortraitModal";
 import type { FeatureItemData } from "../api/types";
+import { formatRangeWithTiles } from "../utils/formatters";
 
 export const SheetView: React.FC = () => {
   const {
@@ -13,7 +15,29 @@ export const SheetView: React.FC = () => {
     saveCurrentCharacter,
     openDiceDrawer,
     showToast,
+    language,
   } = useCharacter();
+
+  const {
+    t,
+    translateAbility,
+    translateAbilityShort,
+    translateSkill,
+    translateDamageType,
+    translateClass,
+    translateRace,
+    translateWeapon,
+    translateWeaponNotes,
+    translateWeaponType,
+    translateBackground,
+    translateAlignment,
+    translateSubclass,
+    translateSense,
+    translateFeatureName,
+    translateFeatureSource,
+    translateFeatureDescription,
+    translateFeatureRecharge,
+  } = useTranslation();
 
   const [activeFeatureForModal, setActiveFeatureForModal] = useState<FeatureItemData | null>(null);
   const [isPortraitMenuOpen, setIsPortraitMenuOpen] = useState<boolean>(false);
@@ -36,10 +60,8 @@ export const SheetView: React.FC = () => {
     return (
       <div className="h-full flex items-center justify-center p-8 text-center text-muted">
         <div>
-          <p className="font-display text-2xl text-gold mb-2">No hay personaje seleccionado</p>
-          <p className="text-sm">
-            Selecciona uno en la barra superior o ve a la pestaña Forja para crear uno nuevo.
-          </p>
+          <p className="font-display text-2xl text-gold mb-2">{t("sheet.noCharacter")}</p>
+          <p className="text-sm">{t("sheet.noCharacterHint")}</p>
         </div>
       </div>
     );
@@ -87,12 +109,12 @@ export const SheetView: React.FC = () => {
           portrait_base64: newB64,
           ...(res.character || {}),
         });
-        showToast("Retrato del personaje actualizado con éxito", "success");
-      } else if (res.error && res.error !== "Selección cancelada.") {
+        showToast(t("sheet.portraitUpdated"), "success");
+      } else if (res.error && res.error !== "Selección cancelada." && res.error !== "Selection cancelled.") {
         showToast(res.error, "warn");
       }
     } catch (e) {
-      showToast("Error al subir retrato", "warn");
+      showToast(t("sheet.portraitUploadError"), "warn");
     }
   };
 
@@ -100,7 +122,7 @@ export const SheetView: React.FC = () => {
     openDiceDrawer({
       dice: { "20": 1 },
       modifier: bonus,
-      label: `Prueba de ${abilityKey}`,
+      label: t("sheet.abilityCheckRoll", { key: translateAbility(abilityKey) }),
     });
   };
 
@@ -109,7 +131,7 @@ export const SheetView: React.FC = () => {
     openDiceDrawer({
       dice: { "20": 1 },
       modifier: saveBonus,
-      label: `Salvación de ${abilityKey}`,
+      label: t("sheet.savingThrowRoll", { key: translateAbility(abilityKey) }),
     });
   };
 
@@ -117,7 +139,7 @@ export const SheetView: React.FC = () => {
     openDiceDrawer({
       dice: { "20": 1 },
       modifier: bonus,
-      label: `Habilidad: ${skillName}`,
+      label: t("sheet.skillRoll", { name: translateSkill(skillName) }),
     });
   };
 
@@ -126,12 +148,13 @@ export const SheetView: React.FC = () => {
     openDiceDrawer({
       dice: { "20": 1 },
       modifier: bonus,
-      label: `Ataque con ${wName}`,
+      label: t("sheet.attackWith", { name: translateWeapon(wName) }),
     });
   };
 
   const handleWeaponDamageRoll = (e: React.MouseEvent, wName: string, dmgFormula: string) => {
     e.stopPropagation();
+    const weaponLabel = translateWeapon(wName);
     const match = String(dmgFormula)
       .trim()
       .match(/^(\d+)d(\d+)(?:\s*([+-]\s*\d+))?/i);
@@ -142,13 +165,13 @@ export const SheetView: React.FC = () => {
       openDiceDrawer({
         dice: { [sides]: count },
         modifier: mod,
-        label: `Daño de ${wName}`,
+        label: t("sheet.damageWith", { name: weaponLabel }),
       });
     } else {
       openDiceDrawer({
         dice: { "8": 1 },
         modifier: 0,
-        label: `Daño de ${wName}`,
+        label: t("sheet.damageWith", { name: weaponLabel }),
       });
     }
   };
@@ -168,15 +191,18 @@ export const SheetView: React.FC = () => {
   const handleExportPdf = async () => {
     if (!id) return;
     try {
-      showToast("Generando hoja oficial en PDF...", "info");
+      showToast(t("sheet.generatingPdf"), "info");
       const res = await api.exportPdf(id);
       if (res.success && res.path) {
-        showToast(`PDF generado con éxito: ${res.path}`, "success");
+        showToast(t("sheet.pdfSuccess", { path: res.path }), "success");
+      } else if (res.cancelled) {
+        // User cancelled native save dialog, do not show error
+        return;
       } else {
-        showToast("Error al exportar PDF: " + (res.error || "Desconocido"), "warn");
+        showToast(t("sheet.pdfError", { error: res.error || "Unknown" }), "warn");
       }
     } catch (e) {
-      showToast("Excepción al exportar PDF", "warn");
+      showToast(t("sheet.pdfException"), "warn");
     }
   };
 
@@ -185,12 +211,12 @@ export const SheetView: React.FC = () => {
     try {
       const res = await api.exportCharacterJson(id);
       if (res.success && res.path) {
-        showToast(`Ficha exportada a JSON: ${res.path}`, "success");
-      } else if (res.error && res.error !== "Exportación cancelada.") {
+        showToast(t("sheet.jsonSuccess", { path: res.path }), "success");
+      } else if (res.error && res.error !== "Exportación cancelada." && res.error !== "Export cancelled.") {
         showToast(res.error, "warn");
       }
     } catch (e) {
-      showToast("Error al exportar JSON", "warn");
+      showToast(t("sheet.jsonError"), "warn");
     }
   };
 
@@ -210,7 +236,7 @@ export const SheetView: React.FC = () => {
                 }
               }}
               className="w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-xl border-2 border-border-iron hover:border-gold hover:shadow-md hover:shadow-gold/10 bg-surface overflow-hidden flex items-center justify-center shadow-lg transition-all cursor-pointer relative group"
-              title={portrait_base64 ? "Haz clic para ver el retrato en grande" : "Haz clic para añadir un retrato"}
+              title={portrait_base64 ? t("sheet.clickToEnlarge") : t("sheet.clickToAddPortrait")}
             >
               {portrait_base64 ? (
                 <img
@@ -223,17 +249,17 @@ export const SheetView: React.FC = () => {
                   <span className="font-display font-bold text-3xl text-gold">
                     {name.slice(0, 2).toUpperCase()}
                   </span>
-                  <span className="text-[10px] text-muted mt-1">Sin Retrato</span>
+                  <span className="text-[10px] text-muted mt-1">{t("sheet.noPortrait")}</span>
                 </div>
               )}
             </div>
 
-            {/* Botón de acción único y limpio bajo el retrato */}
+            {/* Botón de acción bajo el retrato */}
             <button
               onClick={() => setIsPortraitMenuOpen(true)}
               className="mt-2 px-3 py-1 rounded-lg bg-surface border border-border-iron hover:border-gold text-xs font-semibold text-main hover:text-gold transition-colors flex items-center gap-1.5 shadow-xs"
             >
-              <span>{portrait_base64 ? "Cambiar Retrato" : "+ Añadir Retrato"}</span>
+              <span>{portrait_base64 ? t("sheet.changePortrait") : t("sheet.addPortrait")}</span>
             </button>
           </div>
 
@@ -241,21 +267,21 @@ export const SheetView: React.FC = () => {
             <div className="flex flex-wrap items-center gap-2.5">
               <h1 className="font-display font-bold text-2xl md:text-3xl text-gold">{name}</h1>
               <span className="text-xs uppercase px-2 py-0.5 rounded bg-surface border border-border-iron font-semibold text-muted">
-                Nivel {level}
+                {t("sheet.levelBadge", { level })}
               </span>
               {alignment && (
-                <span className="text-xs text-muted/80 hidden sm:inline">• {alignment}</span>
+                <span className="text-xs text-muted/80 hidden sm:inline">• {translateAlignment(alignment)}</span>
               )}
             </div>
             <p className="text-sm text-muted">
-              {race} • {char_class} {subclass && `(${subclass})`} • Trasfondo:{" "}
-              {background || "Sin trasfondo"}
+              {translateRace(race)} • {translateClass(char_class)} {subclass && `(${translateSubclass(subclass)})`} • {t("common.background")}:{" "}
+              {background ? translateBackground(background) : t("sheet.noBackground")}
             </p>
             {(senses || languages) && (
               <p className="text-xs text-muted/80">
-                {senses && <span>Sentidos: {senses}</span>}
+                {senses && <span>{t("sheet.senses", { senses: translateSense(senses) })}</span>}
                 {senses && languages && <span> • </span>}
-                {languages && <span>Idiomas: {languages}</span>}
+                {languages && <span>{t("sheet.languages", { languages })}</span>}
               </p>
             )}
           </div>
@@ -266,20 +292,20 @@ export const SheetView: React.FC = () => {
             onClick={handleExportJson}
             className="px-3 py-1.5 bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-medium rounded transition-colors text-muted hover:text-main"
           >
-            Exportar JSON
+            {t("sheet.exportJson")}
           </button>
           <button
             onClick={handleExportPdf}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-medium rounded transition-colors text-muted hover:text-main"
           >
             <Download className="w-3.5 h-3.5" />
-            <span>Exportar PDF</span>
+            <span>{t("sheet.exportPdf")}</span>
           </button>
           <button
             onClick={saveCurrentCharacter}
             className="px-4 py-1.5 bg-crimson hover:bg-crimson-hover text-white text-xs font-semibold rounded transition-all shadow-sm active:scale-95"
           >
-            Guardar Cambios
+            {t("sheet.saveChanges")}
           </button>
         </div>
       </section>
@@ -289,8 +315,8 @@ export const SheetView: React.FC = () => {
         {/* Puntos de Golpe */}
         <div className="col-span-2 bg-card border border-border-iron rounded-lg p-3 flex flex-col justify-between">
           <div className="flex items-center justify-between text-xs text-muted font-semibold uppercase tracking-wider">
-            <span>Puntos de Golpe</span>
-            <span>{hp_max} Máx</span>
+            <span>{t("sheet.hp")}</span>
+            <span>{hp_max} {t("sheet.hpMax")}</span>
           </div>
           <div className="flex items-center justify-between my-2">
             <button
@@ -321,7 +347,7 @@ export const SheetView: React.FC = () => {
         {/* Clase de Armadura */}
         <div className="bg-card border border-border-iron rounded-lg p-3 text-center flex flex-col justify-center">
           <span className="text-xs text-muted font-semibold uppercase tracking-wider">
-            Armadura
+            {t("sheet.ac")}
           </span>
           <span className="font-stat font-bold text-3xl text-gold mt-1">{ac}</span>
         </div>
@@ -332,13 +358,13 @@ export const SheetView: React.FC = () => {
             openDiceDrawer({
               dice: { "20": 1 },
               modifier: initiative,
-              label: "Tirada de Iniciativa",
+              label: t("sheet.initiative"),
             })
           }
           className="bg-card border border-border-iron hover:border-gold rounded-lg p-3 text-center flex flex-col justify-center cursor-pointer transition-colors group"
         >
           <span className="text-xs text-muted group-hover:text-gold font-semibold uppercase tracking-wider">
-            Iniciativa
+            {t("sheet.initiative")}
           </span>
           <span className="font-stat font-bold text-3xl text-main group-hover:text-gold mt-1">
             {initiative >= 0 ? `+${initiative}` : initiative}
@@ -348,17 +374,17 @@ export const SheetView: React.FC = () => {
         {/* Velocidad */}
         <div className="bg-card border border-border-iron rounded-lg p-3 text-center flex flex-col justify-center">
           <span className="text-xs text-muted font-semibold uppercase tracking-wider">
-            Velocidad
+            {t("sheet.speed")}
           </span>
           <span className="font-stat font-bold text-3xl text-main mt-1">
-            {speed} <span className="text-xs font-normal text-muted">pies</span>
+            {speed} <span className="text-xs font-normal text-muted">{t("sheet.speedFeet")}</span>
           </span>
         </div>
 
         {/* Bonificador de Competencia */}
         <div className="bg-card border border-border-iron rounded-lg p-3 text-center flex flex-col justify-center">
           <span className="text-xs text-muted font-semibold uppercase tracking-wider">
-            Competencia
+            {t("sheet.proficiency")}
           </span>
           <span className="font-stat font-bold text-3xl text-gold mt-1">+{proficiency_bonus}</span>
         </div>
@@ -368,14 +394,16 @@ export const SheetView: React.FC = () => {
       <section className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
         {Object.entries(abilities || {}).map(([key, data]) => {
           const modStr = data.bonus >= 0 ? `+${data.bonus}` : `${data.bonus}`;
+          const displayKey = translateAbilityShort(key);
+          const fullName = translateAbility(key);
           return (
             <div
               key={key}
               onClick={() => handleAbilityRoll(key, data.bonus)}
               className="bg-card border border-border-iron hover:border-gold rounded-lg p-3 text-center cursor-pointer transition-all hover:scale-[1.01] group"
             >
-              <div className="text-xs font-stat font-semibold tracking-widest text-muted uppercase group-hover:text-gold">
-                {key}
+              <div className="text-xs font-stat font-semibold tracking-widest text-muted uppercase group-hover:text-gold" title={fullName}>
+                {displayKey}
               </div>
               <div className="font-stat font-bold text-3xl text-gold my-1">{modStr}</div>
               <div className="inline-block px-2 py-0.5 rounded bg-surface border border-border-iron text-xs font-stat text-muted">
@@ -383,7 +411,7 @@ export const SheetView: React.FC = () => {
               </div>
               <button
                 onClick={(e) => handleSaveRoll(e, key, data.save_bonus)}
-                title={`Tirar Salvación de ${key}`}
+                title={t("sheet.savingThrowRoll", { key: fullName })}
                 className="w-full mt-2 pt-2 border-t border-border-iron/60 text-[10px] text-muted hover:text-gold flex items-center justify-center gap-1 transition-colors"
               >
                 <span
@@ -391,7 +419,7 @@ export const SheetView: React.FC = () => {
                     data.proficient ? "bg-gold" : "bg-border-iron"
                   }`}
                 />
-                <span>Salvación:</span>
+                <span>{t("sheet.savingThrow")}</span>
                 <span className="font-stat font-semibold text-main">
                   {data.save_bonus >= 0 ? `+${data.save_bonus}` : data.save_bonus}
                 </span>
@@ -401,15 +429,14 @@ export const SheetView: React.FC = () => {
         })}
       </section>
 
-
-      {/* 5. Columnas de Acciones de Combate y Habilidades */}
+      {/* 4. Columnas de Acciones de Combate y Habilidades */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Columna Izquierda: Acciones de Arma */}
         <div className="md:col-span-2 space-y-3">
           <h2 className="font-display font-semibold text-lg text-gold flex items-center justify-between">
-            <span>Acciones y Ataques de Combate</span>
+            <span>{t("sheet.combatActionsTitle")}</span>
             <span className="text-xs text-muted font-sans font-normal">
-              Clic en arma para impacto • Clic en daño para tirar daño
+              {t("sheet.combatActionsHint")}
             </span>
           </h2>
 
@@ -422,38 +449,38 @@ export const SheetView: React.FC = () => {
                   className="bg-card border border-border-iron hover:border-gold/70 rounded-lg p-3.5 flex items-center justify-between cursor-pointer transition-colors"
                 >
                   <div>
-                    <h3 className="font-semibold text-sm text-main">{w.name}</h3>
+                    <h3 className="font-semibold text-sm text-main">{translateWeapon(w.name)}</h3>
                     <p className="text-xs text-muted">
-                      {w.type} • Alcance: {w.range_val} {w.notes ? `• ${w.notes}` : ""}
+                      {translateWeaponType(w.type)} • {t("sheet.range")}: {formatRangeWithTiles(w.range_val, language)} {w.notes ? `• ${translateWeaponNotes(w.notes)}` : ""}
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="text-right">
                       <div className="font-stat font-bold text-sm text-gold">
-                        {w.hit_dc} impacto
+                        {w.hit_dc} {t("sheet.impact")}
                       </div>
                       <div className="text-[10px] text-muted">1d20</div>
                     </div>
                     <button
                       onClick={(e) => handleWeaponDamageRoll(e, w.name, w.damage_dice)}
                       className="px-2.5 py-1.5 rounded bg-surface hover:bg-gold hover:text-canvas border border-border-iron font-stat text-xs text-main font-semibold transition-colors"
-                      title="Tirar dados de daño"
+                      title={t("sheet.rollDamageDice")}
                     >
-                      {w.damage_dice} {w.damage_type}
+                      {w.damage_dice} {translateDamageType(w.damage_type)}
                     </button>
                   </div>
                 </div>
               ))
             ) : (
               <div className="bg-card border border-border-iron rounded-lg p-4 text-center text-xs text-muted">
-                No hay armas registradas.
+                {t("sheet.noWeapons")}
               </div>
             )}
           </div>
 
           {/* Rasgos y Dotes de Clase */}
           <h2 className="font-display font-semibold text-lg text-gold pt-2">
-            Rasgos y Habilidades Especiales
+            {t("sheet.traitsTitle")}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {features && features.length > 0 ? (
@@ -469,16 +496,22 @@ export const SheetView: React.FC = () => {
                   >
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <h4 className="font-semibold text-xs text-main group-hover:text-gold transition-colors">{f.name}</h4>
-                        <span className="text-[10px] text-gold">{f.source}</span>
+                        <h4 className="font-semibold text-xs text-main group-hover:text-gold transition-colors">
+                          {translateFeatureName(f.name)}
+                        </h4>
+                        <span className="text-[10px] text-gold">{translateFeatureSource(f.source)}</span>
                       </div>
-                      <p className="text-xs text-muted leading-relaxed line-clamp-3">{f.description}</p>
+                      <p className="text-xs text-muted leading-relaxed line-clamp-3">
+                        {translateFeatureDescription(f.description)}
+                      </p>
                     </div>
 
                     {maxUses > 0 && maxUses <= 10 && (
                       <div className="mt-2 pt-2 border-t border-border-iron/50 flex items-center justify-between text-[11px]" onClick={(e) => e.stopPropagation()}>
                         <span className="text-muted">
-                          Usos ({f.recharge === "SR" ? "Desc. Corto" : "Desc. Largo"}):
+                          {t("sheet.uses", {
+                            recharge: translateFeatureRecharge(f.recharge),
+                          })}
                         </span>
                         <div className="flex items-center gap-1">
                           {Array.from({ length: maxUses }).map((_, sIdx) => (
@@ -503,7 +536,7 @@ export const SheetView: React.FC = () => {
               })
             ) : (
               <div className="col-span-2 bg-card border border-border-iron rounded-lg p-4 text-center text-xs text-muted">
-                No hay rasgos registrados.
+                {t("sheet.noTraits")}
               </div>
             )}
           </div>
@@ -511,10 +544,11 @@ export const SheetView: React.FC = () => {
 
         {/* Columna Derecha: Habilidades con Tirada Directa */}
         <div className="space-y-3">
-          <h2 className="font-display font-semibold text-lg text-gold">Habilidades y Pericias</h2>
+          <h2 className="font-display font-semibold text-lg text-gold">{t("sheet.skillsTitle")}</h2>
           <div className="bg-card border border-border-iron rounded-lg divide-y divide-border-iron/60 overflow-hidden">
             {Object.entries(skills || {}).map(([sName, sData]) => {
               const sign = sData.bonus >= 0 ? `+${sData.bonus}` : `${sData.bonus}`;
+              const localizedSkillName = translateSkill(sName);
               return (
                 <div
                   key={sName}
@@ -536,7 +570,7 @@ export const SheetView: React.FC = () => {
                         sData.proficient ? "font-semibold text-main" : "text-muted"
                       }`}
                     >
-                      {sName}
+                      {localizedSkillName}
                     </span>
                   </div>
                   <span className="font-stat font-bold text-main">{sign}</span>
@@ -547,13 +581,13 @@ export const SheetView: React.FC = () => {
         </div>
       </section>
 
-      {/* 5. Apariencia Física y Notas Visuales (Ubicado ergonómicamente al final de la ficha) */}
+      {/* 5. Apariencia Física y Notas Visuales */}
       <section className="bg-card border border-border-iron rounded-xl p-4 space-y-3">
         <div className="flex items-center justify-between border-b border-border-iron pb-2 flex-wrap gap-2">
           <div className="flex items-center gap-2">
             <User className="w-4 h-4 text-gold" />
             <h2 className="font-display font-semibold text-sm text-gold">
-              Apariencia Física y Rasgos del Personaje
+              {t("sheet.physicalAppearanceTitle")}
             </h2>
           </div>
           <button
@@ -562,10 +596,10 @@ export const SheetView: React.FC = () => {
               setIsAiPortraitModalOpen(true);
             }}
             className="px-2.5 py-1 rounded-lg bg-gold/15 hover:bg-gold hover:text-canvas border border-gold/40 text-gold text-xs font-semibold transition-all flex items-center gap-1.5 shadow-xs active:scale-95"
-            title="Generar retrato con IA basándose en esta descripción"
+            title={t("sheet.generateAiTooltip")}
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Generar Retrato con IA</span>
+            <span>{t("sheet.generateAiPortrait")}</span>
           </button>
         </div>
 
@@ -573,12 +607,12 @@ export const SheetView: React.FC = () => {
           <textarea
             value={appearance || ""}
             onChange={(e) => updateActiveCharacter({ appearance: e.target.value })}
-            placeholder="Describe aquí la apariencia de tu personaje (altura, ojos, cabello, tono de piel, cicatrices, vestimenta, armadura)..."
+            placeholder={t("sheet.appearancePlaceholder")}
             rows={3}
             className="w-full bg-input text-main border border-border-iron rounded-lg p-2.5 text-xs focus:border-gold outline-none leading-relaxed transition-colors resize-none"
           />
           <p className="text-[11px] text-muted">
-            Esta información nutre automáticamente el prompt del Generador de Retratos IA.
+            {t("sheet.appearanceHint")}
           </p>
         </div>
       </section>
@@ -595,7 +629,7 @@ export const SheetView: React.FC = () => {
           >
             <div className="flex items-center justify-between border-b border-border-iron pb-3">
               <h3 className="font-display font-bold text-base text-gold">
-                {portrait_base64 ? "Gestionar Retrato" : "Añadir Retrato"}
+                {portrait_base64 ? t("sheet.managePortrait") : t("sheet.addPortrait")}
               </h3>
               <button
                 onClick={() => setIsPortraitMenuOpen(false)}
@@ -617,8 +651,8 @@ export const SheetView: React.FC = () => {
                   <Upload className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-main group-hover:text-gold">Subir Archivo Local</div>
-                  <div className="text-[11px] text-muted">Selecciona una imagen PNG, JPG o WebP de tu PC</div>
+                  <div className="text-xs font-bold text-main group-hover:text-gold">{t("sheet.uploadLocal")}</div>
+                  <div className="text-[11px] text-muted">{t("sheet.uploadLocalDesc")}</div>
                 </div>
               </button>
 
@@ -634,8 +668,8 @@ export const SheetView: React.FC = () => {
                   <Wand2 className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-gold">Generar con IA (Gratis)</div>
-                  <div className="text-[11px] text-muted">Crea un retrato usando la apariencia del personaje</div>
+                  <div className="text-xs font-bold text-gold">{t("sheet.generateAiOption")}</div>
+                  <div className="text-[11px] text-muted">{t("sheet.generateAiOptionDesc")}</div>
                 </div>
               </button>
 
@@ -648,7 +682,7 @@ export const SheetView: React.FC = () => {
                   className="w-full p-2.5 rounded-lg bg-surface/50 border border-border-iron hover:border-gold/60 text-left flex items-center gap-3 transition-colors text-muted hover:text-main"
                 >
                   <User className="w-4 h-4 text-muted" />
-                  <span className="text-xs font-medium">Ver Retrato en Grande</span>
+                  <span className="text-xs font-medium">{t("sheet.viewLarge")}</span>
                 </button>
               )}
 
@@ -657,12 +691,12 @@ export const SheetView: React.FC = () => {
                   onClick={() => {
                     setIsPortraitMenuOpen(false);
                     updateActiveCharacter({ portrait_base64: "" });
-                    showToast("Retrato eliminado", "info");
+                    showToast(t("sheet.portraitRemoved"), "info");
                   }}
                   className="w-full p-2 rounded-lg text-rose-400 hover:bg-rose-500/10 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors pt-2"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
-                  <span>Quitar retrato actual</span>
+                  <span>{t("sheet.removePortrait")}</span>
                 </button>
               )}
             </div>
@@ -684,12 +718,12 @@ export const SheetView: React.FC = () => {
             <div className="flex items-center justify-between p-3.5 border-b border-border-iron bg-surface/60">
               <div>
                 <h3 className="font-display font-bold text-base text-gold">{name}</h3>
-                <p className="text-[11px] text-muted">{race} • {char_class} {subclass && `(${subclass})`}</p>
+                <p className="text-[11px] text-muted">{translateRace(race)} • {translateClass(char_class)} {subclass && `(${translateSubclass(subclass)})`}</p>
               </div>
               <button
                 onClick={() => setIsPortraitLightboxOpen(false)}
                 className="p-1.5 rounded-lg border border-border-iron hover:border-gold text-muted hover:text-main transition-colors"
-                title="Cerrar (Esc)"
+                title={`${t("common.close")} (Esc)`}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -713,13 +747,13 @@ export const SheetView: React.FC = () => {
                 }}
                 className="px-3 py-1.5 rounded-lg bg-surface border border-border-iron hover:border-gold text-xs font-semibold text-main hover:text-gold transition-colors flex items-center gap-1.5"
               >
-                <span>Cambiar Retrato</span>
+                <span>{t("sheet.changePortrait")}</span>
               </button>
               <button
                 onClick={() => setIsPortraitLightboxOpen(false)}
                 className="px-4 py-1.5 rounded-lg bg-gold hover:bg-gold-hover text-canvas text-xs font-bold transition-colors"
               >
-                Cerrar
+                {t("sheet.closeLightbox")}
               </button>
             </div>
           </div>
@@ -744,7 +778,7 @@ export const SheetView: React.FC = () => {
               next[idx] = target;
               updateActiveCharacter({ features: next });
               setActiveFeatureForModal(target);
-              showToast(`1 uso de ${target.name} consumido`, "info");
+              showToast(t("sheet.featureSpent", { name: target.name }), "info");
             }
           }
         }}
@@ -761,7 +795,7 @@ export const SheetView: React.FC = () => {
               next[idx] = target;
               updateActiveCharacter({ features: next });
               setActiveFeatureForModal(target);
-              showToast(`1 uso de ${target.name} recuperado`, "info");
+              showToast(t("sheet.featureRecovered", { name: target.name }), "info");
             }
           }
         }}
@@ -792,7 +826,7 @@ export const SheetView: React.FC = () => {
         initialConfigOpen={isAiConfigOpen}
         onPortraitGenerated={(newImg) => {
           updateActiveCharacter({ portrait_base64: newImg });
-          showToast("Retrato actualizado en la ficha", "success");
+          showToast(t("sheet.portraitInSheetUpdated"), "success");
         }}
       />
     </div>

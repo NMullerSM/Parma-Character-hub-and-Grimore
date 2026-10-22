@@ -9,8 +9,14 @@ pagina: 186
 tags:
 - trasfondo
 - noble
+- spanish
+- es
+- español
 tipo: trasfondo
+idioma: es
+nombre_ingles: Noble
 ---
+
 # Trasfondo: Noble
 
 - **Puntuaciones de Característica**: Fuerza, Inteligencia, Carisma

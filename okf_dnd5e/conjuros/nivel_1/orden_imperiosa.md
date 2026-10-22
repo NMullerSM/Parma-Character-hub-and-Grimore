@@ -1,26 +1,32 @@
 ---
-id: "orden_imperiosa"
-nombre: "Orden Imperiosa"
+id: orden_imperiosa
+nombre: Orden Imperiosa
 nivel: 1
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V"
-duracion: "Instantáneo"
+- Bardo
+- Clérigo
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 318
 tags:
-  - "encantamiento"
-  - "nivel_1"
-  - "bardo"
-  - "clérigo"
-  - "paladín"
+- encantamiento
+- nivel_1
+- bardo
+- clérigo
+- paladín
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Command
 ---
 
 # Orden Imperiosa

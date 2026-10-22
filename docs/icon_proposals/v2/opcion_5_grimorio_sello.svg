@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
+  <!-- Opción 5: El Grimorio Minimalista con Sello -->
+  <g fill="currentColor">
+    <!-- Cuerpo del libro en ángulo de 3/4 sobrio -->
+    <rect x="54" y="44" width="148" height="168" rx="16" fill="none" stroke="currentColor" stroke-width="10"/>
+    <!-- Lomo grueso a la izquierda -->
+    <rect x="54" y="44" width="28" height="168" rx="8"/>
+    <!-- Ranura de hojas laterales a la derecha -->
+    <path d="M 186 60 L 194 60 C 198 60 200 64 200 68 L 200 188 C 200 192 198 196 194 196 L 186 196" stroke="currentColor" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <!-- Correa de cuero y hebilla circular central -->
+    <rect x="54" y="116" width="102" height="24" rx="4"/>
+    <circle cx="156" cy="128" r="18" fill="currentColor"/>
+    <!-- Ojo del broche (espacio negativo transparente) -->
+    <circle cx="156" cy="128" r="7" fill="#ffffff"/>
+  </g>
+</svg>

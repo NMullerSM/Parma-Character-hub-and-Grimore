@@ -1,23 +1,29 @@
 ---
-id: "llamar_al_relampago"
-nombre: "Llamar Al Relámpago"
+id: llamar_al_relampago
+nombre: Llamar Al Relámpago
 nivel: 3
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Druida"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 10 minutos"
+- Druida
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 307
 tags:
-  - "conjuración"
-  - "nivel_3"
-  - "druida"
-  - "concentracion"
+- conjuración
+- nivel_3
+- druida
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Call Lightning
 ---
 
 # Llamar Al Relámpago

@@ -1,28 +1,34 @@
 ---
-id: "libertad_de_movimiento"
-nombre: "Libertad De Movimiento"
+id: libertad_de_movimiento
+nombre: Libertad De Movimiento
 nivel: 4
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Druida"
-  - "Explorador"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S, M (una tira de cuero)"
-duracion: "1 hora"
+- Bardo
+- Clérigo
+- Druida
+- Explorador
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S, M (una tira de cuero)
+duracion: 1 hora
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 306
 tags:
-  - "abjuración"
-  - "nivel_4"
-  - "bardo"
-  - "clérigo"
-  - "druida"
-  - "explorador"
+- abjuración
+- nivel_4
+- bardo
+- clérigo
+- druida
+- explorador
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Freedom of Movement
 ---
 
 # Libertad De Movimiento

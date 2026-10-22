@@ -1,33 +1,39 @@
 ---
-id: "localizar_objeto"
-nombre: "Localizar Objeto"
+id: localizar_objeto
+nombre: Localizar Objeto
 nivel: 2
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Druida"
-  - "Explorador"
-  - "Mago"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S, M (una ramita con forma de horquilla)"
-duracion: "Concentración, hasta 10 minutos"
+- Bardo
+- Clérigo
+- Druida
+- Explorador
+- Mago
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S, M (una ramita con forma de horquilla)
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 308
 tags:
-  - "adivinación"
-  - "nivel_2"
-  - "bardo"
-  - "clérigo"
-  - "druida"
-  - "explorador"
-  - "mago"
-  - "paladín"
-  - "concentracion"
+- adivinación
+- nivel_2
+- bardo
+- clérigo
+- druida
+- explorador
+- mago
+- paladín
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Locate Object
 ---
 
 # Localizar Objeto

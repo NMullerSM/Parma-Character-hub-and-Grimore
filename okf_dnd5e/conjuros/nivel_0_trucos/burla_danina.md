@@ -1,22 +1,28 @@
 ---
-id: "burla_danina"
-nombre: "Burla Dañina"
+id: burla_danina
+nombre: Burla Dañina
 nivel: 0
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V"
-duracion: "Instantáneo"
+- Bardo
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 252
 tags:
-  - "encantamiento"
-  - "nivel_0"
-  - "bardo"
+- encantamiento
+- nivel_0
+- bardo
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Vicious Mockery
 ---
 
 # Burla Dañina

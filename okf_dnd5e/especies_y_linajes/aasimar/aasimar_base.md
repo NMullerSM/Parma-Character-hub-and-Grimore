@@ -1,19 +1,25 @@
 ---
-id: "aasimar"
-nombre: "Aasimar"
-tipo_criatura: "humanoide"
-tamano: "Mediano o Pequeño"
-velocidad: "9 m"
-sentidos: "Visión en la oscuridad 18 m"
-fuente: "PHB 2024"
+id: aasimar
+nombre: Aasimar
+tipo_criatura: humanoide
+tamano: Mediano o Pequeño
+velocidad: 9 m
+sentidos: Visión en la oscuridad 18 m
+fuente: PHB 2024
 pagina: 188
 rasgos_principales:
-  - "Guía celestial"
-  - "Resistencia necrótica y radiante"
-  - "Revelación celestial"
+- Guía celestial
+- Resistencia necrótica y radiante
+- Revelación celestial
 tags:
-  - "especie"
-  - "aasimar"
+- especie
+- aasimar
+- spanish
+- es
+- español
+idioma: es
+tipo: especie
+nombre_ingles: Aasimar
 ---
 
 # Especie: Aasimar

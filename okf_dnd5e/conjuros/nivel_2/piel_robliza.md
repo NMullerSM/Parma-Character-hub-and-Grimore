@@ -1,24 +1,30 @@
 ---
-id: "piel_robliza"
-nombre: "Piel Robliza"
+id: piel_robliza
+nombre: Piel Robliza
 nivel: 2
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Druida"
-  - "Explorador"
-tiempo_lanzamiento: "Acción adicional"
-alcance: "Toque"
-componentes: "V, S, M (un puñado de corteza)"
-duracion: "1 hora"
+- Druida
+- Explorador
+tiempo_lanzamiento: Acción adicional
+alcance: Toque
+componentes: V, S, M (un puñado de corteza)
+duracion: 1 hora
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 321
 tags:
-  - "transmutación"
-  - "nivel_2"
-  - "druida"
-  - "explorador"
+- transmutación
+- nivel_2
+- druida
+- explorador
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Barkskin
 ---
 
 # Piel Robliza

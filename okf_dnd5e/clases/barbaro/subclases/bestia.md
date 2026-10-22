@@ -1,12 +1,21 @@
 ---
-id: "barbaro_bestia"
-nombre: "Senda de la Bestia"
-nombre_ingles: "Path of the Beast"
-tipo: "subclase"
-clase_padre: "Bárbaro"
+id: barbaro_bestia
+nombre: Senda de la Bestia
+nombre_ingles: Path of the Beast
+tipo: subclase
+clase_padre: Bárbaro
 nivel_desbloqueo: 3
-fuente: "Caldero de Tasha para Todo"
-tags: ["bárbaro", "tasha", "mordisco", "garras", "licantropía"]
+fuente: Caldero de Tasha para Todo
+tags:
+- bárbaro
+- tasha
+- mordisco
+- garras
+- licantropía
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Senda de la Bestia (Path of the Beast)

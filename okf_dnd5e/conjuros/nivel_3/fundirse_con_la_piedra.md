@@ -1,27 +1,33 @@
 ---
-id: "fundirse_con_la_piedra"
-nombre: "Fundirse Con La Piedra"
+id: fundirse_con_la_piedra
+nombre: Fundirse Con La Piedra
 nivel: 3
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Clérigo"
-  - "Druida"
-  - "Explorador"
-tiempo_lanzamiento: "Acción o ritual"
-alcance: "Toque"
-componentes: "V, S"
-duracion: "8 horas"
+- Clérigo
+- Druida
+- Explorador
+tiempo_lanzamiento: Acción o ritual
+alcance: Toque
+componentes: V, S
+duracion: 8 horas
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 287
 tags:
-  - "transmutación"
-  - "nivel_3"
-  - "clérigo"
-  - "druida"
-  - "explorador"
-  - "ritual"
+- transmutación
+- nivel_3
+- clérigo
+- druida
+- explorador
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Meld into Stone
 ---
 
 # Fundirse Con La Piedra

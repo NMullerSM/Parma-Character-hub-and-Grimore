@@ -1,22 +1,28 @@
 ---
-id: "infligir_heridas"
-nombre: "Infligir Heridas"
+id: infligir_heridas
+nombre: Infligir Heridas
 nivel: 1
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Clérigo"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Clérigo
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 296
 tags:
-  - "nigromancia"
-  - "nivel_1"
-  - "clérigo"
+- nigromancia
+- nivel_1
+- clérigo
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Inflict Wounds
 ---
 
 # Infligir Heridas

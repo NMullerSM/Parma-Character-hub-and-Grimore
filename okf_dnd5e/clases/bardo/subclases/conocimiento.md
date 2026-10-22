@@ -1,12 +1,21 @@
 ---
-id: "bardo_conocimiento"
-nombre: "Colegio del Conocimiento"
-nombre_ingles: "College of Lore"
-tipo: "subclase"
-clase_padre: "Bardo"
+id: bardo_conocimiento
+nombre: Colegio del Conocimiento
+nombre_ingles: College of Lore
+tipo: subclase
+clase_padre: Bardo
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["bardo", "sabiduría", "palabras cortantes", "secretos mágicos", "phb2024"]
+fuente: PHB 2024
+tags:
+- bardo
+- sabiduría
+- palabras cortantes
+- secretos mágicos
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Colegio del Conocimiento (College of Lore)

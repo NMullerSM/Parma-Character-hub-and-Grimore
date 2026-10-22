@@ -1,14 +1,20 @@
 ---
-id: "combatiente_montado"
-nombre: "Combatiente Montado"
-categoria: "General"
-encabezado: "Dote general (requisitos: nivel 4 o más)"
-fuente: "PHB 2024"
+id: combatiente_montado
+nombre: Combatiente Montado
+categoria: General
+encabezado: 'Dote general (requisitos: nivel 4 o más)'
+fuente: PHB 2024
 pagina: 206
 tags:
-  - "dote"
-  - "generales"
-  - "combatiente_montado"
+- dote
+- generales
+- combatiente_montado
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Combatiente Montado
 ---
 
 # Combatiente Montado

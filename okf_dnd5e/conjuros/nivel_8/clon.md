@@ -1,22 +1,30 @@
 ---
-id: "clon"
-nombre: "Clon"
+id: clon
+nombre: Clon
 nivel: 8
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Mago"
-tiempo_lanzamiento: "1 hora"
-alcance: "Toque"
-componentes: "V, S, M (un diamante que valga al menos  1000 po, que se consume como parte del conjuro, y un  recipiente sellable que valga al menos 2000 po y sea lo  bastante grande como para alojar a la criatura que se clone)"
-duracion: "Instantáneo"
+- Mago
+tiempo_lanzamiento: 1 hora
+alcance: Toque
+componentes: V, S, M (un diamante que valga al menos  1000 po, que se consume como
+  parte del conjuro, y un  recipiente sellable que valga al menos 2000 po y sea lo  bastante
+  grande como para alojar a la criatura que se clone)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 259
 tags:
-  - "nigromancia"
-  - "nivel_8"
-  - "mago"
+- nigromancia
+- nivel_8
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Clone
 ---
 
 # Clon

@@ -1,22 +1,28 @@
 ---
-id: "crear_llama"
-nombre: "Crear Llama"
+id: crear_llama
+nombre: Crear Llama
 nivel: 0
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Druida"
-tiempo_lanzamiento: "Acción adicional"
-alcance: "Lanzador"
-componentes: "V, S"
-duracion: "10 minutos"
+- Druida
+tiempo_lanzamiento: Acción adicional
+alcance: Lanzador
+componentes: V, S
+duracion: 10 minutos
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 268
 tags:
-  - "conjuración"
-  - "nivel_0"
-  - "druida"
+- conjuración
+- nivel_0
+- druida
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Produce Flame
 ---
 
 # Crear Llama

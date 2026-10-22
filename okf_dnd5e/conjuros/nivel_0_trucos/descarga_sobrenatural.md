@@ -1,22 +1,28 @@
 ---
-id: "descarga_sobrenatural"
-nombre: "Descarga Sobrenatural"
+id: descarga_sobrenatural
+nombre: Descarga Sobrenatural
 nivel: 0
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Brujo"
-tiempo_lanzamiento: "Acción"
-alcance: "36m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Brujo
+tiempo_lanzamiento: Acción
+alcance: 36m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 270
 tags:
-  - "evocación"
-  - "nivel_0"
-  - "brujo"
+- evocación
+- nivel_0
+- brujo
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Eldritch Blast
 ---
 
 # Descarga Sobrenatural

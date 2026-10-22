@@ -1,25 +1,31 @@
 ---
-id: "globo_de_invulnerabilidad"
-nombre: "Globo De Invulnerabilidad"
+id: globo_de_invulnerabilidad
+nombre: Globo De Invulnerabilidad
 nivel: 6
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S, M (una cuenta de cristal)"
-duracion: "Concentración, hasta 1 minuto"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S, M (una cuenta de cristal)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 288
 tags:
-  - "abjuración"
-  - "nivel_6"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- abjuración
+- nivel_6
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Globe of Invulnerability
 ---
 
 # Globo De Invulnerabilidad

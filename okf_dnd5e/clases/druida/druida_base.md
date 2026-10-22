@@ -1,21 +1,27 @@
 ---
-id: "druida"
-nombre: "Druida"
-caracteristica_principal: "SAB"
-dado_golpe: "1d8"
+id: druida
+nombre: Druida
+caracteristica_principal: SAB
+dado_golpe: 1d8
 salvaciones_competentes:
-  - "INT"
-  - "SAB"
+- INT
+- SAB
 subclases_oficiales:
-  - "Círculo de la Tierra"
-  - "Círculo de la Luna"
-  - "Círculo del Mar"
-  - "Círculo de las Estrellas"
-fuente: "PHB 2024"
+- Círculo de la Tierra
+- Círculo de la Luna
+- Círculo del Mar
+- Círculo de las Estrellas
+fuente: PHB 2024
 pagina: 86
 tags:
-  - "clase"
-  - "druida"
+- clase
+- druida
+- spanish
+- es
+- español
+idioma: es
+tipo: clase
+nombre_ingles: Druid
 ---
 
 # Clase: Druida

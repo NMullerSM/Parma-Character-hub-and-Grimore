@@ -1,26 +1,32 @@
 ---
-id: "hablar_con_los_muertos"
-nombre: "Hablar Con Los Muertos"
+id: hablar_con_los_muertos
+nombre: Hablar Con Los Muertos
 nivel: 3
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "3 m"
-componentes: "V, S, M (incienso para quemar)"
-duracion: "10 minutos"
+- Bardo
+- Clérigo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 3 m
+componentes: V, S, M (incienso para quemar)
+duracion: 10 minutos
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 291
 tags:
-  - "nigromancia"
-  - "nivel_3"
-  - "bardo"
-  - "clérigo"
-  - "mago"
+- nigromancia
+- nivel_3
+- bardo
+- clérigo
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Speak with Dead
 ---
 
 # Hablar Con Los Muertos

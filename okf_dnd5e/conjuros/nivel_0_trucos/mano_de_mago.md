@@ -1,28 +1,34 @@
 ---
-id: "mano_de_mago"
-nombre: "Mano De Mago"
+id: mano_de_mago
+nombre: Mano De Mago
 nivel: 0
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S"
-duracion: "1 minuto"
+- Bardo
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S
+duracion: 1 minuto
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 310
 tags:
-  - "conjuración"
-  - "nivel_0"
-  - "bardo"
-  - "brujo"
-  - "hechicero"
-  - "mago"
+- conjuración
+- nivel_0
+- bardo
+- brujo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Mage Hand
 ---
 
 # Mano De Mago

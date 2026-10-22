@@ -1,27 +1,33 @@
 ---
-id: "enganar"
-nombre: "Engañar"
+id: enganar
+nombre: Engañar
 nivel: 5
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "S"
-duracion: "Concentración, hasta 1 hora"
+- Bardo
+- Brujo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: S
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 278
 tags:
-  - "ilusionismo"
-  - "nivel_5"
-  - "bardo"
-  - "brujo"
-  - "mago"
-  - "concentracion"
+- ilusionismo
+- nivel_5
+- bardo
+- brujo
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Mislead
 ---
 
 # Engañar

@@ -1,23 +1,29 @@
 ---
-id: "duelo_forzado"
-nombre: "Duelo Forzado"
+id: duelo_forzado
+nombre: Duelo Forzado
 nivel: 1
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Paladín"
-tiempo_lanzamiento: "Acción adicional"
-alcance: "9 m"
-componentes: "V"
-duracion: "Concentración, hasta 1 minuto"
+- Paladín
+tiempo_lanzamiento: Acción adicional
+alcance: 9 m
+componentes: V
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 276
 tags:
-  - "encantamiento"
-  - "nivel_1"
-  - "paladín"
-  - "concentracion"
+- encantamiento
+- nivel_1
+- paladín
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Compelled Duel
 ---
 
 # Duelo Forzado

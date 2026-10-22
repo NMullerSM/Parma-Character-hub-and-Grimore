@@ -1,28 +1,34 @@
 ---
-id: "ofuscacion"
-nombre: "Ofuscación"
+id: ofuscacion
+nombre: Ofuscación
 nivel: 8
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Druida"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "45 m"
-componentes: "V, S, M (un llavero sin llaves)"
-duracion: "Instantáneo"
+- Bardo
+- Brujo
+- Druida
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 45 m
+componentes: V, S, M (un llavero sin llaves)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 316
 tags:
-  - "encantamiento"
-  - "nivel_8"
-  - "bardo"
-  - "brujo"
-  - "druida"
-  - "mago"
+- encantamiento
+- nivel_8
+- bardo
+- brujo
+- druida
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Feeblemind
 ---
 
 # Ofuscación

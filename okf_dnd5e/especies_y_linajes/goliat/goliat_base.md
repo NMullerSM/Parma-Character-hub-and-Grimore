@@ -1,19 +1,25 @@
 ---
-id: "goliat"
-nombre: "Goliat"
-tipo_criatura: "humanoide"
-tamano: "Mediano"
-velocidad: "10,5 m"
-sentidos: "Normal"
-fuente: "PHB 2024"
+id: goliat
+nombre: Goliat
+tipo_criatura: humanoide
+tamano: Mediano
+velocidad: 10,5 m
+sentidos: Normal
+fuente: PHB 2024
 pagina: 194
 rasgos_principales:
-  - "Ascendencia gigante"
-  - "Constitución fuerte"
-  - "Paso de gigante"
+- Ascendencia gigante
+- Constitución fuerte
+- Paso de gigante
 tags:
-  - "especie"
-  - "goliat"
+- especie
+- goliat
+- spanish
+- es
+- español
+idioma: es
+tipo: especie
+nombre_ingles: Goliath
 ---
 
 # Especie: Goliat

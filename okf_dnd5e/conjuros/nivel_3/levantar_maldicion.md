@@ -1,28 +1,34 @@
 ---
-id: "levantar_maldicion"
-nombre: "Levantar Maldición"
+id: levantar_maldicion
+nombre: Levantar Maldición
 nivel: 3
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Brujo"
-  - "Clérigo"
-  - "Mago"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Brujo
+- Clérigo
+- Mago
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 306
 tags:
-  - "abjuración"
-  - "nivel_3"
-  - "brujo"
-  - "clérigo"
-  - "mago"
-  - "paladín"
+- abjuración
+- nivel_3
+- brujo
+- clérigo
+- mago
+- paladín
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Remove Curse
 ---
 
 # Levantar Maldición

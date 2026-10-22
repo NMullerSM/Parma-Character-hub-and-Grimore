@@ -1,25 +1,31 @@
 ---
-id: "invocar_celestial"
-nombre: "Invocar Celestial"
+id: invocar_celestial
+nombre: Invocar Celestial
 nivel: 5
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Clérigo"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "27 m"
-componentes: "V, S, M (un relicario que valga al menos 500 po)"
-duracion: "Concentración, hasta 1 hora"
+- Clérigo
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: 27 m
+componentes: V, S, M (un relicario que valga al menos 500 po)
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 300
 tags:
-  - "conjuración"
-  - "nivel_5"
-  - "clérigo"
-  - "paladín"
-  - "concentracion"
+- conjuración
+- nivel_5
+- clérigo
+- paladín
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Summon Celestial
 ---
 
 # Invocar Celestial

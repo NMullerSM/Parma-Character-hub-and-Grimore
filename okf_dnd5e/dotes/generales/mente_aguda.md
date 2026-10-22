@@ -1,14 +1,20 @@
 ---
-id: "mente_aguda"
-nombre: "Mente Aguda"
-categoria: "General"
-encabezado: "Dote general (requisitos: nivel 4 o más, Inteligencia 13 o más)"
-fuente: "PHB 2024"
+id: mente_aguda
+nombre: Mente Aguda
+categoria: General
+encabezado: 'Dote general (requisitos: nivel 4 o más, Inteligencia 13 o más)'
+fuente: PHB 2024
 pagina: 209
 tags:
-  - "dote"
-  - "generales"
-  - "mente_aguda"
+- dote
+- generales
+- mente_aguda
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Keen Mind
 ---
 
 # Mente Aguda

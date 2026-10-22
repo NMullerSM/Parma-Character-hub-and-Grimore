@@ -1,28 +1,34 @@
 ---
-id: "puerta_dimensional"
-nombre: "Puerta Dimensional"
+id: puerta_dimensional
+nombre: Puerta Dimensional
 nivel: 4
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "150 m"
-componentes: "V"
-duracion: "Instantáneo"
+- Bardo
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 150 m
+componentes: V
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 326
 tags:
-  - "conjuración"
-  - "nivel_4"
-  - "bardo"
-  - "brujo"
-  - "hechicero"
-  - "mago"
+- conjuración
+- nivel_4
+- bardo
+- brujo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Dimension Door
 ---
 
 # Puerta Dimensional

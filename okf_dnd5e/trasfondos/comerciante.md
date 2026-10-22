@@ -9,8 +9,14 @@ pagina: 182
 tags:
 - trasfondo
 - comerciante
+- spanish
+- es
+- español
 tipo: trasfondo
+idioma: es
+nombre_ingles: Comerciante
 ---
+
 # Trasfondo: Comerciante
 
 - **Puntuaciones de Característica**: Constitución, Inteligencia, Carisma

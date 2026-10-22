@@ -1,26 +1,32 @@
 ---
-id: "zona_de_la_verdad"
-nombre: "Zona De La Verdad"
+id: zona_de_la_verdad
+nombre: Zona De La Verdad
 nivel: 2
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "10 minutos"
+- Bardo
+- Clérigo
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S
+duracion: 10 minutos
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 345
 tags:
-  - "encantamiento"
-  - "nivel_2"
-  - "bardo"
-  - "clérigo"
-  - "paladín"
+- encantamiento
+- nivel_2
+- bardo
+- clérigo
+- paladín
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Zone of Truth
 ---
 
 # Zona De La Verdad

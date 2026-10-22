@@ -1,14 +1,20 @@
 ---
-id: "lanzador_ritual"
-nombre: "Lanzador Ritual"
-categoria: "General"
-encabezado: "Dote general (requisitos: nivel 4 o más; Inteligencia,"
-fuente: "PHB 2024"
+id: lanzador_ritual
+nombre: Lanzador Ritual
+categoria: General
+encabezado: 'Dote general (requisitos: nivel 4 o más; Inteligencia,'
+fuente: PHB 2024
 pagina: 207
 tags:
-  - "dote"
-  - "generales"
-  - "lanzador_ritual"
+- dote
+- generales
+- lanzador_ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Lanzador Ritual
 ---
 
 # Lanzador Ritual

@@ -1,14 +1,20 @@
 ---
-id: "fabricante"
-nombre: "Fabricante"
-categoria: "Origen"
-encabezado: "Dote de origen"
-fuente: "PHB 2024"
+id: fabricante
+nombre: Fabricante
+categoria: Origen
+encabezado: Dote de origen
+fuente: PHB 2024
 pagina: 203
 tags:
-  - "dote"
-  - "origen"
-  - "fabricante"
+- dote
+- origen
+- fabricante
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Fabricante
 ---
 
 # Fabricante

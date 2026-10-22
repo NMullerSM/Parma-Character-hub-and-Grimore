@@ -1,16 +1,21 @@
 ---
-id: "equipo_aventuras"
-nombre: "Equipo de Aventuras, Pociones y Focos Mágicos"
-fuente: "Manual del Jugador 2024"
+id: equipo_aventuras
+nombre: Equipo de Aventuras, Pociones y Focos Mágicos
+fuente: Manual del Jugador 2024
 pagina: 218
-tipo: "equipo"
-subtipo: "Aventuras"
+tipo: equipo
+subtipo: Aventuras
 tags:
-  - "equipo"
-  - "pociones"
-  - "focos"
-  - "herramientas"
-  - "aventura"
+- equipo
+- pociones
+- focos
+- herramientas
+- aventura
+- spanish
+- es
+- español
+idioma: es
+nombre_ingles: Equipo de Aventuras, Pociones y Focos Mágicos
 ---
 
 # Equipo de Aventuras Esencial (PHB 2024)

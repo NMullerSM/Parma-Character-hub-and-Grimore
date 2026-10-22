@@ -1,12 +1,22 @@
 ---
-id: "guerrero_caballero_sobrenatural"
-nombre: "Caballero Sobrenatural"
-nombre_ingles: "Eldritch Knight"
-tipo: "subclase"
-clase_padre: "Guerrero"
+id: guerrero_caballero_sobrenatural
+nombre: Caballero Sobrenatural
+nombre_ingles: Eldritch Knight
+tipo: subclase
+clase_padre: Guerrero
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["guerrero", "magia", "evocación", "abjuración", "vínculo de arma", "phb2024"]
+fuente: PHB 2024
+tags:
+- guerrero
+- magia
+- evocación
+- abjuración
+- vínculo de arma
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Caballero Sobrenatural (Eldritch Knight)

@@ -1,12 +1,21 @@
 ---
-id: "bardo_espadas"
-nombre: "Colegio de las Espadas"
-nombre_ingles: "College of Swords"
-tipo: "subclase"
-clase_padre: "Bardo"
+id: bardo_espadas
+nombre: Colegio de las Espadas
+nombre_ingles: College of Swords
+tipo: subclase
+clase_padre: Bardo
 nivel_desbloqueo: 3
-fuente: "Guia de Xanathar Para Todo"
-tags: ["bardo", "xanathar", "duelo", "florituras", "armas sutiles"]
+fuente: Guia de Xanathar Para Todo
+tags:
+- bardo
+- xanathar
+- duelo
+- florituras
+- armas sutiles
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Colegio de las Espadas (College of Swords)

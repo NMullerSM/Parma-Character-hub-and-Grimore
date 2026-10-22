@@ -1,12 +1,21 @@
 ---
-id: "barbaro_arbol_del_mundo"
-nombre: "Senda del Árbol del Mundo"
-nombre_ingles: "Path of the World Tree"
-tipo: "subclase"
-clase_padre: "Bárbaro"
+id: barbaro_arbol_del_mundo
+nombre: Senda del Árbol del Mundo
+nombre_ingles: Path of the World Tree
+tipo: subclase
+clase_padre: Bárbaro
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["bárbaro", "yggdrasil", "vitalidad", "teletransporte", "phb2024"]
+fuente: PHB 2024
+tags:
+- bárbaro
+- yggdrasil
+- vitalidad
+- teletransporte
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Senda del Árbol del Mundo (Path of the World Tree)

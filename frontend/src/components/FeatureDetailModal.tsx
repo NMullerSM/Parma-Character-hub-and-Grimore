@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import type { FeatureItemData } from "../api/types";
 import { MarkdownViewer } from "./MarkdownViewer";
+import { useTranslation } from "../i18n";
 import { X, Dices, Copy, Check } from "lucide-react";
 
 interface FeatureDetailModalProps {
@@ -22,6 +23,13 @@ export const FeatureDetailModal: React.FC<FeatureDetailModalProps> = ({
   onRecoverUse,
   onRollDice,
 }) => {
+  const {
+    t,
+    translateFeatureName,
+    translateFeatureSource,
+    translateFeatureDescription,
+    translateFeatureRecharge,
+  } = useTranslation();
   const [copiedTs, setCopiedTs] = React.useState(false);
 
   useEffect(() => {
@@ -57,9 +65,11 @@ export const FeatureDetailModal: React.FC<FeatureDetailModalProps> = ({
 
   const handleRoll = () => {
     if (diceFormula && onRollDice) {
-      onRollDice(diceFormula, feature.name);
+      onRollDice(diceFormula, translateFeatureName(feature.name));
     }
   };
+
+  const rechargeLabel = translateFeatureRecharge(feature.recharge);
 
   return (
     <div
@@ -75,20 +85,20 @@ export const FeatureDetailModal: React.FC<FeatureDetailModalProps> = ({
           <div>
             <div className="flex items-center gap-2 mb-1 flex-wrap">
               <span className="text-[10px] uppercase font-semibold tracking-wider px-2 py-0.5 rounded bg-surface border border-border-iron text-gold">
-                {feature.source || "Rasgo Oficial"}
+                {translateFeatureSource(feature.source) || t("modals.featureDetail.officialSource")}
               </span>
               {feature.recharge && (
                 <span className="text-[10px] px-2 py-0.5 rounded bg-surface border border-border-iron text-muted">
-                  Recarga: {feature.recharge === "SR" || feature.recharge === "Corto" ? "Descanso Corto" : feature.recharge === "Largo" ? "Descanso Largo" : feature.recharge}
+                  {t("modals.featureDetail.recharge", { type: rechargeLabel || "" })}
                 </span>
               )}
             </div>
-            <h2 className="font-display font-bold text-xl text-gold">{feature.name}</h2>
+            <h2 className="font-display font-bold text-xl text-gold">{translateFeatureName(feature.name)}</h2>
           </div>
           <button
             onClick={onClose}
             className="p-1.5 rounded-lg border border-border-iron hover:border-gold text-muted hover:text-main transition-colors"
-            title="Cerrar (Esc)"
+            title={t("modals.featureDetail.close")}
           >
             <X className="w-5 h-5" />
           </button>
@@ -98,9 +108,9 @@ export const FeatureDetailModal: React.FC<FeatureDetailModalProps> = ({
         {maxUses > 0 && (
           <div className="bg-surface/80 border border-border-iron rounded-lg p-3 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div>
-              <div className="text-xs font-semibold text-main">Usos Disponibles</div>
+              <div className="text-xs font-semibold text-main">{t("modals.featureDetail.usesAvailable")}</div>
               <div className="text-[11px] text-muted">
-                {currentUses} de {maxUses} restantes
+                {t("modals.featureDetail.usesRemaining", { current: currentUses, max: maxUses })}
               </div>
             </div>
 
@@ -125,14 +135,14 @@ export const FeatureDetailModal: React.FC<FeatureDetailModalProps> = ({
                 disabled={currentUses <= 0}
                 className="px-2.5 py-1 rounded bg-crimson/20 border border-crimson text-crimson hover:bg-crimson hover:text-white disabled:opacity-40 text-xs font-medium transition-colors"
               >
-                Gastar
+                {t("modals.featureDetail.spend")}
               </button>
               <button
                 onClick={onRecoverUse}
                 disabled={currentUses >= maxUses}
                 className="px-2.5 py-1 rounded bg-surface border border-border-iron hover:border-gold text-main text-xs font-medium transition-colors"
               >
-                Recuperar
+                {t("modals.featureDetail.recover")}
               </button>
             </div>
           </div>
@@ -140,7 +150,7 @@ export const FeatureDetailModal: React.FC<FeatureDetailModalProps> = ({
 
         {/* Cuerpo / Descripción */}
         <div className="text-sm text-main leading-relaxed max-h-64 overflow-y-auto pr-1">
-          <MarkdownViewer content={feature.description} />
+          <MarkdownViewer content={translateFeatureDescription(feature.description)} />
         </div>
 
         {/* Acciones de Tirada de Dados y TaleSpire */}
@@ -151,14 +161,14 @@ export const FeatureDetailModal: React.FC<FeatureDetailModalProps> = ({
               className="w-full sm:w-auto px-4 py-2 rounded-lg bg-gold hover:bg-gold-hover text-canvas font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all active:scale-95"
             >
               <Dices className="w-4 h-4" />
-              <span>Tirar {diceFormula} ({feature.name.split("(")[0].trim()})</span>
+              <span>{t("modals.featureDetail.rollAction", { formula: diceFormula, name: translateFeatureName(feature.name).split("(")[0].trim() })}</span>
             </button>
 
             {tsCommand && (
               <button
                 onClick={handleCopyTs}
                 className="w-full sm:w-auto px-3 py-1.5 rounded-lg border border-border-iron hover:border-gold text-muted hover:text-main text-xs font-mono flex items-center justify-center gap-1.5 transition-colors"
-                title="Copiar comando de chat de TaleSpire"
+                title={t("modals.featureDetail.copyTalespire")}
               >
                 {copiedTs ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{tsCommand}</span>
@@ -173,7 +183,7 @@ export const FeatureDetailModal: React.FC<FeatureDetailModalProps> = ({
             onClick={onClose}
             className="px-4 py-1.5 rounded-lg border border-border-iron hover:border-gold text-xs text-muted hover:text-main transition-colors font-medium"
           >
-            Cerrar (Esc)
+            {t("modals.featureDetail.close")}
           </button>
         </div>
       </div>

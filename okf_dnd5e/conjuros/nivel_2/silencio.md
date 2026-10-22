@@ -1,28 +1,34 @@
 ---
-id: "silencio"
-nombre: "Silencio"
+id: silencio
+nombre: Silencio
 nivel: 2
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Explorador"
-tiempo_lanzamiento: "Acción o ritual"
-alcance: "36 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 10 minutos"
+- Bardo
+- Clérigo
+- Explorador
+tiempo_lanzamiento: Acción o ritual
+alcance: 36 m
+componentes: V, S
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 334
 tags:
-  - "ilusionismo"
-  - "nivel_2"
-  - "bardo"
-  - "clérigo"
-  - "explorador"
-  - "concentracion"
-  - "ritual"
+- ilusionismo
+- nivel_2
+- bardo
+- clérigo
+- explorador
+- concentracion
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Silence
 ---
 
 # Silencio

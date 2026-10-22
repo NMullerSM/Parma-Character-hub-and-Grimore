@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
+  <!-- Opción 2: La Forja de Tomos (Stacked Folio Anvil) -->
+  <g fill="currentColor" stroke="currentColor">
+    <!-- Base: libro apilado -->
+    <rect x="58" y="196" width="140" height="22" rx="3" stroke-width="2"/>
+    <!-- Soporte medio: dos libros en bloque -->
+    <rect x="100" y="142" width="24" height="54" rx="2" stroke-width="2"/>
+    <rect x="132" y="136" width="24" height="60" rx="2" stroke-width="2"/>
+    <!-- Yunque superior: libro con portada extendida en bisel a la izquierda (cuerno) -->
+    <path d="M 36 90 L 88 114 L 168 114 C 188 114 220 106 220 84 L 220 66 C 220 60 214 58 206 58 L 90 58 C 66 58 46 72 36 90 Z" stroke-width="2"/>
+    <!-- Línea de lomo y páginas -->
+    <line x1="90" y1="72" x2="204" y2="72" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+    <line x1="96" y1="84" x2="196" y2="84" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Marcapáginas colgante sutil -->
+    <polygon points="126,114 126,146 128,142 130,146 130,114" fill="#ffffff" stroke="#ffffff" stroke-width="1"/>
+  </g>
+</svg>

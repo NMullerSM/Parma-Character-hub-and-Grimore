@@ -1,16 +1,21 @@
 ---
-id: "equipo_armaduras_escudos"
-nombre: "Armaduras y Escudos (Ligeras, Medias y Pesadas)"
-fuente: "Manual del Jugador 2024"
+id: equipo_armaduras_escudos
+nombre: Armaduras y Escudos (Ligeras, Medias y Pesadas)
+fuente: Manual del Jugador 2024
 pagina: 215
-tipo: "equipo"
-subtipo: "Armaduras"
+tipo: equipo
+subtipo: Armaduras
 tags:
-  - "equipo"
-  - "armaduras"
-  - "escudos"
-  - "ca"
-  - "defensa"
+- equipo
+- armaduras
+- escudos
+- ca
+- defensa
+- spanish
+- es
+- español
+idioma: es
+nombre_ingles: Armaduras y Escudos (Ligeras, Medias y Pesadas)
 ---
 
 # Armaduras y Escudos Oficiales (PHB 2024)

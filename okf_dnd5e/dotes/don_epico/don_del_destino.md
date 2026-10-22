@@ -1,14 +1,20 @@
 ---
-id: "don_del_destino"
-nombre: "Don Del Destino"
-categoria: "Don Épico"
-encabezado: "Dote de don épico (requisito: nivel 19 o más)"
-fuente: "PHB 2024"
+id: don_del_destino
+nombre: Don Del Destino
+categoria: Don Épico
+encabezado: 'Dote de don épico (requisito: nivel 19 o más)'
+fuente: PHB 2024
 pagina: 213
 tags:
-  - "dote"
-  - "don_epico"
-  - "don_del_destino"
+- dote
+- don_epico
+- don_del_destino
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Boon of Fate
 ---
 
 # Don Del Destino

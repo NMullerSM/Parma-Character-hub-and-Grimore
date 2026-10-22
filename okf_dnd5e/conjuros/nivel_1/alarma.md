@@ -1,25 +1,31 @@
 ---
-id: "alarma"
-nombre: "Alarma"
+id: alarma
+nombre: Alarma
 nivel: 1
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Explorador"
-  - "Mago"
-tiempo_lanzamiento: "1 minuto o un ritual"
-alcance: "9 m"
-componentes: "V, S, M (una campana e hilo de plata)"
-duracion: "8 horas"
+- Explorador
+- Mago
+tiempo_lanzamiento: 1 minuto o un ritual
+alcance: 9 m
+componentes: V, S, M (una campana e hilo de plata)
+duracion: 8 horas
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 241
 tags:
-  - "abjuración"
-  - "nivel_1"
-  - "explorador"
-  - "mago"
-  - "ritual"
+- abjuración
+- nivel_1
+- explorador
+- mago
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Alarm
 ---
 
 # Alarma

@@ -1,14 +1,20 @@
 ---
-id: "azote_de_magos"
-nombre: "Azote De Magos"
-categoria: "General"
-encabezado: "Dote general (requisitos: nivel 4 o más)"
-fuente: "PHB 2024"
+id: azote_de_magos
+nombre: Azote De Magos
+categoria: General
+encabezado: 'Dote general (requisitos: nivel 4 o más)'
+fuente: PHB 2024
 pagina: 205
 tags:
-  - "dote"
-  - "generales"
-  - "azote_de_magos"
+- dote
+- generales
+- azote_de_magos
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Azote De Magos
 ---
 
 # Azote De Magos

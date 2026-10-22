@@ -1,22 +1,28 @@
 ---
-id: "santuario"
-nombre: "Santuario"
+id: santuario
+nombre: Santuario
 nivel: 1
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Clérigo"
-tiempo_lanzamiento: "Acción adicional"
-alcance: "9 m"
-componentes: "V, S, M (un trozo de vidrio de un espejo)"
-duracion: "1 minuto"
+- Clérigo
+tiempo_lanzamiento: Acción adicional
+alcance: 9 m
+componentes: V, S, M (un trozo de vidrio de un espejo)
+duracion: 1 minuto
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 334
 tags:
-  - "abjuración"
-  - "nivel_1"
-  - "clérigo"
+- abjuración
+- nivel_1
+- clérigo
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Sanctuary
 ---
 
 # Santuario

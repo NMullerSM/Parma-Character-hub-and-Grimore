@@ -1,12 +1,21 @@
 ---
-id: "mago_ilusionismo"
-nombre: "Escuela de Ilusionismo"
-nombre_ingles: "School of Illusion"
-tipo: "subclase"
-clase_padre: "Mago"
+id: mago_ilusionismo
+nombre: Escuela de Ilusionismo
+nombre_ingles: School of Illusion
+tipo: subclase
+clase_padre: Mago
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["mago", "engaño", "ilusión tangible", "maleable", "phb2024"]
+fuente: PHB 2024
+tags:
+- mago
+- engaño
+- ilusión tangible
+- maleable
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Escuela de Ilusionismo (School of Illusion)

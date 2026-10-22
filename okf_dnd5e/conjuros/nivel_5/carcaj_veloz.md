@@ -1,23 +1,29 @@
 ---
-id: "carcaj_veloz"
-nombre: "Carcaj Veloz"
+id: carcaj_veloz
+nombre: Carcaj Veloz
 nivel: 5
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Explorador"
-tiempo_lanzamiento: "Acción adicional"
-alcance: "Lanzador"
-componentes: "V, S, M (una aljaba que valga al menos 1 po)"
-duracion: "Concentración, hasta 1 minuto"
+- Explorador
+tiempo_lanzamiento: Acción adicional
+alcance: Lanzador
+componentes: V, S, M (una aljaba que valga al menos 1 po)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 255
 tags:
-  - "transmutación"
-  - "nivel_5"
-  - "explorador"
-  - "concentracion"
+- transmutación
+- nivel_5
+- explorador
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Swift Quiver
 ---
 
 # Carcaj Veloz

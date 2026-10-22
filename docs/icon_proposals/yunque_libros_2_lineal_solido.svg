@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <!-- Concepto 2: Yunque de Libros Minimalista Puro (Monocromo negro con transparencias, trazos gruesos de alta legibilidad) -->
+  <g fill="#12181c" stroke="#12181c">
+    <!-- BASE: Gran libro abierto acostado -->
+    <path d="M 40 216 Q 128 228 216 216 L 216 198 Q 128 210 40 198 Z" stroke-width="2"/>
+    <rect x="52" y="184" width="152" height="14" rx="3" stroke-width="2"/>
+    
+    <!-- CINTURA: Tres lomos de libros verticales de diferentes alturas formando el pilar -->
+    <rect x="94" y="128" width="18" height="56" rx="2" stroke-width="2"/>
+    <rect x="116" y="120" width="24" height="64" rx="2" stroke-width="2"/>
+    <rect x="144" y="132" width="18" height="52" rx="2" stroke-width="2"/>
+
+    <!-- CUERNO Y MESA: Tomo superior formando la cabeza del yunque -->
+    <!-- Cuerno afilado a la izquierda que se curva desde un libro abierto -->
+    <path d="M 28 86 C 48 86 78 96 98 120 L 160 120 C 180 120 228 116 228 86 L 228 62 C 228 56 222 54 214 54 L 90 54 C 62 54 40 68 28 86 Z" stroke-width="4" stroke-linejoin="round"/>
+    
+    <!-- Ranuras negativas que dibujan las hojas del libro superior -->
+    <path d="M 88 66 L 216 66" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+    <path d="M 94 76 L 216 76" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Marcapáginas / Cinta de grimorio colgando con corte en V -->
+    <path d="M 124 120 L 124 162 L 128 156 L 132 162 L 132 120 Z" fill="#ffffff" stroke="#ffffff" stroke-width="1"/>
+  </g>
+</svg>

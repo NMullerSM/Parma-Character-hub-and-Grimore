@@ -1,27 +1,33 @@
 ---
-id: "toque_vampirico"
-nombre: "Toque Vampírico"
+id: toque_vampirico
+nombre: Toque Vampírico
 nivel: 3
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 minuto"
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 340
 tags:
-  - "nigromancia"
-  - "nivel_3"
-  - "brujo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- nigromancia
+- nivel_3
+- brujo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Vampiric Touch
 ---
 
 # Toque Vampírico

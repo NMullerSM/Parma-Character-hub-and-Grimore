@@ -1,24 +1,30 @@
 ---
-id: "golpe_de_viento_acerado"
-nombre: "Golpe De Viento Acerado"
+id: golpe_de_viento_acerado
+nombre: Golpe De Viento Acerado
 nivel: 5
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Explorador"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "S, M (un arma cuerpo a cuerpo que valga  al menos 1 pp)"
-duracion: "Instantáneo"
+- Explorador
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: S, M (un arma cuerpo a cuerpo que valga  al menos 1 pp)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 289
 tags:
-  - "conjuración"
-  - "nivel_5"
-  - "explorador"
-  - "mago"
+- conjuración
+- nivel_5
+- explorador
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Steel Wind Strike
 ---
 
 # Golpe De Viento Acerado

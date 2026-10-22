@@ -1,21 +1,27 @@
 ---
-id: "monje"
-nombre: "Monje"
-caracteristica_principal: "DES/SAB"
-dado_golpe: "1d8"
+id: monje
+nombre: Monje
+caracteristica_principal: DES/SAB
+dado_golpe: 1d8
 salvaciones_competentes:
-  - "FUE"
-  - "DES"
+- FUE
+- DES
 subclases_oficiales:
-  - "Guerrero de la Mano Abierta"
-  - "Guerrero de la Sombra"
-  - "Guerrero de los Cuatro Elementos"
-  - "Guerrero de la Misericordia"
-fuente: "PHB 2024"
+- Guerrero de la Mano Abierta
+- Guerrero de la Sombra
+- Guerrero de los Cuatro Elementos
+- Guerrero de la Misericordia
+fuente: PHB 2024
 pagina: 118
 tags:
-  - "clase"
-  - "monje"
+- clase
+- monje
+- spanish
+- es
+- español
+idioma: es
+tipo: clase
+nombre_ingles: Monk
 ---
 
 # Clase: Monje

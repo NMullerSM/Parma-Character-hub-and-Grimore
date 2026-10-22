@@ -1,25 +1,31 @@
 ---
-id: "proyectar_imagen"
-nombre: "Proyectar Imagen"
+id: proyectar_imagen
+nombre: Proyectar Imagen
 nivel: 7
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Bardo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "750 km"
-componentes: "V, S, M (una estatuilla de ti que valga  al menos 5 po)"
-duracion: "Concentración, hasta 1 día"
+- Bardo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 750 km
+componentes: V, S, M (una estatuilla de ti que valga  al menos 5 po)
+duracion: Concentración, hasta 1 día
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 325
 tags:
-  - "ilusionismo"
-  - "nivel_7"
-  - "bardo"
-  - "mago"
-  - "concentracion"
+- ilusionismo
+- nivel_7
+- bardo
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Project Image
 ---
 
 # Proyectar Imagen

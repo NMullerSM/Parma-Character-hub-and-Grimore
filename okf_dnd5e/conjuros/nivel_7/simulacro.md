@@ -1,22 +1,29 @@
 ---
-id: "simulacro"
-nombre: "Simulacro"
+id: simulacro
+nombre: Simulacro
 nivel: 7
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Mago"
-tiempo_lanzamiento: "12 horas"
-alcance: "Toque"
-componentes: "V, S, M (rubí  en polvo que valga al menos  1500 po, que se consume como parte del conjuro)"
-duracion: "Hasta que sea disipado"
+- Mago
+tiempo_lanzamiento: 12 horas
+alcance: Toque
+componentes: V, S, M (rubí  en polvo que valga al menos  1500 po, que se consume como
+  parte del conjuro)
+duracion: Hasta que sea disipado
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 335
 tags:
-  - "ilusionismo"
-  - "nivel_7"
-  - "mago"
+- ilusionismo
+- nivel_7
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Simulacrum
 ---
 
 # Simulacro

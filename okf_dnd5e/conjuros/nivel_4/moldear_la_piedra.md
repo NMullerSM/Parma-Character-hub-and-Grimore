@@ -1,26 +1,32 @@
 ---
-id: "moldear_la_piedra"
-nombre: "Moldear La Piedra"
+id: moldear_la_piedra
+nombre: Moldear La Piedra
 nivel: 4
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Clérigo"
-  - "Druida"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S, M (arcilla blanda)"
-duracion: "Instantáneo"
+- Clérigo
+- Druida
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S, M (arcilla blanda)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 313
 tags:
-  - "transmutación"
-  - "nivel_4"
-  - "clérigo"
-  - "druida"
-  - "mago"
+- transmutación
+- nivel_4
+- clérigo
+- druida
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Stone Shape
 ---
 
 # Moldear La Piedra

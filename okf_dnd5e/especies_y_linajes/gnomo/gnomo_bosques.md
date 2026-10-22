@@ -1,19 +1,23 @@
 ---
-id: "gnomo_bosques"
-nombre: "Gnomo de los Bosques"
-nombre_ingles: "Forest Gnome"
-fuente: "Manual del Jugador 2024"
+id: gnomo_bosques
+nombre: Gnomo de los Bosques
+nombre_ingles: Forest Gnome
+fuente: Manual del Jugador 2024
 pagina: 193
-tipo: "especie_linaje"
-velocidad: "9 m (30 pies)"
-tamano: "Pequeño"
-vision_oscuridad: "18 m (60 pies)"
+tipo: especie_linaje
+velocidad: 9 m (30 pies)
+tamano: Pequeño
+vision_oscuridad: 18 m (60 pies)
 tags:
-  - "especie"
-  - "gnomo"
-  - "bosques"
-  - "linaje"
-  - "ilusion"
+- especie
+- gnomo
+- bosques
+- linaje
+- ilusion
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Especie: Gnomo de los Bosques (Forest Gnome)

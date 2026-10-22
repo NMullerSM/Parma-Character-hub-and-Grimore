@@ -1,19 +1,25 @@
 ---
-id: "mediano"
-nombre: "Mediano"
-tipo_criatura: "humanoide"
-tamano: "Pequeño"
-velocidad: "9 m"
-sentidos: "Normal"
-fuente: "PHB 2024"
+id: mediano
+nombre: Mediano
+tipo_criatura: humanoide
+tamano: Pequeño
+velocidad: 9 m
+sentidos: Normal
+fuente: PHB 2024
 pagina: 196
 rasgos_principales:
-  - "Afortunado"
-  - "Valiente"
-  - "Agilidad de mediano"
+- Afortunado
+- Valiente
+- Agilidad de mediano
 tags:
-  - "especie"
-  - "mediano"
+- especie
+- mediano
+- spanish
+- es
+- español
+idioma: es
+tipo: especie
+nombre_ingles: Halfling
 ---
 
 # Especie: Mediano

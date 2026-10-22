@@ -1,26 +1,33 @@
 ---
-id: "festin_de_heroes"
-nombre: "Festín De Héroes"
+id: festin_de_heroes
+nombre: Festín De Héroes
 nivel: 6
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Druida"
-tiempo_lanzamiento: "10 minutos"
-alcance: "Lanzador"
-componentes: "V, S, M (un cuenco incrustado de gemas  que valga al menos 1000 po y que se consume como  parte del conjuro)"
-duracion: "Instantáneo"
+- Bardo
+- Clérigo
+- Druida
+tiempo_lanzamiento: 10 minutos
+alcance: Lanzador
+componentes: V, S, M (un cuenco incrustado de gemas  que valga al menos 1000 po y
+  que se consume como  parte del conjuro)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 285
 tags:
-  - "conjuración"
-  - "nivel_6"
-  - "bardo"
-  - "clérigo"
-  - "druida"
+- conjuración
+- nivel_6
+- bardo
+- clérigo
+- druida
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Heroes' Feast
 ---
 
 # Festín De Héroes

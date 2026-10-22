@@ -1,23 +1,29 @@
 ---
-id: "golpe_apresador"
-nombre: "Golpe Apresador"
+id: golpe_apresador
+nombre: Golpe Apresador
 nivel: 1
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Explorador"
-tiempo_lanzamiento: "Acción adicional, que realizas"
-alcance: "Lanzador"
-componentes: "V"
-duracion: "Concentración, hasta 1 minuto"
+- Explorador
+tiempo_lanzamiento: Acción adicional, que realizas
+alcance: Lanzador
+componentes: V
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 289
 tags:
-  - "conjuración"
-  - "nivel_1"
-  - "explorador"
-  - "concentracion"
+- conjuración
+- nivel_1
+- explorador
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Ensnaring Strike
 ---
 
 # Golpe Apresador

@@ -1,25 +1,31 @@
 ---
-id: "enredadera"
-nombre: "Enredadera"
+id: enredadera
+nombre: Enredadera
 nivel: 4
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Druida"
-  - "Explorador"
-tiempo_lanzamiento: "Acción adicional"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 minuto"
+- Druida
+- Explorador
+tiempo_lanzamiento: Acción adicional
+alcance: 18 m
+componentes: V, S
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 279
 tags:
-  - "conjuración"
-  - "nivel_4"
-  - "druida"
-  - "explorador"
-  - "concentracion"
+- conjuración
+- nivel_4
+- druida
+- explorador
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Grasping Vine
 ---
 
 # Enredadera

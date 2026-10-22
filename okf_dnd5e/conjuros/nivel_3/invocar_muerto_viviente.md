@@ -1,25 +1,31 @@
 ---
-id: "invocar_muerto_viviente"
-nombre: "Invocar Muerto Viviente"
+id: invocar_muerto_viviente
+nombre: Invocar Muerto Viviente
 nivel: 3
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Brujo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "27 m"
-componentes: "V, S, M (una calavera bañada en oro que  valga al menos 300 po)"
-duracion: "Concentración, hasta 1 hora"
+- Brujo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 27 m
+componentes: V, S, M (una calavera bañada en oro que  valga al menos 300 po)
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 304
 tags:
-  - "nigromancia"
-  - "nivel_3"
-  - "brujo"
-  - "mago"
-  - "concentracion"
+- nigromancia
+- nivel_3
+- brujo
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Summon Undead
 ---
 
 # Invocar Muerto Viviente

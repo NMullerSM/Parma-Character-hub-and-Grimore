@@ -1,27 +1,33 @@
 ---
-id: "rayo_de_hechiceria"
-nombre: "Rayo De Hechicería"
+id: rayo_de_hechiceria
+nombre: Rayo De Hechicería
 nivel: 1
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S, M (una ramita golpeada por un rayo)"
-duracion: "Concentración, hasta 1 minuto"
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S, M (una ramita golpeada por un rayo)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 327
 tags:
-  - "evocación"
-  - "nivel_1"
-  - "brujo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- evocación
+- nivel_1
+- brujo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Witch Bolt
 ---
 
 # Rayo De Hechicería

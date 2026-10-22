@@ -1,23 +1,29 @@
 ---
-id: "conjurar_feerico"
-nombre: "Conjurar Feérico"
+id: conjurar_feerico
+nombre: Conjurar Feérico
 nivel: 6
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Druida"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 10 minutos"
+- Druida
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 262
 tags:
-  - "conjuración"
-  - "nivel_6"
-  - "druida"
-  - "concentracion"
+- conjuración
+- nivel_6
+- druida
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Conjure Fey
 ---
 
 # Conjurar Feérico

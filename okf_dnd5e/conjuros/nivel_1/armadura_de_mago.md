@@ -1,24 +1,30 @@
 ---
-id: "armadura_de_mago"
-nombre: "Armadura De Mago"
+id: armadura_de_mago
+nombre: Armadura De Mago
 nivel: 1
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S, M (un trozo de piel curtida)"
-duracion: "8 horas"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S, M (un trozo de piel curtida)
+duracion: 8 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 247
 tags:
-  - "abjuración"
-  - "nivel_1"
-  - "hechicero"
-  - "mago"
+- abjuración
+- nivel_1
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Mage Armor
 ---
 
 # Armadura De Mago

@@ -1,25 +1,31 @@
 ---
-id: "disipar_el_bien_y_el_mal"
-nombre: "Disipar El Bien Y El Mal"
+id: disipar_el_bien_y_el_mal
+nombre: Disipar El Bien Y El Mal
 nivel: 5
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Clérigo"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S, M (plata y hierro en polvo)"
-duracion: "Concentración, hasta 1 minuto"
+- Clérigo
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S, M (plata y hierro en polvo)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 274
 tags:
-  - "abjuración"
-  - "nivel_5"
-  - "clérigo"
-  - "paladín"
-  - "concentracion"
+- abjuración
+- nivel_5
+- clérigo
+- paladín
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Dispel Evil and Good
 ---
 
 # Disipar El Bien Y El Mal

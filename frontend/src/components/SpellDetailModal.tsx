@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import type { SpellItemData, SpellStatsData } from "../api/types";
 import { MarkdownViewer } from "./MarkdownViewer";
-import { useCharacter } from "../context/CharacterContext";
+import { useTranslation } from "../i18n";
 import { X, Sparkles, Dices, Copy, Check } from "lucide-react";
 import {
   formatRangeWithTiles,
@@ -34,7 +34,7 @@ export const SpellDetailModal: React.FC<SpellDetailModalProps> = ({
 }) => {
   const [selectedSlotLevel, setSelectedSlotLevel] = useState<number>(1);
   const [copiedTs, setCopiedTs] = useState(false);
-  const { language } = useCharacter();
+  const { t, language, translateSchool, translateAbility, translateSpellName, translateSpellDescription } = useTranslation();
 
   useEffect(() => {
     if (spell) {
@@ -109,35 +109,42 @@ export const SpellDetailModal: React.FC<SpellDetailModalProps> = ({
           <div>
             <div className="flex items-center gap-2 mb-1 flex-wrap">
               <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-surface border border-border-iron text-gold">
-                {isCantrip ? "Truco" : `Nivel ${spell.level}`}
+                {isCantrip ? t("modals.spellDetail.cantrip") : t("modals.spellDetail.level", { lvl: spell.level })}
               </span>
               <span className="text-[10px] px-2 py-0.5 rounded bg-surface border border-border-iron text-muted">
-                {spell.school}
+                {translateSchool(spell.school)}
               </span>
               {isConcentration && (
                 <span className="text-[10px] px-2 py-0.5 rounded bg-gold/15 text-gold border border-gold/40 font-semibold">
-                  Concentración
+                  {t("modals.spellDetail.concentration")}
                 </span>
               )}
               {isRitual && (
                 <span className="text-[10px] px-2 py-0.5 rounded bg-surface border border-border-iron text-cyan-400">
-                  Ritual
+                  {t("modals.spellDetail.ritual")}
                 </span>
               )}
             </div>
             <h2 className="font-display font-bold text-xl text-gold">
-              {language === "en" && spell.name_en ? spell.name_en : spell.name}
+              {language === "en"
+                ? (spell.name_en && spell.name_en !== spell.name ? spell.name_en : translateSpellName(spell.name))
+                : spell.name}
             </h2>
-            {spell.name_en && spell.name_en !== spell.name && (
+            {language === "en" && translateSpellName(spell.name) !== spell.name && (
               <p className="text-xs text-muted italic">
-                {language === "en" ? spell.name : spell.name_en}
+                {spell.name}
+              </p>
+            )}
+            {language === "es" && translateSpellName(spell.name) !== spell.name && (
+              <p className="text-xs text-muted italic">
+                {translateSpellName(spell.name)}
               </p>
             )}
           </div>
           <button
             onClick={onClose}
             className="p-1.5 rounded-lg border border-border-iron hover:border-gold text-muted hover:text-main transition-colors"
-            title="Cerrar (Esc)"
+            title={t("common.close")}
           >
             <X className="w-5 h-5" />
           </button>
@@ -146,22 +153,22 @@ export const SpellDetailModal: React.FC<SpellDetailModalProps> = ({
         {/* Fila de Propiedades Canónicas */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs bg-surface/70 p-3 rounded-lg border border-border-iron">
           <div>
-            <span className="text-muted block text-[10px] uppercase">Tiempo:</span>
-            <span className="font-medium text-main">{spell.cast_time || spell.casting_time || "1 acción"}</span>
+            <span className="text-muted block text-[10px] uppercase">{t("modals.spellDetail.castingTime")}</span>
+            <span className="font-medium text-main">{spell.cast_time || spell.casting_time || (language === "es" ? "1 acción" : "1 action")}</span>
           </div>
           <div>
-            <span className="text-muted block text-[10px] uppercase">Alcance / Área:</span>
-            <span className="font-medium text-main">{formatRangeWithTiles(spell.range_area || spell.range)}</span>
+            <span className="text-muted block text-[10px] uppercase">{t("modals.spellDetail.rangeArea")}</span>
+            <span className="font-medium text-main">{formatRangeWithTiles(spell.range_area || spell.range, language)}</span>
           </div>
           <div>
-            <span className="text-muted block text-[10px] uppercase">Componentes:</span>
+            <span className="text-muted block text-[10px] uppercase">{t("modals.spellDetail.components")}</span>
             <span className="font-medium text-main truncate block" title={formatComponents(spell.components)}>
               {formatComponents(spell.components)}
             </span>
           </div>
           <div>
-            <span className="text-muted block text-[10px] uppercase">Duración:</span>
-            <span className="font-medium text-main">{formatDurationWithTurns(spell.duration)}</span>
+            <span className="text-muted block text-[10px] uppercase">{t("modals.spellDetail.duration")}</span>
+            <span className="font-medium text-main">{formatDurationWithTurns(spell.duration, language)}</span>
           </div>
         </div>
 
@@ -169,23 +176,30 @@ export const SpellDetailModal: React.FC<SpellDetailModalProps> = ({
         {spellStats && (
           <div className="flex items-center justify-between text-xs px-3 py-1.5 rounded bg-surface/40 border border-border-iron/60 text-muted">
             <span>
-              Aptitud Mágica: <strong className="text-main">{spellStats.ability}</strong>
+              {t("modals.spellDetail.spellcastingAbility")} <strong className="text-main">{translateAbility(spellStats.ability)}</strong>
             </span>
             <span>
-              CD de Salvación: <strong className="text-gold">{spellStats.dc}</strong>
+              {t("modals.spellDetail.spellSaveDc")} <strong className="text-gold">{spellStats.dc}</strong>
             </span>
             <span>
-              Bono de Ataque: <strong className="text-gold">{atkBonusStr}</strong>
+              {t("modals.spellDetail.spellAttackBonus")} <strong className="text-gold">{atkBonusStr}</strong>
             </span>
           </div>
         )}
 
         {/* Descripción del Conjuro */}
         <div className="text-sm text-main leading-relaxed max-h-56 overflow-y-auto pr-1">
-          <MarkdownViewer content={spell.description || spell.notes || "Sin descripción disponible."} />
+          <MarkdownViewer
+            content={
+              translateSpellDescription(spell, language) ||
+              spell.description ||
+              spell.notes ||
+              t("modals.spellDetail.noDescription")
+            }
+          />
           {spell.higher_levels && (
             <div className="mt-3 p-2.5 rounded bg-surface border border-border-iron text-xs">
-              <span className="font-bold text-gold block mb-1">En Niveles Superiores:</span>
+              <span className="font-bold text-gold block mb-1">{t("modals.spellDetail.higherLevels")}</span>
               <p className="text-muted">{spell.higher_levels}</p>
             </div>
           )}
@@ -196,8 +210,8 @@ export const SpellDetailModal: React.FC<SpellDetailModalProps> = ({
           {!isCantrip && availableTiers.length > 0 && (
             <div className="flex items-center justify-between gap-3 bg-surface p-2.5 rounded-lg border border-border-iron">
               <div className="text-xs">
-                <span className="font-semibold text-main block">Nivel de Lanzamiento:</span>
-                <span className="text-[10px] text-muted">Escala el efecto con ranuras mayores</span>
+                <span className="font-semibold text-main block">{t("modals.spellDetail.castLevel")}</span>
+                <span className="text-[10px] text-muted">{t("modals.spellDetail.castLevelHint")}</span>
               </div>
               <div className="flex items-center gap-1.5">
                 {availableTiers.map((lvl) => {
@@ -217,7 +231,7 @@ export const SpellDetailModal: React.FC<SpellDetailModalProps> = ({
                           : "bg-surface opacity-30 cursor-not-allowed text-muted"
                       }`}
                     >
-                      Niv {lvl} ({remaining})
+                      {t("modals.spellDetail.slotBadge", { lvl, count: remaining })}
                     </button>
                   );
                 })}
@@ -233,7 +247,7 @@ export const SpellDetailModal: React.FC<SpellDetailModalProps> = ({
                 className="px-4 py-2 rounded-lg bg-crimson hover:bg-crimson-hover text-white font-bold text-xs flex items-center gap-1.5 shadow-md transition-all active:scale-95"
               >
                 <Sparkles className="w-4 h-4" />
-                <span>{isCantrip ? "Lanzar Truco" : `Lanzar (Ranura Niv ${selectedSlotLevel})`}</span>
+                <span>{isCantrip ? t("modals.spellDetail.castCantrip") : t("modals.spellDetail.castSlot", { lvl: selectedSlotLevel })}</span>
               </button>
 
               {onRollAttack && (
@@ -242,17 +256,17 @@ export const SpellDetailModal: React.FC<SpellDetailModalProps> = ({
                   className="px-3 py-2 rounded-lg bg-surface border border-border-iron hover:border-gold text-main font-semibold text-xs flex items-center gap-1.5 transition-colors"
                 >
                   <Dices className="w-3.5 h-3.5 text-gold" />
-                  <span>Ataque ({atkBonusStr})</span>
+                  <span>{t("modals.spellDetail.attackRoll", { bonus: atkBonusStr })}</span>
                 </button>
               )}
 
               {dmgFormula && onRollDamage && (
                 <button
-                  onClick={() => onRollDamage(dmgFormula, `Daño: ${spell.name}`)}
+                  onClick={() => onRollDamage(dmgFormula, t("modals.spellDetail.damageLabel", { name: spell.name }))}
                   className="px-3 py-2 rounded-lg bg-surface border border-border-iron hover:border-gold text-main font-semibold text-xs flex items-center gap-1.5 transition-colors"
                 >
                   <Dices className="w-3.5 h-3.5 text-crimson" />
-                  <span>Daño ({dmgFormula})</span>
+                  <span>{t("modals.spellDetail.damageRoll", { formula: dmgFormula })}</span>
                 </button>
               )}
             </div>
@@ -261,7 +275,7 @@ export const SpellDetailModal: React.FC<SpellDetailModalProps> = ({
             <button
               onClick={handleCopyTs}
               className="px-2.5 py-1.5 rounded-lg border border-border-iron hover:border-gold text-muted hover:text-main text-xs font-mono flex items-center gap-1 transition-colors"
-              title="Copiar comando para chat de TaleSpire"
+              title={t("modals.spellDetail.talespireTitle")}
             >
               {copiedTs ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
               <span>{tsCommand}</span>
@@ -275,7 +289,7 @@ export const SpellDetailModal: React.FC<SpellDetailModalProps> = ({
             onClick={onClose}
             className="px-4 py-1.5 rounded-lg border border-border-iron hover:border-gold text-xs text-muted hover:text-main transition-colors font-medium"
           >
-            Cerrar (Esc)
+            {t("common.close")}
           </button>
         </div>
       </div>

@@ -1,14 +1,20 @@
 ---
-id: "musico"
-nombre: "Músico"
-categoria: "Origen"
-encabezado: "Dote de origen"
-fuente: "PHB 2024"
+id: musico
+nombre: Músico
+categoria: Origen
+encabezado: Dote de origen
+fuente: PHB 2024
 pagina: 204
 tags:
-  - "dote"
-  - "origen"
-  - "musico"
+- dote
+- origen
+- musico
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Musician
 ---
 
 # Músico

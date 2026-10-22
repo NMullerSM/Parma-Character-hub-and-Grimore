@@ -1,28 +1,34 @@
 ---
-id: "explosion_solar"
-nombre: "Explosión Solar"
+id: explosion_solar
+nombre: Explosión Solar
 nivel: 8
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Clérigo"
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "45 m"
-componentes: "V, S, M (un trozo de heliolita)"
-duracion: "Instantáneo"
+- Clérigo
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 45 m
+componentes: V, S, M (un trozo de heliolita)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 284
 tags:
-  - "evocación"
-  - "nivel_8"
-  - "clérigo"
-  - "druida"
-  - "hechicero"
-  - "mago"
+- evocación
+- nivel_8
+- clérigo
+- druida
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Sunburst
 ---
 
 # Explosión Solar

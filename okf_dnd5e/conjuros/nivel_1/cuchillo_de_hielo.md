@@ -1,26 +1,32 @@
 ---
-id: "cuchillo_de_hielo"
-nombre: "Cuchillo De Hielo"
+id: cuchillo_de_hielo
+nombre: Cuchillo De Hielo
 nivel: 1
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "S, M (una gota de agua o un trozo de hielo)"
-duracion: "Instantáneo"
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: S, M (una gota de agua o un trozo de hielo)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 269
 tags:
-  - "conjuración"
-  - "nivel_1"
-  - "druida"
-  - "hechicero"
-  - "mago"
+- conjuración
+- nivel_1
+- druida
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Ice Knife
 ---
 
 # Cuchillo De Hielo

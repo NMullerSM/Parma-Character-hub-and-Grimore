@@ -1,25 +1,31 @@
 ---
-id: "aura_de_vida"
-nombre: "Aura De Vida"
+id: aura_de_vida
+nombre: Aura De Vida
 nivel: 4
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Clérigo"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V"
-duracion: "Concentración, hasta 10 minutos"
+- Clérigo
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 249
 tags:
-  - "abjuración"
-  - "nivel_4"
-  - "clérigo"
-  - "paladín"
-  - "concentracion"
+- abjuración
+- nivel_4
+- clérigo
+- paladín
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Aura of Life
 ---
 
 # Aura De Vida

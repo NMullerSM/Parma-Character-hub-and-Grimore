@@ -1,28 +1,34 @@
 ---
-id: "sorderaceguera"
-nombre: "Sordera/Ceguera"
+id: sorderaceguera
+nombre: Sordera/Ceguera
 nivel: 2
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V"
-duracion: "1 minuto"
+- Bardo
+- Clérigo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V
+duracion: 1 minuto
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 336
 tags:
-  - "transmutación"
-  - "nivel_2"
-  - "bardo"
-  - "clérigo"
-  - "hechicero"
-  - "mago"
+- transmutación
+- nivel_2
+- bardo
+- clérigo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Blindness/Deafness
 ---
 
 # Sordera/Ceguera

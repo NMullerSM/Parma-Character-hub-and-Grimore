@@ -1,22 +1,29 @@
 ---
-id: "urna_magica"
-nombre: "Urna Mágica"
+id: urna_magica
+nombre: Urna Mágica
 nivel: 6
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Mago"
-tiempo_lanzamiento: "1 minuto"
-alcance: "Lanzador"
-componentes: "V, S, M (una gema, un cristal o un relicario  que valga al menos 500 po)"
-duracion: "Hasta que sea disipado"
+- Mago
+tiempo_lanzamiento: 1 minuto
+alcance: Lanzador
+componentes: V, S, M (una gema, un cristal o un relicario  que valga al menos 500
+  po)
+duracion: Hasta que sea disipado
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 343
 tags:
-  - "nigromancia"
-  - "nivel_6"
-  - "mago"
+- nigromancia
+- nivel_6
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Magic Jar
 ---
 
 # Urna Mágica

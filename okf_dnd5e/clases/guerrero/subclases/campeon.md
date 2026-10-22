@@ -1,12 +1,21 @@
 ---
-id: "guerrero_campeon"
-nombre: "Campeón"
-nombre_ingles: "Champion"
-tipo: "subclase"
-clase_padre: "Guerrero"
+id: guerrero_campeon
+nombre: Campeón
+nombre_ingles: Champion
+tipo: subclase
+clase_padre: Guerrero
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["guerrero", "crítico 19-20", "atleta notable", "marcial", "phb2024"]
+fuente: PHB 2024
+tags:
+- guerrero
+- crítico 19-20
+- atleta notable
+- marcial
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Campeón (Champion)

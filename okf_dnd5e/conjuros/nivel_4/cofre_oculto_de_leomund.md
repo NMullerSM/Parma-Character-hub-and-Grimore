@@ -1,22 +1,30 @@
 ---
-id: "cofre_oculto_de_leomund"
-nombre: "Cofre Oculto De Leomund"
+id: cofre_oculto_de_leomund
+nombre: Cofre Oculto De Leomund
 nivel: 4
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S, M (un cofre de con unas dimensiones  de 90 cm por 60 cm por 60 cm, construido de materiales  raros que valgan al menos 5000 po, así como una réplica  Diminuta hecha de los mismos materiales y que valga al  menos 50 po)"
-duracion: "Hasta que sea disipado"
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S, M (un cofre de con unas dimensiones  de 90 cm por 60 cm por 60
+  cm, construido de materiales  raros que valgan al menos 5000 po, así como una réplica  Diminuta
+  hecha de los mismos materiales y que valga al  menos 50 po)
+duracion: Hasta que sea disipado
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 259
 tags:
-  - "conjuración"
-  - "nivel_4"
-  - "mago"
+- conjuración
+- nivel_4
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Leomund's Secret Chest
 ---
 
 # Cofre Oculto De Leomund

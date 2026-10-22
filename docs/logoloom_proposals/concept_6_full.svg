@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="400" height="120" fill="none">
+  <g transform="translate(18, 10)">
+    <polygon points="50,14 84,33 84,71 50,90 16,71 16,33" stroke="currentColor" stroke-width="5.5" stroke-linejoin="round"/>
+    <path d="M38 30 V72 M38 32 H58 C68 32 74 38 74 46 C74 54 68 60 58 60 H38" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="50" y1="14" x2="50" y2="30" stroke="currentColor" stroke-width="2.5" opacity="0.5"/>
+  </g>
+  <text x="135" y="66" font-family="'EB Garamond', Garamond, Georgia, serif" font-size="44" font-weight="700" letter-spacing="3" fill="currentColor">PARMA</text>
+  <text x="137" y="86" font-family="'Space Grotesk', system-ui, sans-serif" font-size="12" font-weight="600" letter-spacing="2.5" fill="currentColor" opacity="0.65">CHARACTER HUB &amp; GRIMOIRE</text>
+</svg>

@@ -1,12 +1,21 @@
 ---
-id: "clerigo_vida"
-nombre: "Dominio de la Vida"
-nombre_ingles: "Life Domain"
-tipo: "subclase"
-clase_padre: "Clérigo"
+id: clerigo_vida
+nombre: Dominio de la Vida
+nombre_ingles: Life Domain
+tipo: subclase
+clase_padre: Clérigo
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["clérigo", "sanación", "armadura pesada", "vitalidad", "phb2024"]
+fuente: PHB 2024
+tags:
+- clérigo
+- sanación
+- armadura pesada
+- vitalidad
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Dominio de la Vida (Life Domain)

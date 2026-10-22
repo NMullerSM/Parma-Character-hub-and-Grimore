@@ -1,27 +1,33 @@
 ---
-id: "puerta_arcana"
-nombre: "Puerta Arcana"
+id: puerta_arcana
+nombre: Puerta Arcana
 nivel: 6
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "150 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 10 minutos"
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 150 m
+componentes: V, S
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 325
 tags:
-  - "conjuración"
-  - "nivel_6"
-  - "brujo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- conjuración
+- nivel_6
+- brujo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Arcane Gate
 ---
 
 # Puerta Arcana

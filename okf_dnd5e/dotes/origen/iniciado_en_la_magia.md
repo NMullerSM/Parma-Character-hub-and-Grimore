@@ -1,14 +1,20 @@
 ---
-id: "iniciado_en_la_magia"
-nombre: "Iniciado En La Magia"
-categoria: "Origen"
-encabezado: "Dote de origen"
-fuente: "PHB 2024"
+id: iniciado_en_la_magia
+nombre: Iniciado En La Magia
+categoria: Origen
+encabezado: Dote de origen
+fuente: PHB 2024
 pagina: 203
 tags:
-  - "dote"
-  - "origen"
-  - "iniciado_en_la_magia"
+- dote
+- origen
+- iniciado_en_la_magia
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Iniciado En La Magia
 ---
 
 # Iniciado En La Magia

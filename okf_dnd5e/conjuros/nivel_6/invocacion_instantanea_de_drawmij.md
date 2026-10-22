@@ -1,23 +1,29 @@
 ---
-id: "invocacion_instantanea_de_drawmij"
-nombre: "Invocación Instantánea De Drawmij"
+id: invocacion_instantanea_de_drawmij
+nombre: Invocación Instantánea De Drawmij
 nivel: 6
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Mago"
-tiempo_lanzamiento: "1 minuto o un ritual"
-alcance: "Toque"
-componentes: "V, S, M (un zafiro que valga al menos 1000 po)"
-duracion: "Hasta que sea disipado"
+- Mago
+tiempo_lanzamiento: 1 minuto o un ritual
+alcance: Toque
+componentes: V, S, M (un zafiro que valga al menos 1000 po)
+duracion: Hasta que sea disipado
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 298
 tags:
-  - "conjuración"
-  - "nivel_6"
-  - "mago"
-  - "ritual"
+- conjuración
+- nivel_6
+- mago
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Drawmij's Instant Summons
 ---
 
 # Invocación Instantánea De Drawmij

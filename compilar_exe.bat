@@ -2,10 +2,10 @@
 setlocal
 chcp 65001 >nul
 cd /d "%~dp0"
-title Compilar DnD Sanctum a .EXE
+title Compilar Parma a .EXE
 
 echo ===================================================
-echo  Compilador PyInstaller DnD Sanctum a .EXE
+echo  Compilador PyInstaller Parma a .EXE
 echo ===================================================
 
 if not exist "%~dp0.venv\Scripts\python.exe" (

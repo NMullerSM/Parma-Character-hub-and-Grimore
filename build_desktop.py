@@ -1,5 +1,5 @@
 """
-Compilador Automatizado PyInstaller para D&D Sanctum Desktop.
+Compilador Automatizado PyInstaller para Parma Desktop.
 Genera un ejecutable autocontenido (.exe en Windows / binario nativo en Linux)
 utilizando el motor web nativo del sistema (WebView2 / WebKitGTK) sin sobrecarga de Chromium.
 """
@@ -10,7 +10,7 @@ import subprocess
 
 def build():
     print("=" * 65)
-    print(" Compilador D&D Sanctum Desktop — PyWebView + React 18")
+    print(" Compilador Parma Desktop — PyWebView + React 18")
     print("=" * 65)
 
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -22,7 +22,7 @@ def build():
 
     # 1. Verificar existencia del build del frontend
     if not os.path.exists(os.path.join(frontend_dist, "index.html")):
-        print("[D&D Sanctum] Compilando frontend en React + Vite...")
+        print("[Parma] Compilando frontend en React + Vite...")
         npm_cmd = "npm.cmd" if sys.platform == "win32" else "npm"
         subprocess.check_call([npm_cmd, "run", "build"], cwd=os.path.join(base_dir, "frontend"))
 
@@ -49,7 +49,8 @@ def build():
         "-m",
         "PyInstaller",
         "--noconsole",
-        "--name=DnD_Sanctum",
+        "--name=Parma",
+        f"--icon={os.path.join(base_dir, 'parma.ico')}",
         f"--distpath={dist_dir}",
         f"--workpath={build_dir}",
         f"--paths={base_dir}",

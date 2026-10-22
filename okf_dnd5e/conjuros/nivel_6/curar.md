@@ -1,24 +1,30 @@
 ---
-id: "curar"
-nombre: "Curar"
+id: curar
+nombre: Curar
 nivel: 6
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Clérigo"
-  - "Druida"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Clérigo
+- Druida
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 269
 tags:
-  - "abjuración"
-  - "nivel_6"
-  - "clérigo"
-  - "druida"
+- abjuración
+- nivel_6
+- clérigo
+- druida
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Heal
 ---
 
 # Curar

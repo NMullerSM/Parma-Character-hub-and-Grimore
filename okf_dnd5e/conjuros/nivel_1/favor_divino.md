@@ -1,22 +1,28 @@
 ---
-id: "favor_divino"
-nombre: "Favor Divino"
+id: favor_divino
+nombre: Favor Divino
 nivel: 1
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Paladín"
-tiempo_lanzamiento: "Acción adicional"
-alcance: "Lanzador"
-componentes: "V, S"
-duracion: "1 minuto"
+- Paladín
+tiempo_lanzamiento: Acción adicional
+alcance: Lanzador
+componentes: V, S
+duracion: 1 minuto
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 285
 tags:
-  - "transmutación"
-  - "nivel_1"
-  - "paladín"
+- transmutación
+- nivel_1
+- paladín
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Divine Favor
 ---
 
 # Favor Divino

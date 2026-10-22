@@ -1,19 +1,25 @@
 ---
-id: "humano"
-nombre: "Humano"
-tipo_criatura: "humanoide"
-tamano: "Mediano o Pequeño"
-velocidad: "9 m"
-sentidos: "Normal"
-fuente: "PHB 2024"
+id: humano
+nombre: Humano
+tipo_criatura: humanoide
+tamano: Mediano o Pequeño
+velocidad: 9 m
+sentidos: Normal
+fuente: PHB 2024
 pagina: 195
 rasgos_principales:
-  - "Ingenioso"
-  - "Habilidoso"
-  - "Versátil"
+- Ingenioso
+- Habilidoso
+- Versátil
 tags:
-  - "especie"
-  - "humano"
+- especie
+- humano
+- spanish
+- es
+- español
+idioma: es
+tipo: especie
+nombre_ingles: Human
 ---
 
 # Especie: Humano

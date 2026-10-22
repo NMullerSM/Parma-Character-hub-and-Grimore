@@ -1,23 +1,29 @@
 ---
-id: "manto_del_cruzado"
-nombre: "Manto Del Cruzado"
+id: manto_del_cruzado
+nombre: Manto Del Cruzado
 nivel: 3
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V"
-duracion: "Concentración, hasta 1 minuto"
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 311
 tags:
-  - "evocación"
-  - "nivel_3"
-  - "paladín"
-  - "concentracion"
+- evocación
+- nivel_3
+- paladín
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Crusader's Mantle
 ---
 
 # Manto Del Cruzado

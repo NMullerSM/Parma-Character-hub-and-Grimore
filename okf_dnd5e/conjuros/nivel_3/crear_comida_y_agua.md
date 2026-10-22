@@ -1,24 +1,30 @@
 ---
-id: "crear_comida_y_agua"
-nombre: "Crear Comida Y Agua"
+id: crear_comida_y_agua
+nombre: Crear Comida Y Agua
 nivel: 3
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Clérigo"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Clérigo
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 267
 tags:
-  - "conjuración"
-  - "nivel_3"
-  - "clérigo"
-  - "paladín"
+- conjuración
+- nivel_3
+- clérigo
+- paladín
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Create Food and Water
 ---
 
 # Crear Comida Y Agua

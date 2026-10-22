@@ -1,23 +1,29 @@
 ---
-id: "invocar_automata"
-nombre: "Invocar Autómata"
+id: invocar_automata
+nombre: Invocar Autómata
 nivel: 4
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "27 m"
-componentes: "V, S, M (una caja de seguridad que valga  al menos 400 po)"
-duracion: "Concentración, hasta 1 hora"
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 27 m
+componentes: V, S, M (una caja de seguridad que valga  al menos 400 po)
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 299
 tags:
-  - "conjuración"
-  - "nivel_4"
-  - "mago"
-  - "concentracion"
+- conjuración
+- nivel_4
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Summon Construct
 ---
 
 # Invocar Autómata

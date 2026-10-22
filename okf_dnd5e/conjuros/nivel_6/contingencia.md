@@ -1,22 +1,29 @@
 ---
-id: "contingencia"
-nombre: "Contingencia"
+id: contingencia
+nombre: Contingencia
 nivel: 6
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Mago"
-tiempo_lanzamiento: "10 minutos"
-alcance: "Lanzador"
-componentes: "V, S, M (una estatuilla de ti tallada y decorada  con gemas que valga al menos 1500 po)"
-duracion: "10 días"
+- Mago
+tiempo_lanzamiento: 10 minutos
+alcance: Lanzador
+componentes: V, S, M (una estatuilla de ti tallada y decorada  con gemas que valga
+  al menos 1500 po)
+duracion: 10 días
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 265
 tags:
-  - "abjuración"
-  - "nivel_6"
-  - "mago"
+- abjuración
+- nivel_6
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Contingency
 ---
 
 # Contingencia

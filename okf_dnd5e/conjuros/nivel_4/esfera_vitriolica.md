@@ -1,24 +1,30 @@
 ---
-id: "esfera_vitriolica"
-nombre: "Esfera Vitriólica"
+id: esfera_vitriolica
+nombre: Esfera Vitriólica
 nivel: 4
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "45 m"
-componentes: "V, S, M (una gota de bilis)"
-duracion: "Instantáneo"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 45 m
+componentes: V, S, M (una gota de bilis)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 282
 tags:
-  - "evocación"
-  - "nivel_4"
-  - "hechicero"
-  - "mago"
+- evocación
+- nivel_4
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Vitriolic Sphere
 ---
 
 # Esfera Vitriólica

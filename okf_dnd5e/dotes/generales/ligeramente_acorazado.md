@@ -1,14 +1,20 @@
 ---
-id: "ligeramente_acorazado"
-nombre: "Ligeramente Acorazado"
-categoria: "General"
-encabezado: "Dote general (requisitos: nivel 4 o más)"
-fuente: "PHB 2024"
+id: ligeramente_acorazado
+nombre: Ligeramente Acorazado
+categoria: General
+encabezado: 'Dote general (requisitos: nivel 4 o más)'
+fuente: PHB 2024
 pagina: 207
 tags:
-  - "dote"
-  - "generales"
-  - "ligeramente_acorazado"
+- dote
+- generales
+- ligeramente_acorazado
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Ligeramente Acorazado
 ---
 
 # Ligeramente Acorazado

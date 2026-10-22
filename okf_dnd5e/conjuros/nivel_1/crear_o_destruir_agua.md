@@ -1,24 +1,30 @@
 ---
-id: "crear_o_destruir_agua"
-nombre: "Crear O Destruir Agua"
+id: crear_o_destruir_agua
+nombre: Crear O Destruir Agua
 nivel: 1
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Clérigo"
-  - "Druida"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S, M (una mezcla de agua y arena)"
-duracion: "Instantáneo"
+- Clérigo
+- Druida
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S, M (una mezcla de agua y arena)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 268
 tags:
-  - "transmutación"
-  - "nivel_1"
-  - "clérigo"
-  - "druida"
+- transmutación
+- nivel_1
+- clérigo
+- druida
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Create or Destroy Water
 ---
 
 # Crear O Destruir Agua

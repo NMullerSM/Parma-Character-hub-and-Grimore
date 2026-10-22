@@ -1,25 +1,31 @@
 ---
-id: "aliento_de_dragon"
-nombre: "Aliento De Dragón"
+id: aliento_de_dragon
+nombre: Aliento De Dragón
 nivel: 2
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción adicional"
-alcance: "Toque"
-componentes: "V, S, M (una guindilla)"
-duracion: "Concentración, hasta 1 minuto"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción adicional
+alcance: Toque
+componentes: V, S, M (una guindilla)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 242
 tags:
-  - "transmutación"
-  - "nivel_2"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- transmutación
+- nivel_2
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Dragon's Breath
 ---
 
 # Aliento De Dragón

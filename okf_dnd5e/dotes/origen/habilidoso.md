@@ -1,14 +1,20 @@
 ---
-id: "habilidoso"
-nombre: "Habilidoso"
-categoria: "Origen"
-encabezado: "Dote de origen"
-fuente: "PHB 2024"
+id: habilidoso
+nombre: Habilidoso
+categoria: Origen
+encabezado: Dote de origen
+fuente: PHB 2024
 pagina: 203
 tags:
-  - "dote"
-  - "origen"
-  - "habilidoso"
+- dote
+- origen
+- habilidoso
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Habilidoso
 ---
 
 # Habilidoso

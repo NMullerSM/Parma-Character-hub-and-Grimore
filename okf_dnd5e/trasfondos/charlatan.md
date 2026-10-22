@@ -9,8 +9,14 @@ pagina: 181
 tags:
 - trasfondo
 - charlatan
+- spanish
+- es
+- español
 tipo: trasfondo
+idioma: es
+nombre_ingles: Charlatan
 ---
+
 # Trasfondo: Charlatán
 
 - **Puntuaciones de Característica**: Destreza, Constitución, Carisma

@@ -1,24 +1,31 @@
 ---
-id: "animar_a_los_muertos"
-nombre: "Animar A Los Muertos"
+id: animar_a_los_muertos
+nombre: Animar A Los Muertos
 nivel: 3
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Clérigo"
-  - "Mago"
-tiempo_lanzamiento: "1 minuto"
-alcance: "3 m"
-componentes: "V, S, M (una gota de sangre, un pedazo  de carne y una pizca de polvo de hueso)"
-duracion: "Instantáneo"
+- Clérigo
+- Mago
+tiempo_lanzamiento: 1 minuto
+alcance: 3 m
+componentes: V, S, M (una gota de sangre, un pedazo  de carne y una pizca de polvo
+  de hueso)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 244
 tags:
-  - "nigromancia"
-  - "nivel_3"
-  - "clérigo"
-  - "mago"
+- nigromancia
+- nivel_3
+- clérigo
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Animate Dead
 ---
 
 # Animar A Los Muertos

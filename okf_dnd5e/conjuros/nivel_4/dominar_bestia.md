@@ -1,27 +1,33 @@
 ---
-id: "dominar_bestia"
-nombre: "Dominar Bestia"
+id: dominar_bestia
+nombre: Dominar Bestia
 nivel: 4
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Druida"
-  - "Explorador"
-  - "Hechicero"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 minuto"
+- Druida
+- Explorador
+- Hechicero
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 275
 tags:
-  - "encantamiento"
-  - "nivel_4"
-  - "druida"
-  - "explorador"
-  - "hechicero"
-  - "concentracion"
+- encantamiento
+- nivel_4
+- druida
+- explorador
+- hechicero
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Dominate Beast
 ---
 
 # Dominar Bestia

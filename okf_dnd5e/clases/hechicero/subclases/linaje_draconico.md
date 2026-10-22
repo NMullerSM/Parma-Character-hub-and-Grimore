@@ -1,12 +1,22 @@
 ---
-id: "hechicero_linaje_draconico"
-nombre: "Linaje Dracónico"
-nombre_ingles: "Draconic Sorcery"
-tipo: "subclase"
-clase_padre: "Hechicero"
+id: hechicero_linaje_draconico
+nombre: Linaje Dracónico
+nombre_ingles: Draconic Sorcery
+tipo: subclase
+clase_padre: Hechicero
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["hechicero", "dragón", "escamas", "alas dracónicas", "afinidad elemental", "phb2024"]
+fuente: PHB 2024
+tags:
+- hechicero
+- dragón
+- escamas
+- alas dracónicas
+- afinidad elemental
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Linaje Dracónico (Draconic Sorcery)

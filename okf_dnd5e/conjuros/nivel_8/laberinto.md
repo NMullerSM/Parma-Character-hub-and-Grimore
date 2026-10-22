@@ -1,23 +1,29 @@
 ---
-id: "laberinto"
-nombre: "Laberinto"
+id: laberinto
+nombre: Laberinto
 nivel: 8
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 10 minutos"
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 306
 tags:
-  - "conjuración"
-  - "nivel_8"
-  - "mago"
-  - "concentracion"
+- conjuración
+- nivel_8
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Maze
 ---
 
 # Laberinto

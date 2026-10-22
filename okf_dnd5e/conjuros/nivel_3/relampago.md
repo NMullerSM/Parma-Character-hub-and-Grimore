@@ -1,24 +1,30 @@
 ---
-id: "relampago"
-nombre: "Relámpago"
+id: relampago
+nombre: Relámpago
 nivel: 3
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S, M (un poco de pelaje y una vara  de cristal)"
-duracion: "Instantáneo"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S, M (un poco de pelaje y una vara  de cristal)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 329
 tags:
-  - "evocación"
-  - "nivel_3"
-  - "hechicero"
-  - "mago"
+- evocación
+- nivel_3
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Lightning Bolt
 ---
 
 # Relámpago

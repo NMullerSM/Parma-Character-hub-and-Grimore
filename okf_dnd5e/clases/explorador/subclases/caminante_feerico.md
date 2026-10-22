@@ -1,12 +1,22 @@
 ---
-id: "explorador_caminante_feerico"
-nombre: "Caminante Feérico"
-nombre_ingles: "Fey Wanderer"
-tipo: "subclase"
-clase_padre: "Explorador"
+id: explorador_caminante_feerico
+nombre: Caminante Feérico
+nombre_ingles: Fey Wanderer
+tipo: subclase
+clase_padre: Explorador
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["explorador", "carisma", "fey", "daño psíquico", "phb2024", "tasha"]
+fuente: PHB 2024
+tags:
+- explorador
+- carisma
+- fey
+- daño psíquico
+- phb2024
+- tasha
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Caminante Feérico (Fey Wanderer)

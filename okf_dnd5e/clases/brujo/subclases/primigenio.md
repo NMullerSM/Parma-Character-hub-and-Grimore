@@ -1,12 +1,22 @@
 ---
-id: "brujo_primigenio"
-nombre: "El Primigenio"
-nombre_ingles: "Great Old One Patron"
-tipo: "subclase"
-clase_padre: "Brujo"
+id: brujo_primigenio
+nombre: El Primigenio
+nombre_ingles: Great Old One Patron
+tipo: subclase
+clase_padre: Brujo
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["brujo", "cthulhu", "mente", "telepatía", "locura", "phb2024"]
+fuente: PHB 2024
+tags:
+- brujo
+- cthulhu
+- mente
+- telepatía
+- locura
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: El Primigenio (Great Old One Patron)

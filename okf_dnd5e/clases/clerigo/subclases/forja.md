@@ -1,12 +1,22 @@
 ---
-id: "clerigo_forja"
-nombre: "Dominio de la Forja"
-nombre_ingles: "Forge Domain"
-tipo: "subclase"
-clase_padre: "Clérigo"
+id: clerigo_forja
+nombre: Dominio de la Forja
+nombre_ingles: Forge Domain
+tipo: subclase
+clase_padre: Clérigo
 nivel_desbloqueo: 3
-fuente: "Guia de Xanathar Para Todo"
-tags: ["clérigo", "xanathar", "metal", "artesanía", "fuego", "armadura"]
+fuente: Guia de Xanathar Para Todo
+tags:
+- clérigo
+- xanathar
+- metal
+- artesanía
+- fuego
+- armadura
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Dominio de la Forja (Forge Domain)

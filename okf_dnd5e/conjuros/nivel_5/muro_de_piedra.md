@@ -1,27 +1,33 @@
 ---
-id: "muro_de_piedra"
-nombre: "Muro De Piedra"
+id: muro_de_piedra
+nombre: Muro De Piedra
 nivel: 5
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S, M (un cubo de granito)"
-duracion: "Concentración, hasta 10 minutos"
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S, M (un cubo de granito)
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 314
 tags:
-  - "evocación"
-  - "nivel_5"
-  - "druida"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- evocación
+- nivel_5
+- druida
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Wall of Stone
 ---
 
 # Muro De Piedra

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
+  <!-- Opción 8: El Tomo Poliédrico -->
+  <g stroke="currentColor" stroke-width="8" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Contorno de libro hexagonal facetado -->
+    <polygon points="128,36 214,84 214,172 128,220 42,172 42,84" fill="none"/>
+    <!-- Nervaduras interiores que forman tanto el lomo del libro como las caras del d20 -->
+    <line x1="128" y1="36" x2="128" y2="220" stroke-width="9"/>
+    <line x1="128" y1="128" x2="214" y2="84"/>
+    <line x1="128" y1="128" x2="42" y2="84"/>
+    <line x1="128" y1="128" x2="214" y2="172"/>
+    <line x1="128" y1="128" x2="42" y2="172"/>
+    <!-- Triángulo central del d20 / portada del libro -->
+    <polygon points="128,84 172,156 84,156" fill="currentColor" opacity="0.15" stroke-width="6"/>
+  </g>
+</svg>

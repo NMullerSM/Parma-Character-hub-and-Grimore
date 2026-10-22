@@ -1,29 +1,35 @@
 ---
-id: "sugestion"
-nombre: "Sugestión"
+id: sugestion
+nombre: Sugestión
 nivel: 2
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, M (una gota de miel)"
-duracion: "Concentración, hasta 8 horas"
+- Bardo
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, M (una gota de miel)
+duracion: Concentración, hasta 8 horas
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 336
 tags:
-  - "encantamiento"
-  - "nivel_2"
-  - "bardo"
-  - "brujo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- encantamiento
+- nivel_2
+- bardo
+- brujo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Suggestion
 ---
 
 # Sugestión

@@ -1,28 +1,34 @@
 ---
-id: "ola_atronadora"
-nombre: "Ola Atronadora"
+id: ola_atronadora
+nombre: Ola Atronadora
 nivel: 1
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Bardo"
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Bardo
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 317
 tags:
-  - "evocación"
-  - "nivel_1"
-  - "bardo"
-  - "druida"
-  - "hechicero"
-  - "mago"
+- evocación
+- nivel_1
+- bardo
+- druida
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Thunderwave
 ---
 
 # Ola Atronadora

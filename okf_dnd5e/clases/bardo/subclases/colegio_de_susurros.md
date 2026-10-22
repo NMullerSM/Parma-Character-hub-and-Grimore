@@ -1,20 +1,24 @@
 ---
-id: "subclase_colegio_de_susurros"
-nombre: "Colegio de los Susurros"
-nombre_ingles: "College of Whispers"
-fuente: "Guía de Xanathar para Todo"
+id: subclase_colegio_de_susurros
+nombre: Colegio de los Susurros
+nombre_ingles: College of Whispers
+fuente: Guía de Xanathar para Todo
 pagina: 17
-clase_padre: "Bardo"
-tipo: "subclase"
+clase_padre: Bardo
+tipo: subclase
 nivel_obtencion: 3
 tags:
-  - "subclase"
-  - "bardo"
-  - "xanathar"
-  - "susurros"
-  - "psiquico"
-  - "terror"
-  - "infiltracion"
+- subclase
+- bardo
+- xanathar
+- susurros
+- psiquico
+- terror
+- infiltracion
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Colegio de los Susurros (*College of Whispers*)

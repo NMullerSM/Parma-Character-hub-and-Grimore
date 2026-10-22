@@ -1,23 +1,29 @@
 ---
-id: "hambre_de_hadar"
-nombre: "Hambre De Hadar"
+id: hambre_de_hadar
+nombre: Hambre De Hadar
 nivel: 3
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Brujo"
-tiempo_lanzamiento: "Acción"
-alcance: "45 m"
-componentes: "V, S, M (un tentáculo en salmuera)"
-duracion: "Concentración, hasta 1 minuto"
+- Brujo
+tiempo_lanzamiento: Acción
+alcance: 45 m
+componentes: V, S, M (un tentáculo en salmuera)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 292
 tags:
-  - "conjuración"
-  - "nivel_3"
-  - "brujo"
-  - "concentracion"
+- conjuración
+- nivel_3
+- brujo
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Hadar's Hunger
 ---
 
 # Hambre De Hadar

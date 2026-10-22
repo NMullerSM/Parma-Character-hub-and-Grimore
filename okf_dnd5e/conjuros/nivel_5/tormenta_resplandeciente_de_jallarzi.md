@@ -1,25 +1,31 @@
 ---
-id: "tormenta_resplandeciente_de_jallarzi"
-nombre: "Tormenta Resplandeciente De Jallarzi"
+id: tormenta_resplandeciente_de_jallarzi
+nombre: Tormenta Resplandeciente De Jallarzi
 nivel: 5
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Brujo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S, M (una pizca de fósforo)"
-duracion: "Concentración, hasta 1 minuto"
+- Brujo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S, M (una pizca de fósforo)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 342
 tags:
-  - "evocación"
-  - "nivel_5"
-  - "brujo"
-  - "mago"
-  - "concentracion"
+- evocación
+- nivel_5
+- brujo
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Jallarzi's Storm of Radiance
 ---
 
 # Tormenta Resplandeciente De Jallarzi

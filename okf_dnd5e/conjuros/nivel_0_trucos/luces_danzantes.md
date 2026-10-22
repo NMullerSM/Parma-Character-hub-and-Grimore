@@ -1,27 +1,33 @@
 ---
-id: "luces_danzantes"
-nombre: "Luces Danzantes"
+id: luces_danzantes
+nombre: Luces Danzantes
 nivel: 0
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Bardo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S, M (una pizca de fósforo)"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S, M (una pizca de fósforo)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 308
 tags:
-  - "ilusionismo"
-  - "nivel_0"
-  - "bardo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- ilusionismo
+- nivel_0
+- bardo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Dancing Lights
 ---
 
 # Luces Danzantes

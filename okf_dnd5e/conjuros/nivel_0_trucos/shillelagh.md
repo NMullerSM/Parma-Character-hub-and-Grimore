@@ -1,22 +1,28 @@
 ---
-id: "shillelagh"
-nombre: "Shillelagh"
+id: shillelagh
+nombre: Shillelagh
 nivel: 0
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Druida"
-tiempo_lanzamiento: "Acción adicional"
-alcance: "Lanzador"
-componentes: "V, S, M (muérdago)"
-duracion: "1 minuto"
+- Druida
+tiempo_lanzamiento: Acción adicional
+alcance: Lanzador
+componentes: V, S, M (muérdago)
+duracion: 1 minuto
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 334
 tags:
-  - "transmutación"
-  - "nivel_0"
-  - "druida"
+- transmutación
+- nivel_0
+- druida
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Shillelagh
 ---
 
 # Shillelagh

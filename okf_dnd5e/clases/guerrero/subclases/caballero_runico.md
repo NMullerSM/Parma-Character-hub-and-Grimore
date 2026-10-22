@@ -1,12 +1,21 @@
 ---
-id: "guerrero_caballero_runico"
-nombre: "Caballero Rúnico"
-nombre_ingles: "Rune Knight"
-tipo: "subclase"
-clase_padre: "Guerrero"
+id: guerrero_caballero_runico
+nombre: Caballero Rúnico
+nombre_ingles: Rune Knight
+tipo: subclase
+clase_padre: Guerrero
 nivel_desbloqueo: 3
-fuente: "Caldero de Tasha para Todo"
-tags: ["guerrero", "tasha", "runas", "gigantes", "tamaño grande"]
+fuente: Caldero de Tasha para Todo
+tags:
+- guerrero
+- tasha
+- runas
+- gigantes
+- tamaño grande
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Caballero Rúnico (Rune Knight)

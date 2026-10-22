@@ -1,22 +1,28 @@
 ---
-id: "telepatia"
-nombre: "Telepatía"
+id: telepatia
+nombre: Telepatía
 nivel: 8
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "limitado"
-componentes: "V, S, M (un par de anillos de plata  enlazados)"
-duracion: "24 horas"
+- Mago
+tiempo_lanzamiento: Acción
+alcance: limitado
+componentes: V, S, M (un par de anillos de plata  enlazados)
+duracion: 24 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 337
 tags:
-  - "adivinación"
-  - "nivel_8"
-  - "mago"
+- adivinación
+- nivel_8
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Telepathy
 ---
 
 # Telepatía

@@ -1,22 +1,28 @@
 ---
-id: "castigo_divino"
-nombre: "Castigo Divino"
+id: castigo_divino
+nombre: Castigo Divino
 nivel: 1
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Paladín"
-tiempo_lanzamiento: "Acción adicionál, que realizas"
-alcance: "Lanzador"
-componentes: "V"
-duracion: "Instantáneo"
+- Paladín
+tiempo_lanzamiento: Acción adicionál, que realizas
+alcance: Lanzador
+componentes: V
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 257
 tags:
-  - "evocación"
-  - "nivel_1"
-  - "paladín"
+- evocación
+- nivel_1
+- paladín
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Divine Smite
 ---
 
 # Castigo Divino

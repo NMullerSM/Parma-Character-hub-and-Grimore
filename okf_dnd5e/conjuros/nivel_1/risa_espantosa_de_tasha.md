@@ -1,38 +1,42 @@
 ---
-id: "risa_espantosa_de_tasha"
-nombre: "Risa Espantosa de Tasha"
-nombre_ingles: "Tasha's Hideous Laughter"
-fuente: "Caldero de Tasha / PHB 2024"
+id: risa_espantosa_de_tasha
+nombre: Risa Espantosa de Tasha
+nombre_ingles: Tasha's Hideous Laughter
+fuente: Caldero de Tasha / PHB 2024
 pagina: 326
-tipo: "conjuro"
+tipo: conjuro
 nivel: 1
-escuela: "Encantamiento"
-tiempo_lanzamiento: "1 acción"
-alcance: "9 m / 30 pies"
+escuela: Encantamiento
+tiempo_lanzamiento: 1 acción
+alcance: 9 m / 30 pies
 componentes:
   verbal: true
   somatico: true
   material: true
-  material_desc: "pequeñas tartas y una pluma"
-duracion: "Concentración, hasta 1 minuto"
+  material_desc: pequeñas tartas y una pluma
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
 clases:
-  - "Bardo"
-  - "Mago"
-  - "Toque Feérico"
-salvacion: "Sabiduría CD"
+- Bardo
+- Mago
+- Toque Feérico
+salvacion: Sabiduría CD
 dano_inicial: null
 escalado: null
 tags:
-  - "conjuro"
-  - "nivel-1"
-  - "bardo"
-  - "mago"
-  - "tasha"
-  - "encantamiento"
-  - "incapacitado"
-  - "prono"
+- conjuro
+- nivel-1
+- bardo
+- mago
+- tasha
+- encantamiento
+- incapacitado
+- prono
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Risa Espantosa de Tasha (*Tasha's Hideous Laughter*)

@@ -1,22 +1,29 @@
 ---
-id: "recluir"
-nombre: "Recluir"
+id: recluir
+nombre: Recluir
 nivel: 7
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S, M (polvo de piedras preciosas que valga  al menos 5000 po, que se consume como parte del conjuro)"
-duracion: "Hasta que sea disipado"
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S, M (polvo de piedras preciosas que valga  al menos 5000 po, que
+  se consume como parte del conjuro)
+duracion: Hasta que sea disipado
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 328
 tags:
-  - "transmutación"
-  - "nivel_7"
-  - "mago"
+- transmutación
+- nivel_7
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Sequester
 ---
 
 # Recluir

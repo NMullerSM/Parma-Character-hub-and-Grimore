@@ -1,26 +1,32 @@
 ---
-id: "cono_de_frio"
-nombre: "Cono De Frío"
+id: cono_de_frio
+nombre: Cono De Frío
 nivel: 5
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S, M (un cono pequeño de cristal o vidrio)"
-duracion: "Instantáneo"
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S, M (un cono pequeño de cristal o vidrio)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 263
 tags:
-  - "evocación"
-  - "nivel_5"
-  - "druida"
-  - "hechicero"
-  - "mago"
+- evocación
+- nivel_5
+- druida
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Cone of Cold
 ---
 
 # Cono De Frío

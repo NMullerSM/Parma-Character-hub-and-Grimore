@@ -1,28 +1,34 @@
 ---
-id: "impacto_certero"
-nombre: "Impacto Certero"
+id: impacto_certero
+nombre: Impacto Certero
 nivel: 0
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "S, M (un arma con la que tengas  competencia y que valga al menos 1 pc)"
-duracion: "Instantáneo"
+- Bardo
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: S, M (un arma con la que tengas  competencia y que valga al menos 1 pc)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 295
 tags:
-  - "adivinación"
-  - "nivel_0"
-  - "bardo"
-  - "brujo"
-  - "hechicero"
-  - "mago"
+- adivinación
+- nivel_0
+- bardo
+- brujo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: True Strike
 ---
 
 # Impacto Certero

@@ -1,14 +1,20 @@
 ---
-id: "afortunado"
-nombre: "Afortunado"
-categoria: "Origen"
-encabezado: "Dote de origen"
-fuente: "PHB 2024"
+id: afortunado
+nombre: Afortunado
+categoria: Origen
+encabezado: Dote de origen
+fuente: PHB 2024
 pagina: 202
 tags:
-  - "dote"
-  - "origen"
-  - "afortunado"
+- dote
+- origen
+- afortunado
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Lucky
 ---
 
 # Afortunado

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Parma — Galería de Propuestas de Icono (Yunque de Libros)</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f1317;
+      color: #e2e8f0;
+      margin: 0;
+      padding: 40px;
+    }
+    h1 { color: #c9a45c; font-size: 28px; margin-bottom: 8px; }
+    p.subtitle { color: #94a3b8; font-size: 15px; margin-bottom: 32px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .card {
+      background: #182028;
+      border: 1px solid #2d3843;
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-col: column;
+    }
+    .card h2 { font-size: 18px; color: #f1f5f9; margin-top: 0; margin-bottom: 8px; }
+    .card p { font-size: 13px; color: #94a3b8; line-height: 1.5; margin-bottom: 20px; }
+    .previews {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .box {
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      border: 1px solid #334155;
+    }
+    .box.light { background: #f8fafc; color: #0f172a; }
+    .box.dark { background: #0b0e11; color: #f8fafc; }
+    .box span { font-size: 11px; margin-top: 8px; font-weight: 600; opacity: 0.6; }
+    .scales {
+      display: flex;
+      gap: 16px;
+      align-items: flex-end;
+      padding: 12px;
+      background: #10151a;
+      border-radius: 8px;
+      border: 1px dashed #334155;
+    }
+    .scales div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: #64748b;
+    }
+    img.invert-on-dark {
+      filter: invert(1);
+    }
+  </style>
+</head>
+<body>
+  <h1>Parma: Propuestas de Iconografía Minimalista (Yunque de Libros)</h1>
+  <p class="subtitle">
+    Exploraciones vectoriales puras (monocromo, con transparencia) basadas en el concepto del <strong>Yunque Forjado a partir de Libros</strong> y la raíz élfica de Tolkien (<em>Parma = Libro / Grimorio</em>).
+  </p>
+
+  <div class="grid">
+    <!-- Opción 1 -->
+    <div class="card">
+      <div>
+        <h2>Opción 1: Yunque Geométrico de Tomos</h2>
+        <p>Mesa plana superior con cuerno cónico extendido, cintura formada por dos lomos con nervaduras, y base gruesa de encuadernación. Fiel al balance clásico de un yunque de herrero.</p>
+      </div>
+      <div class="previews">
+        <div class="box light">
+          <img src="yunque_libros_1_geometrico.svg" width="64" height="64" alt="Opción 1">
+          <span>Claro (64px)</span>
+        </div>
+        <div class="box dark">
+          <img src="yunque_libros_1_geometrico.svg" width="64" height="64" class="invert-on-dark" alt="Opción 1">
+          <span>Oscuro (64px)</span>
+        </div>
+      </div>
+      <div class="scales">
+        <div><img src="yunque_libros_1_geometrico.svg" width="48" height="48" class="invert-on-dark">48px</div>
+        <div><img src="yunque_libros_1_geometrico.svg" width="32" height="32" class="invert-on-dark">32px</div>
+        <div><img src="yunque_libros_1_geometrico.svg" width="24" height="24" class="invert-on-dark">24px</div>
+        <div><img src="yunque_libros_1_geometrico.svg" width="16" height="16" class="invert-on-dark">16px</div>
+      </div>
+    </div>
+
+    <!-- Opción 2 -->
+    <div class="card">
+      <div>
+        <h2>Opción 2: Yunque de Libros en Curvatura Orgánica</h2>
+        <p>Base con hojas de gran códice, pilar central con tres volúmenes escalonados y marcapáginas en V cayendo por la cintura. Cuerno afilado y dinámico.</p>
+      </div>
+      <div class="previews">
+        <div class="box light">
+          <img src="yunque_libros_2_lineal_solido.svg" width="64" height="64" alt="Opción 2">
+          <span>Claro (64px)</span>
+        </div>
+        <div class="box dark">
+          <img src="yunque_libros_2_lineal_solido.svg" width="64" height="64" class="invert-on-dark" alt="Opción 2">
+          <span>Oscuro (64px)</span>
+        </div>
+      </div>
+      <div class="scales">
+        <div><img src="yunque_libros_2_lineal_solido.svg" width="48" height="48" class="invert-on-dark">48px</div>
+        <div><img src="yunque_libros_2_lineal_solido.svg" width="32" height="32" class="invert-on-dark">32px</div>
+        <div><img src="yunque_libros_2_lineal_solido.svg" width="24" height="24" class="invert-on-dark">24px</div>
+        <div><img src="yunque_libros_2_lineal_solido.svg" width="16" height="16" class="invert-on-dark">16px</div>
+      </div>
+    </div>
+
+    <!-- Opción 3 -->
+    <div class="card">
+      <div>
+        <h2>Opción 3: Yunque & Sello Tengwar Parma (Tolkien)</h2>
+        <p>Inspirado en la runa <em>Parma</em> de Tolkien. El arco curvo (lúva) forma el cuerno y la mesa superior del yunque con una estrella élfica en el núcleo.</p>
+      </div>
+      <div class="previews">
+        <div class="box light">
+          <img src="yunque_libros_3_tengwar_parma.svg" width="64" height="64" alt="Opción 3">
+          <span>Claro (64px)</span>
+        </div>
+        <div class="box dark">
+          <img src="yunque_libros_3_tengwar_parma.svg" width="64" height="64" class="invert-on-dark" alt="Opción 3">
+          <span>Oscuro (64px)</span>
+        </div>
+      </div>
+      <div class="scales">
+        <div><img src="yunque_libros_3_tengwar_parma.svg" width="48" height="48" class="invert-on-dark">48px</div>
+        <div><img src="yunque_libros_3_tengwar_parma.svg" width="32" height="32" class="invert-on-dark">32px</div>
+        <div><img src="yunque_libros_3_tengwar_parma.svg" width="24" height="24" class="invert-on-dark">24px</div>
+        <div><img src="yunque_libros_3_tengwar_parma.svg" width="16" height="16" class="invert-on-dark">16px</div>
+      </div>
+    </div>
+
+    <!-- Opción 4 -->
+    <div class="card">
+      <div>
+        <h2>Opción 4: Yunque de Máxima Síntesis (Geometría Minimalista)</h2>
+        <p>Trazo vectorial estilizado al máximo, silueta limpia con cortes de hojas marcados y gran estabilidad visual en escalas ultrapequeñas (16×16).</p>
+      </div>
+      <div class="previews">
+        <div class="box light">
+          <img src="yunque_libros_4_minimalista_negro.svg" width="64" height="64" alt="Opción 4">
+          <span>Claro (64px)</span>
+        </div>
+        <div class="box dark">
+          <img src="yunque_libros_4_minimalista_negro.svg" width="64" height="64" class="invert-on-dark" alt="Opción 4">
+          <span>Oscuro (64px)</span>
+        </div>
+      </div>
+      <div class="scales">
+        <div><img src="yunque_libros_4_minimalista_negro.svg" width="48" height="48" class="invert-on-dark">48px</div>
+        <div><img src="yunque_libros_4_minimalista_negro.svg" width="32" height="32" class="invert-on-dark">32px</div>
+        <div><img src="yunque_libros_4_minimalista_negro.svg" width="24" height="24" class="invert-on-dark">24px</div>
+        <div><img src="yunque_libros_4_minimalista_negro.svg" width="16" height="16" class="invert-on-dark">16px</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

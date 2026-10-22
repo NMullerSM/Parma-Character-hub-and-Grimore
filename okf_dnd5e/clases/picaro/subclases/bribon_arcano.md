@@ -1,12 +1,21 @@
 ---
-id: "picaro_bribon_arcano"
-nombre: "Bribón Arcano"
-nombre_ingles: "Arcane Trickster"
-tipo: "subclase"
-clase_padre: "Pícaro"
+id: picaro_bribon_arcano
+nombre: Bribón Arcano
+nombre_ingles: Arcane Trickster
+tipo: subclase
+clase_padre: Pícaro
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["pícaro", "magia", "mano de mago invisible", "ilusión", "phb2024"]
+fuente: PHB 2024
+tags:
+- pícaro
+- magia
+- mano de mago invisible
+- ilusión
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Bribón Arcano (Arcane Trickster)

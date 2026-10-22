@@ -172,17 +172,18 @@ class PdfReaderEngine:
 
             img_bytes = pix.tobytes("png")
             b64_str = base64.b64encode(img_bytes).decode("ascii")
+            data_uri = f"data:image/png;base64,{b64_str}"
 
             # Liberar el objeto C++ pixmap de PyMuPDF inmediatamente
             del pix
 
             # Guardar en caché LRU
-            self._page_cache[cache_key] = b64_str
+            self._page_cache[cache_key] = data_uri
             if len(self._page_cache) > self.max_cached:
                 self._page_cache.popitem(last=False)
                 gc.collect()
 
-            return b64_str
+            return data_uri
         except Exception as e:
             print(f"[PdfReaderEngine] Error al renderizar página {page_num}: {e}")
             return None

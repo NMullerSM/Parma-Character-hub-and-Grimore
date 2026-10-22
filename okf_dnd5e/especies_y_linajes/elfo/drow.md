@@ -1,20 +1,24 @@
 ---
-id: "especie_drow"
-nombre: "Drow (Elfo Oscuro)"
-nombre_ingles: "Drow"
-fuente: "Manual del Jugador 2024"
+id: especie_drow
+nombre: Drow (Elfo Oscuro)
+nombre_ingles: Drow
+fuente: Manual del Jugador 2024
 pagina: 189
-tipo: "especie_linaje"
-velocidad: "9 m (30 pies)"
-tamano: "Mediano"
-vision_oscuridad: "36 m (120 pies)"
+tipo: especie_linaje
+velocidad: 9 m (30 pies)
+tamano: Mediano
+vision_oscuridad: 36 m (120 pies)
 tags:
-  - "especie"
-  - "elfo"
-  - "drow"
-  - "infracomun"
-  - "linaje-feerico"
-  - "magia-innata"
+- especie
+- elfo
+- drow
+- infracomun
+- linaje-feerico
+- magia-innata
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Especie: Drow (Elfo Oscuro)

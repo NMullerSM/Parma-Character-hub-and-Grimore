@@ -1,25 +1,31 @@
 ---
-id: "asesino_fantasmal"
-nombre: "Asesino Fantasmal"
+id: asesino_fantasmal
+nombre: Asesino Fantasmal
 nivel: 4
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Bardo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 247
 tags:
-  - "ilusionismo"
-  - "nivel_4"
-  - "bardo"
-  - "mago"
-  - "concentracion"
+- ilusionismo
+- nivel_4
+- bardo
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Phantasmal Killer
 ---
 
 # Asesino Fantasmal

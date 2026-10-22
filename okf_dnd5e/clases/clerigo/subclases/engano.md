@@ -1,12 +1,21 @@
 ---
-id: "clerigo_engano"
-nombre: "Dominio del Engaño"
-nombre_ingles: "Trickery Domain"
-tipo: "subclase"
-clase_padre: "Clérigo"
+id: clerigo_engano
+nombre: Dominio del Engaño
+nombre_ingles: Trickery Domain
+tipo: subclase
+clase_padre: Clérigo
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["clérigo", "ilusión", "sigilo", "duplicado", "phb2024"]
+fuente: PHB 2024
+tags:
+- clérigo
+- ilusión
+- sigilo
+- duplicado
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Dominio del Engaño (Trickery Domain)

@@ -1,29 +1,35 @@
 ---
-id: "guardia_de_cuchillas"
-nombre: "Guardia De Cuchillas"
+id: guardia_de_cuchillas
+nombre: Guardia De Cuchillas
 nivel: 0
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 290
 tags:
-  - "abjuración"
-  - "nivel_0"
-  - "bardo"
-  - "brujo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- abjuración
+- nivel_0
+- bardo
+- brujo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Blade Ward
 ---
 
 # Guardia De Cuchillas

@@ -515,27 +515,27 @@ export const api = {
     };
   },
 
-  async exportPdf(charId: number): Promise<{ success: boolean; path?: string; error?: string }> {
+  async exportPdf(charId: number): Promise<{ success: boolean; path?: string; error?: string; cancelled?: boolean }> {
     if (this.isNative()) return await window.pywebview!.api.export_character_pdf(charId);
     return { success: true, path: "C:/fake/path/Artanis_Sheet.pdf" };
   },
 
   // --- Compendio OKF ---
-  async getCompendiumCategories(): Promise<CompendiumCategory[]> {
-    if (this.isNative()) return await window.pywebview!.api.get_compendium_categories();
+  async getCompendiumCategories(lang: string = "es"): Promise<CompendiumCategory[]> {
+    if (this.isNative()) return await window.pywebview!.api.get_compendium_categories(lang);
     return [
-      { id: "clases", label: "Clases y Subclases", count: 12 },
-      { id: "especies_y_linajes", label: "Especies y Linajes", count: 9 },
-      { id: "conjuros", label: "Grimorio de Conjuros", count: 320 },
-      { id: "trasfondos", label: "Trasfondos", count: 17 },
-      { id: "dotes", label: "Dotes", count: 42 },
-      { id: "equipo_y_armamento", label: "Equipo y Armamento", count: 85 },
-      { id: "reglas_y_mecanicas", label: "Reglas y Mecánicas", count: 28 },
+      { id: "clases", label: lang === "en" ? "Classes & Subclasses" : "Clases y Subclases", count: 70 },
+      { id: "especies_y_linajes", label: lang === "en" ? "Species & Lineages" : "Especies y Linajes", count: 10 },
+      { id: "conjuros", label: lang === "en" ? "Spell Grimoire" : "Grimorio de Conjuros", count: 380 },
+      { id: "trasfondos", label: lang === "en" ? "Backgrounds" : "Trasfondos", count: 17 },
+      { id: "dotes", label: lang === "en" ? "Character Feats" : "Dotes", count: 75 },
+      { id: "equipo_y_armamento", label: lang === "en" ? "Equipment & Weapons" : "Equipo y Armamento", count: 4 },
+      { id: "reglas_y_mecanicas", label: lang === "en" ? "Rules & Mechanics" : "Reglas y Mecánicas", count: 5 },
     ];
   },
 
-  async searchCompendium(query: string, category?: string): Promise<CompendiumSearchResult[]> {
-    if (this.isNative()) return await window.pywebview!.api.search_compendium(query, category);
+  async searchCompendium(query: string, category?: string, lang: string = "es"): Promise<CompendiumSearchResult[]> {
+    if (this.isNative()) return await window.pywebview!.api.search_compendium(query, category, lang);
     return [
       {
         id: "castigo-divino",
@@ -547,8 +547,8 @@ export const api = {
     ];
   },
 
-  async getCompendiumEntry(category: string, entryName: string): Promise<any> {
-    if (this.isNative()) return await window.pywebview!.api.get_compendium_entry(category, entryName);
+  async getCompendiumEntry(category: string, entryName: string, lang: string = "es"): Promise<any> {
+    if (this.isNative()) return await window.pywebview!.api.get_compendium_entry(category, entryName, lang);
     return {
       name: entryName,
       category,
@@ -557,8 +557,8 @@ export const api = {
   },
 
   // --- Creador de Personajes & Reglas ---
-  async getBuilderCatalog(edition: string = "5.5e"): Promise<BuilderCatalog> {
-    if (this.isNative()) return await window.pywebview!.api.get_builder_catalog(edition);
+  async getBuilderCatalog(edition: string = "5.5e", lang: string = "es"): Promise<BuilderCatalog> {
+    if (this.isNative()) return await window.pywebview!.api.get_builder_catalog(edition, lang);
     return {
       edition,
       species: [
@@ -585,8 +585,8 @@ export const api = {
     };
   },
 
-  async getClassSpells(className: string, maxLevel: number = 1): Promise<SpellItemData[]> {
-    if (this.isNative()) return await window.pywebview!.api.get_class_spells(className, maxLevel);
+  async getClassSpells(className: string, maxLevel: number = 1, lang: string = "es"): Promise<SpellItemData[]> {
+    if (this.isNative()) return await window.pywebview!.api.get_class_spells(className, maxLevel, lang);
     return mockActiveCharacter.spells.filter((s) => s.level <= maxLevel);
   },
 
@@ -596,6 +596,7 @@ export const api = {
     level?: number;
     query?: string;
     school?: string;
+    lang?: string;
   } = {}): Promise<SpellItemData[]> {
     if (this.isNative()) {
       const res = await window.pywebview!.api.get_available_spells(
@@ -603,7 +604,9 @@ export const api = {
         options.maxLevel ?? null,
         options.query || "",
         options.school || null,
-        options.level ?? null
+        options.level ?? null,
+        150,
+        options.lang || "es"
       );
       return Array.isArray(res) ? res : [];
     }
@@ -649,8 +652,8 @@ export const api = {
     return { success: true, character: mockActiveCharacter };
   },
 
-  async syncCharacterFeatures(charId: number): Promise<{ success: boolean; character?: CharacterSheetData; error?: string }> {
-    if (this.isNative()) return await window.pywebview!.api.sync_character_features(charId);
+  async syncCharacterFeatures(charId: number, lang: string = "es"): Promise<{ success: boolean; character?: CharacterSheetData; error?: string }> {
+    if (this.isNative()) return await window.pywebview!.api.sync_character_features(charId, lang);
     return { success: true, character: mockActiveCharacter };
   },
 
@@ -740,6 +743,7 @@ export const api = {
     return {
       theme: "dark-obsidian",
       dnd_edition: "5.5e",
+      language: ((localStorage.getItem("dnd_sanctum_lang") as "es" | "en") || "es"),
       talespire_mode: "dm",
       talespire_enabled: true,
       okf_path: "okf_dnd5e",

@@ -1,29 +1,35 @@
 ---
-id: "rafaga_de_viento"
-nombre: "Ráfaga De Viento"
+id: rafaga_de_viento
+nombre: Ráfaga De Viento
 nivel: 2
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Druida"
-  - "Explorador"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S, M (la semilla de una legumbre)"
-duracion: "Concentración, hasta 1 minuto"
+- Druida
+- Explorador
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S, M (la semilla de una legumbre)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 326
 tags:
-  - "evocación"
-  - "nivel_2"
-  - "druida"
-  - "explorador"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- evocación
+- nivel_2
+- druida
+- explorador
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Gust of Wind
 ---
 
 # Ráfaga De Viento

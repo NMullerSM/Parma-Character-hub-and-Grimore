@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
+  <!-- Opción 10: El Monograma 'P' Arquitectónico -->
+  <g fill="currentColor">
+    <!-- Asta vertical de la P (el lomo recto y firme) -->
+    <rect x="68" y="44" width="28" height="168" rx="6"/>
+    <!-- Ojo superior de la P formado como las páginas dobladas de un libro abierto -->
+    <path d="M 96 44 L 156 44 C 188 44 212 68 212 102 C 212 136 188 160 156 160 L 96 160 Z"/>
+    <!-- Espacio negativo interior (corte geométrico de hoja de pergamino) -->
+    <rect x="96" y="72" width="58" height="60" rx="14" fill="#ffffff"/>
+    <!-- Pliegue de hoja en la esquina superior del libro -->
+    <path d="M 188 44 L 212 68 L 188 68 Z" fill="#ffffff" opacity="0.3"/>
+  </g>
+</svg>

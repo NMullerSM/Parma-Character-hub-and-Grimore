@@ -1,27 +1,33 @@
 ---
-id: "controlar_agua"
-nombre: "Controlar Agua"
+id: controlar_agua
+nombre: Controlar Agua
 nivel: 4
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Clérigo"
-  - "Druida"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "90 m"
-componentes: "V, S, M (una mezcla de agua y polvo)"
-duracion: "Concentración, hasta 10 minutos"
+- Clérigo
+- Druida
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 90 m
+componentes: V, S, M (una mezcla de agua y polvo)
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 265
 tags:
-  - "transmutación"
-  - "nivel_4"
-  - "clérigo"
-  - "druida"
-  - "mago"
-  - "concentracion"
+- transmutación
+- nivel_4
+- clérigo
+- druida
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Control Water
 ---
 
 # Controlar Agua

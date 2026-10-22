@@ -1,23 +1,29 @@
 ---
-id: "senal_de_esperanza"
-nombre: "Señal De Esperanza"
+id: senal_de_esperanza
+nombre: Señal De Esperanza
 nivel: 3
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Clérigo"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 minuto"
+- Clérigo
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 334
 tags:
-  - "abjuración"
-  - "nivel_3"
-  - "clérigo"
-  - "concentracion"
+- abjuración
+- nivel_3
+- clérigo
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Beacon of Hope
 ---
 
 # Señal De Esperanza

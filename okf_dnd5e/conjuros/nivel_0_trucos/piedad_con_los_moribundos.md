@@ -1,24 +1,30 @@
 ---
-id: "piedad_con_los_moribundos"
-nombre: "Piedad Con Los Moribundos"
+id: piedad_con_los_moribundos
+nombre: Piedad Con Los Moribundos
 nivel: 0
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Clérigo"
-  - "Druida"
-tiempo_lanzamiento: "Acción"
-alcance: "4,5 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Clérigo
+- Druida
+tiempo_lanzamiento: Acción
+alcance: 4,5 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 321
 tags:
-  - "nigromancia"
-  - "nivel_0"
-  - "clérigo"
-  - "druida"
+- nigromancia
+- nivel_0
+- clérigo
+- druida
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Spare the Dying
 ---
 
 # Piedad Con Los Moribundos

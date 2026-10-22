@@ -1,14 +1,19 @@
 ---
-id: "regla_acciones_combate"
-nombre: "Acciones en Combate"
-fuente: "Manual del Jugador 2024"
+id: regla_acciones_combate
+nombre: Acciones en Combate
+fuente: Manual del Jugador 2024
 pagina: 362
-tipo: "regla"
+tipo: regla
 tags:
-  - "reglas"
-  - "combate"
-  - "acciones"
-  - "iniciativa"
+- reglas
+- combate
+- acciones
+- iniciativa
+- spanish
+- es
+- español
+idioma: es
+nombre_ingles: Actions in Combat
 ---
 
 # Acciones Oficiales en Combate (D&D 5e)

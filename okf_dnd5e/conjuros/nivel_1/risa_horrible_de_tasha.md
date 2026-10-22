@@ -1,27 +1,33 @@
 ---
-id: "risa_horrible_de_tasha"
-nombre: "Risa Horrible De Tasha"
+id: risa_horrible_de_tasha
+nombre: Risa Horrible De Tasha
 nivel: 1
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S, M (una tarta y una pluma)"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Brujo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S, M (una tarta y una pluma)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 331
 tags:
-  - "encantamiento"
-  - "nivel_1"
-  - "bardo"
-  - "brujo"
-  - "mago"
-  - "concentracion"
+- encantamiento
+- nivel_1
+- bardo
+- brujo
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Tasha's Hideous Laughter
 ---
 
 # Risa Horrible De Tasha

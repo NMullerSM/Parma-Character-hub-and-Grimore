@@ -1,12 +1,21 @@
 ---
-id: "clerigo_guerra"
-nombre: "Dominio de la Guerra"
-nombre_ingles: "War Domain"
-tipo: "subclase"
-clase_padre: "Clérigo"
+id: clerigo_guerra
+nombre: Dominio de la Guerra
+nombre_ingles: War Domain
+tipo: subclase
+clase_padre: Clérigo
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["clérigo", "combate", "armas marciales", "guía divina", "phb2024"]
+fuente: PHB 2024
+tags:
+- clérigo
+- combate
+- armas marciales
+- guía divina
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Dominio de la Guerra (War Domain)

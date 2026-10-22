@@ -1,22 +1,28 @@
 ---
-id: "armadura_de_agathys"
-nombre: "Armadura De Agathys"
+id: armadura_de_agathys
+nombre: Armadura De Agathys
 nivel: 1
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Brujo"
-tiempo_lanzamiento: "Acción adicional"
-alcance: "Lanzador"
-componentes: "V, S, M (un trozo de vidrio azul)"
-duracion: "1 hora"
+- Brujo
+tiempo_lanzamiento: Acción adicional
+alcance: Lanzador
+componentes: V, S, M (un trozo de vidrio azul)
+duracion: 1 hora
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 247
 tags:
-  - "abjuración"
-  - "nivel_1"
-  - "brujo"
+- abjuración
+- nivel_1
+- brujo
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Armor of Agathys
 ---
 
 # Armadura De Agathys

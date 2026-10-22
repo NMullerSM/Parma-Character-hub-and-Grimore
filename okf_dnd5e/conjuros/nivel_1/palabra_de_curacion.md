@@ -1,26 +1,32 @@
 ---
-id: "palabra_de_curacion"
-nombre: "Palabra De Curación"
+id: palabra_de_curacion
+nombre: Palabra De Curación
 nivel: 1
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Druida"
-tiempo_lanzamiento: "Acción adicional"
-alcance: "18 m"
-componentes: "V"
-duracion: "Instantáneo"
+- Bardo
+- Clérigo
+- Druida
+tiempo_lanzamiento: Acción adicional
+alcance: 18 m
+componentes: V
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 318
 tags:
-  - "abjuración"
-  - "nivel_1"
-  - "bardo"
-  - "clérigo"
-  - "druida"
+- abjuración
+- nivel_1
+- bardo
+- clérigo
+- druida
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Healing Word
 ---
 
 # Palabra De Curación

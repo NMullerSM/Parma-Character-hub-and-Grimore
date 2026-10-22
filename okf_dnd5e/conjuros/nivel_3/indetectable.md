@@ -1,26 +1,33 @@
 ---
-id: "indetectable"
-nombre: "Indetectable"
+id: indetectable
+nombre: Indetectable
 nivel: 3
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Bardo"
-  - "Explorador"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S, M (una pizca de diamante en polvo  que valga al menos 25 po, que se consume como parte  del conjuro)"
-duracion: "8 horas"
+- Bardo
+- Explorador
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S, M (una pizca de diamante en polvo  que valga al menos 25 po, que
+  se consume como parte  del conjuro)
+duracion: 8 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 296
 tags:
-  - "abjuración"
-  - "nivel_3"
-  - "bardo"
-  - "explorador"
-  - "mago"
+- abjuración
+- nivel_3
+- bardo
+- explorador
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Nondetection
 ---
 
 # Indetectable

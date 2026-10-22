@@ -1,27 +1,34 @@
 ---
-id: "augurio"
-nombre: "Augurio"
+id: augurio
+nombre: Augurio
 nivel: 2
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Clérigo"
-  - "Druida"
-  - "Mago"
-tiempo_lanzamiento: "1 minuto o un ritual"
-alcance: "Lanzador"
-componentes: "V, S, M (palitos, huesos, cartas u otros abalorios  marcados de forma especial que valgan al menos 25 po)"
-duracion: "Instantáneo"
+- Clérigo
+- Druida
+- Mago
+tiempo_lanzamiento: 1 minuto o un ritual
+alcance: Lanzador
+componentes: V, S, M (palitos, huesos, cartas u otros abalorios  marcados de forma
+  especial que valgan al menos 25 po)
+duracion: Instantáneo
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 248
 tags:
-  - "adivinación"
-  - "nivel_2"
-  - "clérigo"
-  - "druida"
-  - "mago"
-  - "ritual"
+- adivinación
+- nivel_2
+- clérigo
+- druida
+- mago
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Augury
 ---
 
 # Augurio

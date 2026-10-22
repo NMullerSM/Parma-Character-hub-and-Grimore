@@ -1,24 +1,30 @@
 ---
-id: "desplazamiento"
-nombre: "Desplazamiento"
+id: desplazamiento
+nombre: Desplazamiento
 nivel: 3
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S"
-duracion: "1 minuto"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S
+duracion: 1 minuto
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 271
 tags:
-  - "transmutación"
-  - "nivel_3"
-  - "hechicero"
-  - "mago"
+- transmutación
+- nivel_3
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Misty Step
 ---
 
 # Desplazamiento

@@ -1,22 +1,29 @@
 ---
-id: "consagrar"
-nombre: "Consagrar"
+id: consagrar
+nombre: Consagrar
 nivel: 5
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Clérigo"
-tiempo_lanzamiento: "24 horas"
-alcance: "Toque"
-componentes: "V, S, M (incienso que valga al menos  1000 po, que se consume como parte del conjuro)"
-duracion: "Hasta que sea disipado"
+- Clérigo
+tiempo_lanzamiento: 24 horas
+alcance: Toque
+componentes: V, S, M (incienso que valga al menos  1000 po, que se consume como parte
+  del conjuro)
+duracion: Hasta que sea disipado
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 263
 tags:
-  - "abjuración"
-  - "nivel_5"
-  - "clérigo"
+- abjuración
+- nivel_5
+- clérigo
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Hallow
 ---
 
 # Consagrar

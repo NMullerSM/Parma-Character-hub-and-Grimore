@@ -1,27 +1,33 @@
 ---
-id: "sirviente_invisible"
-nombre: "Sirviente Invisible"
+id: sirviente_invisible
+nombre: Sirviente Invisible
 nivel: 1
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Mago"
-tiempo_lanzamiento: "Acción o ritual"
-alcance: "18 m"
-componentes: "V, S, M (un trozo de cuerda y uno de madera)"
-duracion: "1 hora"
+- Bardo
+- Brujo
+- Mago
+tiempo_lanzamiento: Acción o ritual
+alcance: 18 m
+componentes: V, S, M (un trozo de cuerda y uno de madera)
+duracion: 1 hora
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 335
 tags:
-  - "conjuración"
-  - "nivel_1"
-  - "bardo"
-  - "brujo"
-  - "mago"
-  - "ritual"
+- conjuración
+- nivel_1
+- bardo
+- brujo
+- mago
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Unseen Servant
 ---
 
 # Sirviente Invisible

@@ -1,25 +1,31 @@
 ---
-id: "contorno_borroso"
-nombre: "Contorno Borroso"
+id: contorno_borroso
+nombre: Contorno Borroso
 nivel: 2
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V"
-duracion: "Concentración, hasta 1 minuto"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 265
 tags:
-  - "ilusionismo"
-  - "nivel_2"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- ilusionismo
+- nivel_2
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Blur
 ---
 
 # Contorno Borroso

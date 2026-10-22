@@ -1,28 +1,34 @@
 ---
-id: "prestidigitacion"
-nombre: "Prestidigitación"
+id: prestidigitacion
+nombre: Prestidigitación
 nivel: 0
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "3 m"
-componentes: "V, S"
-duracion: "Hasta 1 hora"
+- Bardo
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 3 m
+componentes: V, S
+duracion: Hasta 1 hora
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 323
 tags:
-  - "transmutación"
-  - "nivel_0"
-  - "bardo"
-  - "brujo"
-  - "hechicero"
-  - "mago"
+- transmutación
+- nivel_0
+- bardo
+- brujo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Prestidigitation
 ---
 
 # Prestidigitación

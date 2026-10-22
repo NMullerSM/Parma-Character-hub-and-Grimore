@@ -1,26 +1,32 @@
 ---
-id: "encantar_animal"
-nombre: "Encantar Animal"
+id: encantar_animal
+nombre: Encantar Animal
 nivel: 1
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Druida"
-  - "Explorador"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S, M (unas migajas de comida)"
-duracion: "24 horas"
+- Bardo
+- Druida
+- Explorador
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S, M (unas migajas de comida)
+duracion: 24 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 277
 tags:
-  - "encantamiento"
-  - "nivel_1"
-  - "bardo"
-  - "druida"
-  - "explorador"
+- encantamiento
+- nivel_1
+- bardo
+- druida
+- explorador
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Animal Friendship
 ---
 
 # Encantar Animal

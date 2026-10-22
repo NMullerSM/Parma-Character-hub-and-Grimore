@@ -1,12 +1,22 @@
 ---
-id: "guerrero_psiquico"
-nombre: "Guerrero Psíquico"
-nombre_ingles: "Psi Warrior"
-tipo: "subclase"
-clase_padre: "Guerrero"
+id: guerrero_psiquico
+nombre: Guerrero Psíquico
+nombre_ingles: Psi Warrior
+tipo: subclase
+clase_padre: Guerrero
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["guerrero", "psiónico", "telequinesis", "escudo mental", "phb2024", "tasha"]
+fuente: PHB 2024
+tags:
+- guerrero
+- psiónico
+- telequinesis
+- escudo mental
+- phb2024
+- tasha
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Guerrero Psíquico (Psi Warrior)

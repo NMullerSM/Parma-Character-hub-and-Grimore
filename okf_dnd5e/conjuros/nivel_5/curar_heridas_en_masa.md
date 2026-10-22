@@ -1,26 +1,32 @@
 ---
-id: "curar_heridas_en_masa"
-nombre: "Curar Heridas En Masa"
+id: curar_heridas_en_masa
+nombre: Curar Heridas En Masa
 nivel: 5
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Druida"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Bardo
+- Clérigo
+- Druida
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 269
 tags:
-  - "abjuración"
-  - "nivel_5"
-  - "bardo"
-  - "clérigo"
-  - "druida"
+- abjuración
+- nivel_5
+- bardo
+- clérigo
+- druida
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Mass Cure Wounds
 ---
 
 # Curar Heridas En Masa

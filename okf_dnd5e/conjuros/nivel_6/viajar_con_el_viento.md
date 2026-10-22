@@ -1,22 +1,28 @@
 ---
-id: "viajar_con_el_viento"
-nombre: "Viajar Con El Viento"
+id: viajar_con_el_viento
+nombre: Viajar Con El Viento
 nivel: 6
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Druida"
-tiempo_lanzamiento: "1 minuto"
-alcance: "9 m"
-componentes: "V, S, M (una vela)"
-duracion: "8 horas"
+- Druida
+tiempo_lanzamiento: 1 minuto
+alcance: 9 m
+componentes: V, S, M (una vela)
+duracion: 8 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 344
 tags:
-  - "transmutación"
-  - "nivel_6"
-  - "druida"
+- transmutación
+- nivel_6
+- druida
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Wind Walk
 ---
 
 # Viajar Con El Viento

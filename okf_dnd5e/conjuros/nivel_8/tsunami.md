@@ -1,23 +1,29 @@
 ---
-id: "tsunami"
-nombre: "Tsunami"
+id: tsunami
+nombre: Tsunami
 nivel: 8
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Druida"
-tiempo_lanzamiento: "1 minuto"
-alcance: "1,5 km"
-componentes: "V, S"
-duracion: "Concentración, hasta 6 asaltos"
+- Druida
+tiempo_lanzamiento: 1 minuto
+alcance: 1,5 km
+componentes: V, S
+duracion: Concentración, hasta 6 asaltos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 343
 tags:
-  - "conjuración"
-  - "nivel_8"
-  - "druida"
-  - "concentracion"
+- conjuración
+- nivel_8
+- druida
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Tsunami
 ---
 
 # Tsunami

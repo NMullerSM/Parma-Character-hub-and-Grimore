@@ -1,14 +1,20 @@
 ---
-id: "veloz"
-nombre: "Veloz"
-categoria: "General"
-encabezado: "Dote general (requisitos: nivel 4 o más, Destreza o Constitución 13"
-fuente: "PHB 2024"
+id: veloz
+nombre: Veloz
+categoria: General
+encabezado: 'Dote general (requisitos: nivel 4 o más, Destreza o Constitución 13'
+fuente: PHB 2024
 pagina: 211
 tags:
-  - "dote"
-  - "generales"
-  - "veloz"
+- dote
+- generales
+- veloz
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Veloz
 ---
 
 # Veloz

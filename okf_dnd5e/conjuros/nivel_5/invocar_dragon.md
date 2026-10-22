@@ -1,23 +1,30 @@
 ---
-id: "invocar_dragon"
-nombre: "Invocar Dragón"
+id: invocar_dragon
+nombre: Invocar Dragón
 nivel: 5
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S, M (un objeto con la imagen de un  dragón grabada en él que valga al menos 500 po)"
-duracion: "Concentración, hasta 1 hora"
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S, M (un objeto con la imagen de un  dragón grabada en él que valga
+  al menos 500 po)
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 300
 tags:
-  - "conjuración"
-  - "nivel_5"
-  - "mago"
-  - "concentracion"
+- conjuración
+- nivel_5
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Summon Dragon
 ---
 
 # Invocar Dragón

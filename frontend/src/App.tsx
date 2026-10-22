@@ -5,6 +5,7 @@ import { Header } from "./components/Header";
 import { DiceDrawer } from "./components/DiceDrawer";
 import { DiceRollAnimation } from "./components/DiceRollAnimation";
 import { ToastContainer } from "./components/ToastContainer";
+import { SplashScreen } from "./components/SplashScreen";
 
 import { SheetView } from "./views/SheetView";
 import { CombatView } from "./views/CombatView";
@@ -22,6 +23,9 @@ export const AppContent: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-canvas text-main font-body">
+      {/* 0. Animación de Bienvenida / Splash Screen */}
+      <SplashScreen />
+
       {/* 1. Header Táctico Superior Ampliado */}
       <Header
         activeTab={activeTab}

@@ -1,29 +1,35 @@
 ---
-id: "nube_de_dagas"
-nombre: "Nube De Dagas"
+id: nube_de_dagas
+nombre: Nube De Dagas
 nivel: 2
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S, M (un fragmento de cristal)"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S, M (un fragmento de cristal)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 316
 tags:
-  - "conjuración"
-  - "nivel_2"
-  - "bardo"
-  - "brujo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- conjuración
+- nivel_2
+- bardo
+- brujo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Cloud of Daggers
 ---
 
 # Nube De Dagas

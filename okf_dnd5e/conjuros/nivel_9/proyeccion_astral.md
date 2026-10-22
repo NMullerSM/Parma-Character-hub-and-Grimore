@@ -1,26 +1,34 @@
 ---
-id: "proyeccion_astral"
-nombre: "Proyección Astral"
+id: proyeccion_astral
+nombre: Proyección Astral
 nivel: 9
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Brujo"
-  - "Clérigo"
-  - "Mago"
-tiempo_lanzamiento: "1 hora"
-alcance: "3 m"
-componentes: "V, S, M (por cada objetivo del conjuro,  un jacinto que valga al menos 1000 po y un lingote de  plata que valga al menos 100 po, que se consumen como  parte del conjuro)"
-duracion: "Hasta que sea disipado"
+- Brujo
+- Clérigo
+- Mago
+tiempo_lanzamiento: 1 hora
+alcance: 3 m
+componentes: V, S, M (por cada objetivo del conjuro,  un jacinto que valga al menos
+  1000 po y un lingote de  plata que valga al menos 100 po, que se consumen como  parte
+  del conjuro)
+duracion: Hasta que sea disipado
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 324
 tags:
-  - "nigromancia"
-  - "nivel_9"
-  - "brujo"
-  - "clérigo"
-  - "mago"
+- nigromancia
+- nivel_9
+- brujo
+- clérigo
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Astral Projection
 ---
 
 # Proyección Astral

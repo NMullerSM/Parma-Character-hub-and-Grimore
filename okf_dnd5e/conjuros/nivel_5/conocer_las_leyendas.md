@@ -1,26 +1,33 @@
 ---
-id: "conocer_las_leyendas"
-nombre: "Conocer Las Leyendas"
+id: conocer_las_leyendas
+nombre: Conocer Las Leyendas
 nivel: 5
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Mago"
-tiempo_lanzamiento: "10 minutos"
-alcance: "Lanzador"
-componentes: "V, S, M (incienso que valga al menos 250 po,  que se consume como parte del conjuro, y cuatro tiras de  marfil que valgan al menos 50 po)"
-duracion: "Instantáneo"
+- Bardo
+- Clérigo
+- Mago
+tiempo_lanzamiento: 10 minutos
+alcance: Lanzador
+componentes: V, S, M (incienso que valga al menos 250 po,  que se consume como parte
+  del conjuro, y cuatro tiras de  marfil que valgan al menos 50 po)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 263
 tags:
-  - "adivinación"
-  - "nivel_5"
-  - "bardo"
-  - "clérigo"
-  - "mago"
+- adivinación
+- nivel_5
+- bardo
+- clérigo
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Legend Lore
 ---
 
 # Conocer Las Leyendas

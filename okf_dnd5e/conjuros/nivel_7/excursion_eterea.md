@@ -1,30 +1,36 @@
 ---
-id: "excursion_eterea"
-nombre: "Excursión Etérea"
+id: excursion_eterea
+nombre: Excursión Etérea
 nivel: 7
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Clérigo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S"
-duracion: "Hasta 8 horas"
+- Bardo
+- Brujo
+- Clérigo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S
+duracion: Hasta 8 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 284
 tags:
-  - "conjuración"
-  - "nivel_7"
-  - "bardo"
-  - "brujo"
-  - "clérigo"
-  - "hechicero"
-  - "mago"
+- conjuración
+- nivel_7
+- bardo
+- brujo
+- clérigo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Etherealness
 ---
 
 # Excursión Etérea

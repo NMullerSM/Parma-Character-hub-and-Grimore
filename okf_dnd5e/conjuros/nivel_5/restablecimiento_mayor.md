@@ -1,30 +1,37 @@
 ---
-id: "restablecimiento_mayor"
-nombre: "Restablecimiento Mayor"
+id: restablecimiento_mayor
+nombre: Restablecimiento Mayor
 nivel: 5
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Druida"
-  - "Explorador"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S, M (polvo de diamante que valga al  menos 100 po y que se consume como parte del conjuro)"
-duracion: "Instantáneo"
+- Bardo
+- Clérigo
+- Druida
+- Explorador
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S, M (polvo de diamante que valga al  menos 100 po y que se consume
+  como parte del conjuro)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 330
 tags:
-  - "abjuración"
-  - "nivel_5"
-  - "bardo"
-  - "clérigo"
-  - "druida"
-  - "explorador"
-  - "paladín"
+- abjuración
+- nivel_5
+- bardo
+- clérigo
+- druida
+- explorador
+- paladín
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Greater Restoration
 ---
 
 # Restablecimiento Mayor

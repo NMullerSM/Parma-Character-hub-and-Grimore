@@ -1,25 +1,31 @@
 ---
-id: "levitar"
-nombre: "Levitar"
+id: levitar
+nombre: Levitar
 nivel: 2
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S, M (un muelle de metal)"
-duracion: "Concentración, hasta 10 minutos"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S, M (un muelle de metal)
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 306
 tags:
-  - "transmutación"
-  - "nivel_2"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- transmutación
+- nivel_2
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Levitate
 ---
 
 # Levitar

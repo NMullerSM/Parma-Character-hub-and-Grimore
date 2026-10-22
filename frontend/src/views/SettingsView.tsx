@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
 import { useCharacter } from "../context/CharacterContext";
+import { useTranslation } from "../i18n";
 import { api } from "../api/client";
 import type { AppSettings } from "../api/types";
 import { X, Upload } from "lucide-react";
@@ -17,6 +18,8 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
     language,
     setLanguage,
   } = useCharacter();
+
+  const { t, translateClass } = useTranslation();
 
   const [settings, setSettings] = useState<AppSettings>({
     theme: "dark-obsidian",
@@ -52,24 +55,24 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
   const handleModeChange = async (mode: "dm" | "player") => {
     setSettings((prev) => ({ ...prev, talespire_mode: mode }));
     await api.setSetting("talespire_mode", mode);
-    showToast(`Modo TaleSpire actualizado a: ${mode.toUpperCase()}`, "info");
+    showToast(`${t("settings.modeUpdated")} ${mode.toUpperCase()}`, "info");
   };
 
   const handleTestGesture = async () => {
-    showToast("Probando micro-gesto físico en TaleSpire...", "info");
+    showToast(t("settings.testingGesture"), "info");
     const success = await api.triggerTaleSpireGesture();
     if (success) {
-      showToast("Gesto ejecutado exitosamente en TaleSpire.", "success");
+      showToast(t("settings.gestureSuccess"), "success");
     } else {
-      showToast("No se pudo ejecutar el gesto (verifica si el juego está abierto).", "warn");
+      showToast(t("settings.gestureFailed"), "warn");
     }
   };
 
   const handleDeleteCharacter = async (id: number, charName: string) => {
-    if (window.confirm(`¿Estás seguro de eliminar el personaje "${charName}"?`)) {
+    if (window.confirm(t("settings.confirmDeleteChar", { name: charName }))) {
       await api.deleteCharacter(id);
       await reloadCharacters();
-      showToast(`Personaje "${charName}" eliminado.`, "info");
+      showToast(t("settings.charDeleted", { name: charName }), "info");
     }
   };
 
@@ -78,12 +81,12 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
       const res = await api.importCharacterPdf();
       if (res.success && res.character) {
         await reloadCharacters();
-        showToast(`Ficha importada desde PDF: ${res.character.name}`, "success");
+        showToast(t("settings.importedPdf", { name: res.character.name }), "success");
       } else if (res.error && res.error !== "Importación cancelada.") {
         showToast(res.error, "warn");
       }
     } catch (e) {
-      showToast("Error al importar PDF", "warn");
+      showToast(t("settings.importPdfError"), "warn");
     }
   };
 
@@ -92,12 +95,12 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
       const res = await api.importCharacterJson();
       if (res.success && res.character) {
         await reloadCharacters();
-        showToast(`Ficha importada desde JSON: ${res.character.name}`, "success");
+        showToast(t("settings.importedJson", { name: res.character.name }), "success");
       } else if (res.error && res.error !== "Importación cancelada.") {
         showToast(res.error, "warn");
       }
     } catch (e) {
-      showToast("Error al importar JSON", "warn");
+      showToast(t("settings.importJsonError"), "warn");
     }
   };
 
@@ -111,15 +114,13 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
         {/* Header del Modal */}
         <div className="px-6 py-4 border-b border-border-iron flex items-center justify-between">
           <div>
-            <h2 className="font-display font-bold text-xl text-gold">Ajustes & Configuración</h2>
-            <p className="text-xs text-muted">
-              Personaliza tu entorno de juego, temas y conexiones externas.
-            </p>
+            <h2 className="font-display font-bold text-xl text-gold">{t("settings.title")}</h2>
+            <p className="text-xs text-muted">{t("settings.subtitle")}</p>
           </div>
           <button
             onClick={onClose}
             className="p-1 rounded text-muted hover:text-main hover:bg-card transition-colors"
-            title="Cerrar (Esc)"
+            title={`${t("common.close")} (Esc)`}
           >
             <X className="w-5 h-5" />
           </button>
@@ -130,40 +131,38 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
           {/* 1. Selector de Tema Visual */}
           <section className="space-y-3">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
-              Tema Visual & Estilo
+              {t("settings.visualTheme")}
             </h3>
 
             <div className="grid grid-cols-2 gap-3">
-              {availableThemes.map((t) => (
+              {availableThemes.map((tItem) => (
                 <button
-                  key={t.id}
-                  onClick={() => setTheme(t.id)}
+                  key={tItem.id}
+                  onClick={() => setTheme(tItem.id)}
                   className={`p-3.5 rounded-lg border text-left transition-all ${
-                    theme === t.id
+                    theme === tItem.id
                       ? "border-gold bg-card shadow-[0_0_12px_rgba(201,164,92,0.15)] ring-1 ring-gold"
                       : "border-border-iron bg-card/40 hover:bg-card hover:border-gold/50"
                   }`}
                 >
-                  <div className="font-semibold text-sm text-main">{t.name}</div>
+                  <div className="font-semibold text-sm text-main">{tItem.name}</div>
                   <div className="text-xs text-muted mt-0.5">
-                    {t.is_dark
-                      ? "Atmósfera oscura tipo Sanctum"
-                      : "Contraste claro tipo Pergamino"}
+                    {tItem.is_dark
+                      ? t("settings.themeDarkObsidianDesc")
+                      : t("settings.themeLightParchmentDesc")}
                   </div>
                 </button>
               ))}
             </div>
             <p className="text-[11px] text-muted">
-              Puedes agregar temas personalizados creando subcarpetas con un archivo{" "}
-              <code className="text-gold">theme.json</code> en la carpeta{" "}
-              <code className="text-gold">themes/</code>.
+              {t("settings.themeCustomTip")}
             </p>
           </section>
 
-          {/* Idioma del Compendio & Tarjetas (ES / EN) */}
+          {/* Selector de Idioma de la Interfaz & Compendio (ES / EN) */}
           <section className="space-y-3 pt-3 border-t border-border-iron">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
-              Idioma del Compendio & Tarjetas (Language)
+              {t("settings.languageSectionTitle")}
             </h3>
             <div className="grid grid-cols-2 gap-3">
               <button
@@ -175,10 +174,14 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
                 }`}
               >
                 <div className="font-semibold text-sm text-main flex items-center justify-between">
-                  <span>Español (ES)</span>
-                  {language === "es" && <span className="text-[10px] text-gold font-bold">Activo</span>}
+                  <span>{t("settings.langEsTitle")}</span>
+                  {language === "es" && (
+                    <span className="text-[10px] text-gold font-bold">
+                      {t("settings.langActiveBadge")}
+                    </span>
+                  )}
                 </div>
-                <div className="text-xs text-muted mt-0.5">Nombres y descripciones en español</div>
+                <div className="text-xs text-muted mt-0.5">{t("settings.langEsDesc")}</div>
               </button>
               <button
                 onClick={() => setLanguage("en")}
@@ -189,10 +192,14 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
                 }`}
               >
                 <div className="font-semibold text-sm text-main flex items-center justify-between">
-                  <span>English (EN)</span>
-                  {language === "en" && <span className="text-[10px] text-gold font-bold">Active</span>}
+                  <span>{t("settings.langEnTitle")}</span>
+                  {language === "en" && (
+                    <span className="text-[10px] text-gold font-bold">
+                      {t("settings.langActiveBadge")}
+                    </span>
+                  )}
                 </div>
-                <div className="text-xs text-muted mt-0.5">Original SRD English naming and rules</div>
+                <div className="text-xs text-muted mt-0.5">{t("settings.langEnDesc")}</div>
               </button>
             </div>
           </section>
@@ -200,15 +207,15 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
           {/* 2. Integración con TaleSpire */}
           <section className="space-y-3 pt-3 border-t border-border-iron">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
-              Conexión TaleSpire (Puente 3D)
+              {t("settings.talespireTitle")}
             </h3>
 
             <div className="p-4 rounded-xl border border-border-iron bg-card space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-sm font-semibold text-main">Estado del Puente IPC</div>
+                  <div className="text-sm font-semibold text-main">{t("settings.ipcStatus")}</div>
                   <div className="text-xs text-muted mt-0.5">
-                    Estado:{" "}
+                    {t("settings.ipcStateLabel")}{" "}
                     <span className="font-semibold text-gold">{talespireStatus.state_label}</span>
                   </div>
                 </div>
@@ -216,14 +223,14 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
                   onClick={connectTaleSpire}
                   className="px-3 py-1.5 rounded bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-semibold text-main transition-colors"
                 >
-                  Conectar / Actualizar
+                  {t("settings.connectRefresh")}
                 </button>
               </div>
 
               {/* Modo de Altura del Cursor */}
               <div className="pt-2 border-t border-border-iron/40">
                 <label className="block text-xs text-muted mb-1.5 font-medium">
-                  Calibración de Gesto Físico (Eje Y relativo a la ventana de TaleSpire)
+                  {t("settings.calibrationLabel")}
                 </label>
                 <div className="flex gap-2">
                   <button
@@ -234,7 +241,7 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
                         : "border-border-iron bg-surface text-muted"
                     }`}
                   >
-                    Modo DM / GM (30.0% Altura)
+                    {t("settings.dmMode")}
                   </button>
                   <button
                     onClick={() => handleModeChange("player")}
@@ -244,7 +251,7 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
                         : "border-border-iron bg-surface text-muted"
                     }`}
                   >
-                    Modo Jugador (24.0% Altura)
+                    {t("settings.playerMode")}
                   </button>
                 </div>
               </div>
@@ -254,7 +261,7 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
                   onClick={handleTestGesture}
                   className="text-xs text-gold hover:underline font-medium"
                 >
-                  Probar gesto de lanzamiento en TaleSpire ↗
+                  {t("settings.testGesture")}
                 </button>
               </div>
             </div>
@@ -263,12 +270,12 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
           {/* 3. Fuentes de Datos OKF */}
           <section className="space-y-3 pt-3 border-t border-border-iron">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
-              Fuentes de Datos & Compendios
+              {t("settings.okfTitle")}
             </h3>
 
             <div className="p-4 rounded-xl border border-border-iron bg-card space-y-3">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-muted">Ruta de Archivos OKF:</span>
+                <span className="text-muted">{t("settings.okfPath")}</span>
                 <span className="font-stat text-main bg-surface px-2 py-0.5 rounded border border-border-iron">
                   {settings.okf_path}
                 </span>
@@ -280,7 +287,7 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
           <section className="space-y-3 pt-3 border-t border-border-iron">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
-                Personajes en Base de Datos SQLite
+                {t("settings.charactersTitle")}
               </h3>
               <div className="flex items-center gap-2">
                 <button
@@ -288,14 +295,14 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
                   className="px-2.5 py-1 rounded bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-medium text-muted hover:text-main flex items-center gap-1.5 transition-colors"
                 >
                   <Upload className="w-3.5 h-3.5" />
-                  <span>Importar PDF AcroForm</span>
+                  <span>{t("settings.importPdf")}</span>
                 </button>
                 <button
                   onClick={handleImportJson}
                   className="px-2.5 py-1 rounded bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-medium text-muted hover:text-main flex items-center gap-1.5 transition-colors"
                 >
                   <Upload className="w-3.5 h-3.5" />
-                  <span>Importar JSON</span>
+                  <span>{t("settings.importJson")}</span>
                 </button>
               </div>
             </div>
@@ -306,7 +313,7 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
                   <div>
                     <span className="font-semibold text-main">{c.name}</span>
                     <span className="text-muted ml-2">
-                      Nvl {c.level} {c.char_class}
+                      {t("header.levelShort")} {c.level} {translateClass(c.char_class)}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -317,13 +324,13 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
                       }}
                       className="px-2.5 py-1 rounded bg-surface border border-border-iron hover:border-gold text-muted hover:text-main"
                     >
-                      Cargar
+                      {t("settings.load")}
                     </button>
                     <button
                       onClick={() => handleDeleteCharacter(c.id, c.name)}
                       className="px-2 py-1 rounded text-crimson hover:bg-crimson/10 border border-transparent hover:border-crimson/40"
                     >
-                      Eliminar
+                      {t("settings.delete")}
                     </button>
                   </div>
                 </div>
@@ -338,7 +345,7 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
             onClick={onClose}
             className="px-5 py-1.5 rounded bg-gold hover:bg-gold-hover text-canvas font-semibold text-xs transition-colors shadow-sm"
           >
-            Aceptar y Cerrar
+            {t("settings.acceptClose")}
           </button>
         </div>
       </div>

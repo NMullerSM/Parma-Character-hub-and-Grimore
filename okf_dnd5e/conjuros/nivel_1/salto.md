@@ -1,28 +1,34 @@
 ---
-id: "salto"
-nombre: "Salto"
+id: salto
+nombre: Salto
 nivel: 1
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Druida"
-  - "Explorador"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción adicional"
-alcance: "Toque"
-componentes: "V, S, M (la pata trasera de un saltamontes)"
-duracion: "1 minuto"
+- Druida
+- Explorador
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción adicional
+alcance: Toque
+componentes: V, S, M (la pata trasera de un saltamontes)
+duracion: 1 minuto
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 333
 tags:
-  - "transmutación"
-  - "nivel_1"
-  - "druida"
-  - "explorador"
-  - "hechicero"
-  - "mago"
+- transmutación
+- nivel_1
+- druida
+- explorador
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Jump
 ---
 
 # Salto

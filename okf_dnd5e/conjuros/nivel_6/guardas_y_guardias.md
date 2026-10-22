@@ -1,24 +1,30 @@
 ---
-id: "guardas_y_guardias"
-nombre: "Guardas Y Guardias"
+id: guardas_y_guardias
+nombre: Guardas Y Guardias
 nivel: 6
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Bardo"
-  - "Mago"
-tiempo_lanzamiento: "1 hora"
-alcance: "Toque"
-componentes: "V, S, M (una vara de plata que valga  al menos 10 po)"
-duracion: "24 horas"
+- Bardo
+- Mago
+tiempo_lanzamiento: 1 hora
+alcance: Toque
+componentes: V, S, M (una vara de plata que valga  al menos 10 po)
+duracion: 24 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 289
 tags:
-  - "abjuración"
-  - "nivel_6"
-  - "bardo"
-  - "mago"
+- abjuración
+- nivel_6
+- bardo
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Guards and Wards
 ---
 
 # Guardas Y Guardias

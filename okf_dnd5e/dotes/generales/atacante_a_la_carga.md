@@ -1,14 +1,20 @@
 ---
-id: "atacante_a_la_carga"
-nombre: "Atacante A La Carga"
-categoria: "General"
-encabezado: "Dote general (requisitos: nivel 4 o más, Fuerza o Destreza 13"
-fuente: "PHB 2024"
+id: atacante_a_la_carga
+nombre: Atacante A La Carga
+categoria: General
+encabezado: 'Dote general (requisitos: nivel 4 o más, Fuerza o Destreza 13'
+fuente: PHB 2024
 pagina: 204
 tags:
-  - "dote"
-  - "generales"
-  - "atacante_a_la_carga"
+- dote
+- generales
+- atacante_a_la_carga
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Atacante A La Carga
 ---
 
 # Atacante A La Carga

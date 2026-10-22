@@ -1,26 +1,32 @@
 ---
-id: "crecimiento_vegetal"
-nombre: "Crecimiento Vegetal"
+id: crecimiento_vegetal
+nombre: Crecimiento Vegetal
 nivel: 3
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Bardo"
-  - "Druida"
-  - "Explorador"
-tiempo_lanzamiento: "Acción (sobrecrecimiento)"
-alcance: "45 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Bardo
+- Druida
+- Explorador
+tiempo_lanzamiento: Acción (sobrecrecimiento)
+alcance: 45 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 268
 tags:
-  - "transmutación"
-  - "nivel_3"
-  - "bardo"
-  - "druida"
-  - "explorador"
+- transmutación
+- nivel_3
+- bardo
+- druida
+- explorador
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Plant Growth
 ---
 
 # Crecimiento Vegetal

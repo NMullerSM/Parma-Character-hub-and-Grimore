@@ -1,25 +1,31 @@
 ---
-id: "terror_abyecto"
-nombre: "Terror Abyecto"
+id: terror_abyecto
+nombre: Terror Abyecto
 nivel: 9
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Brujo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 minuto"
+- Brujo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 340
 tags:
-  - "ilusionismo"
-  - "nivel_9"
-  - "brujo"
-  - "mago"
-  - "concentracion"
+- ilusionismo
+- nivel_9
+- brujo
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Weird
 ---
 
 # Terror Abyecto

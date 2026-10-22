@@ -1,27 +1,34 @@
 ---
-id: "jaula_de_fuerza"
-nombre: "Jaula De Fuerza"
+id: jaula_de_fuerza
+nombre: Jaula De Fuerza
 nivel: 7
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "30 m"
-componentes: "V, S, M (polvo de rubí que valga al menos  1500 po, que se consume como parte del conjuro)"
-duracion: "Concentración, hasta 1 hora"
+- Bardo
+- Brujo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 30 m
+componentes: V, S, M (polvo de rubí que valga al menos  1500 po, que se consume como
+  parte del conjuro)
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 305
 tags:
-  - "evocación"
-  - "nivel_7"
-  - "bardo"
-  - "brujo"
-  - "mago"
-  - "concentracion"
+- evocación
+- nivel_7
+- bardo
+- brujo
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Forcecage
 ---
 
 # Jaula De Fuerza

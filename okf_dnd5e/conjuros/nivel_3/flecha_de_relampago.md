@@ -1,22 +1,28 @@
 ---
-id: "flecha_de_relampago"
-nombre: "Flecha De Relámpago"
+id: flecha_de_relampago
+nombre: Flecha De Relámpago
 nivel: 3
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Explorador"
-tiempo_lanzamiento: "Acción adicional, que realizas"
-alcance: "Lanzador"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Explorador
+tiempo_lanzamiento: Acción adicional, que realizas
+alcance: Lanzador
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 286
 tags:
-  - "transmutación"
-  - "nivel_3"
-  - "explorador"
+- transmutación
+- nivel_3
+- explorador
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Lightning Arrow
 ---
 
 # Flecha De Relámpago

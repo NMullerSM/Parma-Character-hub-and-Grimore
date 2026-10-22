@@ -1,25 +1,31 @@
 ---
-id: "hoja_de_fuego"
-nombre: "Hoja De Fuego"
+id: hoja_de_fuego
+nombre: Hoja De Fuego
 nivel: 2
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Druida"
-  - "Hechicero"
-tiempo_lanzamiento: "Acción adicional"
-alcance: "Lanzador"
-componentes: "V, S, M (una hoja de zumaque)"
-duracion: "Concentración, hasta 10 minutos"
+- Druida
+- Hechicero
+tiempo_lanzamiento: Acción adicional
+alcance: Lanzador
+componentes: V, S, M (una hoja de zumaque)
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 294
 tags:
-  - "evocación"
-  - "nivel_2"
-  - "druida"
-  - "hechicero"
-  - "concentracion"
+- evocación
+- nivel_2
+- druida
+- hechicero
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Flame Blade
 ---
 
 # Hoja De Fuego

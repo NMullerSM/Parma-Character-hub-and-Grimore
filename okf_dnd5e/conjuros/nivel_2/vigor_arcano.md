@@ -1,24 +1,30 @@
 ---
-id: "vigor_arcano"
-nombre: "Vigor Arcano"
+id: vigor_arcano
+nombre: Vigor Arcano
 nivel: 2
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción adicional"
-alcance: "Lanzador"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción adicional
+alcance: Lanzador
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 344
 tags:
-  - "abjuración"
-  - "nivel_2"
-  - "hechicero"
-  - "mago"
+- abjuración
+- nivel_2
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Arcane Vigor
 ---
 
 # Vigor Arcano

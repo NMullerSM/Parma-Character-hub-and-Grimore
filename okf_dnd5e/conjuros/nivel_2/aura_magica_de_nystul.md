@@ -1,22 +1,28 @@
 ---
-id: "aura_magica_de_nystul"
-nombre: "Aura Mágica De Nystul"
+id: aura_magica_de_nystul
+nombre: Aura Mágica De Nystul
 nivel: 2
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S, M (un pequeño cuadrado de seda)"
-duracion: "24 horas"
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S, M (un pequeño cuadrado de seda)
+duracion: 24 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 249
 tags:
-  - "ilusionismo"
-  - "nivel_2"
-  - "mago"
+- ilusionismo
+- nivel_2
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Nystul's Magic Aura
 ---
 
 # Aura Mágica De Nystul

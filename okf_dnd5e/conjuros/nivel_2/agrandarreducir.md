@@ -1,29 +1,35 @@
 ---
-id: "agrandarreducir"
-nombre: "Agrandar/Reducir"
+id: agrandarreducir
+nombre: Agrandar/Reducir
 nivel: 2
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Bardo"
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S, M (una pizca hierro en polvo)"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S, M (una pizca hierro en polvo)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 241
 tags:
-  - "transmutación"
-  - "nivel_2"
-  - "bardo"
-  - "druida"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- transmutación
+- nivel_2
+- bardo
+- druida
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Enlarge/Reduce
 ---
 
 # Agrandar/Reducir

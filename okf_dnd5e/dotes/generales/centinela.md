@@ -1,14 +1,20 @@
 ---
-id: "centinela"
-nombre: "Centinela"
-categoria: "General"
-encabezado: "Dote general (requisitos: nivel 4 o más, Fuerza o Destreza 13"
-fuente: "PHB 2024"
+id: centinela
+nombre: Centinela
+categoria: General
+encabezado: 'Dote general (requisitos: nivel 4 o más, Fuerza o Destreza 13'
+fuente: PHB 2024
 pagina: 205
 tags:
-  - "dote"
-  - "generales"
-  - "centinela"
+- dote
+- generales
+- centinela
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Sentinel
 ---
 
 # Centinela

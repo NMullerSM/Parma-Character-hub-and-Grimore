@@ -1,28 +1,34 @@
 ---
-id: "marchitar"
-nombre: "Marchitar"
+id: marchitar
+nombre: Marchitar
 nivel: 4
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Brujo"
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Brujo
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 312
 tags:
-  - "nigromancia"
-  - "nivel_4"
-  - "brujo"
-  - "druida"
-  - "hechicero"
-  - "mago"
+- nigromancia
+- nivel_4
+- brujo
+- druida
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Blight
 ---
 
 # Marchitar

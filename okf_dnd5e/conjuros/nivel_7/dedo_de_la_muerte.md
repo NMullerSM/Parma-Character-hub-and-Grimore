@@ -1,26 +1,32 @@
 ---
-id: "dedo_de_la_muerte"
-nombre: "Dedo De La Muerte"
+id: dedo_de_la_muerte
+nombre: Dedo De La Muerte
 nivel: 7
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 270
 tags:
-  - "nigromancia"
-  - "nivel_7"
-  - "brujo"
-  - "hechicero"
-  - "mago"
+- nigromancia
+- nivel_7
+- brujo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Finger of Death
 ---
 
 # Dedo De La Muerte

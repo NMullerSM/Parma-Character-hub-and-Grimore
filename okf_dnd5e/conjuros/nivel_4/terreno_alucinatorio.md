@@ -1,28 +1,34 @@
 ---
-id: "terreno_alucinatorio"
-nombre: "Terreno Alucinatorio"
+id: terreno_alucinatorio
+nombre: Terreno Alucinatorio
 nivel: 4
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Druida"
-  - "Mago"
-tiempo_lanzamiento: "10 minutos"
-alcance: "90 m"
-componentes: "V, S, M (una seta)"
-duracion: "24 horas"
+- Bardo
+- Brujo
+- Druida
+- Mago
+tiempo_lanzamiento: 10 minutos
+alcance: 90 m
+componentes: V, S, M (una seta)
+duracion: 24 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 339
 tags:
-  - "ilusionismo"
-  - "nivel_4"
-  - "bardo"
-  - "brujo"
-  - "druida"
-  - "mago"
+- ilusionismo
+- nivel_4
+- bardo
+- brujo
+- druida
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Hallucinatory Terrain
 ---
 
 # Terreno Alucinatorio

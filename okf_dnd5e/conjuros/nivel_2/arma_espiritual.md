@@ -1,23 +1,29 @@
 ---
-id: "arma_espiritual"
-nombre: "Arma Espiritual"
+id: arma_espiritual
+nombre: Arma Espiritual
 nivel: 2
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Clérigo"
-tiempo_lanzamiento: "Acción adicional"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 minuto"
+- Clérigo
+tiempo_lanzamiento: Acción adicional
+alcance: 18 m
+componentes: V, S
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 246
 tags:
-  - "evocación"
-  - "nivel_2"
-  - "clérigo"
-  - "concentracion"
+- evocación
+- nivel_2
+- clérigo
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Spiritual Weapon
 ---
 
 # Arma Espiritual

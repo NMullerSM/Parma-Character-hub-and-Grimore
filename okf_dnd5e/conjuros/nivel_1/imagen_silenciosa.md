@@ -1,27 +1,33 @@
 ---
-id: "imagen_silenciosa"
-nombre: "Imagen Silenciosa"
+id: imagen_silenciosa
+nombre: Imagen Silenciosa
 nivel: 1
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Bardo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S, M (un poco de vellón)"
-duracion: "Concentración, hasta 10 minutos"
+- Bardo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S, M (un poco de vellón)
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 295
 tags:
-  - "ilusionismo"
-  - "nivel_1"
-  - "bardo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- ilusionismo
+- nivel_1
+- bardo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Silent Image
 ---
 
 # Imagen Silenciosa

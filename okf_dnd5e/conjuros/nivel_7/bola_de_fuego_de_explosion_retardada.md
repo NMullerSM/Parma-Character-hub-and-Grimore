@@ -1,25 +1,31 @@
 ---
-id: "bola_de_fuego_de_explosion_retardada"
-nombre: "Bola De Fuego De Explosión Retardada"
+id: bola_de_fuego_de_explosion_retardada
+nombre: Bola De Fuego De Explosión Retardada
 nivel: 7
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "45 m"
-componentes: "V, S, M (una pelota de guano de murciélago  y azufre)"
-duracion: "Concentración, hasta 1 minuto"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 45 m
+componentes: V, S, M (una pelota de guano de murciélago  y azufre)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 251
 tags:
-  - "evocación"
-  - "nivel_7"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- evocación
+- nivel_7
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Delayed Blast Fireball
 ---
 
 # Bola De Fuego De Explosión Retardada

@@ -1,25 +1,31 @@
 ---
-id: "resistencia"
-nombre: "Resistencia"
+id: resistencia
+nombre: Resistencia
 nivel: 0
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Clérigo"
-  - "Druida"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 minuto"
+- Clérigo
+- Druida
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 330
 tags:
-  - "abjuración"
-  - "nivel_0"
-  - "clérigo"
-  - "druida"
-  - "concentracion"
+- abjuración
+- nivel_0
+- clérigo
+- druida
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Resistance
 ---
 
 # Resistencia

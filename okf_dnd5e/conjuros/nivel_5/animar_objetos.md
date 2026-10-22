@@ -1,27 +1,33 @@
 ---
-id: "animar_objetos"
-nombre: "Animar Objetos"
+id: animar_objetos
+nombre: Animar Objetos
 nivel: 5
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Bardo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 244
 tags:
-  - "transmutación"
-  - "nivel_5"
-  - "bardo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- transmutación
+- nivel_5
+- bardo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Animate Objects
 ---
 
 # Animar Objetos

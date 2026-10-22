@@ -37,6 +37,7 @@ export interface SpellItemData {
   name_en?: string;
   level: number;
   school: string;
+  school_en?: string;
   cast_time: string;
   casting_time?: string;
   range_area: string;
@@ -45,7 +46,9 @@ export interface SpellItemData {
   duration: string;
   prepared: boolean;
   notes: string;
+  notes_en?: string;
   description?: string;
+  description_en?: string;
   concentration?: boolean;
   ritual?: boolean;
   classes?: string[];
@@ -214,6 +217,7 @@ export interface RollHistoryEntry {
 export interface PdfDocumentSummary {
   name: string;
   path: string;
+  lang?: "es" | "en" | "all";
 }
 
 export interface PdfTocItem {
@@ -227,13 +231,15 @@ export interface PdfDocumentInfo {
   path: string;
   filename: string;
   page_count: number;
+  total_pages?: number;
   toc: PdfTocItem[];
   error?: string;
 }
 
 export interface PdfLinkItem {
   rect: [number, number, number, number];
-  target_page: number;
+  target_page?: number;
+  uri?: string;
 }
 
 export interface PdfPageRenderResult {
@@ -263,6 +269,7 @@ export interface CompendiumSearchResult {
 export interface AppSettings {
   theme: string;
   dnd_edition?: string;
+  language?: "es" | "en";
   talespire_mode: "dm" | "player";
   talespire_enabled: boolean;
   okf_path: string;

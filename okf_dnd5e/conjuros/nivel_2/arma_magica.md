@@ -1,28 +1,34 @@
 ---
-id: "arma_magica"
-nombre: "Arma Mágica"
+id: arma_magica
+nombre: Arma Mágica
 nivel: 2
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Explorador"
-  - "Hechicero"
-  - "Mago"
-  - "Paladín"
-tiempo_lanzamiento: "Acción adicional"
-alcance: "Toque"
-componentes: "V, S"
-duracion: "1 hora"
+- Explorador
+- Hechicero
+- Mago
+- Paladín
+tiempo_lanzamiento: Acción adicional
+alcance: Toque
+componentes: V, S
+duracion: 1 hora
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 247
 tags:
-  - "transmutación"
-  - "nivel_2"
-  - "explorador"
-  - "hechicero"
-  - "mago"
-  - "paladín"
+- transmutación
+- nivel_2
+- explorador
+- hechicero
+- mago
+- paladín
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Magic Weapon
 ---
 
 # Arma Mágica

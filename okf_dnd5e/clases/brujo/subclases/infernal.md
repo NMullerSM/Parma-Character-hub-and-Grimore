@@ -1,12 +1,22 @@
 ---
-id: "brujo_infernal"
-nombre: "El Infernal"
-nombre_ingles: "Fiend Patron"
-tipo: "subclase"
-clase_padre: "Brujo"
+id: brujo_infernal
+nombre: El Infernal
+nombre_ingles: Fiend Patron
+tipo: subclase
+clase_padre: Brujo
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["brujo", "demonio", "diablo", "fuego", "bendición del oscuro", "phb2024"]
+fuente: PHB 2024
+tags:
+- brujo
+- demonio
+- diablo
+- fuego
+- bendición del oscuro
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: El Infernal (Fiend Patron)

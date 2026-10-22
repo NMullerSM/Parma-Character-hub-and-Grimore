@@ -1,27 +1,33 @@
 ---
-id: "fuerza_fantasmal"
-nombre: "Fuerza Fantasmal"
+id: fuerza_fantasmal
+nombre: Fuerza Fantasmal
 nivel: 2
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Bardo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S, M (un poco de vellón)"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S, M (un poco de vellón)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 287
 tags:
-  - "ilusionismo"
-  - "nivel_2"
-  - "bardo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- ilusionismo
+- nivel_2
+- bardo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Phantasmal Force
 ---
 
 # Fuerza Fantasmal

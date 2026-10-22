@@ -1,14 +1,20 @@
 ---
-id: "atacante_salvaje"
-nombre: "Atacante Salvaje"
-categoria: "Origen"
-encabezado: "Dote de origen"
-fuente: "PHB 2024"
+id: atacante_salvaje
+nombre: Atacante Salvaje
+categoria: Origen
+encabezado: Dote de origen
+fuente: PHB 2024
 pagina: 202
 tags:
-  - "dote"
-  - "origen"
-  - "atacante_salvaje"
+- dote
+- origen
+- atacante_salvaje
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Atacante Salvaje
 ---
 
 # Atacante Salvaje

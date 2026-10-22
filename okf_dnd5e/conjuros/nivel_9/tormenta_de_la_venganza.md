@@ -1,23 +1,29 @@
 ---
-id: "tormenta_de_la_venganza"
-nombre: "Tormenta De La Venganza"
+id: tormenta_de_la_venganza
+nombre: Tormenta De La Venganza
 nivel: 9
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Druida"
-tiempo_lanzamiento: "Acción"
-alcance: "1,5 km"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 minuto"
+- Druida
+tiempo_lanzamiento: Acción
+alcance: 1,5 km
+componentes: V, S
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 341
 tags:
-  - "conjuración"
-  - "nivel_9"
-  - "druida"
-  - "concentracion"
+- conjuración
+- nivel_9
+- druida
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Storm of Vengeance
 ---
 
 # Tormenta De La Venganza

@@ -1,24 +1,30 @@
 ---
-id: "ilusion_programada"
-nombre: "Ilusión Programada"
+id: ilusion_programada
+nombre: Ilusión Programada
 nivel: 6
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Bardo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S, M (polvo de jade con un valor  de al menos 25 po)"
-duracion: "Hasta que sea disipado"
+- Bardo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S, M (polvo de jade con un valor  de al menos 25 po)
+duracion: Hasta que sea disipado
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 294
 tags:
-  - "ilusionismo"
-  - "nivel_6"
-  - "bardo"
-  - "mago"
+- ilusionismo
+- nivel_6
+- bardo
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Programmed Illusion
 ---
 
 # Ilusión Programada

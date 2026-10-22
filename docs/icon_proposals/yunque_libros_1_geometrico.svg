@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
+  <!-- Concepto: Yunque clásico formado por libros (Mesa superior = tomo abierto/cuerno, Cintura = lomos verticales, Base = gran volumen) -->
+  <!-- Silueta monocromática en negro / currentColor con transparencia -->
+  <g fill="currentColor">
+    <!-- BASE: Gran tomo acostado formando la base sólida del yunque -->
+    <path d="M 44 212 C 44 204, 52 198, 62 198 L 194 198 C 204 198, 212 204, 212 212 L 212 224 C 212 228, 204 232, 194 232 L 62 232 C 52 232, 44 228, 44 224 Z"/>
+    <!-- Ranura de hojas de la base (espacio negativo transparente) -->
+    <rect x="66" y="206" width="134" height="6" rx="2" fill="none" stroke="transparent"/>
+    <path d="M 64 210 L 192 210" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.3"/>
+
+    <!-- CINTURA / PILAR: Dos lomos verticales de libros encuadernados -->
+    <!-- Tomo vertical izquierdo -->
+    <path d="M 88 140 L 118 140 L 118 194 L 88 194 Z"/>
+    <!-- Nervios del lomo izquierdo (ranuras negativas) -->
+    <path d="M 92 154 L 114 154 M 92 170 L 114 170 M 92 184 L 114 184" stroke="#ffffff" stroke-width="2.5" opacity="0.4"/>
+
+    <!-- Tomo vertical derecho -->
+    <path d="M 124 140 L 168 140 L 168 194 L 124 194 Z"/>
+    <!-- Nervios del lomo derecho -->
+    <path d="M 128 154 L 164 154 M 128 170 L 164 170 M 128 184 L 164 184" stroke="#ffffff" stroke-width="2.5" opacity="0.4"/>
+
+    <!-- MESA Y CUERNO: Tomo superior cuya cubierta curva extendida forma el cuerno del yunque -->
+    <!-- Mesa plana (derecha) y Cuerno curvado cónico (izquierda) -->
+    <path d="M 32 82 C 54 82, 86 98, 102 118 L 192 118 C 208 118, 224 110, 224 98 L 224 64 C 224 58, 218 56, 210 56 L 94 56 C 68 56, 46 68, 32 82 Z"/>
+    
+    <!-- Detalle de páginas abiertas / corte de papel en la parte superior -->
+    <path d="M 96 68 L 212 68" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
+    <!-- Marcador de libro / cinta colgante en la cintura -->
+    <path d="M 121 118 L 121 150 L 115 144 L 109 150 L 109 118 Z" fill="currentColor"/>
+  </g>
+</svg>

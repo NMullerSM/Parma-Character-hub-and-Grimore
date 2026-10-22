@@ -1,27 +1,33 @@
 ---
-id: "nube_incendiaria"
-nombre: "Nube Incendiaria"
+id: nube_incendiaria
+nombre: Nube Incendiaria
 nivel: 8
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "45 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 minuto"
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 45 m
+componentes: V, S
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 316
 tags:
-  - "conjuración"
-  - "nivel_8"
-  - "druida"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- conjuración
+- nivel_8
+- druida
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Incendiary Cloud
 ---
 
 # Nube Incendiaria

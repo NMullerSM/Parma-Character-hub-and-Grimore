@@ -1,23 +1,29 @@
 ---
-id: "muro_de_espinas"
-nombre: "Muro De Espinas"
+id: muro_de_espinas
+nombre: Muro De Espinas
 nivel: 6
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Druida"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S, M (un puñado de espinas vegetales)"
-duracion: "Concentración, hasta 10 minutos"
+- Druida
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S, M (un puñado de espinas vegetales)
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 313
 tags:
-  - "conjuración"
-  - "nivel_6"
-  - "druida"
-  - "concentracion"
+- conjuración
+- nivel_6
+- druida
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Wall of Thorns
 ---
 
 # Muro De Espinas

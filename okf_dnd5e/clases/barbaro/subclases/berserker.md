@@ -1,12 +1,21 @@
 ---
-id: "barbaro_berserker"
-nombre: "Senda del Bersérker"
-nombre_ingles: "Path of the Berserker"
-tipo: "subclase"
-clase_padre: "Bárbaro"
+id: barbaro_berserker
+nombre: Senda del Bersérker
+nombre_ingles: Path of the Berserker
+tipo: subclase
+clase_padre: Bárbaro
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["bárbaro", "furia", "daño", "marcial", "phb2024"]
+fuente: PHB 2024
+tags:
+- bárbaro
+- furia
+- daño
+- marcial
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Senda del Bersérker (Path of the Berserker)

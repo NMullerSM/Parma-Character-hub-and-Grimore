@@ -1,23 +1,29 @@
 ---
-id: "compulsion"
-nombre: "Compulsión"
+id: compulsion
+nombre: Compulsión
 nivel: 4
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 260
 tags:
-  - "encantamiento"
-  - "nivel_4"
-  - "bardo"
-  - "concentracion"
+- encantamiento
+- nivel_4
+- bardo
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Compulsion
 ---
 
 # Compulsión

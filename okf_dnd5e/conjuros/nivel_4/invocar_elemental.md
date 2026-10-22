@@ -1,27 +1,34 @@
 ---
-id: "invocar_elemental"
-nombre: "Invocar Elemental"
+id: invocar_elemental
+nombre: Invocar Elemental
 nivel: 4
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Druida"
-  - "Explorador"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "27 m"
-componentes: "V, S, M (aire, un guijarro, ceniza y agua  dentro de un vial con incrustaciones de oro que valga  al menos 400 po)"
-duracion: "Concentración, hasta 1 hora"
+- Druida
+- Explorador
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 27 m
+componentes: V, S, M (aire, un guijarro, ceniza y agua  dentro de un vial con incrustaciones
+  de oro que valga  al menos 400 po)
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 302
 tags:
-  - "conjuración"
-  - "nivel_4"
-  - "druida"
-  - "explorador"
-  - "mago"
-  - "concentracion"
+- conjuración
+- nivel_4
+- druida
+- explorador
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Summon Elemental
 ---
 
 # Invocar Elemental

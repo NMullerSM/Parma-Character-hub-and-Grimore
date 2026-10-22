@@ -1,29 +1,35 @@
 ---
-id: "confusion"
-nombre: "Confusión"
+id: confusion
+nombre: Confusión
 nivel: 4
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "27 m"
-componentes: "V, S, M (tres cáscaras de nuez)"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 27 m
+componentes: V, S, M (tres cáscaras de nuez)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 260
 tags:
-  - "encantamiento"
-  - "nivel_4"
-  - "bardo"
-  - "druida"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- encantamiento
+- nivel_4
+- bardo
+- druida
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Confusion
 ---
 
 # Confusión

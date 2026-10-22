@@ -1,15 +1,20 @@
 ---
-id: "equipo_armas_marciales"
-nombre: "Armas Marciales (Cuerpo a Cuerpo y Distancia)"
-fuente: "Manual del Jugador 2024"
+id: equipo_armas_marciales
+nombre: Armas Marciales (Cuerpo a Cuerpo y Distancia)
+fuente: Manual del Jugador 2024
 pagina: 214
-tipo: "equipo"
-subtipo: "Armas"
+tipo: equipo
+subtipo: Armas
 tags:
-  - "equipo"
-  - "armas"
-  - "marciales"
-  - "combate"
+- equipo
+- armas
+- marciales
+- combate
+- spanish
+- es
+- español
+idioma: es
+nombre_ingles: Armas Marciales (Cuerpo a Cuerpo y Distancia)
 ---
 
 # Armas Marciales Oficiales (PHB 2024)

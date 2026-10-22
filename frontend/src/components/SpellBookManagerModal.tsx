@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { api } from "../api/client";
 import type { SpellItemData } from "../api/types";
-import { useCharacter } from "../context/CharacterContext";
+import { useTranslation } from "../i18n";
 import { X, Search, Plus, Trash2, Check, BookOpen } from "lucide-react";
 import {
   formatRangeWithTiles,
@@ -60,7 +60,7 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
   const [spells, setSpells] = useState<SpellItemData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [previewSpell, setPreviewSpell] = useState<SpellItemData | null>(null);
-  const { language } = useCharacter();
+  const { t, language, translateClass, translateSchool, translateSpellName, translateSpellDescription } = useTranslation();
 
   useEffect(() => {
     if (characterClass) {
@@ -91,6 +91,7 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
           level: selectedLevel === "all" ? undefined : selectedLevel,
           query: searchQuery.trim(),
           school: selectedSchool === "Todas" ? undefined : selectedSchool,
+          lang: language,
         });
         const safeResults = Array.isArray(results) ? results : [];
         setSpells(safeResults);
@@ -110,7 +111,7 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
     }, 200);
 
     return () => clearTimeout(timer);
-  }, [isOpen, searchQuery, selectedClass, selectedLevel, selectedSchool]);
+  }, [isOpen, searchQuery, selectedClass, selectedLevel, selectedSchool, language]);
 
   if (!isOpen) return null;
 
@@ -136,17 +137,21 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
             <BookOpen className="w-5 h-5 text-gold" />
             <div>
               <h2 className="font-display font-bold text-lg text-gold">
-                Gestor del Grimorio & Compendio de Conjuros
+                {t("modals.spellManager.title")}
               </h2>
               <p className="text-xs text-muted">
-                {safeCurrentSpells.length} conjuros en ficha ({characterClass || "Personaje"} Nvl {characterLevel || 1}) • Consulta la base de datos oficial OKF
+                {t("modals.spellManager.subtitle", {
+                  count: safeCurrentSpells.length,
+                  charClass: translateClass(characterClass) || (language === "es" ? "Personaje" : "Character"),
+                  level: characterLevel || 1,
+                })}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
             className="p-1.5 rounded-lg border border-border-iron hover:border-gold text-muted hover:text-main transition-colors"
-            title="Cerrar (Esc)"
+            title={t("common.close")}
           >
             <X className="w-5 h-5" />
           </button>
@@ -162,7 +167,7 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Buscar por nombre en español o inglés..."
+                placeholder={t("modals.spellManager.searchPlaceholder")}
                 className="w-full bg-input text-main border border-border-iron rounded-lg pl-9 pr-3 py-1.5 text-xs focus:border-gold outline-none transition-colors"
               />
             </div>
@@ -179,7 +184,7 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
                       : "bg-surface border border-border-iron text-muted hover:text-main"
                   }`}
                 >
-                  {cName}
+                  {translateClass(cName)}
                 </button>
               ))}
             </div>
@@ -188,7 +193,7 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
           {/* Filtro por Nivel */}
           <div className="flex items-center justify-between gap-2 overflow-x-auto text-[11px] pt-1">
             <div className="flex items-center gap-1">
-              <span className="text-muted text-[10px] uppercase font-semibold mr-1">Nivel:</span>
+              <span className="text-muted text-[10px] uppercase font-semibold mr-1">{t("modals.spellManager.levelFilter")}</span>
               <button
                 onClick={() => setSelectedLevel("all")}
                 className={`px-2 py-0.5 rounded transition-colors ${
@@ -197,7 +202,7 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
                     : "bg-surface border border-border-iron text-muted hover:text-main"
                 }`}
               >
-                Todos
+                {t("modals.spellManager.all")}
               </button>
               <button
                 onClick={() => setSelectedLevel(0)}
@@ -207,7 +212,7 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
                     : "bg-surface border border-border-iron text-muted hover:text-main"
                 }`}
               >
-                Trucos
+                {t("modals.spellManager.cantrips")}
               </button>
               {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((lvl) => (
                 <button
@@ -219,7 +224,7 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
                       : "bg-surface border border-border-iron text-muted hover:text-main"
                   }`}
                 >
-                  Niv {lvl}
+                  {t("modals.spellManager.levelShort", { lvl })}
                 </button>
               ))}
             </div>
@@ -232,7 +237,7 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
             >
               {DND_SCHOOLS.map((sc) => (
                 <option key={sc} value={sc}>
-                  {sc === "Todas" ? "Todas las escuelas" : sc}
+                  {sc === "Todas" ? t("modals.spellManager.allSchools") : translateSchool(sc)}
                 </option>
               ))}
             </select>
@@ -244,10 +249,10 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
           {/* Columna Izquierda: Lista de Conjuros */}
           <div className="w-full md:w-3/5 overflow-y-auto p-3 space-y-2">
             {loading ? (
-              <div className="text-center py-12 text-muted text-xs">Buscando en el compendio OKF...</div>
+              <div className="text-center py-12 text-muted text-xs">{t("modals.spellManager.searching")}</div>
             ) : spells.length === 0 ? (
               <div className="text-center py-12 text-muted text-xs">
-                No se encontraron conjuros con los filtros seleccionados.
+                {t("modals.spellManager.noResults")}
               </div>
             ) : (
               spells.map((sp, idx) => {
@@ -268,16 +273,16 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-xs text-main truncate">
-                          {language === "en" && sp.name_en ? sp.name_en : sName}
+                          {language === "en" ? (sp.name_en && sp.name_en !== sName ? sp.name_en : translateSpellName(sName)) : sName}
                         </span>
                         <span className="font-stat text-[10px] px-1.5 py-0.2 rounded bg-card border border-border-iron text-gold shrink-0">
-                          {sp.level === 0 ? "Truco" : `Niv ${sp.level}`}
+                          {sp.level === 0 ? (language === "es" ? "Truco" : "Cantrip") : t("modals.spellManager.levelShort", { lvl: sp.level })}
                         </span>
-                        <span className="text-[10px] text-muted hidden sm:inline">{sp.school}</span>
+                        <span className="text-[10px] text-muted hidden sm:inline">{translateSchool(sp.school)}</span>
                       </div>
                       <p className="text-[11px] text-muted truncate mt-0.5">
-                        {sp.cast_time || sp.casting_time || "1 acción"} •{" "}
-                        {formatRangeWithTiles(sp.range_area || sp.range)} •{" "}
+                        {sp.cast_time || sp.casting_time || (language === "es" ? "1 acción" : "1 action")} •{" "}
+                        {formatRangeWithTiles(sp.range_area || sp.range, language)} •{" "}
                         {formatComponents(sp.components)}
                       </p>
                     </div>
@@ -286,12 +291,12 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
                       {isAdded ? (
                         <div className="flex items-center gap-1">
                           <span className="text-[10px] text-green-400 bg-green-500/10 border border-green-500/30 px-2 py-0.5 rounded font-semibold flex items-center gap-1">
-                            <Check className="w-3 h-3" /> En Grimorio
+                            <Check className="w-3 h-3" /> {t("modals.spellManager.inGrimoire")}
                           </span>
                           <button
                             onClick={() => onRemoveSpell(sp.name)}
                             className="p-1 rounded bg-crimson/20 hover:bg-crimson text-crimson hover:text-white transition-colors"
-                            title="Quitar del grimorio"
+                            title={t("modals.spellManager.removeFromGrimoire")}
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -302,7 +307,7 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
                           className="px-2.5 py-1 rounded bg-gold hover:bg-gold-hover text-canvas font-semibold text-xs flex items-center gap-1 transition-all active:scale-95 shadow-xs"
                         >
                           <Plus className="w-3.5 h-3.5" />
-                          <span>Añadir</span>
+                          <span>{t("modals.spellManager.add")}</span>
                         </button>
                       )}
                     </div>
@@ -319,48 +324,54 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-surface border border-border-iron text-gold uppercase">
-                      {previewSpell.level === 0 ? "Truco" : `Nivel ${previewSpell.level}`}
+                      {previewSpell.level === 0 ? (language === "es" ? "Truco" : "Cantrip") : t("modals.spellDetail.level", { lvl: previewSpell.level })}
                     </span>
-                    <span className="text-[10px] text-muted">{previewSpell.school}</span>
+                    <span className="text-[10px] text-muted">{translateSchool(previewSpell.school)}</span>
                   </div>
                   <h3 className="font-display font-bold text-lg text-gold">
-                    {language === "en" && previewSpell.name_en ? previewSpell.name_en : previewSpell.name}
+                    {language === "en" ? (previewSpell.name_en && previewSpell.name_en !== previewSpell.name ? previewSpell.name_en : translateSpellName(previewSpell.name)) : previewSpell.name}
                   </h3>
-                  {previewSpell.name_en && previewSpell.name_en !== previewSpell.name && (
+                  {language === "en" && translateSpellName(previewSpell.name) !== previewSpell.name && (
                     <p className="text-xs text-muted italic">
-                      {language === "en" ? previewSpell.name : previewSpell.name_en}
+                      {previewSpell.name}
+                    </p>
+                  )}
+                  {language === "es" && translateSpellName(previewSpell.name) !== previewSpell.name && (
+                    <p className="text-xs text-muted italic">
+                      {translateSpellName(previewSpell.name)}
                     </p>
                   )}
                 </div>
 
                 <div className="text-xs space-y-1 bg-surface p-2.5 rounded border border-border-iron">
                   <div>
-                    <span className="text-muted">Tiempo de lanzamiento:</span>{" "}
-                    <span className="text-main font-medium">{previewSpell.cast_time || previewSpell.casting_time || "1 acción"}</span>
+                    <span className="text-muted">{t("modals.spellManager.time")}</span>{" "}
+                    <span className="text-main font-medium">{previewSpell.cast_time || previewSpell.casting_time || (language === "es" ? "1 acción" : "1 action")}</span>
                   </div>
                   <div>
-                    <span className="text-muted">Alcance:</span>{" "}
-                    <span className="text-main font-medium">{formatRangeWithTiles(previewSpell.range_area || previewSpell.range)}</span>
+                    <span className="text-muted">{t("modals.spellManager.range")}</span>{" "}
+                    <span className="text-main font-medium">{formatRangeWithTiles(previewSpell.range_area || previewSpell.range, language)}</span>
                   </div>
                   <div>
-                    <span className="text-muted">Componentes:</span>{" "}
+                    <span className="text-muted">{t("modals.spellManager.components")}</span>{" "}
                     <span className="text-main font-medium">{formatComponents(previewSpell.components)}</span>
                   </div>
                   <div>
-                    <span className="text-muted">Duración:</span>{" "}
-                    <span className="text-main font-medium">{formatDurationWithTurns(previewSpell.duration)}</span>
+                    <span className="text-muted">{t("modals.spellManager.duration")}</span>{" "}
+                    <span className="text-main font-medium">{formatDurationWithTurns(previewSpell.duration, language)}</span>
                   </div>
                 </div>
 
                 <div className="text-xs text-muted leading-relaxed max-h-56 overflow-y-auto pr-1">
-                  {typeof (previewSpell.description || previewSpell.notes) === "string"
-                    ? previewSpell.description || previewSpell.notes
-                    : JSON.stringify(previewSpell.description || previewSpell.notes || "")}
+                  {translateSpellDescription(previewSpell, language) ||
+                    (typeof (previewSpell.description || previewSpell.notes) === "string"
+                      ? previewSpell.description || previewSpell.notes
+                      : JSON.stringify(previewSpell.description || previewSpell.notes || ""))}
                 </div>
 
                 {previewSpell.higher_levels && (
                   <div className="p-2 rounded bg-surface border border-border-iron text-xs">
-                    <strong className="text-gold block mb-0.5">En Niveles Superiores:</strong>
+                    <strong className="text-gold block mb-0.5">{t("modals.spellManager.higherLevels")}</strong>
                     <p className="text-muted">
                       {typeof previewSpell.higher_levels === "string"
                         ? previewSpell.higher_levels
@@ -371,7 +382,7 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
               </div>
             ) : (
               <div className="h-full flex items-center justify-center text-center text-xs text-muted">
-                Selecciona un conjuro para ver su descripción canónica.
+                {t("modals.spellManager.emptyPreview")}
               </div>
             )}
 
@@ -384,7 +395,7 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
                     className="w-full py-1.5 rounded bg-crimson/20 border border-crimson text-crimson hover:bg-crimson hover:text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1.5"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
-                    <span>Eliminar de mi Grimorio</span>
+                    <span>{t("modals.spellManager.removeFromGrimoireBtn")}</span>
                   </button>
                 ) : (
                   <button
@@ -392,7 +403,7 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
                     className="w-full py-1.5 rounded bg-gold hover:bg-gold-hover text-canvas text-xs font-semibold transition-colors shadow-sm flex items-center justify-center gap-1.5"
                   >
                     <Plus className="w-3.5 h-3.5" />
-                    <span>Añadir a mi Grimorio</span>
+                    <span>{t("modals.spellManager.addToGrimoireBtn")}</span>
                   </button>
                 )}
               </div>
@@ -403,13 +414,13 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
         {/* Pie del Modal */}
         <div className="p-3 border-t border-border-iron bg-surface/50 flex items-center justify-between shrink-0">
           <span className="text-xs text-muted">
-            {spells.length} conjuros disponibles para {selectedClass}
+            {t("modals.spellManager.footerCount", { count: spells.length, className: translateClass(selectedClass) })}
           </span>
           <button
             onClick={onClose}
             className="px-4 py-1.5 rounded-lg border border-border-iron hover:border-gold text-xs text-muted hover:text-main font-medium transition-colors"
           >
-            Listo / Cerrar (Esc)
+            {t("modals.spellManager.doneClose")}
           </button>
         </div>
       </div>

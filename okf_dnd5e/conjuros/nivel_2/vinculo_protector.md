@@ -1,24 +1,32 @@
 ---
-id: "vinculo_protector"
-nombre: "Vínculo Protector"
+id: vinculo_protector
+nombre: Vínculo Protector
 nivel: 2
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Clérigo"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S, M (un par de anillos de platino que  valgan al menos 50 po cada uno y que debéis llevar  puestos tanto tú como el objetivo hasta que termine  el conjuro)"
-duracion: "1 hora"
+- Clérigo
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S, M (un par de anillos de platino que  valgan al menos 50 po cada
+  uno y que debéis llevar  puestos tanto tú como el objetivo hasta que termine  el
+  conjuro)
+duracion: 1 hora
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 344
 tags:
-  - "abjuración"
-  - "nivel_2"
-  - "clérigo"
-  - "paladín"
+- abjuración
+- nivel_2
+- clérigo
+- paladín
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Warding Bond
 ---
 
 # Vínculo Protector

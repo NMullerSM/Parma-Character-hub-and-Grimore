@@ -1,24 +1,30 @@
 ---
-id: "plegaria_de_curacion"
-nombre: "Plegaria De Curación"
+id: plegaria_de_curacion
+nombre: Plegaria De Curación
 nivel: 2
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Clérigo"
-  - "Paladín"
-tiempo_lanzamiento: "10 minutos"
-alcance: "9 m"
-componentes: "V"
-duracion: "Instantáneo"
+- Clérigo
+- Paladín
+tiempo_lanzamiento: 10 minutos
+alcance: 9 m
+componentes: V
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 321
 tags:
-  - "abjuración"
-  - "nivel_2"
-  - "clérigo"
-  - "paladín"
+- abjuración
+- nivel_2
+- clérigo
+- paladín
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Prayer of Healing
 ---
 
 # Plegaria De Curación

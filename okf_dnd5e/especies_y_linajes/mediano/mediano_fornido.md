@@ -1,19 +1,23 @@
 ---
-id: "mediano_fornido"
-nombre: "Mediano Fornido"
-nombre_ingles: "Stout Halfling"
-fuente: "Manual del Jugador 2024"
+id: mediano_fornido
+nombre: Mediano Fornido
+nombre_ingles: Stout Halfling
+fuente: Manual del Jugador 2024
 pagina: 188
-tipo: "especie_linaje"
-velocidad: "9 m (30 pies)"
-tamano: "Pequeño"
-vision_oscuridad: "No"
+tipo: especie_linaje
+velocidad: 9 m (30 pies)
+tamano: Pequeño
+vision_oscuridad: 'No'
 tags:
-  - "especie"
-  - "mediano"
-  - "fornido"
-  - "linaje"
-  - "resistencia"
+- especie
+- mediano
+- fornido
+- linaje
+- resistencia
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Especie: Mediano Fornido (Stout Halfling)

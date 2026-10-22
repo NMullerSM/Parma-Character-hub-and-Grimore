@@ -1,26 +1,32 @@
 ---
-id: "teletransporte"
-nombre: "Teletransporte"
+id: teletransporte
+nombre: Teletransporte
 nivel: 7
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Bardo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "3 m"
-componentes: "V"
-duracion: "Instantáneo"
+- Bardo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 3 m
+componentes: V
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 338
 tags:
-  - "conjuración"
-  - "nivel_7"
-  - "bardo"
-  - "hechicero"
-  - "mago"
+- conjuración
+- nivel_7
+- bardo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Teleport
 ---
 
 # Teletransporte

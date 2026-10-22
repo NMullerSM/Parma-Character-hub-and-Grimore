@@ -1,29 +1,35 @@
 ---
-id: "nube_de_oscurecimiento"
-nombre: "Nube De Oscurecimiento"
+id: nube_de_oscurecimiento
+nombre: Nube De Oscurecimiento
 nivel: 1
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Druida"
-  - "Explorador"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 hora"
+- Druida
+- Explorador
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 316
 tags:
-  - "conjuración"
-  - "nivel_1"
-  - "druida"
-  - "explorador"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- conjuración
+- nivel_1
+- druida
+- explorador
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Fog Cloud
 ---
 
 # Nube De Oscurecimiento

@@ -1,12 +1,22 @@
 ---
-id: "brujo_celestial"
-nombre: "El Celestial"
-nombre_ingles: "Celestial Patron"
-tipo: "subclase"
-clase_padre: "Brujo"
+id: brujo_celestial
+nombre: El Celestial
+nombre_ingles: Celestial Patron
+tipo: subclase
+clase_padre: Brujo
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["brujo", "ángel", "curación", "radiante", "phb2024", "xanathar"]
+fuente: PHB 2024
+tags:
+- brujo
+- ángel
+- curación
+- radiante
+- phb2024
+- xanathar
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: El Celestial (Celestial Patron)

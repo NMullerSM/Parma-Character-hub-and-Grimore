@@ -1,26 +1,33 @@
 ---
-id: "glifo_custodio"
-nombre: "Glifo Custodio"
+id: glifo_custodio
+nombre: Glifo Custodio
 nivel: 3
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Mago"
-tiempo_lanzamiento: "1 hora"
-alcance: "Toque"
-componentes: "V, S, M (diamante en polvo que valga al  menos 200 po, que se consume como parte del conjuro)"
-duracion: "Hasta que sea disipado o se active"
+- Bardo
+- Clérigo
+- Mago
+tiempo_lanzamiento: 1 hora
+alcance: Toque
+componentes: V, S, M (diamante en polvo que valga al  menos 200 po, que se consume
+  como parte del conjuro)
+duracion: Hasta que sea disipado o se active
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 288
 tags:
-  - "abjuración"
-  - "nivel_3"
-  - "bardo"
-  - "clérigo"
-  - "mago"
+- abjuración
+- nivel_3
+- bardo
+- clérigo
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Glyph of Warding
 ---
 
 # Glifo Custodio

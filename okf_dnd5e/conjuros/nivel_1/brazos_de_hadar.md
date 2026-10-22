@@ -1,22 +1,28 @@
 ---
-id: "brazos_de_hadar"
-nombre: "Brazos De Hadar"
+id: brazos_de_hadar
+nombre: Brazos De Hadar
 nivel: 1
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Brujo"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Brujo
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 251
 tags:
-  - "conjuración"
-  - "nivel_1"
-  - "brujo"
+- conjuración
+- nivel_1
+- brujo
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Arms of Hadar
 ---
 
 # Brazos De Hadar

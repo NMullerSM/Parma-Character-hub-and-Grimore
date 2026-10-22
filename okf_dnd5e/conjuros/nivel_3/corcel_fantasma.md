@@ -1,23 +1,29 @@
 ---
-id: "corcel_fantasma"
-nombre: "Corcel Fantasma"
+id: corcel_fantasma
+nombre: Corcel Fantasma
 nivel: 3
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Mago"
-tiempo_lanzamiento: "1 minuto o un ritual"
-alcance: "9 m"
-componentes: "V, S"
-duracion: "1 hora"
+- Mago
+tiempo_lanzamiento: 1 minuto o un ritual
+alcance: 9 m
+componentes: V, S
+duracion: 1 hora
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 266
 tags:
-  - "ilusionismo"
-  - "nivel_3"
-  - "mago"
-  - "ritual"
+- ilusionismo
+- nivel_3
+- mago
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Phantom Steed
 ---
 
 # Corcel Fantasma

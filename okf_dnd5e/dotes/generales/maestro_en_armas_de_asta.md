@@ -1,14 +1,20 @@
 ---
-id: "maestro_en_armas_de_asta"
-nombre: "Maestro En Armas De Asta"
-categoria: "General"
-encabezado: "Dote general (requisitos: nivel 4 o más, Fuerza o Destreza 13"
-fuente: "PHB 2024"
+id: maestro_en_armas_de_asta
+nombre: Maestro En Armas De Asta
+categoria: General
+encabezado: 'Dote general (requisitos: nivel 4 o más, Fuerza o Destreza 13'
+fuente: PHB 2024
 pagina: 208
 tags:
-  - "dote"
-  - "generales"
-  - "maestro_en_armas_de_asta"
+- dote
+- generales
+- maestro_en_armas_de_asta
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Maestro En Armas De Asta
 ---
 
 # Maestro En Armas De Asta

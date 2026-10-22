@@ -1,14 +1,20 @@
 ---
-id: "alerta"
-nombre: "Alerta"
-categoria: "Origen"
-encabezado: "Dote de origen"
-fuente: "PHB 2024"
+id: alerta
+nombre: Alerta
+categoria: Origen
+encabezado: Dote de origen
+fuente: PHB 2024
 pagina: 202
 tags:
-  - "dote"
-  - "origen"
-  - "alerta"
+- dote
+- origen
+- alerta
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Alert
 ---
 
 # Alerta

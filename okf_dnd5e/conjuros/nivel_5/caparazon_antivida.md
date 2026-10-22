@@ -1,23 +1,29 @@
 ---
-id: "caparazon_antivida"
-nombre: "Caparazón Antivida"
+id: caparazon_antivida
+nombre: Caparazón Antivida
 nivel: 5
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Druida"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 hora"
+- Druida
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 255
 tags:
-  - "abjuración"
-  - "nivel_5"
-  - "druida"
-  - "concentracion"
+- abjuración
+- nivel_5
+- druida
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Antilife Shell
 ---
 
 # Caparazón Antivida

@@ -1,29 +1,35 @@
 ---
-id: "rayo_solar"
-nombre: "Rayo Solar"
+id: rayo_solar
+nombre: Rayo Solar
 nivel: 6
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Clérigo"
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S, M (una lupa)"
-duracion: "Concentración, hasta 1 minuto"
+- Clérigo
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S, M (una lupa)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 328
 tags:
-  - "evocación"
-  - "nivel_6"
-  - "clérigo"
-  - "druida"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- evocación
+- nivel_6
+- clérigo
+- druida
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Sunbeam
 ---
 
 # Rayo Solar

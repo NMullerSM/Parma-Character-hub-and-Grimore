@@ -1,27 +1,34 @@
 ---
-id: "texto_ilusorio"
-nombre: "Texto Ilusorio"
+id: texto_ilusorio
+nombre: Texto Ilusorio
 nivel: 1
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Mago"
-tiempo_lanzamiento: "1 minuto o un ritual"
-alcance: "Toque"
-componentes: "S, M (tinta que valga al menos 10 po,  que se consume como parte del conjuro)"
-duracion: "10 días"
+- Bardo
+- Brujo
+- Mago
+tiempo_lanzamiento: 1 minuto o un ritual
+alcance: Toque
+componentes: S, M (tinta que valga al menos 10 po,  que se consume como parte del
+  conjuro)
+duracion: 10 días
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 340
 tags:
-  - "ilusionismo"
-  - "nivel_1"
-  - "bardo"
-  - "brujo"
-  - "mago"
-  - "ritual"
+- ilusionismo
+- nivel_1
+- bardo
+- brujo
+- mago
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Illusory Script
 ---
 
 # Texto Ilusorio

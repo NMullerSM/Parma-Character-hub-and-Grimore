@@ -1,12 +1,21 @@
 ---
-id: "explorador_cazador"
-nombre: "Cazador"
-nombre_ingles: "Hunter"
-tipo: "subclase"
-clase_padre: "Explorador"
+id: explorador_cazador
+nombre: Cazador
+nombre_ingles: Hunter
+tipo: subclase
+clase_padre: Explorador
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["explorador", "cazador de colosos", "multitaque", "defensa", "phb2024"]
+fuente: PHB 2024
+tags:
+- explorador
+- cazador de colosos
+- multitaque
+- defensa
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Cazador (Hunter)

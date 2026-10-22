@@ -1,24 +1,30 @@
 ---
-id: "desintegrar"
-nombre: "Desintegrar"
+id: desintegrar
+nombre: Desintegrar
 nivel: 6
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S, M (un imán natural y polvo)"
-duracion: "Instantáneo"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S, M (un imán natural y polvo)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 271
 tags:
-  - "transmutación"
-  - "nivel_6"
-  - "hechicero"
-  - "mago"
+- transmutación
+- nivel_6
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Disintegrate
 ---
 
 # Desintegrar

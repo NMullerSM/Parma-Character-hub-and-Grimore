@@ -1,27 +1,33 @@
 ---
-id: "dulce_descanso"
-nombre: "Dulce Descanso"
+id: dulce_descanso
+nombre: Dulce Descanso
 nivel: 2
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Clérigo"
-  - "Mago"
-  - "Paladín"
-tiempo_lanzamiento: "Acción o ritual"
-alcance: "Toque"
-componentes: "V, S, M (2 piezas de cobre, que se consumen  como parte del conjuro)"
-duracion: "10 días"
+- Clérigo
+- Mago
+- Paladín
+tiempo_lanzamiento: Acción o ritual
+alcance: Toque
+componentes: V, S, M (2 piezas de cobre, que se consumen  como parte del conjuro)
+duracion: 10 días
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 276
 tags:
-  - "nigromancia"
-  - "nivel_2"
-  - "clérigo"
-  - "mago"
-  - "paladín"
-  - "ritual"
+- nigromancia
+- nivel_2
+- clérigo
+- mago
+- paladín
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Gentle Repose
 ---
 
 # Dulce Descanso

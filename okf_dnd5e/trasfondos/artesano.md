@@ -9,8 +9,14 @@ pagina: 180
 tags:
 - trasfondo
 - artesano
+- spanish
+- es
+- español
 tipo: trasfondo
+idioma: es
+nombre_ingles: Artesano
 ---
+
 # Trasfondo: Artesano
 
 - **Puntuaciones de Característica**: Fuerza, Destreza, Inteligencia

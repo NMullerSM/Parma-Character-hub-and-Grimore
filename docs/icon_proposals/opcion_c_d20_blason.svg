@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
+  <!-- Outer D20 / Shield Hexagon -->
+  <polygon points="128,24 220,76 220,180 128,232 36,180 36,76" fill="#151b21" stroke="#c9a45c" stroke-width="8" stroke-linejoin="round"/>
+  <!-- Inner Facet Triangles of D20 -->
+  <!-- Top Center Triangle -->
+  <polygon points="128,52 188,144 68,144" fill="#202934" stroke="#c9a45c" stroke-width="4" stroke-linejoin="round"/>
+  <!-- Top Left Facet -->
+  <polygon points="128,52 68,144 36,76" fill="#182028" stroke="#c9a45c" stroke-width="4" stroke-linejoin="round"/>
+  <!-- Top Right Facet -->
+  <polygon points="128,52 188,144 220,76" fill="#293543" stroke="#c9a45c" stroke-width="4" stroke-linejoin="round"/>
+  <!-- Bottom Left Facet -->
+  <polygon points="68,144 128,232 36,180" fill="#10151b" stroke="#c9a45c" stroke-width="4" stroke-linejoin="round"/>
+  <!-- Bottom Center Facet -->
+  <polygon points="68,144 188,144 128,232" fill="#141a22" stroke="#c9a45c" stroke-width="4" stroke-linejoin="round"/>
+  <!-- Bottom Right Facet -->
+  <polygon points="188,144 128,232 220,180" fill="#232d3a" stroke="#c9a45c" stroke-width="4" stroke-linejoin="round"/>
+  <!-- Center Glowing Rune / '20' or Arcane Core -->
+  <circle cx="128" cy="114" r="14" fill="#e63946" stroke="#f1c40f" stroke-width="3"/>
+  <circle cx="128" cy="114" r="5" fill="#ffffff"/>
+</svg>

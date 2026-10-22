@@ -1,29 +1,35 @@
 ---
-id: "corona_de_la_locura"
-nombre: "Corona De La Locura"
+id: corona_de_la_locura
+nombre: Corona De La Locura
 nivel: 2
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 267
 tags:
-  - "encantamiento"
-  - "nivel_2"
-  - "bardo"
-  - "brujo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- encantamiento
+- nivel_2
+- bardo
+- brujo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Crown of Madness
 ---
 
 # Corona De La Locura

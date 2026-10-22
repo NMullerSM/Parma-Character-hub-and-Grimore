@@ -1,28 +1,34 @@
 ---
-id: "estatica_sinaptica"
-nombre: "Estática Sináptica"
+id: estatica_sinaptica
+nombre: Estática Sináptica
 nivel: 5
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Bardo
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 283
 tags:
-  - "encantamiento"
-  - "nivel_5"
-  - "bardo"
-  - "brujo"
-  - "hechicero"
-  - "mago"
+- encantamiento
+- nivel_5
+- bardo
+- brujo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Synaptic Static
 ---
 
 # Estática Sináptica

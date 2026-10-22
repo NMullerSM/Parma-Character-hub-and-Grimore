@@ -1,33 +1,39 @@
 ---
-id: "inmovilizar_persona"
-nombre: "Inmovilizar Persona"
+id: inmovilizar_persona
+nombre: Inmovilizar Persona
 nivel: 2
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Clérigo"
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S, M (un trozo de hierro recto)"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Brujo
+- Clérigo
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S, M (un trozo de hierro recto)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 296
 tags:
-  - "encantamiento"
-  - "nivel_2"
-  - "bardo"
-  - "brujo"
-  - "clérigo"
-  - "druida"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- encantamiento
+- nivel_2
+- bardo
+- brujo
+- clérigo
+- druida
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Hold Person
 ---
 
 # Inmovilizar Persona

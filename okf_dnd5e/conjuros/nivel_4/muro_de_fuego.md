@@ -1,27 +1,33 @@
 ---
-id: "muro_de_fuego"
-nombre: "Muro De Fuego"
+id: muro_de_fuego
+nombre: Muro De Fuego
 nivel: 4
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S, M (un trozo de carbón)"
-duracion: "Concentración, hasta 1 minuto"
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S, M (un trozo de carbón)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 313
 tags:
-  - "evocación"
-  - "nivel_4"
-  - "druida"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- evocación
+- nivel_4
+- druida
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Wall of Fire
 ---
 
 # Muro De Fuego

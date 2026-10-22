@@ -1,25 +1,31 @@
 ---
-id: "alterar_los_recuerdos"
-nombre: "Alterar Los Recuerdos"
+id: alterar_los_recuerdos
+nombre: Alterar Los Recuerdos
 nivel: 5
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 243
 tags:
-  - "encantamiento"
-  - "nivel_5"
-  - "bardo"
-  - "mago"
-  - "concentracion"
+- encantamiento
+- nivel_5
+- bardo
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Modify Memory
 ---
 
 # Alterar Los Recuerdos

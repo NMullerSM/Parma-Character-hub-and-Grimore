@@ -9,8 +9,14 @@ pagina: 183
 tags:
 - trasfondo
 - ermitano
+- spanish
+- es
+- español
 tipo: trasfondo
+idioma: es
+nombre_ingles: Hermit
 ---
+
 # Trasfondo: Ermitaño
 
 - **Puntuaciones de Característica**: Constitución, Sabiduría, Carisma

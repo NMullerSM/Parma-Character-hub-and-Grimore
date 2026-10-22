@@ -1,27 +1,33 @@
 ---
-id: "controlar_el_clima"
-nombre: "Controlar El Clima"
+id: controlar_el_clima
+nombre: Controlar El Clima
 nivel: 8
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Clérigo"
-  - "Druida"
-  - "Mago"
-tiempo_lanzamiento: "10 minutos"
-alcance: "Lanzador"
-componentes: "V, S, M (incienso para quemar)"
-duracion: "Concentración, hasta 8 horas"
+- Clérigo
+- Druida
+- Mago
+tiempo_lanzamiento: 10 minutos
+alcance: Lanzador
+componentes: V, S, M (incienso para quemar)
+duracion: Concentración, hasta 8 horas
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 266
 tags:
-  - "transmutación"
-  - "nivel_8"
-  - "clérigo"
-  - "druida"
-  - "mago"
-  - "concentracion"
+- transmutación
+- nivel_8
+- clérigo
+- druida
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Control Weather
 ---
 
 # Controlar El Clima

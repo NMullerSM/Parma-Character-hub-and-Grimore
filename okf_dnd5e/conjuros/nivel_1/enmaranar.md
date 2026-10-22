@@ -1,25 +1,31 @@
 ---
-id: "enmaranar"
-nombre: "Enmarañar"
+id: enmaranar
+nombre: Enmarañar
 nivel: 1
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Druida"
-  - "Explorador"
-tiempo_lanzamiento: "Acción"
-alcance: "27 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 minuto"
+- Druida
+- Explorador
+tiempo_lanzamiento: Acción
+alcance: 27 m
+componentes: V, S
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 279
 tags:
-  - "conjuración"
-  - "nivel_1"
-  - "druida"
-  - "explorador"
-  - "concentracion"
+- conjuración
+- nivel_1
+- druida
+- explorador
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Entangle
 ---
 
 # Enmarañar

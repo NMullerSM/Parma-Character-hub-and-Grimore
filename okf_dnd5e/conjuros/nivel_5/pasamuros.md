@@ -1,22 +1,28 @@
 ---
-id: "pasamuros"
-nombre: "Pasamuros"
+id: pasamuros
+nombre: Pasamuros
 nivel: 5
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S, M (una pizca de semillas de sésamo)"
-duracion: "1 hora"
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S, M (una pizca de semillas de sésamo)
+duracion: 1 hora
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 319
 tags:
-  - "transmutación"
-  - "nivel_5"
-  - "mago"
+- transmutación
+- nivel_5
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Passwall
 ---
 
 # Pasamuros

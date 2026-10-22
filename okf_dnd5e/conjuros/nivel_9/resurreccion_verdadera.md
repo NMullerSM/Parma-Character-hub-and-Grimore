@@ -1,24 +1,31 @@
 ---
-id: "resurreccion_verdadera"
-nombre: "Resurrección Verdadera"
+id: resurreccion_verdadera
+nombre: Resurrección Verdadera
 nivel: 9
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Clérigo"
-  - "Druida"
-tiempo_lanzamiento: "1 hora"
-alcance: "Toque"
-componentes: "V, S, M (diamantes que valgan al menos  25 000 po, que se consumen como parte del conjuro)"
-duracion: "Instantáneo"
+- Clérigo
+- Druida
+tiempo_lanzamiento: 1 hora
+alcance: Toque
+componentes: V, S, M (diamantes que valgan al menos  25 000 po, que se consumen como
+  parte del conjuro)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 331
 tags:
-  - "nigromancia"
-  - "nivel_9"
-  - "clérigo"
-  - "druida"
+- nigromancia
+- nivel_9
+- clérigo
+- druida
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: True Resurrection
 ---
 
 # Resurrección Verdadera

@@ -1,24 +1,31 @@
 ---
-id: "resurreccion"
-nombre: "Resurrección"
+id: resurreccion
+nombre: Resurrección
 nivel: 7
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Bardo"
-  - "Clérigo"
-tiempo_lanzamiento: "1 hora"
-alcance: "Toque"
-componentes: "V, S, M (un diamante que valga al menos  1000 po y que se consume como parte del conjuro)"
-duracion: "Instantáneo"
+- Bardo
+- Clérigo
+tiempo_lanzamiento: 1 hora
+alcance: Toque
+componentes: V, S, M (un diamante que valga al menos  1000 po y que se consume como
+  parte del conjuro)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 331
 tags:
-  - "nigromancia"
-  - "nivel_7"
-  - "bardo"
-  - "clérigo"
+- nigromancia
+- nivel_7
+- bardo
+- clérigo
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Resurrection
 ---
 
 # Resurrección

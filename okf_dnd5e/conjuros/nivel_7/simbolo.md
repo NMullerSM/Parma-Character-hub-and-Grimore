@@ -1,28 +1,35 @@
 ---
-id: "simbolo"
-nombre: "Símbolo"
+id: simbolo
+nombre: Símbolo
 nivel: 7
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Druida"
-  - "Mago"
-tiempo_lanzamiento: "1 minuto"
-alcance: "Toque"
-componentes: "V, S, M (diamante en polvo que valga al  menos 1000 po y que se consume como parte del conjuro)"
-duracion: "Hasta que sea disipado o se active"
+- Bardo
+- Clérigo
+- Druida
+- Mago
+tiempo_lanzamiento: 1 minuto
+alcance: Toque
+componentes: V, S, M (diamante en polvo que valga al  menos 1000 po y que se consume
+  como parte del conjuro)
+duracion: Hasta que sea disipado o se active
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 334
 tags:
-  - "abjuración"
-  - "nivel_7"
-  - "bardo"
-  - "clérigo"
-  - "druida"
-  - "mago"
+- abjuración
+- nivel_7
+- bardo
+- clérigo
+- druida
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Symbol
 ---
 
 # Símbolo

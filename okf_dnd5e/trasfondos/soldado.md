@@ -9,8 +9,14 @@ pagina: 187
 tags:
 - trasfondo
 - soldado
+- spanish
+- es
+- español
 tipo: trasfondo
+idioma: es
+nombre_ingles: Soldier
 ---
+
 # Trasfondo: Soldado
 
 - **Puntuaciones de Característica**: Fuerza, Destreza, Constitución

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
+  <!-- Opción 1: El Yunque-Grimorio Minimalista -->
+  <g fill="currentColor">
+    <!-- Base sólida del yunque (un gran tomo horizontal) -->
+    <rect x="52" y="196" width="152" height="20" rx="4"/>
+    <line x1="68" y1="206" x2="188" y2="206" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Cintura del yunque (lomos de libros verticales) -->
+    <path d="M 106 136 C 106 160 98 174 94 196 L 162 196 C 158 174 150 160 150 136 Z"/>
+    <line x1="128" y1="144" x2="128" y2="188" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+    <!-- Cabeza del yunque: libro abierto fluido donde el cuerno izquierdo es una página curva y la mesa derecha es plana -->
+    <path d="M 28 88 C 48 88 84 104 106 136 L 150 136 C 176 136 216 124 228 92 C 228 72 216 68 200 68 L 92 68 C 64 68 40 76 28 88 Z"/>
+    <!-- Detalle de hojas del libro superior -->
+    <path d="M 94 80 L 206 80" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+    <path d="M 104 90 L 198 90" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+  </g>
+</svg>

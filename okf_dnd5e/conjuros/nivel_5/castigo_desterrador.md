@@ -1,23 +1,29 @@
 ---
-id: "castigo_desterrador"
-nombre: "Castigo Desterrador"
+id: castigo_desterrador
+nombre: Castigo Desterrador
 nivel: 5
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Paladín"
-tiempo_lanzamiento: "Acción adicional, que realizas"
-alcance: "Lanzador"
-componentes: "V"
-duracion: "Concentración, hasta 1 minuto"
+- Paladín
+tiempo_lanzamiento: Acción adicional, que realizas
+alcance: Lanzador
+componentes: V
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 257
 tags:
-  - "conjuración"
-  - "nivel_5"
-  - "paladín"
-  - "concentracion"
+- conjuración
+- nivel_5
+- paladín
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Banishing Smite
 ---
 
 # Castigo Desterrador

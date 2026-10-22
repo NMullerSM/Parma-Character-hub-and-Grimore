@@ -1,25 +1,31 @@
 ---
-id: "fuego_feerico"
-nombre: "Fuego Feérico"
+id: fuego_feerico
+nombre: Fuego Feérico
 nivel: 1
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Bardo"
-  - "Druida"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Druida
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 287
 tags:
-  - "evocación"
-  - "nivel_1"
-  - "bardo"
-  - "druida"
-  - "concentracion"
+- evocación
+- nivel_1
+- bardo
+- druida
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Faerie Fire
 ---
 
 # Fuego Feérico

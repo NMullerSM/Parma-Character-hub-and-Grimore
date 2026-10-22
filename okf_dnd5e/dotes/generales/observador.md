@@ -1,14 +1,20 @@
 ---
-id: "observador"
-nombre: "Observador"
-categoria: "General"
-encabezado: "Dote general (requisitos: nivel 4 o más, Inteligencia"
-fuente: "PHB 2024"
+id: observador
+nombre: Observador
+categoria: General
+encabezado: 'Dote general (requisitos: nivel 4 o más, Inteligencia'
+fuente: PHB 2024
 pagina: 209
 tags:
-  - "dote"
-  - "generales"
-  - "observador"
+- dote
+- generales
+- observador
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Observant
 ---
 
 # Observador

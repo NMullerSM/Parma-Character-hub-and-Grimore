@@ -1,27 +1,33 @@
 ---
-id: "de_la_carne_a_la_piedra"
-nombre: "De La Carne A La Piedra"
+id: de_la_carne_a_la_piedra
+nombre: De La Carne A La Piedra
 nivel: 6
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S, M (una pluma de cocatriz)"
-duracion: "Concentración, hasta 1 minuto"
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S, M (una pluma de cocatriz)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 270
 tags:
-  - "transmutación"
-  - "nivel_6"
-  - "druida"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- transmutación
+- nivel_6
+- druida
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Flesh to Stone
 ---
 
 # De La Carne A La Piedra

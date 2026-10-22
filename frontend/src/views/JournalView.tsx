@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useCharacter } from "../context/CharacterContext";
+import { useTranslation } from "../i18n";
 import { api } from "../api/client";
 import type { SessionLogData } from "../api/types";
 import { Plus, Trash2, Save, BookOpen, Edit3 } from "lucide-react";
@@ -7,6 +8,7 @@ import { MarkdownViewer } from "../components/MarkdownViewer";
 
 export const JournalView: React.FC = () => {
   const { activeCharacter, showToast } = useCharacter();
+  const { t } = useTranslation();
   const [sessions, setSessions] = useState<SessionLogData[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [mode, setMode] = useState<"write" | "read">("write");
@@ -51,7 +53,7 @@ export const JournalView: React.FC = () => {
     const newSess: SessionLogData = {
       id: Date.now(),
       date: new Date().toISOString().split("T")[0],
-      title: "Nueva Crónica de Sesión",
+      title: t("journal.sessionDefaultTitle"),
       summary: "",
       loot: "",
       xp_gained: 0,
@@ -66,28 +68,28 @@ export const JournalView: React.FC = () => {
       const payload: SessionLogData = {
         id: selectedId,
         date,
-        title: title.trim() || "Sesión sin título",
+        title: title.trim() || t("journal.untitledSession"),
         summary,
         loot,
         xp_gained: xpGained,
       };
       await api.saveCharacterJournal(activeCharacter.id, payload);
-      showToast("Crónica guardada correctamente", "success");
+      showToast(t("journal.savedSuccess"), "success");
       await loadJournals(activeCharacter.id);
     } catch (e) {
-      showToast("Error al guardar la crónica", "warn");
+      showToast(t("journal.saveError"), "warn");
     }
   };
 
   const handleDelete = async () => {
     if (!activeCharacter?.id || !selectedId) return;
-    if (window.confirm("¿Seguro de eliminar esta crónica?")) {
+    if (window.confirm(t("journal.confirmDelete"))) {
       try {
         await api.deleteCharacterJournal(activeCharacter.id, selectedId);
-        showToast("Crónica eliminada", "info");
+        showToast(t("journal.deletedSuccess"), "info");
         await loadJournals(activeCharacter.id);
       } catch (e) {
-        showToast("Error al eliminar", "warn");
+        showToast(t("journal.deleteError"), "warn");
       }
     }
   };
@@ -95,7 +97,7 @@ export const JournalView: React.FC = () => {
   if (!activeCharacter) {
     return (
       <div className="h-full flex items-center justify-center p-8 text-center text-muted">
-        <p className="font-display text-xl text-gold">Selecciona un personaje para consultar su diario de campaña.</p>
+        <p className="font-display text-xl text-gold">{t("journal.noCharacter")}</p>
       </div>
     );
   }
@@ -105,15 +107,15 @@ export const JournalView: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border-iron pb-3 shrink-0">
         <div>
-          <h1 className="font-display font-bold text-2xl text-gold">Diario de Campaña & Crónicas</h1>
-          <p className="text-xs text-muted">Registro histórico de sesiones, tesoro y puntos de experiencia de {activeCharacter.name}.</p>
+          <h1 className="font-display font-bold text-2xl text-gold">{t("journal.title")}</h1>
+          <p className="text-xs text-muted">{t("journal.subtitle")}</p>
         </div>
         <button
           onClick={handleNewSession}
           className="flex items-center gap-1.5 px-3 py-1.5 bg-crimson hover:bg-crimson-hover text-white text-xs font-semibold rounded transition-all shadow-sm active:scale-95"
         >
           <Plus className="w-3.5 h-3.5" />
-          <span>Nueva Sesión</span>
+          <span>{t("journal.newSession")}</span>
         </button>
       </div>
 
@@ -135,14 +137,14 @@ export const JournalView: React.FC = () => {
                   <span className="font-stat text-[10px] text-gold">{sess.date}</span>
                 </div>
                 <div className="flex items-center justify-between text-[11px] text-muted">
-                  <span>+{sess.xp_gained} PX</span>
+                  <span>+{sess.xp_gained} XP</span>
                   {sess.loot && <span className="truncate max-w-[120px] text-main/80 font-stat">💎 {sess.loot}</span>}
                 </div>
               </div>
             ))
           ) : (
             <div className="p-8 text-center text-xs text-muted">
-              No hay crónicas registradas. Pulsa "+ Nueva Sesión" para comenzar.
+              {t("journal.noSessions")}
             </div>
           )}
         </div>
@@ -158,7 +160,7 @@ export const JournalView: React.FC = () => {
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Título de la sesión..."
+                    placeholder={t("journal.sessionTitle")}
                     className="sm:col-span-2 bg-input text-main border border-border-iron rounded px-3 py-1.5 text-sm font-semibold focus:border-gold outline-none"
                   />
                   <input
@@ -171,7 +173,7 @@ export const JournalView: React.FC = () => {
                     type="number"
                     value={xpGained}
                     onChange={(e) => setXpGained(parseInt(e.target.value, 10) || 0)}
-                    placeholder="PX Ganados"
+                    placeholder={t("journal.xpTitle")}
                     className="bg-input text-main border border-border-iron rounded px-2.5 py-1.5 text-xs font-stat focus:border-gold outline-none"
                   />
                 </div>
@@ -181,7 +183,7 @@ export const JournalView: React.FC = () => {
                     type="text"
                     value={loot}
                     onChange={(e) => setLoot(e.target.value)}
-                    placeholder="Tesoro & Botín Adquirido (ej. 200 PO, Pergamino mágico...)"
+                    placeholder={t("journal.lootPlaceholder")}
                     className="w-full bg-input text-main border border-border-iron rounded px-3 py-1.5 text-xs focus:border-gold outline-none font-stat"
                   />
                 </div>
@@ -196,7 +198,7 @@ export const JournalView: React.FC = () => {
                       }`}
                     >
                       <Edit3 className="w-3 h-3" />
-                      <span>Redactar</span>
+                      <span>{t("journal.writeTab")}</span>
                     </button>
                     <button
                       onClick={() => setMode("read")}
@@ -205,14 +207,14 @@ export const JournalView: React.FC = () => {
                       }`}
                     >
                       <BookOpen className="w-3 h-3" />
-                      <span>Lectura</span>
+                      <span>{t("journal.readTab")}</span>
                     </button>
                   </div>
 
                   <div className="flex gap-2">
                     <button
                       onClick={handleDelete}
-                      title="Eliminar crónica"
+                      title={t("journal.deleteChronicle")}
                       className="p-1.5 rounded text-crimson hover:bg-crimson/10 border border-transparent hover:border-crimson/30 transition-colors"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -222,7 +224,7 @@ export const JournalView: React.FC = () => {
                       className="flex items-center gap-1.5 px-4 py-1.5 bg-crimson hover:bg-crimson-hover text-white text-xs font-bold rounded transition-all shadow-sm active:scale-95"
                     >
                       <Save className="w-3.5 h-3.5" />
-                      <span>Guardar</span>
+                      <span>{t("common.save")}</span>
                     </button>
                   </div>
                 </div>
@@ -234,13 +236,13 @@ export const JournalView: React.FC = () => {
                   <textarea
                     value={summary}
                     onChange={(e) => setSummary(e.target.value)}
-                    placeholder="Escribe la crónica completa de los acontecimientos, conversaciones con PNJs y decisiones tomadas en la sesión..."
+                    placeholder={t("journal.summaryPlaceholder")}
                     className="w-full h-full min-h-[220px] bg-input text-main border border-border-iron rounded-lg p-3 text-xs leading-relaxed focus:border-gold outline-none resize-none font-body"
                   />
                 ) : (
                   <div className="w-full h-full min-h-[220px] bg-surface/50 border border-border-iron rounded-lg p-4 overflow-y-auto">
                     <MarkdownViewer
-                      content={summary || "*No hay notas escritas para esta sesión aún.*"}
+                      content={summary || `*${t("journal.noSessions")}*`}
                     />
                   </div>
                 )}
@@ -248,7 +250,7 @@ export const JournalView: React.FC = () => {
             </>
           ) : (
             <div className="h-full flex items-center justify-center text-xs text-muted">
-              Selecciona una crónica a la izquierda o crea una nueva.
+              {t("journal.noSessions")}
             </div>
           )}
         </div>

@@ -1,38 +1,44 @@
 ---
-id: "detectar_magia"
-nombre: "Detectar Magia"
+id: detectar_magia
+nombre: Detectar Magia
 nivel: 1
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Clérigo"
-  - "Druida"
-  - "Explorador"
-  - "Hechicero"
-  - "Mago"
-  - "Paladín"
-tiempo_lanzamiento: "Acción o ritual"
-alcance: "Lanzador"
-componentes: "V, S"
-duracion: "Concentración, hasta 10 minutos"
+- Bardo
+- Brujo
+- Clérigo
+- Druida
+- Explorador
+- Hechicero
+- Mago
+- Paladín
+tiempo_lanzamiento: Acción o ritual
+alcance: Lanzador
+componentes: V, S
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 272
 tags:
-  - "adivinación"
-  - "nivel_1"
-  - "bardo"
-  - "brujo"
-  - "clérigo"
-  - "druida"
-  - "explorador"
-  - "hechicero"
-  - "mago"
-  - "paladín"
-  - "concentracion"
-  - "ritual"
+- adivinación
+- nivel_1
+- bardo
+- brujo
+- clérigo
+- druida
+- explorador
+- hechicero
+- mago
+- paladín
+- concentracion
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Detect Magic
 ---
 
 # Detectar Magia

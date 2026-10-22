@@ -1,27 +1,34 @@
 ---
-id: "encontrar_el_camino"
-nombre: "Encontrar El Camino"
+id: encontrar_el_camino
+nombre: Encontrar El Camino
 nivel: 6
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Druida"
-tiempo_lanzamiento: "1 minuto"
-alcance: "Lanzador"
-componentes: "V, S, M (un juego de herramientas de  adivinación, como cartas o runas, que valga al menos  100 po)"
-duracion: "Concentración, hasta 1 día"
+- Bardo
+- Clérigo
+- Druida
+tiempo_lanzamiento: 1 minuto
+alcance: Lanzador
+componentes: V, S, M (un juego de herramientas de  adivinación, como cartas o runas,
+  que valga al menos  100 po)
+duracion: Concentración, hasta 1 día
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 277
 tags:
-  - "adivinación"
-  - "nivel_6"
-  - "bardo"
-  - "clérigo"
-  - "druida"
-  - "concentracion"
+- adivinación
+- nivel_6
+- bardo
+- clérigo
+- druida
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Find the Path
 ---
 
 # Encontrar El Camino

@@ -1,25 +1,31 @@
 ---
-id: "identificar"
-nombre: "Identificar"
+id: identificar
+nombre: Identificar
 nivel: 1
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Bardo"
-  - "Mago"
-tiempo_lanzamiento: "1 minuto o un ritual"
-alcance: "Toque"
-componentes: "V, S, M (una perla que valga al menos 100 po)"
-duracion: "Instantáneo"
+- Bardo
+- Mago
+tiempo_lanzamiento: 1 minuto o un ritual
+alcance: Toque
+componentes: V, S, M (una perla que valga al menos 100 po)
+duracion: Instantáneo
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 294
 tags:
-  - "adivinación"
-  - "nivel_1"
-  - "bardo"
-  - "mago"
-  - "ritual"
+- adivinación
+- nivel_1
+- bardo
+- mago
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Identify
 ---
 
 # Identificar

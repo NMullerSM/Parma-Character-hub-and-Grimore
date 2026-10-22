@@ -1,12 +1,21 @@
 ---
-id: "picaro_espadachin"
-nombre: "Espadachín"
-nombre_ingles: "Swashbuckler"
-tipo: "subclase"
-clase_padre: "Pícaro"
+id: picaro_espadachin
+nombre: Espadachín
+nombre_ingles: Swashbuckler
+tipo: subclase
+clase_padre: Pícaro
 nivel_desbloqueo: 3
-fuente: "Guia de Xanathar Para Todo"
-tags: ["pícaro", "xanathar", "duelo 1v1", "iniciativa carisma", "movilidad"]
+fuente: Guia de Xanathar Para Todo
+tags:
+- pícaro
+- xanathar
+- duelo 1v1
+- iniciativa carisma
+- movilidad
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Espadachín (Swashbuckler)

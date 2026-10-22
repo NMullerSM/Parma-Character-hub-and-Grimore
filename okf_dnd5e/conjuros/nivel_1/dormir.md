@@ -1,27 +1,33 @@
 ---
-id: "dormir"
-nombre: "Dormir"
+id: dormir
+nombre: Dormir
 nivel: 1
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S, M (una pizca de arena o pétalos  de rosa)"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S, M (una pizca de arena o pétalos  de rosa)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 276
 tags:
-  - "encantamiento"
-  - "nivel_1"
-  - "bardo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- encantamiento
+- nivel_1
+- bardo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Sleep
 ---
 
 # Dormir

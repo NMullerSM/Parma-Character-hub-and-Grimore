@@ -1,19 +1,23 @@
 ---
-id: "enano_colinas"
-nombre: "Enano de las Colinas"
-nombre_ingles: "Hill Dwarf"
-fuente: "Manual del Jugador 2024"
+id: enano_colinas
+nombre: Enano de las Colinas
+nombre_ingles: Hill Dwarf
+fuente: Manual del Jugador 2024
 pagina: 186
-tipo: "especie_linaje"
-velocidad: "9 m (30 pies)"
-tamano: "Mediano"
-vision_oscuridad: "18 m (60 pies)"
+tipo: especie_linaje
+velocidad: 9 m (30 pies)
+tamano: Mediano
+vision_oscuridad: 18 m (60 pies)
 tags:
-  - "especie"
-  - "enano"
-  - "colinas"
-  - "linaje"
-  - "resistencia"
+- especie
+- enano
+- colinas
+- linaje
+- resistencia
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Especie: Enano de las Colinas (Hill Dwarf)

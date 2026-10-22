@@ -1,22 +1,28 @@
 ---
-id: "viajar_mediante_plantas"
-nombre: "Viajar Mediante Plantas"
+id: viajar_mediante_plantas
+nombre: Viajar Mediante Plantas
 nivel: 6
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Druida"
-tiempo_lanzamiento: "Acción"
-alcance: "3 m"
-componentes: "V, S"
-duracion: "1 minuto"
+- Druida
+tiempo_lanzamiento: Acción
+alcance: 3 m
+componentes: V, S
+duracion: 1 minuto
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 344
 tags:
-  - "conjuración"
-  - "nivel_6"
-  - "druida"
+- conjuración
+- nivel_6
+- druida
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Transport via Plants
 ---
 
 # Viajar Mediante Plantas

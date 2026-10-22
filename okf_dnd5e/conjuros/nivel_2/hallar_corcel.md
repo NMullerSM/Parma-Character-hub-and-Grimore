@@ -1,22 +1,28 @@
 ---
-id: "hallar_corcel"
-nombre: "Hallar Corcel"
+id: hallar_corcel
+nombre: Hallar Corcel
 nivel: 2
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 292
 tags:
-  - "conjuración"
-  - "nivel_2"
-  - "paladín"
+- conjuración
+- nivel_2
+- paladín
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Find Steed
 ---
 
 # Hallar Corcel

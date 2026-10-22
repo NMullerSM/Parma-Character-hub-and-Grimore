@@ -1,22 +1,28 @@
 ---
-id: "castigo_furioso"
-nombre: "Castigo Furioso"
+id: castigo_furioso
+nombre: Castigo Furioso
 nivel: 1
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Paladín"
-tiempo_lanzamiento: "Acción adicional, que realizas"
-alcance: "Lanzador"
-componentes: "V"
-duracion: "1 minuto"
+- Paladín
+tiempo_lanzamiento: Acción adicional, que realizas
+alcance: Lanzador
+componentes: V
+duracion: 1 minuto
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 257
 tags:
-  - "nigromancia"
-  - "nivel_1"
-  - "paladín"
+- nigromancia
+- nivel_1
+- paladín
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Wrathful Smite
 ---
 
 # Castigo Furioso

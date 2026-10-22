@@ -1,18 +1,24 @@
 ---
-id: "gnomo"
-nombre: "Gnomo"
-tipo_criatura: "humanoide"
-tamano: "Pequeño"
-velocidad: "9 m"
-sentidos: "Visión en la oscuridad 18 m"
-fuente: "PHB 2024"
+id: gnomo
+nombre: Gnomo
+tipo_criatura: humanoide
+tamano: Pequeño
+velocidad: 9 m
+sentidos: Visión en la oscuridad 18 m
+fuente: PHB 2024
 pagina: 193
 rasgos_principales:
-  - "Astucia gnómica"
-  - "Linaje gnómico (Bosques o Rocas)"
+- Astucia gnómica
+- Linaje gnómico (Bosques o Rocas)
 tags:
-  - "especie"
-  - "gnomo"
+- especie
+- gnomo
+- spanish
+- es
+- español
+idioma: es
+tipo: especie
+nombre_ingles: Gnome
 ---
 
 # Especie: Gnomo

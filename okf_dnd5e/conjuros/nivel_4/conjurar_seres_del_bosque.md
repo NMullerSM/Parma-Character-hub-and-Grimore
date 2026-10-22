@@ -1,25 +1,31 @@
 ---
-id: "conjurar_seres_del_bosque"
-nombre: "Conjurar Seres Del Bosque"
+id: conjurar_seres_del_bosque
+nombre: Conjurar Seres Del Bosque
 nivel: 4
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Druida"
-  - "Explorador"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S"
-duracion: "Concentración, hasta 10 minutos"
+- Druida
+- Explorador
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 263
 tags:
-  - "conjuración"
-  - "nivel_4"
-  - "druida"
-  - "explorador"
-  - "concentracion"
+- conjuración
+- nivel_4
+- druida
+- explorador
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Conjure Woodland Beings
 ---
 
 # Conjurar Seres Del Bosque

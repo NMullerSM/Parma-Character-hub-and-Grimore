@@ -1,25 +1,31 @@
 ---
-id: "telarana"
-nombre: "Telaraña"
+id: telarana
+nombre: Telaraña
 nivel: 2
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S, M (un poco de tela de araña)"
-duracion: "Concentración, hasta 1 hora"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S, M (un poco de tela de araña)
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 337
 tags:
-  - "conjuración"
-  - "nivel_2"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- conjuración
+- nivel_2
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Web
 ---
 
 # Telaraña

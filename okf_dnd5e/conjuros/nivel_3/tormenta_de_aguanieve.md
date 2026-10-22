@@ -1,27 +1,33 @@
 ---
-id: "tormenta_de_aguanieve"
-nombre: "Tormenta De Aguanieve"
+id: tormenta_de_aguanieve
+nombre: Tormenta De Aguanieve
 nivel: 3
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "45 m"
-componentes: "V, S, M (un paraguas en miniatura)"
-duracion: "Concentración, hasta 1 minuto"
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 45 m
+componentes: V, S, M (un paraguas en miniatura)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 341
 tags:
-  - "conjuración"
-  - "nivel_3"
-  - "druida"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- conjuración
+- nivel_3
+- druida
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Sleet Storm
 ---
 
 # Tormenta De Aguanieve

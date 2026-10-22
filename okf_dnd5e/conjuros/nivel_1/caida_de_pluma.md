@@ -1,26 +1,32 @@
 ---
-id: "caida_de_pluma"
-nombre: "Caída De Pluma"
+id: caida_de_pluma
+nombre: Caída De Pluma
 nivel: 1
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Bardo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Reacción, que llevas a cabo cuando"
-alcance: "18 m"
-componentes: "V, M (una pluma pequeña o un poco  de plumón)"
-duracion: "1 minuto"
+- Bardo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Reacción, que llevas a cabo cuando
+alcance: 18 m
+componentes: V, M (una pluma pequeña o un poco  de plumón)
+duracion: 1 minuto
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 252
 tags:
-  - "transmutación"
-  - "nivel_1"
-  - "bardo"
-  - "hechicero"
-  - "mago"
+- transmutación
+- nivel_1
+- bardo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Feather Fall
 ---
 
 # Caída De Pluma

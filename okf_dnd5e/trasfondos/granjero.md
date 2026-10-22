@@ -9,8 +9,14 @@ pagina: 184
 tags:
 - trasfondo
 - granjero
+- spanish
+- es
+- español
 tipo: trasfondo
+idioma: es
+nombre_ingles: Farmer
 ---
+
 # Trasfondo: Granjero
 
 - **Puntuaciones de Característica**: Fuerza, Constitución, Sabiduría

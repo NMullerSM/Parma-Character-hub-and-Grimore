@@ -1,12 +1,21 @@
 ---
-id: "bardo_glamour"
-nombre: "Colegio del Glamour"
-nombre_ingles: "College of Glamour"
-tipo: "subclase"
-clase_padre: "Bardo"
+id: bardo_glamour
+nombre: Colegio del Glamour
+nombre_ingles: College of Glamour
+tipo: subclase
+clase_padre: Bardo
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["bardo", "fey", "fascinación", "presencia majestuosa", "phb2024"]
+fuente: PHB 2024
+tags:
+- bardo
+- fey
+- fascinación
+- presencia majestuosa
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Colegio del Glamour (College of Glamour)

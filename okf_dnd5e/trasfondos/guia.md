@@ -9,8 +9,14 @@ pagina: 185
 tags:
 - trasfondo
 - guia
+- spanish
+- es
+- español
 tipo: trasfondo
+idioma: es
+nombre_ingles: Guide
 ---
+
 # Trasfondo: Guía
 
 - **Puntuaciones de Característica**: Destreza, Constitución, Sabiduría

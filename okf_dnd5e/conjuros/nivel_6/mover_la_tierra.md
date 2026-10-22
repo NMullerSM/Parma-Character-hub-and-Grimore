@@ -1,27 +1,33 @@
 ---
-id: "mover_la_tierra"
-nombre: "Mover La Tierra"
+id: mover_la_tierra
+nombre: Mover La Tierra
 nivel: 6
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S, M (una pala en miniatura)"
-duracion: "Concentración, hasta 2 horas"
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S, M (una pala en miniatura)
+duracion: Concentración, hasta 2 horas
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 313
 tags:
-  - "transmutación"
-  - "nivel_6"
-  - "druida"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- transmutación
+- nivel_6
+- druida
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Move Earth
 ---
 
 # Mover La Tierra

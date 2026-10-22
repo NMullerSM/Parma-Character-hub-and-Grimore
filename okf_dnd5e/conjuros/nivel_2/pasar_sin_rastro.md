@@ -1,25 +1,31 @@
 ---
-id: "pasar_sin_rastro"
-nombre: "Pasar Sin Rastro"
+id: pasar_sin_rastro
+nombre: Pasar Sin Rastro
 nivel: 2
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Druida"
-  - "Explorador"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S, M (cenizas de muérdago quemado)"
-duracion: "Concentración, hasta 1 hora"
+- Druida
+- Explorador
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S, M (cenizas de muérdago quemado)
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 320
 tags:
-  - "abjuración"
-  - "nivel_2"
-  - "druida"
-  - "explorador"
-  - "concentracion"
+- abjuración
+- nivel_2
+- druida
+- explorador
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Pass without Trace
 ---
 
 # Pasar Sin Rastro

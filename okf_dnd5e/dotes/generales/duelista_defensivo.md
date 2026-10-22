@@ -1,14 +1,20 @@
 ---
-id: "duelista_defensivo"
-nombre: "Duelista Defensivo"
-categoria: "General"
-encabezado: "Dote general (requisitos: nivel 4 o más, Destreza 13 o más)"
-fuente: "PHB 2024"
+id: duelista_defensivo
+nombre: Duelista Defensivo
+categoria: General
+encabezado: 'Dote general (requisitos: nivel 4 o más, Destreza 13 o más)'
+fuente: PHB 2024
 pagina: 206
 tags:
-  - "dote"
-  - "generales"
-  - "duelista_defensivo"
+- dote
+- generales
+- duelista_defensivo
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Defensive Duelist
 ---
 
 # Duelista Defensivo

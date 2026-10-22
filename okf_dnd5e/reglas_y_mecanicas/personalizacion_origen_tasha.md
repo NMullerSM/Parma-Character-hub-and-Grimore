@@ -1,11 +1,19 @@
 ---
-id: "regla_personalizacion_tasha"
-nombre: "Opciones de Personalización de Linaje (Tasha)"
-nombre_ingles: "Customizing Your Origin (Tasha's Cauldron)"
-tipo: "regla"
-fuente: "Caldero de Tasha para Todo"
+id: regla_personalizacion_tasha
+nombre: Opciones de Personalización de Linaje (Tasha)
+nombre_ingles: Customizing Your Origin (Tasha's Cauldron)
+tipo: regla
+fuente: Caldero de Tasha para Todo
 pagina: 7
-tags: ["tasha", "regla_opcional", "atributos", "personalización"]
+tags:
+- tasha
+- regla_opcional
+- atributos
+- personalización
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Regla Opcional: Personalización de Linaje (Tasha)

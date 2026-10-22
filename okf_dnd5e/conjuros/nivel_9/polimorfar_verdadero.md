@@ -1,27 +1,34 @@
 ---
-id: "polimorfar_verdadero"
-nombre: "Polimorfar Verdadero"
+id: polimorfar_verdadero
+nombre: Polimorfar Verdadero
 nivel: 9
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S, M (una gota de mercurio, un poco  de goma arábiga y un jirón de humo)"
-duracion: "Concentración, hasta 1 hora"
+- Bardo
+- Brujo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S, M (una gota de mercurio, un poco  de goma arábiga y un jirón de
+  humo)
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 322
 tags:
-  - "transmutación"
-  - "nivel_9"
-  - "bardo"
-  - "brujo"
-  - "mago"
-  - "concentracion"
+- transmutación
+- nivel_9
+- bardo
+- brujo
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: True Polymorph
 ---
 
 # Polimorfar Verdadero

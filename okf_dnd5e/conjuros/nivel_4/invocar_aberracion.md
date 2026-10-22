@@ -1,25 +1,32 @@
 ---
-id: "invocar_aberracion"
-nombre: "Invocar Aberración"
+id: invocar_aberracion
+nombre: Invocar Aberración
 nivel: 4
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Brujo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "27 m"
-componentes: "V, S, M (un tentáculo en salmuera y un globo  ocular en un vial con incrustaciones de platino que valga  al menos 400 po)"
-duracion: "Concentración, hasta 1 hora"
+- Brujo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 27 m
+componentes: V, S, M (un tentáculo en salmuera y un globo  ocular en un vial con incrustaciones
+  de platino que valga  al menos 400 po)
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 298
 tags:
-  - "conjuración"
-  - "nivel_4"
-  - "brujo"
-  - "mago"
-  - "concentracion"
+- conjuración
+- nivel_4
+- brujo
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Summon Aberration
 ---
 
 # Invocar Aberración

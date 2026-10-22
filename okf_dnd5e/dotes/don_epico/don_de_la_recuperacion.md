@@ -1,14 +1,20 @@
 ---
-id: "don_de_la_recuperacion"
-nombre: "Don De La Recuperación"
-categoria: "Don Épico"
-encabezado: "Dote de don épico (requisito: nivel 19 o más)"
-fuente: "PHB 2024"
+id: don_de_la_recuperacion
+nombre: Don De La Recuperación
+categoria: Don Épico
+encabezado: 'Dote de don épico (requisito: nivel 19 o más)'
+fuente: PHB 2024
 pagina: 212
 tags:
-  - "dote"
-  - "don_epico"
-  - "don_de_la_recuperacion"
+- dote
+- don_epico
+- don_de_la_recuperacion
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Boon of Recovery
 ---
 
 # Don De La Recuperación

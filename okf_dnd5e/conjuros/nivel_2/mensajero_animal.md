@@ -1,27 +1,33 @@
 ---
-id: "mensajero_animal"
-nombre: "Mensajero Animal"
+id: mensajero_animal
+nombre: Mensajero Animal
 nivel: 2
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Druida"
-  - "Explorador"
-tiempo_lanzamiento: "Acción o ritual"
-alcance: "9 m"
-componentes: "V, S, M (unas migajas de comida)"
-duracion: "24 horas"
+- Bardo
+- Druida
+- Explorador
+tiempo_lanzamiento: Acción o ritual
+alcance: 9 m
+componentes: V, S, M (unas migajas de comida)
+duracion: 24 horas
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 312
 tags:
-  - "encantamiento"
-  - "nivel_2"
-  - "bardo"
-  - "druida"
-  - "explorador"
-  - "ritual"
+- encantamiento
+- nivel_2
+- bardo
+- druida
+- explorador
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Animal Messenger
 ---
 
 # Mensajero Animal

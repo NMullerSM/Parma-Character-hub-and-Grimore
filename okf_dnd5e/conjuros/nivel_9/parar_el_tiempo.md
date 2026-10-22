@@ -1,24 +1,30 @@
 ---
-id: "parar_el_tiempo"
-nombre: "Parar El Tiempo"
+id: parar_el_tiempo
+nombre: Parar El Tiempo
 nivel: 9
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V"
-duracion: "Instantáneo"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 319
 tags:
-  - "transmutación"
-  - "nivel_9"
-  - "hechicero"
-  - "mago"
+- transmutación
+- nivel_9
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Time Stop
 ---
 
 # Parar El Tiempo

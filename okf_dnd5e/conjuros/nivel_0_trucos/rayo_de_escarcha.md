@@ -1,24 +1,30 @@
 ---
-id: "rayo_de_escarcha"
-nombre: "Rayo De Escarcha"
+id: rayo_de_escarcha
+nombre: Rayo De Escarcha
 nivel: 0
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 327
 tags:
-  - "evocación"
-  - "nivel_0"
-  - "hechicero"
-  - "mago"
+- evocación
+- nivel_0
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Ray of Frost
 ---
 
 # Rayo De Escarcha

@@ -1,28 +1,35 @@
 ---
-id: "revivir"
-nombre: "Revivir"
+id: revivir
+nombre: Revivir
 nivel: 3
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Clérigo"
-  - "Druida"
-  - "Explorador"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S, M (un diamante que valga al menos  300 po, que se consume como parte del conjuro)"
-duracion: "Instantáneo"
+- Clérigo
+- Druida
+- Explorador
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S, M (un diamante que valga al menos  300 po, que se consume como
+  parte del conjuro)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 331
 tags:
-  - "nigromancia"
-  - "nivel_3"
-  - "clérigo"
-  - "druida"
-  - "explorador"
-  - "paladín"
+- nigromancia
+- nivel_3
+- clérigo
+- druida
+- explorador
+- paladín
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Revivify
 ---
 
 # Revivir

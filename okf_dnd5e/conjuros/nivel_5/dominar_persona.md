@@ -1,27 +1,33 @@
 ---
-id: "dominar_persona"
-nombre: "Dominar Persona"
+id: dominar_persona
+nombre: Dominar Persona
 nivel: 5
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 276
 tags:
-  - "encantamiento"
-  - "nivel_5"
-  - "bardo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- encantamiento
+- nivel_5
+- bardo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Dominate Person
 ---
 
 # Dominar Persona

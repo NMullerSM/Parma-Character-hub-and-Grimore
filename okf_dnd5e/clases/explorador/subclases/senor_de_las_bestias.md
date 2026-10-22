@@ -1,12 +1,22 @@
 ---
-id: "explorador_senor_de_las_bestias"
-nombre: "Señor de las Bestias"
-nombre_ingles: "Beast Master"
-tipo: "subclase"
-clase_padre: "Explorador"
+id: explorador_senor_de_las_bestias
+nombre: Señor de las Bestias
+nombre_ingles: Beast Master
+tipo: subclase
+clase_padre: Explorador
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["explorador", "compañero animal", "tierra", "mar", "cielo", "phb2024"]
+fuente: PHB 2024
+tags:
+- explorador
+- compañero animal
+- tierra
+- mar
+- cielo
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Señor de las Bestias (Beast Master)

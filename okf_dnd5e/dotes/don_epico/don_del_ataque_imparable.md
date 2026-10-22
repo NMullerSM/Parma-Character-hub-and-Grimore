@@ -1,14 +1,20 @@
 ---
-id: "don_del_ataque_imparable"
-nombre: "Don Del Ataque Imparable"
-categoria: "Don Épico"
-encabezado: "Dote de don épico (requisito: nivel 19 o más)"
-fuente: "PHB 2024"
+id: don_del_ataque_imparable
+nombre: Don Del Ataque Imparable
+categoria: Don Épico
+encabezado: 'Dote de don épico (requisito: nivel 19 o más)'
+fuente: PHB 2024
 pagina: 213
 tags:
-  - "dote"
-  - "don_epico"
-  - "don_del_ataque_imparable"
+- dote
+- don_epico
+- don_del_ataque_imparable
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Boon of the Unstoppable Attack
 ---
 
 # Don Del Ataque Imparable

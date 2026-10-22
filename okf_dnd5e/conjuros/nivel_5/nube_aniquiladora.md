@@ -1,25 +1,31 @@
 ---
-id: "nube_aniquiladora"
-nombre: "Nube Aniquiladora"
+id: nube_aniquiladora
+nombre: Nube Aniquiladora
 nivel: 5
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 10 minutos"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 315
 tags:
-  - "conjuración"
-  - "nivel_5"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- conjuración
+- nivel_5
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Cloudkill
 ---
 
 # Nube Aniquiladora

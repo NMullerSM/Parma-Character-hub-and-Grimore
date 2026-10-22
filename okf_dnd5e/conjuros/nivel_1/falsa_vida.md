@@ -1,24 +1,30 @@
 ---
-id: "falsa_vida"
-nombre: "Falsa Vida"
+id: falsa_vida
+nombre: Falsa Vida
 nivel: 1
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S, M (una gota de alcohol)"
-duracion: "Instantáneo"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S, M (una gota de alcohol)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 284
 tags:
-  - "nigromancia"
-  - "nivel_1"
-  - "hechicero"
-  - "mago"
+- nigromancia
+- nivel_1
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: False Life
 ---
 
 # Falsa Vida

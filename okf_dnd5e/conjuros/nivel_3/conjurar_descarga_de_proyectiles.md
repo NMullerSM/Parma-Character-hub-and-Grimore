@@ -1,22 +1,29 @@
 ---
-id: "conjurar_descarga_de_proyectiles"
-nombre: "Conjurar Descarga De Proyectiles"
+id: conjurar_descarga_de_proyectiles
+nombre: Conjurar Descarga De Proyectiles
 nivel: 3
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Explorador"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S, M (un arma cuerpo a cuerpo o a distancia  que valga al menos 1 pc)"
-duracion: "Instantáneo"
+- Explorador
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S, M (un arma cuerpo a cuerpo o a distancia  que valga al menos 1
+  pc)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 261
 tags:
-  - "conjuración"
-  - "nivel_3"
-  - "explorador"
+- conjuración
+- nivel_3
+- explorador
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Conjure Barrage
 ---
 
 # Conjurar Descarga De Proyectiles

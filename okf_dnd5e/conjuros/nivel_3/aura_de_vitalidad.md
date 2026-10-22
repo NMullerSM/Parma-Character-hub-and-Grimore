@@ -1,27 +1,33 @@
 ---
-id: "aura_de_vitalidad"
-nombre: "Aura De Vitalidad"
+id: aura_de_vitalidad
+nombre: Aura De Vitalidad
 nivel: 3
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Clérigo"
-  - "Druida"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V"
-duracion: "Concentración, hasta 1 minuto"
+- Clérigo
+- Druida
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 249
 tags:
-  - "abjuración"
-  - "nivel_3"
-  - "clérigo"
-  - "druida"
-  - "paladín"
-  - "concentracion"
+- abjuración
+- nivel_3
+- clérigo
+- druida
+- paladín
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Aura of Vitality
 ---
 
 # Aura De Vitalidad

@@ -1,14 +1,20 @@
 ---
-id: "combate_con_armas_arrojadizas"
-nombre: "Combate Con Armas Arrojadizas"
-categoria: "Estilo de Combate"
-encabezado: "Dote de estilo de combate (requisitos: rasgo Estilo de combate)"
-fuente: "PHB 2024"
+id: combate_con_armas_arrojadizas
+nombre: Combate Con Armas Arrojadizas
+categoria: Estilo de Combate
+encabezado: 'Dote de estilo de combate (requisitos: rasgo Estilo de combate)'
+fuente: PHB 2024
 pagina: 211
 tags:
-  - "dote"
-  - "estilo_combate"
-  - "combate_con_armas_arrojadizas"
+- dote
+- estilo_combate
+- combate_con_armas_arrojadizas
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Thrown Weapon Fighting
 ---
 
 # Combate Con Armas Arrojadizas

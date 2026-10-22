@@ -1,22 +1,28 @@
 ---
-id: "castigo_abrumador"
-nombre: "Castigo Abrumador"
+id: castigo_abrumador
+nombre: Castigo Abrumador
 nivel: 4
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Paladín"
-tiempo_lanzamiento: "Acción adicional, que realizas"
-alcance: "Lanzador"
-componentes: "V"
-duracion: "Instantáneo"
+- Paladín
+tiempo_lanzamiento: Acción adicional, que realizas
+alcance: Lanzador
+componentes: V
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 256
 tags:
-  - "encantamiento"
-  - "nivel_4"
-  - "paladín"
+- encantamiento
+- nivel_4
+- paladín
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Staggering Smite
 ---
 
 # Castigo Abrumador

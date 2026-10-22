@@ -1,28 +1,34 @@
 ---
-id: "presciencia"
-nombre: "Presciencia"
+id: presciencia
+nombre: Presciencia
 nivel: 9
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Druida"
-  - "Mago"
-tiempo_lanzamiento: "1 minuto"
-alcance: "Toque"
-componentes: "V, S, M (una pluma de colibrí)"
-duracion: "8 horas"
+- Bardo
+- Brujo
+- Druida
+- Mago
+tiempo_lanzamiento: 1 minuto
+alcance: Toque
+componentes: V, S, M (una pluma de colibrí)
+duracion: 8 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 323
 tags:
-  - "adivinación"
-  - "nivel_9"
-  - "bardo"
-  - "brujo"
-  - "druida"
-  - "mago"
+- adivinación
+- nivel_9
+- bardo
+- brujo
+- druida
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Foresight
 ---
 
 # Presciencia

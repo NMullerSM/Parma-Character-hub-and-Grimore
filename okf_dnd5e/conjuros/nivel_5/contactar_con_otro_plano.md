@@ -1,25 +1,31 @@
 ---
-id: "contactar_con_otro_plano"
-nombre: "Contactar Con Otro Plano"
+id: contactar_con_otro_plano
+nombre: Contactar Con Otro Plano
 nivel: 5
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Brujo"
-  - "Mago"
-tiempo_lanzamiento: "1 minuto o un ritual"
-alcance: "Lanzador"
-componentes: "V"
-duracion: "1 minuto"
+- Brujo
+- Mago
+tiempo_lanzamiento: 1 minuto o un ritual
+alcance: Lanzador
+componentes: V
+duracion: 1 minuto
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 264
 tags:
-  - "adivinación"
-  - "nivel_5"
-  - "brujo"
-  - "mago"
-  - "ritual"
+- adivinación
+- nivel_5
+- brujo
+- mago
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Contact Other Plane
 ---
 
 # Contactar Con Otro Plano

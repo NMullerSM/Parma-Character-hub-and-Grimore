@@ -1,29 +1,35 @@
 ---
-id: "portal"
-nombre: "Portal"
+id: portal
+nombre: Portal
 nivel: 9
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Brujo"
-  - "Clérigo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S, M (un diamante que valga al menos  5000 po)"
-duracion: "Concentración, hasta 1 minuto"
+- Brujo
+- Clérigo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S, M (un diamante que valga al menos  5000 po)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 322
 tags:
-  - "conjuración"
-  - "nivel_9"
-  - "brujo"
-  - "clérigo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- conjuración
+- nivel_9
+- brujo
+- clérigo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Gate
 ---
 
 # Portal

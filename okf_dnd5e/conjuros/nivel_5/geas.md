@@ -1,30 +1,36 @@
 ---
-id: "geas"
-nombre: "Geas"
+id: geas
+nombre: Geas
 nivel: 5
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Druida"
-  - "Mago"
-  - "Paladín"
-tiempo_lanzamiento: "1 minuto"
-alcance: "18 m"
-componentes: "V"
-duracion: "30 días"
+- Bardo
+- Clérigo
+- Druida
+- Mago
+- Paladín
+tiempo_lanzamiento: 1 minuto
+alcance: 18 m
+componentes: V
+duracion: 30 días
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 288
 tags:
-  - "encantamiento"
-  - "nivel_5"
-  - "bardo"
-  - "clérigo"
-  - "druida"
-  - "mago"
-  - "paladín"
+- encantamiento
+- nivel_5
+- bardo
+- clérigo
+- druida
+- mago
+- paladín
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Geas
 ---
 
 # Geas

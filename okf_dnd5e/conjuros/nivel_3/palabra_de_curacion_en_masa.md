@@ -1,24 +1,30 @@
 ---
-id: "palabra_de_curacion_en_masa"
-nombre: "Palabra De Curación En Masa"
+id: palabra_de_curacion_en_masa
+nombre: Palabra De Curación En Masa
 nivel: 3
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Bardo"
-  - "Clérigo"
-tiempo_lanzamiento: "Acción adicional"
-alcance: "18 m"
-componentes: "V"
-duracion: "Instantáneo"
+- Bardo
+- Clérigo
+tiempo_lanzamiento: Acción adicional
+alcance: 18 m
+componentes: V
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 318
 tags:
-  - "abjuración"
-  - "nivel_3"
-  - "bardo"
-  - "clérigo"
+- abjuración
+- nivel_3
+- bardo
+- clérigo
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Mass Healing Word
 ---
 
 # Palabra De Curación En Masa

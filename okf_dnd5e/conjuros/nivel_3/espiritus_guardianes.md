@@ -1,23 +1,29 @@
 ---
-id: "espiritus_guardianes"
-nombre: "Espíritus Guardianes"
+id: espiritus_guardianes
+nombre: Espíritus Guardianes
 nivel: 3
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Clérigo"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S, M (un pergamino de plegarias)"
-duracion: "Concentración, hasta 10 minutos"
+- Clérigo
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S, M (un pergamino de plegarias)
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 283
 tags:
-  - "conjuración"
-  - "nivel_3"
-  - "clérigo"
-  - "concentracion"
+- conjuración
+- nivel_3
+- clérigo
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Spirit Guardians
 ---
 
 # Espíritus Guardianes

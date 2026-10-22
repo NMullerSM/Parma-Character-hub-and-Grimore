@@ -1,22 +1,28 @@
 ---
-id: "de_mordenkainen"
-nombre: "De Mordenkainen"
+id: de_mordenkainen
+nombre: De Mordenkainen
 nivel: 4
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Mago"
-tiempo_lanzamiento: "10 minutos"
-alcance: "36 m"
-componentes: "V, S, M (una lámina fina de plomo)"
-duracion: "24 horas"
+- Mago
+tiempo_lanzamiento: 10 minutos
+alcance: 36 m
+componentes: V, S, M (una lámina fina de plomo)
+duracion: 24 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 333
 tags:
-  - "abjuración"
-  - "nivel_4"
-  - "mago"
+- abjuración
+- nivel_4
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Mordenkainen's Private Sanctum
 ---
 
 # De Mordenkainen

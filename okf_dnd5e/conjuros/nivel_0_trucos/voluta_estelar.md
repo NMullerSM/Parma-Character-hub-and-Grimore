@@ -1,24 +1,30 @@
 ---
-id: "voluta_estelar"
-nombre: "Voluta Estelar"
+id: voluta_estelar
+nombre: Voluta Estelar
 nivel: 0
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Bardo"
-  - "Druida"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Bardo
+- Druida
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 345
 tags:
-  - "evocación"
-  - "nivel_0"
-  - "bardo"
-  - "druida"
+- evocación
+- nivel_0
+- bardo
+- druida
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Starry Wisp
 ---
 
 # Voluta Estelar

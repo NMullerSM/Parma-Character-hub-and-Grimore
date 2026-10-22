@@ -1,26 +1,32 @@
 ---
-id: "tanido_por_los_muertos"
-nombre: "Tañido Por Los Muertos"
+id: tanido_por_los_muertos
+nombre: Tañido Por Los Muertos
 nivel: 0
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Brujo"
-  - "Clérigo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Brujo
+- Clérigo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 336
 tags:
-  - "nigromancia"
-  - "nivel_0"
-  - "brujo"
-  - "clérigo"
-  - "mago"
+- nigromancia
+- nivel_0
+- brujo
+- clérigo
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Toll the Dead
 ---
 
 # Tañido Por Los Muertos

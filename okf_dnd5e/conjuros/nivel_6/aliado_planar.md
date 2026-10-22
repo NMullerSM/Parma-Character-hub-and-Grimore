@@ -1,22 +1,28 @@
 ---
-id: "aliado_planar"
-nombre: "Aliado Planar"
+id: aliado_planar
+nombre: Aliado Planar
 nivel: 6
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Clérigo"
-tiempo_lanzamiento: "10 minutos"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Clérigo
+tiempo_lanzamiento: 10 minutos
+alcance: 18 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 242
 tags:
-  - "conjuración"
-  - "nivel_6"
-  - "clérigo"
+- conjuración
+- nivel_6
+- clérigo
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Planar Ally
 ---
 
 # Aliado Planar

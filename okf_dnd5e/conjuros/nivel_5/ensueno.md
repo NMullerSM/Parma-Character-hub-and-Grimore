@@ -1,26 +1,32 @@
 ---
-id: "ensueno"
-nombre: "Ensueño"
+id: ensueno
+nombre: Ensueño
 nivel: 5
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Mago"
-tiempo_lanzamiento: "1 minuto"
-alcance: "Especial"
-componentes: "V, S, M (un puñado de arena)"
-duracion: "8 horas"
+- Bardo
+- Brujo
+- Mago
+tiempo_lanzamiento: 1 minuto
+alcance: Especial
+componentes: V, S, M (un puñado de arena)
+duracion: 8 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 280
 tags:
-  - "ilusionismo"
-  - "nivel_5"
-  - "bardo"
-  - "brujo"
-  - "mago"
+- ilusionismo
+- nivel_5
+- bardo
+- brujo
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Dream
 ---
 
 # Ensueño

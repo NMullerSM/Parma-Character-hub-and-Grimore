@@ -1,26 +1,32 @@
 ---
-id: "rociada_prismatica"
-nombre: "Rociada Prismática"
+id: rociada_prismatica
+nombre: Rociada Prismática
 nivel: 7
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Bardo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Bardo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 332
 tags:
-  - "evocación"
-  - "nivel_7"
-  - "bardo"
-  - "hechicero"
-  - "mago"
+- evocación
+- nivel_7
+- bardo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Prismatic Spray
 ---
 
 # Rociada Prismática

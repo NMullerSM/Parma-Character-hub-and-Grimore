@@ -1,24 +1,30 @@
 ---
-id: "agarre_electrizante"
-nombre: "Agarre Electrizante"
+id: agarre_electrizante
+nombre: Agarre Electrizante
 nivel: 0
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 241
 tags:
-  - "evocación"
-  - "nivel_0"
-  - "hechicero"
-  - "mago"
+- evocación
+- nivel_0
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Shocking Grasp
 ---
 
 # Agarre Electrizante

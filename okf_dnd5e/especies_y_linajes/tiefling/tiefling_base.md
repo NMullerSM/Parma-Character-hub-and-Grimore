@@ -1,18 +1,24 @@
 ---
-id: "tiefling"
-nombre: "Tiefling"
-tipo_criatura: "humanoide"
-tamano: "Mediano o Pequeño"
-velocidad: "9 m"
-sentidos: "Visión en la oscuridad 18 m"
-fuente: "PHB 2024"
+id: tiefling
+nombre: Tiefling
+tipo_criatura: humanoide
+tamano: Mediano o Pequeño
+velocidad: 9 m
+sentidos: Visión en la oscuridad 18 m
+fuente: PHB 2024
 pagina: 198
 rasgos_principales:
-  - "Legado infernal (Abisal, Ctónico o Infernal)"
-  - "Taumaturgia"
+- Legado infernal (Abisal, Ctónico o Infernal)
+- Taumaturgia
 tags:
-  - "especie"
-  - "tiefling"
+- especie
+- tiefling
+- spanish
+- es
+- español
+idioma: es
+tipo: especie
+nombre_ingles: Tiefling
 ---
 
 # Especie: Tiefling

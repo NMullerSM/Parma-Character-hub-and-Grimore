@@ -1,36 +1,42 @@
 ---
-id: "disipar_magia"
-nombre: "Disipar Magia"
+id: disipar_magia
+nombre: Disipar Magia
 nivel: 3
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Clérigo"
-  - "Druida"
-  - "Explorador"
-  - "Hechicero"
-  - "Mago"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Bardo
+- Brujo
+- Clérigo
+- Druida
+- Explorador
+- Hechicero
+- Mago
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 274
 tags:
-  - "abjuración"
-  - "nivel_3"
-  - "bardo"
-  - "brujo"
-  - "clérigo"
-  - "druida"
-  - "explorador"
-  - "hechicero"
-  - "mago"
-  - "paladín"
+- abjuración
+- nivel_3
+- bardo
+- brujo
+- clérigo
+- druida
+- explorador
+- hechicero
+- mago
+- paladín
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Dispel Magic
 ---
 
 # Disipar Magia

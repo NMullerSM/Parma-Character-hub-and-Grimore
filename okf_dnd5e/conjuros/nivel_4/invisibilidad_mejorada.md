@@ -1,27 +1,33 @@
 ---
-id: "invisibilidad_mejorada"
-nombre: "Invisibilidad Mejorada"
+id: invisibilidad_mejorada
+nombre: Invisibilidad Mejorada
 nivel: 4
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Bardo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 298
 tags:
-  - "ilusionismo"
-  - "nivel_4"
-  - "bardo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- ilusionismo
+- nivel_4
+- bardo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Greater Invisibility
 ---
 
 # Invisibilidad Mejorada

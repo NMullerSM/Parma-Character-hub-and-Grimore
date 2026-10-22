@@ -1,21 +1,27 @@
 ---
-id: "hechicero"
-nombre: "Hechicero"
-caracteristica_principal: "CAR"
-dado_golpe: "1d6"
+id: hechicero
+nombre: Hechicero
+caracteristica_principal: CAR
+dado_golpe: 1d6
 salvaciones_competentes:
-  - "CON"
-  - "CAR"
+- CON
+- CAR
 subclases_oficiales:
-  - "Magia Salvaje"
-  - "Linaje Dracónico"
-  - "Hechicería Aberrante"
-  - "Hechicería Mecánica"
-fuente: "PHB 2024"
+- Magia Salvaje
+- Linaje Dracónico
+- Hechicería Aberrante
+- Hechicería Mecánica
+fuente: PHB 2024
 pagina: 128
 tags:
-  - "clase"
-  - "hechicero"
+- clase
+- hechicero
+- spanish
+- es
+- español
+idioma: es
+tipo: clase
+nombre_ingles: Sorcerer
 ---
 
 # Clase: Hechicero

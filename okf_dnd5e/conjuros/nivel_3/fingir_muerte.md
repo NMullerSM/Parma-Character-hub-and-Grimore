@@ -1,29 +1,35 @@
 ---
-id: "fingir_muerte"
-nombre: "Fingir Muerte"
+id: fingir_muerte
+nombre: Fingir Muerte
 nivel: 3
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Druida"
-  - "Mago"
-tiempo_lanzamiento: "Acción o ritual"
-alcance: "Toque"
-componentes: "V, S, M (una pizca de tierra de cementerio)"
-duracion: "1 hora"
+- Bardo
+- Clérigo
+- Druida
+- Mago
+tiempo_lanzamiento: Acción o ritual
+alcance: Toque
+componentes: V, S, M (una pizca de tierra de cementerio)
+duracion: 1 hora
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 285
 tags:
-  - "nigromancia"
-  - "nivel_3"
-  - "bardo"
-  - "clérigo"
-  - "druida"
-  - "mago"
-  - "ritual"
+- nigromancia
+- nivel_3
+- bardo
+- clérigo
+- druida
+- mago
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Feign Death
 ---
 
 # Fingir Muerte

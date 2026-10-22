@@ -1,24 +1,30 @@
 ---
-id: "grasa"
-nombre: "Grasa"
+id: grasa
+nombre: Grasa
 nivel: 1
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S, M (un poco de piel de cerdo  o de mantequilla)"
-duracion: "1 minuto"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S, M (un poco de piel de cerdo  o de mantequilla)
+duracion: 1 minuto
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 289
 tags:
-  - "conjuración"
-  - "nivel_1"
-  - "hechicero"
-  - "mago"
+- conjuración
+- nivel_1
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Grease
 ---
 
 # Grasa

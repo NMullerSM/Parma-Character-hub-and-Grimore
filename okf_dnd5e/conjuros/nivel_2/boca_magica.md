@@ -1,25 +1,32 @@
 ---
-id: "boca_magica"
-nombre: "Boca Mágica"
+id: boca_magica
+nombre: Boca Mágica
 nivel: 2
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Bardo"
-  - "Mago"
-tiempo_lanzamiento: "1 minuto o un ritual"
-alcance: "9 m"
-componentes: "V, S, M (polvo de jade que valga al menos  10 po, que se consume como parte del conjuro)"
-duracion: "Hasta que sea disipado"
+- Bardo
+- Mago
+tiempo_lanzamiento: 1 minuto o un ritual
+alcance: 9 m
+componentes: V, S, M (polvo de jade que valga al menos  10 po, que se consume como
+  parte del conjuro)
+duracion: Hasta que sea disipado
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 250
 tags:
-  - "ilusionismo"
-  - "nivel_2"
-  - "bardo"
-  - "mago"
-  - "ritual"
+- ilusionismo
+- nivel_2
+- bardo
+- mago
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Magic Mouth
 ---
 
 # Boca Mágica

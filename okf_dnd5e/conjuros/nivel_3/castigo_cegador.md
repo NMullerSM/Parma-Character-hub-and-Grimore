@@ -1,22 +1,28 @@
 ---
-id: "castigo_cegador"
-nombre: "Castigo Cegador"
+id: castigo_cegador
+nombre: Castigo Cegador
 nivel: 3
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Paladín"
-tiempo_lanzamiento: "Acción adicional, que realizas"
-alcance: "Lanzador"
-componentes: "V"
-duracion: "1 minuto"
+- Paladín
+tiempo_lanzamiento: Acción adicional, que realizas
+alcance: Lanzador
+componentes: V
+duracion: 1 minuto
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 256
 tags:
-  - "evocación"
-  - "nivel_3"
-  - "paladín"
+- evocación
+- nivel_3
+- paladín
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Blinding Smite
 ---
 
 # Castigo Cegador

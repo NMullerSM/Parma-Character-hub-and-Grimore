@@ -1,15 +1,20 @@
 ---
-id: "regla_salvaciones_muerte"
-nombre: "Salvaciones contra la Muerte"
-fuente: "Manual del Jugador 2024"
+id: regla_salvaciones_muerte
+nombre: Salvaciones contra la Muerte
+fuente: Manual del Jugador 2024
 pagina: 367
-tipo: "regla"
+tipo: regla
 tags:
-  - "reglas"
-  - "muerte"
-  - "d20"
-  - "inconsciente"
-  - "estabilizar"
+- reglas
+- muerte
+- d20
+- inconsciente
+- estabilizar
+- spanish
+- es
+- español
+idioma: es
+nombre_ingles: Salvaciones contra la Muerte
 ---
 
 # Reglas: Salvaciones contra la Muerte (*Death Saves*)

@@ -1,14 +1,20 @@
 ---
-id: "don_del_viaje_dimensional"
-nombre: "Don Del Viaje Dimensional"
-categoria: "Don Épico"
-encabezado: "Dote de don épico (requisito: nivel 19 o más)"
-fuente: "PHB 2024"
+id: don_del_viaje_dimensional
+nombre: Don Del Viaje Dimensional
+categoria: Don Épico
+encabezado: 'Dote de don épico (requisito: nivel 19 o más)'
+fuente: PHB 2024
 pagina: 213
 tags:
-  - "dote"
-  - "don_epico"
-  - "don_del_viaje_dimensional"
+- dote
+- don_epico
+- don_del_viaje_dimensional
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Boon of Dimensional Travel
 ---
 
 # Don Del Viaje Dimensional

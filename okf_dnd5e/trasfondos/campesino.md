@@ -9,8 +9,14 @@ pagina: 181
 tags:
 - trasfondo
 - campesino
+- spanish
+- es
+- español
 tipo: trasfondo
+idioma: es
+nombre_ingles: Campesino
 ---
+
 # Trasfondo: Campesino
 
 - **Puntuaciones de Característica**: Fuerza, Constitución, Sabiduría

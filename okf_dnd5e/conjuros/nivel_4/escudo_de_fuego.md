@@ -1,26 +1,32 @@
 ---
-id: "escudo_de_fuego"
-nombre: "Escudo De Fuego"
+id: escudo_de_fuego
+nombre: Escudo De Fuego
 nivel: 4
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S, M (una luciérnaga o una pizca de fósforo)"
-duracion: "10 minutos"
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S, M (una luciérnaga o una pizca de fósforo)
+duracion: 10 minutos
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 280
 tags:
-  - "evocación"
-  - "nivel_4"
-  - "druida"
-  - "hechicero"
-  - "mago"
+- evocación
+- nivel_4
+- druida
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Fire Shield
 ---
 
 # Escudo De Fuego

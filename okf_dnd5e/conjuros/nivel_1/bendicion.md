@@ -1,25 +1,31 @@
 ---
-id: "bendicion"
-nombre: "Bendición"
+id: bendicion
+nombre: Bendición
 nivel: 1
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Clérigo"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S, M (un símbolo sagrado que valga  al menos 5 po)"
-duracion: "Concentración, hasta 1 minuto"
+- Clérigo
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S, M (un símbolo sagrado que valga  al menos 5 po)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 250
 tags:
-  - "encantamiento"
-  - "nivel_1"
-  - "clérigo"
-  - "paladín"
-  - "concentracion"
+- encantamiento
+- nivel_1
+- clérigo
+- paladín
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Bless
 ---
 
 # Bendición

@@ -1,14 +1,20 @@
 ---
-id: "entrenamiento_con_armas_marciales"
-nombre: "Entrenamiento Con Armas Marciales"
-categoria: "General"
-encabezado: "Dote general (requisitos: nivel 4 o más)"
-fuente: "PHB 2024"
+id: entrenamiento_con_armas_marciales
+nombre: Entrenamiento Con Armas Marciales
+categoria: General
+encabezado: 'Dote general (requisitos: nivel 4 o más)'
+fuente: PHB 2024
 pagina: 206
 tags:
-  - "dote"
-  - "generales"
-  - "entrenamiento_con_armas_marciales"
+- dote
+- generales
+- entrenamiento_con_armas_marciales
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Entrenamiento Con Armas Marciales
 ---
 
 # Entrenamiento Con Armas Marciales

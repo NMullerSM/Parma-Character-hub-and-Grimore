@@ -1,12 +1,21 @@
 ---
-id: "bardo_valor"
-nombre: "Colegio del Valor"
-nombre_ingles: "College of Valor"
-tipo: "subclase"
-clase_padre: "Bardo"
+id: bardo_valor
+nombre: Colegio del Valor
+nombre_ingles: College of Valor
+tipo: subclase
+clase_padre: Bardo
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["bardo", "marcial", "armadura media", "combate", "phb2024"]
+fuente: PHB 2024
+tags:
+- bardo
+- marcial
+- armadura media
+- combate
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Colegio del Valor (College of Valor)

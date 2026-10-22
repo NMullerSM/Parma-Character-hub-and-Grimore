@@ -1,23 +1,29 @@
 ---
-id: "barrera_de_cuchillas"
-nombre: "Barrera De Cuchillas"
+id: barrera_de_cuchillas
+nombre: Barrera De Cuchillas
 nivel: 6
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Clérigo"
-tiempo_lanzamiento: "Acción"
-alcance: "27 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 10 minutos"
+- Clérigo
+tiempo_lanzamiento: Acción
+alcance: 27 m
+componentes: V, S
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 250
 tags:
-  - "evocación"
-  - "nivel_6"
-  - "clérigo"
-  - "concentracion"
+- evocación
+- nivel_6
+- clérigo
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Blade Barrier
 ---
 
 # Barrera De Cuchillas

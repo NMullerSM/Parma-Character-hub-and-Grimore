@@ -1,25 +1,31 @@
 ---
-id: "campo_antimagia"
-nombre: "Campo Antimagia"
+id: campo_antimagia
+nombre: Campo Antimagia
 nivel: 8
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Clérigo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S, M (virutas de hierro)"
-duracion: "Concentración, hasta 1 hora"
+- Clérigo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S, M (virutas de hierro)
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 254
 tags:
-  - "abjuración"
-  - "nivel_8"
-  - "clérigo"
-  - "mago"
-  - "concentracion"
+- abjuración
+- nivel_8
+- clérigo
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Antimagic Field
 ---
 
 # Campo Antimagia

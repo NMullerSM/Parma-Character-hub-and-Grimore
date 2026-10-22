@@ -1,26 +1,32 @@
 ---
-id: "regenerar"
-nombre: "Regenerar"
+id: regenerar
+nombre: Regenerar
 nivel: 7
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Druida"
-tiempo_lanzamiento: "1 minuto"
-alcance: "Toque"
-componentes: "V, S, M (una rueda de plegarias)"
-duracion: "1 hora"
+- Bardo
+- Clérigo
+- Druida
+tiempo_lanzamiento: 1 minuto
+alcance: Toque
+componentes: V, S, M (una rueda de plegarias)
+duracion: 1 hora
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 329
 tags:
-  - "transmutación"
-  - "nivel_7"
-  - "bardo"
-  - "clérigo"
-  - "druida"
+- transmutación
+- nivel_7
+- bardo
+- clérigo
+- druida
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Regenerate
 ---
 
 # Regenerar

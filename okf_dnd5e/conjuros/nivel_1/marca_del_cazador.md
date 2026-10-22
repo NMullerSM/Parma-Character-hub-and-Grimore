@@ -1,23 +1,29 @@
 ---
-id: "marca_del_cazador"
-nombre: "Marca Del Cazador"
+id: marca_del_cazador
+nombre: Marca Del Cazador
 nivel: 1
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Explorador"
-tiempo_lanzamiento: "Acción adicional"
-alcance: "27 m"
-componentes: "V"
-duracion: "Concentración, hasta 1 hora"
+- Explorador
+tiempo_lanzamiento: Acción adicional
+alcance: 27 m
+componentes: V
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 312
 tags:
-  - "adivinación"
-  - "nivel_1"
-  - "explorador"
-  - "concentracion"
+- adivinación
+- nivel_1
+- explorador
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Hunter's Mark
 ---
 
 # Marca Del Cazador

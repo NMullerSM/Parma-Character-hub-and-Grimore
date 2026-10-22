@@ -1,33 +1,39 @@
 ---
-id: "potenciar_caracteristica"
-nombre: "Potenciar Característica"
+id: potenciar_caracteristica
+nombre: Potenciar Característica
 nivel: 2
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Druida"
-  - "Explorador"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S, M (pelo de animal o una pluma)"
-duracion: "Concentración, hasta 1 hora"
+- Bardo
+- Clérigo
+- Druida
+- Explorador
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S, M (pelo de animal o una pluma)
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 323
 tags:
-  - "transmutación"
-  - "nivel_2"
-  - "bardo"
-  - "clérigo"
-  - "druida"
-  - "explorador"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- transmutación
+- nivel_2
+- bardo
+- clérigo
+- druida
+- explorador
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Enhance Ability
 ---
 
 # Potenciar Característica

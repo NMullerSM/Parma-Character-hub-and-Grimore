@@ -1,15 +1,20 @@
 ---
-id: "regla_descansos"
-nombre: "Descansos y Curación"
-fuente: "Manual del Jugador 2024"
+id: regla_descansos
+nombre: Descansos y Curación
+fuente: Manual del Jugador 2024
 pagina: 366
-tipo: "regla"
+tipo: regla
 tags:
-  - "reglas"
-  - "descanso-corto"
-  - "descanso-largo"
-  - "dados-de-golpe"
-  - "salud"
+- reglas
+- descanso-corto
+- descanso-largo
+- dados-de-golpe
+- salud
+- spanish
+- es
+- español
+idioma: es
+nombre_ingles: Descansos y Curación
 ---
 
 # Reglas: Descansos y Curación

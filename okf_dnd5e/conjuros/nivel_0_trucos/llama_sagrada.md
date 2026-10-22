@@ -1,22 +1,28 @@
 ---
-id: "llama_sagrada"
-nombre: "Llama Sagrada"
+id: llama_sagrada
+nombre: Llama Sagrada
 nivel: 0
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Clérigo"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Clérigo
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 307
 tags:
-  - "evocación"
-  - "nivel_0"
-  - "clérigo"
+- evocación
+- nivel_0
+- clérigo
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Sacred Flame
 ---
 
 # Llama Sagrada

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
+  <!-- Circular Shield / Seal Background -->
+  <circle cx="128" cy="128" r="110" fill="#151b21" stroke="#c9a45c" stroke-width="8"/>
+  <circle cx="128" cy="128" r="98" fill="none" stroke="#79a6d2" stroke-width="2" stroke-dasharray="6 4" opacity="0.6"/>
+  <!-- Stylized Serif P Monogram -->
+  <!-- Stem -->
+  <path d="M88 64 H116 V192 H88 Z" fill="#e5c07b"/>
+  <!-- Top Serif & Bottom Serif -->
+  <path d="M78 64 H126 M78 192 H126" stroke="#c9a45c" stroke-width="6" stroke-linecap="round"/>
+  <!-- Bowl of P with Dragon / Scroll Arc -->
+  <path d="M116 64 H154 C184 64 204 82 204 108 C204 134 184 152 154 152 H116 Z" fill="#e5c07b"/>
+  <!-- Inner counter of P -->
+  <path d="M124 84 H150 C166 84 178 94 178 108 C178 122 166 132 150 132 H124 Z" fill="#151b21"/>
+  <!-- Arcane Ruby Eye in the Bowl -->
+  <polygon points="150,100 158,108 150,116 142,108" fill="#e63946"/>
+</svg>

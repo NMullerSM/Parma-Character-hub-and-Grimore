@@ -1,19 +1,25 @@
 ---
-id: "orco"
-nombre: "Orco"
-tipo_criatura: "humanoide"
-tamano: "Mediano"
-velocidad: "9 m"
-sentidos: "Visión en la oscuridad 36 m"
-fuente: "PHB 2024"
+id: orco
+nombre: Orco
+tipo_criatura: humanoide
+tamano: Mediano
+velocidad: 9 m
+sentidos: Visión en la oscuridad 36 m
+fuente: PHB 2024
 pagina: 197
 rasgos_principales:
-  - "Agresión implacable"
-  - "Resistencia implacable"
-  - "Adrenalina"
+- Agresión implacable
+- Resistencia implacable
+- Adrenalina
 tags:
-  - "especie"
-  - "orco"
+- especie
+- orco
+- spanish
+- es
+- español
+idioma: es
+tipo: especie
+nombre_ingles: Orc
 ---
 
 # Especie: Orco

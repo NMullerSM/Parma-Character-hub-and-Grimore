@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
+  <!-- Opción 4: El Códice de Páginas Aladas (The Winged Folio) -->
+  <g stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Alas/Páginas exteriores -->
+    <path d="M 128 190 C 88 150 40 154 28 158 C 28 110 52 74 128 98 C 204 74 228 110 228 158 C 216 154 168 150 128 190 Z" fill="none"/>
+    <!-- Pliegue interior de páginas -->
+    <path d="M 128 150 C 96 122 62 126 50 130 C 50 102 74 88 128 104 C 182 88 206 102 206 130 C 194 126 160 122 128 150 Z" fill="currentColor" stroke="none" opacity="0.2"/>
+    <!-- Lomo / Eje central estilizado -->
+    <line x1="128" y1="64" x2="128" y2="196" stroke-width="6"/>
+    <!-- Pequeña gema central -->
+    <circle cx="128" cy="62" r="6" fill="currentColor" stroke="none"/>
+  </g>
+</svg>

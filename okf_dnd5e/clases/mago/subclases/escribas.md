@@ -1,12 +1,21 @@
 ---
-id: "mago_escribas"
-nombre: "Orden de los Escribas"
-nombre_ingles: "Order of Scribes"
-tipo: "subclase"
-clase_padre: "Mago"
+id: mago_escribas
+nombre: Orden de los Escribas
+nombre_ingles: Order of Scribes
+tipo: subclase
+clase_padre: Mago
 nivel_desbloqueo: 3
-fuente: "Caldero de Tasha para Todo"
-tags: ["mago", "tasha", "grimorio consciente", "cambio elemental", "pergaminos"]
+fuente: Caldero de Tasha para Todo
+tags:
+- mago
+- tasha
+- grimorio consciente
+- cambio elemental
+- pergaminos
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Orden de los Escribas (Order of Scribes)

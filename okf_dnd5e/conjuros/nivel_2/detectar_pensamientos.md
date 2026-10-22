@@ -1,27 +1,33 @@
 ---
-id: "detectar_pensamientos"
-nombre: "Detectar Pensamientos"
+id: detectar_pensamientos
+nombre: Detectar Pensamientos
 nivel: 2
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Bardo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S, M (1 pieza de cobre)"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S, M (1 pieza de cobre)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 272
 tags:
-  - "adivinación"
-  - "nivel_2"
-  - "bardo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- adivinación
+- nivel_2
+- bardo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Detect Thoughts
 ---
 
 # Detectar Pensamientos

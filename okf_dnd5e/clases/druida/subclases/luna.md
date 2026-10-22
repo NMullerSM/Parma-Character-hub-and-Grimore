@@ -1,12 +1,21 @@
 ---
-id: "druida_luna"
-nombre: "Círculo de la Luna"
-nombre_ingles: "Circle of the Moon"
-tipo: "subclase"
-clase_padre: "Druida"
+id: druida_luna
+nombre: Círculo de la Luna
+nombre_ingles: Circle of the Moon
+tipo: subclase
+clase_padre: Druida
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["druida", "forma salvaje", "bestias", "combate", "phb2024"]
+fuente: PHB 2024
+tags:
+- druida
+- forma salvaje
+- bestias
+- combate
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Círculo de la Luna (Circle of the Moon)

@@ -1,19 +1,23 @@
 ---
-id: "tiefling_infernal"
-nombre: "Tiefling (Linaje Infernal)"
-nombre_ingles: "Infernal Tiefling"
-fuente: "Manual del Jugador 2024"
+id: tiefling_infernal
+nombre: Tiefling (Linaje Infernal)
+nombre_ingles: Infernal Tiefling
+fuente: Manual del Jugador 2024
 pagina: 198
-tipo: "especie_linaje"
-velocidad: "9 m (30 pies)"
-tamano: "Mediano"
-vision_oscuridad: "18 m (60 pies)"
+tipo: especie_linaje
+velocidad: 9 m (30 pies)
+tamano: Mediano
+vision_oscuridad: 18 m (60 pies)
 tags:
-  - "especie"
-  - "tiefling"
-  - "infernal"
-  - "linaje"
-  - "fuego"
+- especie
+- tiefling
+- infernal
+- linaje
+- fuego
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Especie: Tiefling (Linaje Infernal)

@@ -1,22 +1,28 @@
 ---
-id: "fabricar"
-nombre: "Fabricar"
+id: fabricar
+nombre: Fabricar
 nivel: 4
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Mago"
-tiempo_lanzamiento: "10 minutos"
-alcance: "36 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Mago
+tiempo_lanzamiento: 10 minutos
+alcance: 36 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 284
 tags:
-  - "transmutación"
-  - "nivel_4"
-  - "mago"
+- transmutación
+- nivel_4
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Fabricate
 ---
 
 # Fabricar

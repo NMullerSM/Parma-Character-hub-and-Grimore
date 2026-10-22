@@ -1,24 +1,30 @@
 ---
-id: "contagio"
-nombre: "Contagio"
+id: contagio
+nombre: Contagio
 nivel: 5
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Clérigo"
-  - "Druida"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S"
-duracion: "7 días"
+- Clérigo
+- Druida
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S
+duracion: 7 días
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 264
 tags:
-  - "nigromancia"
-  - "nivel_5"
-  - "clérigo"
-  - "druida"
+- nigromancia
+- nivel_5
+- clérigo
+- druida
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Contagion
 ---
 
 # Contagio

@@ -1,19 +1,23 @@
 ---
-id: "enano_montanias"
-nombre: "Enano de las Montañas"
-nombre_ingles: "Mountain Dwarf"
-fuente: "Manual del Jugador 2024"
+id: enano_montanias
+nombre: Enano de las Montañas
+nombre_ingles: Mountain Dwarf
+fuente: Manual del Jugador 2024
 pagina: 187
-tipo: "especie_linaje"
-velocidad: "9 m (30 pies)"
-tamano: "Mediano"
-vision_oscuridad: "18 m (60 pies)"
+tipo: especie_linaje
+velocidad: 9 m (30 pies)
+tamano: Mediano
+vision_oscuridad: 18 m (60 pies)
 tags:
-  - "especie"
-  - "enano"
-  - "montanias"
-  - "linaje"
-  - "fuerza"
+- especie
+- enano
+- montanias
+- linaje
+- fuerza
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Especie: Enano de las Montañas (Mountain Dwarf)

@@ -1,26 +1,32 @@
 ---
-id: "tormenta_de_hielo"
-nombre: "Tormenta De Hielo"
+id: tormenta_de_hielo
+nombre: Tormenta De Hielo
 nivel: 4
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "90 m"
-componentes: "V, S, M (una manopla)"
-duracion: "Instantáneo"
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 90 m
+componentes: V, S, M (una manopla)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 341
 tags:
-  - "evocación"
-  - "nivel_4"
-  - "druida"
-  - "hechicero"
-  - "mago"
+- evocación
+- nivel_4
+- druida
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Ice Storm
 ---
 
 # Tormenta De Hielo

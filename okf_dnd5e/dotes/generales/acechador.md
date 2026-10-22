@@ -1,14 +1,20 @@
 ---
-id: "acechador"
-nombre: "Acechador"
-categoria: "General"
-encabezado: "Dote general (requisitos: nivel 4 o más, Destreza 13 o más)"
-fuente: "PHB 2024"
+id: acechador
+nombre: Acechador
+categoria: General
+encabezado: 'Dote general (requisitos: nivel 4 o más, Destreza 13 o más)'
+fuente: PHB 2024
 pagina: 204
 tags:
-  - "dote"
-  - "generales"
-  - "acechador"
+- dote
+- generales
+- acechador
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Skulker
 ---
 
 # Acechador

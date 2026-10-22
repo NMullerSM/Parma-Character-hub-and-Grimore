@@ -1,21 +1,27 @@
 ---
-id: "brujo"
-nombre: "Brujo"
-caracteristica_principal: "CAR"
-dado_golpe: "1d8"
+id: brujo
+nombre: Brujo
+caracteristica_principal: CAR
+dado_golpe: 1d8
 salvaciones_competentes:
-  - "SAB"
-  - "CAR"
+- SAB
+- CAR
 subclases_oficiales:
-  - "Patrón Feérico"
-  - "Patrón Infernal"
-  - "Patrón Celestial"
-  - "Patrón de los Grandes Antiguos"
-fuente: "PHB 2024"
+- Patrón Feérico
+- Patrón Infernal
+- Patrón Celestial
+- Patrón de los Grandes Antiguos
+fuente: PHB 2024
 pagina: 66
 tags:
-  - "clase"
-  - "brujo"
+- clase
+- brujo
+- spanish
+- es
+- español
+idioma: es
+tipo: clase
+nombre_ingles: Warlock
 ---
 
 # Clase: Brujo

@@ -1,22 +1,29 @@
 ---
-id: "conjurar_lluvia_de_flechas"
-nombre: "Conjurar Lluvia De Flechas"
+id: conjurar_lluvia_de_flechas
+nombre: Conjurar Lluvia De Flechas
 nivel: 5
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Explorador"
-tiempo_lanzamiento: "Acción"
-alcance: "45 m"
-componentes: "V, S, M (un arma cuerpo a cuerpo o a distancia  que valga al menos 1 pc)"
-duracion: "Instantáneo"
+- Explorador
+tiempo_lanzamiento: Acción
+alcance: 45 m
+componentes: V, S, M (un arma cuerpo a cuerpo o a distancia  que valga al menos 1
+  pc)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 262
 tags:
-  - "conjuración"
-  - "nivel_5"
-  - "explorador"
+- conjuración
+- nivel_5
+- explorador
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Conjure Volley
 ---
 
 # Conjurar Lluvia De Flechas

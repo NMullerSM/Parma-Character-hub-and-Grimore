@@ -1,24 +1,30 @@
 ---
-id: "proyectil_magico"
-nombre: "Proyectil Mágico"
+id: proyectil_magico
+nombre: Proyectil Mágico
 nivel: 1
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 325
 tags:
-  - "evocación"
-  - "nivel_1"
-  - "hechicero"
-  - "mago"
+- evocación
+- nivel_1
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Magic Missile
 ---
 
 # Proyectil Mágico

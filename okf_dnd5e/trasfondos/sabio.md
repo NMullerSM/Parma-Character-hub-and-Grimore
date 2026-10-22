@@ -9,8 +9,14 @@ pagina: 187
 tags:
 - trasfondo
 - sabio
+- spanish
+- es
+- español
 tipo: trasfondo
+idioma: es
+nombre_ingles: Sabio
 ---
+
 # Trasfondo: Sabio
 
 - **Puntuaciones de Característica**: Constitución, Inteligencia, Sabiduría

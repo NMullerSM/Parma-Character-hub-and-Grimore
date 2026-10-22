@@ -1,15 +1,20 @@
 ---
-id: "equipo_armas_simples"
-nombre: "Armas Simples (Cuerpo a Cuerpo y Distancia)"
-fuente: "Manual del Jugador 2024"
+id: equipo_armas_simples
+nombre: Armas Simples (Cuerpo a Cuerpo y Distancia)
+fuente: Manual del Jugador 2024
 pagina: 213
-tipo: "equipo"
-subtipo: "Armas"
+tipo: equipo
+subtipo: Armas
 tags:
-  - "equipo"
-  - "armas"
-  - "simples"
-  - "combate"
+- equipo
+- armas
+- simples
+- combate
+- spanish
+- es
+- español
+idioma: es
+nombre_ingles: Armas Simples (Cuerpo a Cuerpo y Distancia)
 ---
 
 # Armas Simples Oficiales (PHB 2024)

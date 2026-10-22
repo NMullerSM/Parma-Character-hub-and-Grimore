@@ -1,19 +1,23 @@
 ---
-id: "draconido_metalico"
-nombre: "Dracónido Metálico"
-nombre_ingles: "Metallic Dragonborn"
-fuente: "Manual del Jugador 2024"
+id: draconido_metalico
+nombre: Dracónido Metálico
+nombre_ingles: Metallic Dragonborn
+fuente: Manual del Jugador 2024
 pagina: 184
-tipo: "especie_linaje"
-velocidad: "9 m (30 pies)"
-tamano: "Mediano"
-vision_oscuridad: "18 m (60 pies)"
+tipo: especie_linaje
+velocidad: 9 m (30 pies)
+tamano: Mediano
+vision_oscuridad: 18 m (60 pies)
 tags:
-  - "especie"
-  - "draconido"
-  - "metalico"
-  - "linaje"
-  - "aliento"
+- especie
+- draconido
+- metalico
+- linaje
+- aliento
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Especie: Dracónido Metálico

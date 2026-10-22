@@ -1,25 +1,31 @@
 ---
-id: "cambiar_de_forma"
-nombre: "Cambiar De Forma"
+id: cambiar_de_forma
+nombre: Cambiar De Forma
 nivel: 9
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Druida"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S, M (una diadema de jade que valga  al menos 1500 po)"
-duracion: "Concentración, hasta 1 hora"
+- Druida
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S, M (una diadema de jade que valga  al menos 1500 po)
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 254
 tags:
-  - "transmutación"
-  - "nivel_9"
-  - "druida"
-  - "mago"
-  - "concentracion"
+- transmutación
+- nivel_9
+- druida
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Shapechange
 ---
 
 # Cambiar De Forma

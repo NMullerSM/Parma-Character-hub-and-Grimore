@@ -1,14 +1,20 @@
 ---
-id: "telepatico"
-nombre: "Telepático"
-categoria: "General"
-encabezado: "Dote general (requisitos: nivel 4 o más)"
-fuente: "PHB 2024"
+id: telepatico
+nombre: Telepático
+categoria: General
+encabezado: 'Dote general (requisitos: nivel 4 o más)'
+fuente: PHB 2024
 pagina: 210
 tags:
-  - "dote"
-  - "generales"
-  - "telepatico"
+- dote
+- generales
+- telepatico
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Telepathic
 ---
 
 # Telepático

@@ -1,22 +1,28 @@
 ---
-id: "palabra_de_regreso"
-nombre: "Palabra De Regreso"
+id: palabra_de_regreso
+nombre: Palabra De Regreso
 nivel: 6
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Clérigo"
-tiempo_lanzamiento: "Acción"
-alcance: "1,5 m"
-componentes: "V"
-duracion: "Instantáneo"
+- Clérigo
+tiempo_lanzamiento: Acción
+alcance: 1,5 m
+componentes: V
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 319
 tags:
-  - "conjuración"
-  - "nivel_6"
-  - "clérigo"
+- conjuración
+- nivel_6
+- clérigo
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Word of Recall
 ---
 
 # Palabra De Regreso

@@ -1,14 +1,20 @@
 ---
-id: "don_del_recuerdo_de_conjuros"
-nombre: "Don Del Recuerdo De Conjuros"
-categoria: "Don Épico"
-encabezado: "Dote de don épico (requisito: nivel 19 o más, rasgo Lanzamiento"
-fuente: "PHB 2024"
+id: don_del_recuerdo_de_conjuros
+nombre: Don Del Recuerdo De Conjuros
+categoria: Don Épico
+encabezado: 'Dote de don épico (requisito: nivel 19 o más, rasgo Lanzamiento'
+fuente: PHB 2024
 pagina: 213
 tags:
-  - "dote"
-  - "don_epico"
-  - "don_del_recuerdo_de_conjuros"
+- dote
+- don_epico
+- don_del_recuerdo_de_conjuros
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Boon of Spell Recall
 ---
 
 # Don Del Recuerdo De Conjuros

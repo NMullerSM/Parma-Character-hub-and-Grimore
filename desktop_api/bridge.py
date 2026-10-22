@@ -148,15 +148,16 @@ class DesktopBridge:
             return 40
         return 30
 
-    def _serialize_character(self, char: Optional[CharacterSheet]) -> Optional[Dict[str, Any]]:
+    def _serialize_character(self, char: Optional[CharacterSheet], lang: Optional[str] = None) -> Optional[Dict[str, Any]]:
         """
         Adaptador bidireccional: transforma un CharacterSheet de Python en el contrato
         enriquecido y precalculado que consume el frontend de React, conservando también
-        todos los campos canónicos del modelo.
+        todos los campos canónicos del modelo y soportando campos bilingües.
         """
         if not char:
             return None
 
+        active_lang = lang or self._db.get_setting("language", "es")
         prof_bonus = calc_proficiency_bonus(char.level)
         char.proficiency_bonus = prof_bonus
 
@@ -216,11 +217,18 @@ class DesktopBridge:
 
         spells_out = []
         for sp in char.spells:
+            en_spell = self._okf.get_spell_item(sp.id or sp.name, lang="en")
+            desc_en = en_spell.description if en_spell else ""
+            name_en = en_spell.name if en_spell else (sp.name_en or sp.name)
+            school_en = en_spell.school if en_spell else sp.school
+
             spells_out.append({
                 "id": sp.id,
                 "name": sp.name,
+                "name_en": name_en,
                 "level": sp.level,
                 "school": sp.school,
+                "school_en": school_en,
                 "cast_time": sp.casting_time,
                 "casting_time": sp.casting_time,
                 "range_area": sp.range,
@@ -232,12 +240,14 @@ class DesktopBridge:
                 "prepared": True,
                 "notes": sp.description,
                 "description": sp.description,
+                "notes_en": desc_en or sp.description,
+                "description_en": desc_en or sp.description,
                 "higher_levels": sp.higher_levels,
                 "source": sp.source,
             })
 
-        # 5. Rasgos y Recursos de Clase (actualizados dinámicamente según reglas 5e)
-        updated_features = compute_dynamic_features(char)
+        # 5. Rasgos y Recursos de Clase (actualizados dinámicamente según reglas 5e e idioma)
+        updated_features = compute_dynamic_features(char, lang=active_lang)
         char.features = updated_features
         features_out = [
             {
@@ -905,11 +915,11 @@ class DesktopBridge:
     # FORJA DE PERSONAJES (OKF + POINT BUY + QUICK BUILD + RANDOMIZE)
     # =========================================================================
 
-    def get_builder_catalog(self, edition: Optional[str] = None) -> Dict[str, Any]:
+    def get_builder_catalog(self, edition: Optional[str] = None, lang: str = "es") -> Dict[str, Any]:
         """
         Devuelve el catálogo dinámico completo desde OkfEngine para poblar la Forja:
         especies, linajes, clases, subclases, trasfondos, dotes de origen y condiciones.
-        Adapta niveles de subclase según la edición activa (5.5e 2024 vs 5e 2014).
+        Adapta niveles de subclase según la edición activa (5.5e 2024 vs 5e 2014) e idioma.
         """
         ed = edition or self._db.get_setting("dnd_edition", "5.5e")
         is_2024 = (ed == "5.5e")
@@ -937,19 +947,19 @@ class DesktopBridge:
             "Aasimar": {"CAR": 2, "SAB": 1},
         }
 
-        raw_species = self._okf.get_species()
+        raw_species = self._okf.get_species(lang=lang)
         species_out = []
         for sp in raw_species:
             sp_name = sp["nombre"]
-            lineages = self._okf.get_lineages(sp["id"]) or self._okf.get_lineages(sp_name)
-            subrace_names = [lin["nombre"] for lin in lineages] if lineages else ["Estándar"]
+            lineages = self._okf.get_lineages(sp["id"], lang=lang) or self._okf.get_lineages(sp_name, lang=lang)
+            subrace_names = [lin["nombre"] for lin in lineages] if lineages else ["Estándar" if lang == "es" else "Standard"]
             raw_traits = sp.get("rasgos_principales", "")
             if isinstance(raw_traits, list):
-                trait_items = [{"name": str(t), "desc": "Rasgo de especie oficial."} for t in raw_traits]
+                trait_items = [{"name": str(t), "desc": "Rasgo de especie oficial." if lang == "es" else "Official species trait."} for t in raw_traits]
             elif isinstance(raw_traits, str) and raw_traits.strip():
-                trait_items = [{"name": t.strip(), "desc": "Rasgo de especie oficial."} for t in raw_traits.split(",") if t.strip()]
+                trait_items = [{"name": t.strip(), "desc": "Rasgo de especie oficial." if lang == "es" else "Official species trait."} for t in raw_traits.split(",") if t.strip()]
             else:
-                trait_items = [{"name": f"Herencia de {sp_name}", "desc": sp.get("sentidos", "Visión Normal")}]
+                trait_items = [{"name": f"Herencia de {sp_name}" if lang == "es" else f"{sp_name} Heritage", "desc": sp.get("sentidos", "Visión Normal" if lang == "es" else "Normal Vision")}]
 
             species_out.append({
                 "id": sp["id"],
@@ -961,13 +971,13 @@ class DesktopBridge:
             })
 
         all_skill_names = list(SKILLS_MAP.keys())
-        raw_classes = self._okf.get_classes()
+        raw_classes = self._okf.get_classes(lang=lang)
         classes_out = []
         for c in raw_classes:
             c_name = c["nombre"]
             sub_lvl = 3 if is_2024 else subclass_lvl_2014.get(c_name, 3)
-            subs = self._okf.get_subclasses(c_name)
-            sub_names = [s["nombre"] for s in subs] if subs else [f"Arquetipo de {c_name}"]
+            subs = self._okf.get_subclasses(c_name, lang=lang)
+            sub_names = [s["nombre"] for s in subs] if subs else [f"Arquetipo de {c_name}" if lang == "es" else f"{c_name} Archetype"]
             preset = CLASS_QUICK_PRESETS.get(c_name, CLASS_QUICK_PRESETS.get("Guerrero", {}))
             rec_skills = list(preset.get("skills", ["Atletismo", "Percepción"]))
             extra_skills = [sk for sk in all_skill_names if sk not in rec_skills][:6]
@@ -981,7 +991,7 @@ class DesktopBridge:
                 "hit_die": hit_die_val,
                 "primary_ability": c.get("caracteristica_principal", "FUE"),
                 "saves": list(c.get("saves", ["FUE", "CON"])),
-                "skill_choices_count": 4 if c_name == "Pícaro" else (3 if c_name in ("Bardo", "Explorador") else 2),
+                "skill_choices_count": 4 if c_name in ("Pícaro", "Rogue") else (3 if c_name in ("Bardo", "Bard", "Explorador", "Ranger") else 2),
                 "skill_options": skill_opts,
                 "subclasses": sub_names,
                 "subclass_unlock_level": sub_lvl,
@@ -989,7 +999,7 @@ class DesktopBridge:
             })
 
         backgrounds_out = []
-        for b in self._okf.get_backgrounds():
+        for b in self._okf.get_backgrounds(lang=lang):
             raw_sk = b.get("habilidades_competentes", "Atletismo, Percepción")
             if isinstance(raw_sk, list):
                 sk_list = [str(s).strip() for s in raw_sk if str(s).strip()]
@@ -999,8 +1009,8 @@ class DesktopBridge:
                 "id": b["id"],
                 "name": b["nombre"],
                 "skills": sk_list[:2] if sk_list else ["Atletismo", "Percepción"],
-                "feature_name": b.get("dote_concedida", "Dote de Origen"),
-                "feature_desc": f"Atributos clave: {b.get('caracteristicas_clave', 'FUE, CON')}.",
+                "feature_name": b.get("dote_concedida", "Dote de Origen" if lang == "es" else "Origin Feat"),
+                "feature_desc": f"Atributos clave: {b.get('caracteristicas_clave', 'FUE, CON')}." if lang == "es" else f"Key Abilities: {b.get('caracteristicas_clave', 'STR, CON')}.",
             })
 
         return {
@@ -1011,9 +1021,9 @@ class DesktopBridge:
             "all_skills": all_skill_names,
         }
 
-    def get_class_spells(self, class_name: str, max_level: int = 1) -> List[Dict[str, Any]]:
-        """Obtiene los trucos y conjuros disponibles para una clase desde OkfEngine."""
-        items = self._okf.get_spells_for_class(class_name, max_spell_level=max_level, min_spell_level=0)
+    def get_class_spells(self, class_name: str, max_level: int = 1, lang: str = "es") -> List[Dict[str, Any]]:
+        """Obtiene los trucos y conjuros disponibles para una clase desde OkfEngine con soporte multilingüe."""
+        items = self._okf.get_spells_for_class(class_name, max_spell_level=max_level, min_spell_level=0, lang=lang)
         return [
             {
                 "name": s.get("nombre", ""),
@@ -1053,16 +1063,18 @@ class DesktopBridge:
         query: str = "",
         school: Optional[str] = None,
         level: Optional[int] = None,
-        limit: int = 150
+        limit: int = 150,
+        lang: str = "es"
     ) -> List[Dict[str, Any]]:
-        """Busca conjuros enriquecidos en OKF con filtros combinados."""
+        """Busca conjuros enriquecidos en OKF con filtros combinados y soporte multilingüe."""
         return self._okf.search_available_spells(
             query=query,
             class_name=class_name,
             level=level,
             max_level=max_level,
             school=school,
-            limit=limit
+            limit=limit,
+            lang=lang
         )
 
     def add_spell_to_character(self, char_id: int, spell_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -1111,15 +1123,15 @@ class DesktopBridge:
         self._db.save_character(char, set_active=self._is_active_character_id(char_id))
         return {"success": True, "character": self._serialize_character(char)}
 
-    def sync_character_features(self, char_id: int) -> Dict[str, Any]:
+    def sync_character_features(self, char_id: int, lang: str = "es") -> Dict[str, Any]:
         """Recalcula y sincroniza dinámicamente todos los rasgos de clase, dotes y linaje."""
         char = self._db.get_character_by_id(char_id)
         if not char:
             return {"success": False, "error": "Personaje no encontrado"}
 
-        char.features = compute_dynamic_features(char)
+        char.features = compute_dynamic_features(char, lang=lang)
         self._db.save_character(char, set_active=self._is_active_character_id(char_id))
-        return {"success": True, "character": self._serialize_character(char)}
+        return {"success": True, "character": self._serialize_character(char, lang=lang)}
 
     def sync_compendium_from_srd(self, edition: str = "PHB 2024") -> Dict[str, Any]:
         """Reconstruye e indexa la base de datos de tarjetas atómicas OKF."""
@@ -1555,20 +1567,34 @@ class DesktopBridge:
     # =========================================================================
 
     def list_pdf_documents(self) -> List[Dict[str, str]]:
-        """Busca manuales y fichas PDF en el proyecto."""
+        """Busca manuales y fichas PDF en el proyecto, detectando idioma (es/en)."""
         results = []
         search_dirs = [
-            os.path.join(self._base_dir, "data", "characters"),
-            os.path.join(self._base_dir, "data", "manuals"),
-            self._base_dir,
+            (os.path.join(self._base_dir, "data", "manuals", "es"), "es"),
+            (os.path.join(self._base_dir, "data", "manuals", "en"), "en"),
+            (os.path.join(self._base_dir, "data", "manuals"), "all"),
+            (os.path.join(self._base_dir, "data", "characters"), "all"),
+            (self._base_dir, "all"),
         ]
-        for sdir in search_dirs:
-            if os.path.exists(sdir):
+        for sdir, dir_lang in search_dirs:
+            if os.path.exists(sdir) and os.path.isdir(sdir):
                 for fname in os.listdir(sdir):
                     if fname.lower().endswith(".pdf"):
                         full = os.path.join(sdir, fname)
                         if not any(r["path"] == full for r in results):
-                            results.append({"name": fname, "path": full})
+                            detected_lang = dir_lang
+                            if detected_lang == "all":
+                                lower_name = fname.lower()
+                                if "[en]" in lower_name or "_en" in lower_name or "player's handbook" in lower_name or "dungeon master" in lower_name or "monster manual" in lower_name:
+                                    detected_lang = "en"
+                                elif "[es]" in lower_name or "_es" in lower_name or "manual del jugador" in lower_name or "guia" in lower_name or "guía" in lower_name or "caldero" in lower_name:
+                                    detected_lang = "es"
+
+                            results.append({
+                                "name": fname,
+                                "path": full,
+                                "lang": detected_lang
+                            })
         return results
 
     def open_pdf_document(self, file_path: str) -> Dict[str, Any]:
@@ -1596,6 +1622,10 @@ class DesktopBridge:
         b64 = self._pdf_reader.render_page_base64(page_num, zoom=zoom, trim_margins=trim_margins)
         links = self._pdf_reader.get_page_links(page_num, trim_margins=trim_margins)
         pw, ph = self._pdf_reader.get_page_dimensions(page_num, trim_margins=trim_margins)
+
+        if b64 and not b64.startswith("data:"):
+            b64 = f"data:image/png;base64,{b64}"
+
         return {
             "success": bool(b64),
             "page_num": page_num,
@@ -1607,7 +1637,7 @@ class DesktopBridge:
         }
 
     def export_character_pdf(self, char_id: int, target_path: Optional[str] = None) -> Dict[str, Any]:
-        """Exporta el personaje a una hoja PDF oficial editable AcroForm."""
+        """Exporta el personaje a una hoja PDF oficial editable AcroForm con selector de guardado nativo."""
         char = self._db.get_character_by_id(char_id)
         if not char:
             return {"success": False, "error": "Personaje no encontrado"}
@@ -1616,11 +1646,29 @@ class DesktopBridge:
         if not os.path.exists(template_pdf):
             template_pdf = os.path.join(self._base_dir, "Artanis LVL 4.pdf")
 
-        if not target_path:
-            clean_name = "".join(c for c in char.name if c.isalnum() or c in (" ", "_", "-")).strip().replace(" ", "_")
-            target_path = os.path.join(self._base_dir, "data", "characters", f"{clean_name}_Sheet.pdf")
+        clean_name = "".join(c for c in char.name if c.isalnum() or c in (" ", "_", "-")).strip().replace(" ", "_")
+        default_filename = f"{clean_name}_Sheet.pdf"
 
-        os.makedirs(os.path.dirname(target_path), exist_ok=True)
+        if not target_path and self._window:
+            try:
+                res = self._window.create_file_dialog(
+                    webview.SAVE_DIALOG,
+                    directory=os.path.join(self._base_dir, "data", "characters"),
+                    save_filename=default_filename,
+                    file_types=("Archivos PDF (*.pdf)", "Todos los Archivos (*.*)"),
+                )
+                if res:
+                    target_path = res[0] if isinstance(res, (list, tuple)) else str(res)
+                elif res is not None:
+                    # Usuario canceló explícitamente el cuadro de diálogo
+                    return {"success": False, "cancelled": True}
+            except Exception:
+                pass
+
+        if not target_path:
+            target_path = os.path.join(self._base_dir, "data", "characters", default_filename)
+
+        os.makedirs(os.path.dirname(os.path.abspath(target_path)), exist_ok=True)
         try:
             out_file = UniversalAcroFormHandler.export_character_to_pdf(
                 char=char,
@@ -1653,21 +1701,33 @@ class DesktopBridge:
     # COMPENDIO OKF (MARKDOWN & REGLAS)
     # =========================================================================
 
-    def get_compendium_categories(self) -> List[Dict[str, Any]]:
-        """Lista las categorías disponibles en el compendio OKF con su conteo."""
+    def get_compendium_categories(self, lang: str = "es") -> List[Dict[str, Any]]:
+        """Lista las categorías disponibles en el compendio OKF con su conteo por idioma."""
+        target_lang = "en" if (lang or "").lower().startswith("en") else "es"
+        if target_lang == "en":
+            return [
+                {"id": "clases", "label": "Classes & Subclasses", "count": self._okf.count_entities(["clase", "subclase"], lang=target_lang)},
+                {"id": "especies_y_linajes", "label": "Species & Lineages", "count": self._okf.count_entities(["especie", "linaje"], lang=target_lang)},
+                {"id": "conjuros", "label": "Spell Grimoire", "count": self._okf.count_entities("conjuro", lang=target_lang)},
+                {"id": "trasfondos", "label": "Backgrounds", "count": self._okf.count_entities("trasfondo", lang=target_lang)},
+                {"id": "dotes", "label": "Character Feats", "count": self._okf.count_entities("dote", lang=target_lang)},
+                {"id": "equipo_y_armamento", "label": "Equipment & Weapons", "count": self._okf.count_entities("equipo", lang=target_lang)},
+                {"id": "reglas_y_mecanicas", "label": "Rules & Mechanics", "count": self._okf.count_entities("regla", lang=target_lang)},
+            ]
         return [
-            {"id": "clases", "label": "Clases y Subclases", "count": self._okf.count_entities(["clase", "subclase"])},
-            {"id": "especies_y_linajes", "label": "Especies y Linajes", "count": self._okf.count_entities(["especie", "linaje"])},
-            {"id": "conjuros", "label": "Grimorio de Conjuros", "count": self._okf.count_entities("conjuro")},
-            {"id": "trasfondos", "label": "Trasfondos", "count": self._okf.count_entities("trasfondo")},
-            {"id": "dotes", "label": "Dotes de Personaje", "count": self._okf.count_entities("dote")},
-            {"id": "equipo_y_armamento", "label": "Equipo y Armamento", "count": self._okf.count_entities("equipo")},
-            {"id": "reglas_y_mecanicas", "label": "Reglas y Mecánicas", "count": self._okf.count_entities("regla")},
+            {"id": "clases", "label": "Clases y Subclases", "count": self._okf.count_entities(["clase", "subclase"], lang=target_lang)},
+            {"id": "especies_y_linajes", "label": "Especies y Linajes", "count": self._okf.count_entities(["especie", "linaje"], lang=target_lang)},
+            {"id": "conjuros", "label": "Grimorio de Conjuros", "count": self._okf.count_entities("conjuro", lang=target_lang)},
+            {"id": "trasfondos", "label": "Trasfondos", "count": self._okf.count_entities("trasfondo", lang=target_lang)},
+            {"id": "dotes", "label": "Dotes de Personaje", "count": self._okf.count_entities("dote", lang=target_lang)},
+            {"id": "equipo_y_armamento", "label": "Equipo y Armamento", "count": self._okf.count_entities("equipo", lang=target_lang)},
+            {"id": "reglas_y_mecanicas", "label": "Reglas y Mecánicas", "count": self._okf.count_entities("regla", lang=target_lang)},
         ]
 
-    def search_compendium(self, query: str = "", category: Optional[str] = None) -> List[Dict[str, Any]]:
-        """Búsqueda de texto o listado por categoría en el compendio OKF."""
+    def search_compendium(self, query: str = "", category: Optional[str] = None, lang: str = "es") -> List[Dict[str, Any]]:
+        """Búsqueda de texto o listado por categoría en el compendio OKF según idioma."""
         query_clean = (query or "").strip()
+        target_lang = "en" if (lang or "").lower().startswith("en") else "es"
 
         category_type_map = {
             "clases": ["clase", "subclase"],
@@ -1680,20 +1740,20 @@ class DesktopBridge:
         }
 
         tipo_filter = category_type_map.get(category) if category else None
-        entities = self._okf.search_entities(query=query_clean, tipo=tipo_filter, limit=150)
+        entities = self._okf.search_entities(query=query_clean, tipo=tipo_filter, limit=150, lang=target_lang)
 
         results = []
         for item in entities:
             item_tipo = item.get("tipo", "")
             snippet_parts = [item.get("fuente", "PHB 2024")]
             if "nivel" in item and item["nivel"] is not None:
-                snippet_parts.append(f"Nivel {item['nivel']}")
+                snippet_parts.append(f"Level {item['nivel']}" if target_lang == "en" else f"Nivel {item['nivel']}")
             if "escuela" in item and item["escuela"]:
                 snippet_parts.append(str(item["escuela"]))
             if "dado_golpe" in item and item["dado_golpe"]:
-                snippet_parts.append(f"DG: {item['dado_golpe']}")
+                snippet_parts.append(f"HD: {item['dado_golpe']}" if target_lang == "en" else f"DG: {item['dado_golpe']}")
             if "dote_concedida" in item and item["dote_concedida"]:
-                snippet_parts.append(f"Dote: {item['dote_concedida']}")
+                snippet_parts.append(f"Feat: {item['dote_concedida']}" if target_lang == "en" else f"Dote: {item['dote_concedida']}")
             if "caracteristicas_clave" in item and item["caracteristicas_clave"]:
                 snippet_parts.append(f"{item['caracteristicas_clave']}")
 
@@ -1706,17 +1766,40 @@ class DesktopBridge:
             })
         return results
 
-    def get_compendium_entry(self, category: str, entry_name: str) -> Optional[Dict[str, Any]]:
-        """Obtiene una entrada completa del compendio OKF con su markdown."""
+    def get_compendium_entry(self, category: str, entry_name: str, lang: str = "es") -> Optional[Dict[str, Any]]:
+        """Obtiene una entrada completa del compendio OKF con su markdown en el idioma solicitado."""
+        target_lang = "en" if (lang or "").lower().startswith("en") else "es"
         query_id = entry_name.strip()
+        clean = query_id.lower()
+        clean_slug = clean.replace(" ", "_")
+        clean_en = f"{clean_slug}_en"
+        clean_base = clean_slug.replace("_en", "")
+
         matched = next(
-            (item for item in self._okf._index if item.get("id") == query_id or item.get("nombre", "").lower() == query_id.lower()),
+            (
+                item for item in self._okf._index
+                if item.get("idioma", "es") == target_lang
+                and (
+                    item.get("id", "").lower() in (clean_slug, clean_en, clean_base)
+                    or item.get("original_id", "").lower() in (clean_slug, clean_en, clean_base)
+                    or item.get("nombre", "").lower() == clean
+                    or item.get("nombre_ingles", "").lower() == clean
+                    or item.get("nombre_espanol", "").lower() == clean
+                )
+            ),
             None
         )
         if not matched:
-            results = self._okf.search_entities(query=query_id, limit=1)
+            results = self._okf.search_entities(query=query_id, lang=target_lang, limit=1)
             if results:
                 matched = results[0]
+
+        if not matched:
+            # Fallback a cualquier idioma si no se encontró en el target
+            matched = next(
+                (item for item in self._okf._index if item.get("id") == query_id or item.get("nombre", "").lower() == clean),
+                None
+            )
 
         if not matched:
             return None
@@ -2000,6 +2083,7 @@ class DesktopBridge:
         return {
             "theme": self._db.get_setting("theme", "dark-obsidian"),
             "dnd_edition": self._db.get_setting("dnd_edition", "5.5e"),
+            "language": self._db.get_setting("language", "es"),
             "talespire_mode": self._db.get_setting("talespire_mode", "dm"),
             "talespire_enabled": self._db.get_setting("talespire_enabled", "true") == "true",
             "okf_path": self._db.get_setting("okf_path", os.path.join(self._base_dir, "okf_dnd5e")),

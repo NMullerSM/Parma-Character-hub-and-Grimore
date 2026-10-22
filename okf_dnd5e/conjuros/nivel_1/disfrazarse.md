@@ -1,26 +1,32 @@
 ---
-id: "disfrazarse"
-nombre: "Disfrazarse"
+id: disfrazarse
+nombre: Disfrazarse
 nivel: 1
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Bardo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S"
-duracion: "1 hora"
+- Bardo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S
+duracion: 1 hora
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 274
 tags:
-  - "ilusionismo"
-  - "nivel_1"
-  - "bardo"
-  - "hechicero"
-  - "mago"
+- ilusionismo
+- nivel_1
+- bardo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Disguise Self
 ---
 
 # Disfrazarse

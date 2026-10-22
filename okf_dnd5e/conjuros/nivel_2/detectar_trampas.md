@@ -1,26 +1,32 @@
 ---
-id: "detectar_trampas"
-nombre: "Detectar Trampas"
+id: detectar_trampas
+nombre: Detectar Trampas
 nivel: 2
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Clérigo"
-  - "Druida"
-  - "Explorador"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Clérigo
+- Druida
+- Explorador
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 273
 tags:
-  - "adivinación"
-  - "nivel_2"
-  - "clérigo"
-  - "druida"
-  - "explorador"
+- adivinación
+- nivel_2
+- clérigo
+- druida
+- explorador
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Find Traps
 ---
 
 # Detectar Trampas

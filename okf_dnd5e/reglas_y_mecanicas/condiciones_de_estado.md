@@ -1,15 +1,20 @@
 ---
-id: "regla_condiciones"
-nombre: "Condiciones de Estado"
-fuente: "Manual del Jugador 2024"
+id: regla_condiciones
+nombre: Condiciones de Estado
+fuente: Manual del Jugador 2024
 pagina: 364
-tipo: "regla"
+tipo: regla
 tags:
-  - "reglas"
-  - "condiciones"
-  - "combate"
-  - "estados"
-  - "salud"
+- reglas
+- condiciones
+- combate
+- estados
+- salud
+- spanish
+- es
+- español
+idioma: es
+nombre_ingles: Condiciones de Estado
 ---
 
 # Condiciones de Estado Oficiales (D&D 5e)

@@ -1,14 +1,20 @@
 ---
-id: "don_de_la_fortaleza"
-nombre: "Don De La Fortaleza"
-categoria: "Don Épico"
-encabezado: "Dote de don épico (requisito: nivel 19 o más)"
-fuente: "PHB 2024"
+id: don_de_la_fortaleza
+nombre: Don De La Fortaleza
+categoria: Don Épico
+encabezado: 'Dote de don épico (requisito: nivel 19 o más)'
+fuente: PHB 2024
 pagina: 212
 tags:
-  - "dote"
-  - "don_epico"
-  - "don_de_la_fortaleza"
+- dote
+- don_epico
+- don_de_la_fortaleza
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Boon of Fortitude
 ---
 
 # Don De La Fortaleza

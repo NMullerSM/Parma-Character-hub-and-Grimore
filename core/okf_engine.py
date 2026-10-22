@@ -11,6 +11,56 @@ from typing import List, Dict, Any, Optional, Union
 from .models import SpellItem
 
 
+CLASS_NAME_ALIASES: Dict[str, List[str]] = {
+    "bardo": ["bardo", "bard"],
+    "clérigo": ["clérigo", "clerigo", "cleric"],
+    "druida": ["druida", "druid"],
+    "hechicero": ["hechicero", "sorcerer"],
+    "mago": ["mago", "wizard"],
+    "paladín": ["paladín", "paladin"],
+    "explorador": ["explorador", "ranger"],
+    "brujo": ["brujo", "warlock"],
+    "bárbaro": ["bárbaro", "barbaro", "barbarian"],
+    "guerrero": ["guerrero", "fighter"],
+    "monje": ["monje", "monk"],
+    "pícaro": ["pícaro", "picaro", "rogue"],
+    "artífice": ["artífice", "artifice", "artificer"],
+    "bard": ["bardo", "bard"],
+    "cleric": ["clérigo", "clerigo", "cleric"],
+    "druid": ["druida", "druid"],
+    "sorcerer": ["hechicero", "sorcerer"],
+    "wizard": ["mago", "wizard"],
+    "paladin": ["paladín", "paladin"],
+    "ranger": ["explorador", "ranger"],
+    "warlock": ["brujo", "warlock"],
+    "barbarian": ["bárbaro", "barbaro", "barbarian"],
+    "fighter": ["guerrero", "fighter"],
+    "monk": ["monje", "monk"],
+    "rogue": ["pícaro", "picaro", "rogue"],
+    "artificer": ["artífice", "artifice", "artificer"],
+}
+
+SCHOOL_NAME_ALIASES: Dict[str, List[str]] = {
+    "abjuración": ["abjuración", "abjuracion", "abjuration"],
+    "conjuración": ["conjuración", "conjuracion", "conjuration"],
+    "adivinación": ["adivinación", "adivinacion", "divination"],
+    "encantamiento": ["encantamiento", "enchantment"],
+    "evocación": ["evocación", "evocacion", "evocation"],
+    "ilusión": ["ilusión", "ilusion", "ilusionismo", "illusion", "illusionism"],
+    "ilusionismo": ["ilusión", "ilusion", "ilusionismo", "illusion", "illusionism"],
+    "nigromancia": ["nigromancia", "necromancy"],
+    "transmutación": ["transmutación", "transmutacion", "transmutation"],
+    "abjuration": ["abjuración", "abjuracion", "abjuration"],
+    "conjuration": ["conjuración", "conjuracion", "conjuration"],
+    "divination": ["adivinación", "adivinacion", "divination"],
+    "enchantment": ["encantamiento", "enchantment"],
+    "evocation": ["evocación", "evocacion", "evocation"],
+    "illusion": ["ilusión", "ilusion", "ilusionismo", "illusion", "illusionism"],
+    "necromancy": ["nigromancia", "necromancy"],
+    "transmutation": ["transmutación", "transmutacion", "transmutation"],
+}
+
+
 class OkfEngine:
     def __init__(self, okf_root_path: Optional[str] = None):
         if okf_root_path is None:
@@ -51,13 +101,20 @@ class OkfEngine:
         tipo: Optional[Union[str, List[str]]] = None,
         nivel: Optional[int] = None,
         clase: Optional[str] = None,
-        limit: int = 500
+        limit: int = 500,
+        lang: Optional[str] = None
     ) -> List[Dict[str, Any]]:
-        """Búsqueda ultrarrápida en memoria sobre el índice precalculado."""
+        """Búsqueda ultrarrápida en memoria sobre el índice precalculado con filtro opcional de idioma."""
         q = query.lower().strip()
+        target_lang = ("en" if lang.lower().startswith("en") else "es") if lang else None
         results = []
 
         for item in self._index:
+            if target_lang:
+                item_lang = item.get("idioma", "es")
+                if item_lang != target_lang:
+                    continue
+
             if tipo:
                 item_tipo = item.get("tipo")
                 if isinstance(tipo, list):
@@ -77,14 +134,16 @@ class OkfEngine:
                     continue
 
             if q:
-                nombre = item.get("nombre", "").lower()
-                nombre_en = item.get("nombre_ingles", "").lower()
-                escuela = item.get("escuela", "").lower()
-                tags = [t.lower() for t in item.get("tags", [])]
+                nombre = str(item.get("nombre") or "").lower()
+                nombre_en = str(item.get("nombre_ingles") or "").lower()
+                nombre_orig = str(item.get("nombre_original") or "").lower()
+                escuela = str(item.get("escuela") or "").lower()
+                tags = [str(t).lower() for t in (item.get("tags") or [])]
 
                 match = (
                     q in nombre
                     or q in nombre_en
+                    or q in nombre_orig
                     or q in escuela
                     or any(q in t for t in tags)
                 )
@@ -97,13 +156,15 @@ class OkfEngine:
 
         return results
 
-    def count_entities(self, tipo: Optional[Union[str, List[str]]] = None) -> int:
-        """Devuelve el conteo rápido de entidades según el tipo o lista de tipos."""
+    def count_entities(self, tipo: Optional[Union[str, List[str]]] = None, lang: str = "es") -> int:
+        """Devuelve el conteo rápido de entidades según el tipo y el idioma."""
+        target_lang = "en" if (lang or "").lower().startswith("en") else "es"
+        items = [i for i in self._index if i.get("idioma", "es") == target_lang]
         if not tipo:
-            return len(self._index)
+            return len(items)
         if isinstance(tipo, list):
-            return sum(1 for item in self._index if item.get("tipo") in tipo)
-        return sum(1 for item in self._index if item.get("tipo") == tipo)
+            return sum(1 for item in items if item.get("tipo") in tipo)
+        return sum(1 for item in items if item.get("tipo") == tipo)
 
     @lru_cache(maxsize=128)
     def read_entity_file(self, rel_path: str) -> Optional[Dict[str, Any]]:
@@ -129,9 +190,50 @@ class OkfEngine:
             print(f"[OkfEngine] Error al leer {rel_path}: {e}")
             return None
 
-    def get_spell_item(self, entity_id: str) -> Optional[SpellItem]:
+
+
+
+    def get_spell_item(self, entity_id: str, lang: str = "es") -> Optional[SpellItem]:
         """Transforma una entidad de conjuro OKF en un objeto SpellItem listo para la ficha."""
-        entity_meta = next((e for e in self._index if e.get("id") == entity_id), None)
+        target_lang = "en" if (lang or "").lower().startswith("en") else "es"
+        clean = (entity_id or "").strip().lower()
+        if not clean:
+            return None
+
+        clean_slug = clean.replace(" ", "_")
+        clean_en = f"{clean_slug}_en"
+        clean_base = clean_slug.replace("_en", "")
+
+        entity_meta = next(
+            (
+                e for e in self._index
+                if e.get("tipo") == "conjuro"
+                and e.get("idioma", "es") == target_lang
+                and (
+                    e.get("id", "").lower() in (clean_slug, clean_en, clean_base)
+                    or e.get("original_id", "").lower() in (clean_slug, clean_en, clean_base)
+                    or e.get("nombre", "").lower() == clean
+                    or e.get("nombre_ingles", "").lower() == clean
+                    or e.get("nombre_espanol", "").lower() == clean
+                )
+            ),
+            None
+        )
+        if not entity_meta:
+            entity_meta = next(
+                (
+                    e for e in self._index
+                    if e.get("tipo") == "conjuro"
+                    and (
+                        e.get("id", "").lower() in (clean_slug, clean_en, clean_base)
+                        or e.get("original_id", "").lower() in (clean_slug, clean_en, clean_base)
+                        or e.get("nombre", "").lower() == clean
+                        or e.get("nombre_ingles", "").lower() == clean
+                        or e.get("nombre_espanol", "").lower() == clean
+                    )
+                ),
+                None
+            )
         if not entity_meta:
             return None
 
@@ -139,19 +241,21 @@ class OkfEngine:
         full_data = self.read_entity_file(file_path) if file_path else None
         data = full_data or entity_meta
 
+        body_desc = data.get("body_markdown") or data.get("descripcion", entity_meta.get("descripcion", ""))
+
         return SpellItem(
-            id=data.get("id", entity_id),
+            id=data.get("id", entity_meta.get("id", entity_id)),
             name=data.get("nombre", entity_meta.get("nombre", "")),
             name_en=data.get("nombre_ingles", entity_meta.get("nombre_ingles", "")),
             level=int(data.get("nivel", entity_meta.get("nivel", 0))),
             school=data.get("escuela", entity_meta.get("escuela", "Evocación")),
-            casting_time=data.get("tiempo_lanzamiento", "1 acción"),
-            range=data.get("alcance", "18 m"),
+            casting_time=data.get("tiempo_lanzamiento", "1 action" if target_lang == "en" else "1 acción"),
+            range=data.get("alcance", "60 ft (12 tiles)" if target_lang == "en" else "18 m"),
             components=data.get("componentes", "V, S"),
-            duration=data.get("duracion", "Instantáneo"),
+            duration=data.get("duracion", "Instantaneous" if target_lang == "en" else "Instantáneo"),
             concentration=bool(data.get("concentracion", False)),
             ritual=bool(data.get("ritual", False)),
-            description=data.get("descripcion", data.get("body_markdown", "")),
+            description=body_desc,
             higher_levels=data.get("niveles_superiores", ""),
             source=data.get("fuente", entity_meta.get("fuente", "PHB 2024")),
             classes=data.get("clases", entity_meta.get("clases", []))
@@ -196,12 +300,16 @@ class OkfEngine:
 
     def get_species(
         self,
-        allowed_sources: Optional[Union[List[str], set]] = None
+        allowed_sources: Optional[Union[List[str], set]] = None,
+        lang: str = "es"
     ) -> List[Dict[str, Any]]:
-        """Devuelve la lista reactiva de especies oficiales disponibles en OKF."""
+        """Devuelve la lista reactiva de especies oficiales disponibles en OKF según el idioma."""
+        target_lang = "en" if (lang or "").lower().startswith("en") else "es"
         species_list = []
         for item in self._index:
             if item.get("tipo") == "especie":
+                if item.get("idioma", "es") != target_lang:
+                    continue
                 if not self._source_matches(item.get("fuente"), allowed_sources):
                     continue
                 rel_path = item.get("path")
@@ -217,11 +325,11 @@ class OkfEngine:
                 species_list.append({
                     "id": item.get("id"),
                     "nombre": data.get("nombre", item.get("nombre")),
-                    "tipo_criatura": data.get("tipo_criatura", "humanoide"),
-                    "tamano": data.get("tamano", "Mediano"),
-                    "velocidad": data.get("velocidad", "9 m"),
+                    "tipo_criatura": data.get("tipo_criatura", "humanoid" if target_lang == "en" else "humanoide"),
+                    "tamano": data.get("tamano", "Medium" if target_lang == "en" else "Mediano"),
+                    "velocidad": data.get("velocidad", "30 ft (6 tiles)" if target_lang == "en" else "9 m"),
                     "sentidos": data.get("sentidos", "Normal"),
-                    "darkvision": "oscuridad" in str(data.get("sentidos", "")).lower(),
+                    "darkvision": "oscuridad" in str(data.get("sentidos", "")).lower() or "darkvision" in str(data.get("sentidos", "")).lower(),
                     "rasgos_principales": traits_str,
                     "fuente": data.get("fuente", item.get("fuente", "PHB 2024")),
                     "pagina": data.get("pagina", item.get("pagina")),
@@ -236,14 +344,18 @@ class OkfEngine:
     def get_lineages(
         self,
         species_name_or_id: Optional[str] = None,
-        allowed_sources: Optional[Union[List[str], set]] = None
+        allowed_sources: Optional[Union[List[str], set]] = None,
+        lang: str = "es"
     ) -> List[Dict[str, Any]]:
-        """Devuelve los linajes/subrazas filtrados por especie padre y fuentes permitidas."""
+        """Devuelve los linajes/subrazas filtrados por especie padre, fuentes e idioma."""
+        target_lang = "en" if (lang or "").lower().startswith("en") else "es"
         lineages = []
         sp_filter = (species_name_or_id or "").lower().strip()
 
         for item in self._index:
             if item.get("tipo") == "linaje":
+                if item.get("idioma", "es") != target_lang:
+                    continue
                 if not self._source_matches(item.get("fuente"), allowed_sources):
                     continue
 
@@ -282,11 +394,12 @@ class OkfEngine:
 
     def get_classes(
         self,
-        allowed_sources: Optional[Union[List[str], set]] = None
+        allowed_sources: Optional[Union[List[str], set]] = None,
+        lang: str = "es"
     ) -> List[Dict[str, Any]]:
-        """Devuelve las 12 clases heroicas oficiales con sus estadísticas base y salvaciones."""
+        """Devuelve las 12 clases heroicas oficiales con sus estadísticas base y salvaciones según el idioma."""
+        target_lang = "en" if (lang or "").lower().startswith("en") else "es"
         classes = []
-        # Mapa de perfiles de equipo y competencias para complementar el markdown
         class_prof_defaults = {
             "Bárbaro": {"armor": "Ligeras, medias, escudos", "weapons": "Marciales, sencillas"},
             "Bardo": {"armor": "Ligeras", "weapons": "Sencillas, estoque, arco corto"},
@@ -299,11 +412,25 @@ class OkfEngine:
             "Pícaro": {"armor": "Ligeras", "weapons": "Sencillas, sutiles"},
             "Hechicero": {"armor": "Ninguna", "weapons": "Dagas, dardos, hondas"},
             "Brujo": {"armor": "Ligeras", "weapons": "Sencillas"},
-            "Mago": {"armor": "Ninguna", "weapons": "Dagas, dardos, hondas, bastones"}
+            "Mago": {"armor": "Ninguna", "weapons": "Dagas, dardos, hondas, bastones"},
+            "Barbarian": {"armor": "Light, medium, shields", "weapons": "Simple, martial"},
+            "Bard": {"armor": "Light", "weapons": "Simple, hand crossbow, longsword, rapier, shortsword"},
+            "Cleric": {"armor": "Light, medium, shields", "weapons": "Simple"},
+            "Druid": {"armor": "Light, medium, shields", "weapons": "Clubs, daggers, darts, javelins, maces, scimitars, sickles, slings, spears"},
+            "Fighter": {"armor": "All armor, shields", "weapons": "Simple, martial"},
+            "Monk": {"armor": "None", "weapons": "Simple, monk weapons"},
+            "Paladin": {"armor": "All armor, shields", "weapons": "Simple, martial"},
+            "Ranger": {"armor": "Light, medium, shields", "weapons": "Simple, martial"},
+            "Rogue": {"armor": "Light", "weapons": "Simple, hand crossbow, longsword, rapier, shortsword"},
+            "Sorcerer": {"armor": "None", "weapons": "Daggers, darts, slings, quarterstaffs, light crossbows"},
+            "Warlock": {"armor": "Light", "weapons": "Simple"},
+            "Wizard": {"armor": "None", "weapons": "Daggers, darts, slings, quarterstaffs, light crossbows"}
         }
 
         for item in self._index:
             if item.get("tipo") == "clase":
+                if item.get("idioma", "es") != target_lang:
+                    continue
                 if not self._source_matches(item.get("fuente"), allowed_sources):
                     continue
 
@@ -313,25 +440,24 @@ class OkfEngine:
 
                 c_name = data.get("nombre", item.get("nombre"))
                 hit_dice_str = str(data.get("dado_golpe", "1d8"))
-                # Parsear valor entero de caras del dado de golpe (ej. "1d10" -> 10)
                 try:
                     hit_dice_val = int(hit_dice_str.lower().split("d")[-1])
                 except Exception:
                     hit_dice_val = 8
 
-                saves = data.get("salvaciones_competentes", ["CON", "FUE"])
-                profs = class_prof_defaults.get(c_name, {"armor": "Ligeras", "weapons": "Sencillas"})
+                saves = data.get("salvaciones_competentes", ["CON", "STR" if target_lang == "en" else "FUE"])
+                profs = class_prof_defaults.get(c_name, {"armor": "Light" if target_lang == "en" else "Ligeras", "weapons": "Simple" if target_lang == "en" else "Sencillas"})
 
                 classes.append({
                     "id": item.get("id"),
                     "nombre": c_name,
-                    "caracteristica_principal": data.get("caracteristica_principal", "FUE"),
+                    "caracteristica_principal": data.get("caracteristica_principal", "STR" if target_lang == "en" else "FUE"),
                     "dado_golpe_str": hit_dice_str,
                     "hit_dice": hit_dice_val,
                     "saves": saves,
                     "armor": profs["armor"],
                     "weapons": profs["weapons"],
-                    "subclass_level": 3,  # Regla unificada PHB 2024
+                    "subclass_level": 3,
                     "fuente": data.get("fuente", item.get("fuente", "PHB 2024")),
                     "path": rel_path,
                     "body_markdown": data.get("body_markdown", "")
@@ -344,18 +470,22 @@ class OkfEngine:
         self,
         class_name: Optional[str] = None,
         allowed_sources: Optional[Union[List[str], set]] = None,
-        max_level: int = 20
+        max_level: int = 20,
+        lang: str = "es"
     ) -> List[Dict[str, Any]]:
-        """Devuelve las subclases atómicas oficiales de OKF para la clase y fuentes dadas."""
+        """Devuelve las subclases atómicas oficiales de OKF para la clase, fuentes e idioma dados."""
+        target_lang = "en" if (lang or "").lower().startswith("en") else "es"
         subclasses = []
         target_class = (class_name or "").lower().strip()
 
         for item in self._index:
             if item.get("tipo") == "subclase":
+                if item.get("idioma", "es") != target_lang:
+                    continue
                 if not self._source_matches(item.get("fuente"), allowed_sources):
                     continue
 
-                item_class = str(item.get("clase") or "").lower().strip()
+                item_class = str(item.get("clase") or item.get("clase_padre") or "").lower().strip()
                 item_tags = [str(t).lower() for t in item.get("tags", [])]
                 item_path = item.get("path", "").lower()
 
@@ -381,7 +511,7 @@ class OkfEngine:
                     "id": item.get("id"),
                     "nombre": data.get("nombre", item.get("nombre")),
                     "nombre_ingles": data.get("nombre_ingles", item.get("nombre_ingles", "")),
-                    "clase": item.get("clase", class_name or "Desconocida"),
+                    "clase": item.get("clase", class_name or ("Unknown" if target_lang == "en" else "Desconocida")),
                     "nivel": item_lvl,
                     "fuente": data.get("fuente", item.get("fuente", "PHB 2024")),
                     "path": rel_path,
@@ -394,12 +524,16 @@ class OkfEngine:
 
     def get_backgrounds(
         self,
-        allowed_sources: Optional[Union[List[str], set]] = None
+        allowed_sources: Optional[Union[List[str], set]] = None,
+        lang: str = "es"
     ) -> List[Dict[str, Any]]:
-        """Devuelve los trasfondos oficiales de OKF con sus dotes de origen y bonos de atributos."""
+        """Devuelve los trasfondos oficiales de OKF según el idioma."""
+        target_lang = "en" if (lang or "").lower().startswith("en") else "es"
         backgrounds = []
         for item in self._index:
             if item.get("tipo") == "trasfondo":
+                if item.get("idioma", "es") != target_lang:
+                    continue
                 if not self._source_matches(item.get("fuente"), allowed_sources):
                     continue
 
@@ -410,9 +544,9 @@ class OkfEngine:
                 backgrounds.append({
                     "id": item.get("id"),
                     "nombre": data.get("nombre", item.get("nombre")),
-                    "dote_concedida": data.get("dote_concedida", "Dote de Origen"),
-                    "caracteristicas_clave": data.get("caracteristicas_clave", "Fuerza, Destreza, Constitución"),
-                    "habilidades_competentes": data.get("habilidades_competentes", "Atletismo, Percepción"),
+                    "dote_concedida": data.get("dote_concedida", "Origin Feat" if target_lang == "en" else "Dote de Origen"),
+                    "caracteristicas_clave": data.get("caracteristicas_clave", "Strength, Dexterity, Constitution" if target_lang == "en" else "Fuerza, Destreza, Constitución"),
+                    "habilidades_competentes": data.get("habilidades_competentes", "Athletics, Perception" if target_lang == "en" else "Atletismo, Percepción"),
                     "fuente": data.get("fuente", item.get("fuente", "PHB 2024")),
                     "path": rel_path,
                     "body_markdown": data.get("body_markdown", "")
@@ -423,16 +557,21 @@ class OkfEngine:
 
     def get_origin_feats(
         self,
-        allowed_sources: Optional[Union[List[str], set]] = None
+        allowed_sources: Optional[Union[List[str], set]] = None,
+        lang: str = "es"
     ) -> List[Dict[str, Any]]:
-        """Devuelve las dotes de origen oficiales de OKF."""
+        """Devuelve las dotes de origen oficiales de OKF según el idioma."""
+        target_lang = "en" if (lang or "").lower().startswith("en") else "es"
         feats = []
         for item in self._index:
             if item.get("tipo") == "dote":
+                if item.get("idioma", "es") != target_lang:
+                    continue
                 tags = [str(t).lower() for t in item.get("tags", [])]
                 is_origin = (
                     "origen" in tags
-                    or str(item.get("categoria", "")).lower() == "origen"
+                    or "origin" in tags
+                    or str(item.get("categoria", "")).lower() in ("origen", "origin")
                     or "dotes/origen/" in item.get("path", "")
                 )
                 if not is_origin:
@@ -448,7 +587,7 @@ class OkfEngine:
                 feats.append({
                     "id": item.get("id"),
                     "nombre": data.get("nombre", item.get("nombre")),
-                    "categoria": "Origen",
+                    "categoria": "Origin" if target_lang == "en" else "Origen",
                     "fuente": data.get("fuente", item.get("fuente", "PHB 2024")),
                     "path": rel_path,
                     "body_markdown": data.get("body_markdown", "")
@@ -462,14 +601,19 @@ class OkfEngine:
         class_name: str,
         max_spell_level: int = 9,
         min_spell_level: int = 0,
-        allowed_sources: Optional[Union[List[str], set]] = None
+        allowed_sources: Optional[Union[List[str], set]] = None,
+        lang: str = "es"
     ) -> List[Dict[str, Any]]:
-        """Devuelve la lista de conjuros disponibles para una clase en un rango de niveles."""
+        """Devuelve la lista de conjuros disponibles para una clase en un rango de niveles e idioma."""
+        target_lang = "en" if (lang or "").lower().startswith("en") else "es"
         spells = []
         c_target = class_name.lower().strip()
+        allowed_classes = CLASS_NAME_ALIASES.get(c_target, [c_target])
 
         for item in self._index:
             if item.get("tipo") == "conjuro":
+                if item.get("idioma", "es") != target_lang:
+                    continue
                 if not self._source_matches(item.get("fuente"), allowed_sources):
                     continue
 
@@ -479,7 +623,7 @@ class OkfEngine:
                     continue
 
                 item_classes = [str(c).lower() for c in item.get("clases", [])]
-                if not any(c_target == c for c in item_classes):
+                if not any(c in allowed_classes or any(ac in c for ac in allowed_classes) for c in item_classes):
                     continue
 
                 spells.append(item)
@@ -512,22 +656,44 @@ class OkfEngine:
         return str(comp)
 
     @staticmethod
-    def _format_range_with_tiles(range_val: Any) -> str:
-        """Formatea el alcance en metros añadiendo su equivalente exacto en casillas (tiles)."""
+    def _format_range_with_tiles(range_val: Any, lang: str = "es") -> str:
+        """Formatea el alcance en metros o pies añadiendo su equivalente exacto en casillas (tiles)."""
         import re
+        is_en = (lang or "").lower().startswith("en")
         if not range_val:
-            return "18 m (12 casillas)"
+            return "60 ft (12 tiles)" if is_en else "18 m (12 casillas)"
         r_str = str(range_val).strip()
         if "casilla" in r_str.lower() or "tile" in r_str.lower():
             return r_str
-        if r_str.lower() == "toque":
-            return "Toque (1 casilla)"
+        if r_str.lower() in ("toque", "touch"):
+            return "Touch (1 tile)" if is_en else "Toque (1 casilla)"
+        if r_str.lower() in ("personal", "self"):
+            return "Self" if is_en else "Personal"
 
+        # Formato pies (ft)
+        def _sub_ft(m):
+            num_str = m.group(1).replace(",", ".")
+            try:
+                feet = float(num_str)
+                tiles = max(1, round(feet / 5))
+                t_label = "tile" if tiles == 1 else "tiles"
+                return f"{feet:g} ft ({tiles} {t_label})"
+            except Exception:
+                return m.group(0)
+
+        if re.search(r'\b\d+(?:[.,]\d+)?\s*(?:ft|feet|foot)\b', r_str, re.IGNORECASE):
+            return re.sub(r'(\d+(?:[.,]\d+)?)\s*(?:ft|feet|foot)\b', _sub_ft, r_str, flags=re.IGNORECASE)
+
+        # Formato metros (m)
         def _sub_m(m):
             num_str = m.group(1).replace(",", ".")
             try:
                 meters = float(num_str)
                 tiles = max(1, round(meters / 1.5))
+                if is_en:
+                    feet = round(meters / 0.3)
+                    t_label = "tile" if tiles == 1 else "tiles"
+                    return f"{feet} ft ({tiles} {t_label})"
                 t_label = "casilla" if tiles == 1 else "casillas"
                 return f"{meters:g} m ({tiles} {t_label})"
             except Exception:
@@ -537,28 +703,43 @@ class OkfEngine:
         return res
 
     @staticmethod
-    def _format_duration_with_turns(dur_val: Any) -> str:
-        """Formatea la duración indicando el número de turnos/asaltos cuando aplique."""
+    def _format_duration_with_turns(dur_val: Any, lang: str = "es") -> str:
+        """Formatea la duración indicando el número de turnos/asaltos cuando aplique según el idioma."""
         import re
+        is_en = (lang or "").lower().startswith("en")
         if not dur_val:
-            return "Instantáneo"
+            return "Instantaneous" if is_en else "Instantáneo"
         d_str = str(dur_val).strip()
         if re.search(r'\(\d+\s*(?:turno|asalt|round)', d_str, re.IGNORECASE):
             return d_str
 
         res = d_str
-        if re.search(r'\b1\s*(?:minuto|min)\b', res, re.IGNORECASE):
-            res = re.sub(r'\b1\s*(?:minuto|min)\b', '1 minuto (10 turnos)', res, flags=re.IGNORECASE)
-        elif re.search(r'\b10\s*(?:minutos|mins)\b', res, re.IGNORECASE):
-            res = re.sub(r'\b10\s*(?:minutos|mins)\b', '10 minutos (100 turnos)', res, flags=re.IGNORECASE)
-        elif re.search(r'\b1\s*(?:hora|hr)\b', res, re.IGNORECASE):
-            res = re.sub(r'\b1\s*(?:hora|hr)\b', '1 hora (600 turnos)', res, flags=re.IGNORECASE)
-        elif re.search(r'\b8\s*(?:horas|hrs)\b', res, re.IGNORECASE):
-            res = re.sub(r'\b8\s*(?:horas|hrs)\b', '8 horas (4800 turnos)', res, flags=re.IGNORECASE)
-        elif re.search(r'\b24\s*(?:horas|hrs)\b', res, re.IGNORECASE):
-            res = re.sub(r'\b24\s*(?:horas|hrs)\b', '24 horas (14400 turnos)', res, flags=re.IGNORECASE)
-        elif re.search(r'\b1\s*(?:asalto|round)\b', res, re.IGNORECASE) and "turno" not in res.lower():
-            res = re.sub(r'\b1\s*(?:asalto|round)\b', '1 asalto (1 turno)', res, flags=re.IGNORECASE)
+        if is_en:
+            if re.search(r'\b1\s*(?:minute|minuto|min)\b', res, re.IGNORECASE):
+                res = re.sub(r'\b1\s*(?:minute|minuto|min)\b', '1 minute (10 rounds)', res, flags=re.IGNORECASE)
+            elif re.search(r'\b10\s*(?:minutes|minutos|mins)\b', res, re.IGNORECASE):
+                res = re.sub(r'\b10\s*(?:minutes|minutos|mins)\b', '10 minutes (100 rounds)', res, flags=re.IGNORECASE)
+            elif re.search(r'\b1\s*(?:hour|hora|hr)\b', res, re.IGNORECASE):
+                res = re.sub(r'\b1\s*(?:hour|hora|hr)\b', '1 hour (600 rounds)', res, flags=re.IGNORECASE)
+            elif re.search(r'\b8\s*(?:hours|horas|hrs)\b', res, re.IGNORECASE):
+                res = re.sub(r'\b8\s*(?:hours|horas|hrs)\b', '8 hours (4800 rounds)', res, flags=re.IGNORECASE)
+            elif re.search(r'\b24\s*(?:hours|horas|hrs)\b', res, re.IGNORECASE):
+                res = re.sub(r'\b24\s*(?:hours|horas|hrs)\b', '24 hours (14400 rounds)', res, flags=re.IGNORECASE)
+            elif re.search(r'\b1\s*(?:round|asalto)\b', res, re.IGNORECASE):
+                res = re.sub(r'\b1\s*(?:round|asalto)\b', '1 round (1 turn)', res, flags=re.IGNORECASE)
+        else:
+            if re.search(r'\b1\s*(?:minuto|min)\b', res, re.IGNORECASE):
+                res = re.sub(r'\b1\s*(?:minuto|min)\b', '1 minuto (10 turnos)', res, flags=re.IGNORECASE)
+            elif re.search(r'\b10\s*(?:minutos|mins)\b', res, re.IGNORECASE):
+                res = re.sub(r'\b10\s*(?:minutos|mins)\b', '10 minutos (100 turnos)', res, flags=re.IGNORECASE)
+            elif re.search(r'\b1\s*(?:hora|hr)\b', res, re.IGNORECASE):
+                res = re.sub(r'\b1\s*(?:hora|hr)\b', '1 hora (600 turnos)', res, flags=re.IGNORECASE)
+            elif re.search(r'\b8\s*(?:horas|hrs)\b', res, re.IGNORECASE):
+                res = re.sub(r'\b8\s*(?:horas|hrs)\b', '8 horas (4800 turnos)', res, flags=re.IGNORECASE)
+            elif re.search(r'\b24\s*(?:horas|hrs)\b', res, re.IGNORECASE):
+                res = re.sub(r'\b24\s*(?:horas|hrs)\b', '24 horas (14400 turnos)', res, flags=re.IGNORECASE)
+            elif re.search(r'\b1\s*(?:asalto|round)\b', res, re.IGNORECASE) and "turno" not in res.lower():
+                res = re.sub(r'\b1\s*(?:asalto|round)\b', '1 asalto (1 turno)', res, flags=re.IGNORECASE)
 
         return res
 
@@ -569,12 +750,14 @@ class OkfEngine:
         level: Optional[int] = None,
         max_level: Optional[int] = None,
         school: Optional[str] = None,
-        limit: int = 150
+        limit: int = 150,
+        lang: str = "es"
     ) -> List[Dict[str, Any]]:
         """
         Búsqueda enriquecida de conjuros en el compendio OKF con filtros combinados
-        de clase, nivel, escuela y texto libre. Devuelve objetos listos para el grimorio.
+        de clase, nivel, escuela, idioma y texto libre. Devuelve objetos listos para el grimorio.
         """
+        target_lang = "en" if (lang or "").lower().startswith("en") else "es"
         q = (query or "").lower().strip()
         c_filter = (class_name or "").lower().strip()
         if c_filter == "all" or c_filter == "cualquiera" or c_filter == "todos":
@@ -587,6 +770,8 @@ class OkfEngine:
         for item in self._index:
             if item.get("tipo") != "conjuro":
                 continue
+            if item.get("idioma", "es") != target_lang:
+                continue
 
             lvl = int(item.get("nivel", 0)) if item.get("nivel") is not None else 0
             if level is not None and lvl != level:
@@ -595,13 +780,15 @@ class OkfEngine:
                 continue
 
             if c_filter:
+                allowed_classes = CLASS_NAME_ALIASES.get(c_filter, [c_filter])
                 item_classes = [str(c).lower() for c in item.get("clases", [])]
-                if not any(c_filter in c for c in item_classes):
+                if not any(c in allowed_classes or any(ac in c for ac in allowed_classes) for c in item_classes):
                     continue
 
             if s_filter:
+                allowed_schools = SCHOOL_NAME_ALIASES.get(s_filter, [s_filter])
                 item_school = str(item.get("escuela", "")).lower()
-                if s_filter not in item_school:
+                if not any(s in item_school or item_school in s for s in allowed_schools):
                     continue
 
             if q:
@@ -622,10 +809,10 @@ class OkfEngine:
             snippet = body_md[:200] + "..." if len(body_md) > 200 else body_md
 
             raw_range = data.get("alcance", item.get("alcance", "18 m"))
-            formatted_range = self._format_range_with_tiles(raw_range)
+            formatted_range = self._format_range_with_tiles(raw_range, lang=target_lang)
 
             raw_dur = data.get("duracion", item.get("duracion", "Instantáneo"))
-            formatted_dur = self._format_duration_with_turns(raw_dur)
+            formatted_dur = self._format_duration_with_turns(raw_dur, lang=target_lang)
 
             raw_comp = data.get("componentes", item.get("componentes", "V, S"))
             formatted_comp = self._format_components(raw_comp)

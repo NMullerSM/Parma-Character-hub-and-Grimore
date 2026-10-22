@@ -1,26 +1,32 @@
 ---
-id: "tormenta_de_fuego"
-nombre: "Tormenta De Fuego"
+id: tormenta_de_fuego
+nombre: Tormenta De Fuego
 nivel: 7
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Clérigo"
-  - "Druida"
-  - "Hechicero"
-tiempo_lanzamiento: "Acción"
-alcance: "45 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Clérigo
+- Druida
+- Hechicero
+tiempo_lanzamiento: Acción
+alcance: 45 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 341
 tags:
-  - "evocación"
-  - "nivel_7"
-  - "clérigo"
-  - "druida"
-  - "hechicero"
+- evocación
+- nivel_7
+- clérigo
+- druida
+- hechicero
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Fire Storm
 ---
 
 # Tormenta De Fuego

@@ -1,12 +1,22 @@
 ---
-id: "mago_evocacion"
-nombre: "Escuela de Evocación"
-nombre_ingles: "School of Evocation"
-tipo: "subclase"
-clase_padre: "Mago"
+id: mago_evocacion
+nombre: Escuela de Evocación
+nombre_ingles: School of Evocation
+tipo: subclase
+clase_padre: Mago
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["mago", "fuego", "área", "esculpir conjuros", "sobrecargar", "phb2024"]
+fuente: PHB 2024
+tags:
+- mago
+- fuego
+- área
+- esculpir conjuros
+- sobrecargar
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Escuela de Evocación (School of Evocation)

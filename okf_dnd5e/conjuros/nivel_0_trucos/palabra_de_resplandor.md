@@ -1,22 +1,28 @@
 ---
-id: "palabra_de_resplandor"
-nombre: "Palabra De Resplandor"
+id: palabra_de_resplandor
+nombre: Palabra De Resplandor
 nivel: 0
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Clérigo"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, M (un símbolo con forma de rayo)"
-duracion: "Instantáneo"
+- Clérigo
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, M (un símbolo con forma de rayo)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 319
 tags:
-  - "evocación"
-  - "nivel_0"
-  - "clérigo"
+- evocación
+- nivel_0
+- clérigo
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Word of Radiance
 ---
 
 # Palabra De Resplandor

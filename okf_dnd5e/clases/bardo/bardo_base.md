@@ -1,22 +1,28 @@
 ---
-id: "bardo"
-nombre: "Bardo"
-caracteristica_principal: "CAR"
-dado_golpe: "1d8"
+id: bardo
+nombre: Bardo
+caracteristica_principal: CAR
+dado_golpe: 1d8
 salvaciones_competentes:
-  - "DES"
-  - "CAR"
+- DES
+- CAR
 subclases_oficiales:
-  - "Colegio de la Danza"
-  - "Colegio del Glamour"
-  - "Colegio del Saber"
-  - "Colegio del Valor"
-  - "Colegio de Susurros"
-fuente: "PHB 2024"
+- Colegio de la Danza
+- Colegio del Glamour
+- Colegio del Saber
+- Colegio del Valor
+- Colegio de Susurros
+fuente: PHB 2024
 pagina: 58
 tags:
-  - "clase"
-  - "bardo"
+- clase
+- bardo
+- spanish
+- es
+- español
+idioma: es
+tipo: clase
+nombre_ingles: Bard
 ---
 
 # Clase: Bardo

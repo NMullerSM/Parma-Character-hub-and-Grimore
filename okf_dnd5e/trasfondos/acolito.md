@@ -9,8 +9,14 @@ pagina: 178
 tags:
 - trasfondo
 - acolito
+- spanish
+- es
+- español
 tipo: trasfondo
+idioma: es
+nombre_ingles: Acolyte
 ---
+
 # Trasfondo: Acólito
 
 - **Puntuaciones de Característica**: Sabiduría, Inteligencia, Carisma

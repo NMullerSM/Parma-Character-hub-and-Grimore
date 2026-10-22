@@ -1,26 +1,32 @@
 ---
-id: "paso_brumoso"
-nombre: "Paso Brumoso"
+id: paso_brumoso
+nombre: Paso Brumoso
 nivel: 2
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción adicional"
-alcance: "Lanzador"
-componentes: "V"
-duracion: "Instantáneo"
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción adicional
+alcance: Lanzador
+componentes: V
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 320
 tags:
-  - "conjuración"
-  - "nivel_2"
-  - "brujo"
-  - "hechicero"
-  - "mago"
+- conjuración
+- nivel_2
+- brujo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Misty Step
 ---
 
 # Paso Brumoso

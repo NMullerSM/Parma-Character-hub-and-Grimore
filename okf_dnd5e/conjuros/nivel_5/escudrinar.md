@@ -1,31 +1,38 @@
 ---
-id: "escudrinar"
-nombre: "Escudriñar"
+id: escudrinar
+nombre: Escudriñar
 nivel: 5
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Clérigo"
-  - "Druida"
-  - "Mago"
-tiempo_lanzamiento: "10 minutos"
-alcance: "Lanzador"
-componentes: "V, S, M (un canalizador que valga al menos  1000 po, como una bola de cristal, un espejo o una pila  llena de agua)"
-duracion: "Concentración, hasta 10 minutos"
+- Bardo
+- Brujo
+- Clérigo
+- Druida
+- Mago
+tiempo_lanzamiento: 10 minutos
+alcance: Lanzador
+componentes: V, S, M (un canalizador que valga al menos  1000 po, como una bola de
+  cristal, un espejo o una pila  llena de agua)
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 280
 tags:
-  - "adivinación"
-  - "nivel_5"
-  - "bardo"
-  - "brujo"
-  - "clérigo"
-  - "druida"
-  - "mago"
-  - "concentracion"
+- adivinación
+- nivel_5
+- bardo
+- brujo
+- clérigo
+- druida
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Scrying
 ---
 
 # Escudriñar

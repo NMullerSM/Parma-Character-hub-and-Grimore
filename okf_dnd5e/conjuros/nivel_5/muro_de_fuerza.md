@@ -1,23 +1,29 @@
 ---
-id: "muro_de_fuerza"
-nombre: "Muro De Fuerza"
+id: muro_de_fuerza
+nombre: Muro De Fuerza
 nivel: 5
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S, M (un trozo de vidrio)"
-duracion: "Concentración, hasta 10 minutos"
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S, M (un trozo de vidrio)
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 313
 tags:
-  - "evocación"
-  - "nivel_5"
-  - "mago"
-  - "concentracion"
+- evocación
+- nivel_5
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Wall of Force
 ---
 
 # Muro De Fuerza

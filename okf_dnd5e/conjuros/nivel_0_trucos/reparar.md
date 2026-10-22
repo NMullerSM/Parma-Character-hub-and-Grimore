@@ -1,30 +1,36 @@
 ---
-id: "reparar"
-nombre: "Reparar"
+id: reparar
+nombre: Reparar
 nivel: 0
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "1 minuto"
-alcance: "Toque"
-componentes: "V, S, M (dos imanes naturales)"
-duracion: "Instantáneo"
+- Bardo
+- Clérigo
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: 1 minuto
+alcance: Toque
+componentes: V, S, M (dos imanes naturales)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 329
 tags:
-  - "transmutación"
-  - "nivel_0"
-  - "bardo"
-  - "clérigo"
-  - "druida"
-  - "hechicero"
-  - "mago"
+- transmutación
+- nivel_0
+- bardo
+- clérigo
+- druida
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Mending
 ---
 
 # Reparar

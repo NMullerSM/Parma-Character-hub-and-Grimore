@@ -1,25 +1,31 @@
 ---
-id: "presencia_regia_de_yolande"
-nombre: "Presencia Regia De Yolande"
+id: presencia_regia_de_yolande
+nombre: Presencia Regia De Yolande
 nivel: 5
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S, M (una tiara en miniatura)"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S, M (una tiara en miniatura)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 323
 tags:
-  - "encantamiento"
-  - "nivel_5"
-  - "bardo"
-  - "mago"
-  - "concentracion"
+- encantamiento
+- nivel_5
+- bardo
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Yolande's Regal Presence
 ---
 
 # Presencia Regia De Yolande

@@ -1,23 +1,29 @@
 ---
-id: "ojo_arcano"
-nombre: "Ojo Arcano"
+id: ojo_arcano
+nombre: Ojo Arcano
 nivel: 4
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S, M (un poco de pelo de murciélago)"
-duracion: "Concentración, hasta 1 hora"
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S, M (un poco de pelo de murciélago)
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 316
 tags:
-  - "adivinación"
-  - "nivel_4"
-  - "mago"
-  - "concentracion"
+- adivinación
+- nivel_4
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Arcane Eye
 ---
 
 # Ojo Arcano

@@ -1,22 +1,28 @@
 ---
-id: "saber_druidico"
-nombre: "Saber Druídico"
+id: saber_druidico
+nombre: Saber Druídico
 nivel: 0
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Druida"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Druida
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 332
 tags:
-  - "transmutación"
-  - "nivel_0"
-  - "druida"
+- transmutación
+- nivel_0
+- druida
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Druidcraft
 ---
 
 # Saber Druídico

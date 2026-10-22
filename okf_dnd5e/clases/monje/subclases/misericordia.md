@@ -1,12 +1,22 @@
 ---
-id: "monje_misericordia"
-nombre: "Camino de la Misericordia"
-nombre_ingles: "Way of Mercy"
-tipo: "subclase"
-clase_padre: "Monje"
+id: monje_misericordia
+nombre: Camino de la Misericordia
+nombre_ingles: Way of Mercy
+tipo: subclase
+clase_padre: Monje
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["monje", "sanación", "toque de daño", "máscara", "phb2024", "tasha"]
+fuente: PHB 2024
+tags:
+- monje
+- sanación
+- toque de daño
+- máscara
+- phb2024
+- tasha
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Camino de la Misericordia (Way of Mercy)

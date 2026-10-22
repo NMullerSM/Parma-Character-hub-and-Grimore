@@ -1,22 +1,28 @@
 ---
-id: "aspectos_animales"
-nombre: "Aspectos Animales"
+id: aspectos_animales
+nombre: Aspectos Animales
 nivel: 8
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Druida"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S"
-duracion: "24 horas"
+- Druida
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S
+duracion: 24 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 248
 tags:
-  - "transmutación"
-  - "nivel_8"
-  - "druida"
+- transmutación
+- nivel_8
+- druida
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Animal Shapes
 ---
 
 # Aspectos Animales

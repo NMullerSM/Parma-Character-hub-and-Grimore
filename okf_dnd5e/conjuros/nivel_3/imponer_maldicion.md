@@ -1,27 +1,33 @@
 ---
-id: "imponer_maldicion"
-nombre: "Imponer Maldición"
+id: imponer_maldicion
+nombre: Imponer Maldición
 nivel: 3
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Clérigo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 296
 tags:
-  - "nigromancia"
-  - "nivel_3"
-  - "bardo"
-  - "clérigo"
-  - "mago"
-  - "concentracion"
+- nigromancia
+- nivel_3
+- bardo
+- clérigo
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Bestow Curse
 ---
 
 # Imponer Maldición

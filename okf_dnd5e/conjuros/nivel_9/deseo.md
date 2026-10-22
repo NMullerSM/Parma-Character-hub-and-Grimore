@@ -1,24 +1,30 @@
 ---
-id: "deseo"
-nombre: "Deseo"
+id: deseo
+nombre: Deseo
 nivel: 9
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V"
-duracion: "Instantáneo"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 270
 tags:
-  - "conjuración"
-  - "nivel_9"
-  - "hechicero"
-  - "mago"
+- conjuración
+- nivel_9
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Wish
 ---
 
 # Deseo

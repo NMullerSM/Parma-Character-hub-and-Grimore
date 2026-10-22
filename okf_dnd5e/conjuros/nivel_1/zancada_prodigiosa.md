@@ -1,28 +1,34 @@
 ---
-id: "zancada_prodigiosa"
-nombre: "Zancada Prodigiosa"
+id: zancada_prodigiosa
+nombre: Zancada Prodigiosa
 nivel: 1
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Bardo"
-  - "Druida"
-  - "Explorador"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S, M (una pizca de tierra)"
-duracion: "1 hora"
+- Bardo
+- Druida
+- Explorador
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S, M (una pizca de tierra)
+duracion: 1 hora
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 345
 tags:
-  - "transmutación"
-  - "nivel_1"
-  - "bardo"
-  - "druida"
-  - "explorador"
-  - "mago"
+- transmutación
+- nivel_1
+- bardo
+- druida
+- explorador
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Longstrider
 ---
 
 # Zancada Prodigiosa

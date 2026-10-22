@@ -1,29 +1,35 @@
 ---
-id: "amistad"
-nombre: "Amistad"
+id: amistad
+nombre: Amistad
 nivel: 0
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "3 m"
-componentes: "S, M (un poco de maquillaje)"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 3 m
+componentes: S, M (un poco de maquillaje)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 244
 tags:
-  - "encantamiento"
-  - "nivel_0"
-  - "bardo"
-  - "brujo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- encantamiento
+- nivel_0
+- bardo
+- brujo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Friends
 ---
 
 # Amistad

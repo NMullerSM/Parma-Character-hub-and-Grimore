@@ -1,26 +1,33 @@
 ---
-id: "llama_permanente"
-nombre: "Llama Permanente"
+id: llama_permanente
+nombre: Llama Permanente
 nivel: 2
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Clérigo"
-  - "Druida"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S, M (polvo de rubí que valga al menos  50 po, que se consume como parte del conjuro)"
-duracion: "Hasta que sea disipado"
+- Clérigo
+- Druida
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S, M (polvo de rubí que valga al menos  50 po, que se consume como
+  parte del conjuro)
+duracion: Hasta que sea disipado
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 307
 tags:
-  - "evocación"
-  - "nivel_2"
-  - "clérigo"
-  - "druida"
-  - "mago"
+- evocación
+- nivel_2
+- clérigo
+- druida
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Continual Flame
 ---
 
 # Llama Permanente

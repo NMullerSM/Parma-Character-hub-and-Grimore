@@ -1,24 +1,30 @@
 ---
-id: "bola_de_fuego"
-nombre: "Bola De Fuego"
+id: bola_de_fuego
+nombre: Bola De Fuego
 nivel: 3
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "45 m"
-componentes: "V, S, M (una pelota de guano de murciélago  y azufre)"
-duracion: "Instantáneo"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 45 m
+componentes: V, S, M (una pelota de guano de murciélago  y azufre)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 251
 tags:
-  - "evocación"
-  - "nivel_3"
-  - "hechicero"
-  - "mago"
+- evocación
+- nivel_3
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Fireball
 ---
 
 # Bola De Fuego

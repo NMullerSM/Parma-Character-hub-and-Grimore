@@ -1,25 +1,31 @@
 ---
-id: "detectar_el_bien_y_el_mal"
-nombre: "Detectar El Bien Y El Mal"
+id: detectar_el_bien_y_el_mal
+nombre: Detectar El Bien Y El Mal
 nivel: 1
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Clérigo"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S"
-duracion: "Concentración, hasta 10 minutos"
+- Clérigo
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 272
 tags:
-  - "adivinación"
-  - "nivel_1"
-  - "clérigo"
-  - "paladín"
-  - "concentracion"
+- adivinación
+- nivel_1
+- clérigo
+- paladín
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Detect Evil and Good
 ---
 
 # Detectar El Bien Y El Mal

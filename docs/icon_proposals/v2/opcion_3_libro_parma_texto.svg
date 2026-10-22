@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
+  <!-- Opción 3: El Libro Abierto con Tipografía Parma -->
+  <g fill="currentColor">
+    <!-- Cubierta exterior / Encuadernación -->
+    <path d="M 128 178 C 96 156 50 158 32 166 L 32 78 C 50 70 96 68 128 90 C 160 68 206 70 224 78 L 224 166 C 206 158 160 156 128 178 Z" fill="none" stroke="currentColor" stroke-width="10" stroke-linejoin="round"/>
+    <!-- Lomo central -->
+    <line x1="128" y1="90" x2="128" y2="186" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+    <!-- Páginas curvadas interiores -->
+    <path d="M 128 164 C 102 146 64 148 46 154 L 46 92 C 64 86 102 84 128 102 C 154 84 192 86 210 92 L 210 154 C 192 148 154 146 128 164 Z" fill="currentColor" opacity="0.12"/>
+    <!-- Tipografía PARMA integrada en el diseño -->
+    <text x="128" y="142" font-family="'EB Garamond', serif, Times" font-size="28" font-weight="700" letter-spacing="4" text-anchor="middle" fill="currentColor">PARMA</text>
+    <!-- Pequeño adorno rúnico bajo el texto -->
+    <circle cx="128" cy="154" r="2.5" fill="currentColor"/>
+    <circle cx="116" cy="154" r="1.5" fill="currentColor" opacity="0.7"/>
+    <circle cx="140" cy="154" r="1.5" fill="currentColor" opacity="0.7"/>
+  </g>
+</svg>

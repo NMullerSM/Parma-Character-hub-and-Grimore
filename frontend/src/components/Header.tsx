@@ -1,7 +1,12 @@
 import React from "react";
 import { useCharacter } from "../context/CharacterContext";
 import { useTheme } from "../context/ThemeContext";
+import { useTranslation } from "../i18n";
 import { Dice5, Settings as SettingsIcon, Sun, Moon } from "lucide-react";
+import logoEsDark from "../assets/logo/parma-logo-es-dark.svg";
+import logoEsLight from "../assets/logo/parma-logo-es-light.svg";
+import logoEnDark from "../assets/logo/parma-logo-en-dark.svg";
+import logoEnLight from "../assets/logo/parma-logo-en-light.svg";
 
 interface HeaderProps {
   activeTab: string;
@@ -19,18 +24,24 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
     openDiceDrawer,
     dndEdition,
     setDndEdition,
+    language,
   } = useCharacter();
   const { isDark, toggleTheme } = useTheme();
+  const { t, translateClass } = useTranslation();
+
+  const currentLogo = language === "es"
+    ? (isDark ? logoEsDark : logoEsLight)
+    : (isDark ? logoEnDark : logoEnLight);
 
   const tabs = [
-    { id: "sheet", label: "Ficha" },
-    { id: "combat", label: "Combate" },
-    { id: "spells", label: "Grimorio" },
-    { id: "journal", label: "Diario" },
-    { id: "network", label: "Red" },
-    { id: "pdf", label: "PDFs" },
-    { id: "compendium", label: "Compendio" },
-    { id: "forge", label: "Forja" },
+    { id: "sheet", label: t("header.tabSheet") },
+    { id: "combat", label: t("header.tabCombat") },
+    { id: "spells", label: t("header.tabSpells") },
+    { id: "journal", label: t("header.tabJournal") },
+    { id: "network", label: t("header.tabNetwork") },
+    { id: "pdf", label: t("header.tabPdf") },
+    { id: "compendium", label: t("header.tabCompendium") },
+    { id: "forge", label: t("header.tabForge") },
   ];
 
   return (
@@ -38,19 +49,22 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
       {/* Título de Marca, Selector de Versión y Selector de Personaje Activo */}
       <div className="flex items-center gap-2 sm:gap-3 shrink-0">
         <div
-          className="flex items-center gap-2 cursor-pointer"
+          className="flex items-center cursor-pointer py-1"
           onClick={() => setActiveTab("sheet")}
+          title="Parma — Character Hub & Grimoire"
         >
-          <span className="font-display font-bold text-lg sm:text-xl md:text-2xl text-gold tracking-wide">
-            D&D Sanctum
-          </span>
+          <img
+            src={currentLogo}
+            alt="Parma — Character Hub & Grimoire"
+            className="h-10 sm:h-11 w-auto object-contain"
+          />
         </div>
 
         {/* Selector de Versión D&D (5.5e 2024 vs 5e 2014) */}
         <div className="flex items-center bg-card border border-border-iron rounded-md p-0.5 text-[11px] font-stat font-semibold">
           <button
             onClick={() => setDndEdition("5.5e")}
-            title="D&D 5.5e (Reglas 2024 / 2025)"
+            title={t("header.edition55Tooltip")}
             className={`px-1.5 sm:px-2 py-0.5 rounded transition-all ${
               dndEdition === "5.5e"
                 ? "bg-gold text-canvas font-bold"
@@ -61,7 +75,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
           </button>
           <button
             onClick={() => setDndEdition("5e")}
-            title="D&D 5e (Reglas 2014 clásicas)"
+            title={t("header.edition5eTooltip")}
             className={`px-1.5 sm:px-2 py-0.5 rounded transition-all ${
               dndEdition === "5e"
                 ? "bg-gold text-canvas font-bold"
@@ -79,11 +93,11 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
               value={activeCharacter?.id || ""}
               onChange={(e) => selectCharacter(Number(e.target.value))}
               className="bg-card text-main border border-border-iron rounded px-2 py-1 text-xs focus:border-gold outline-none transition-colors max-w-[110px] sm:max-w-[160px] md:max-w-[210px] truncate"
-              title="Seleccionar Personaje Activo"
+              title={t("header.selectActiveCharacter")}
             >
               {characters.map((c) => (
                 <option key={c.id} value={c.id}>
-                  {c.name} — Nvl {c.level} {c.char_class}
+                  {c.name} — {t("header.levelShort")} {c.level} {translateClass(c.char_class)}
                 </option>
               ))}
             </select>
@@ -118,12 +132,12 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
           onClick={connectTaleSpire}
           title={
             talespireStatus.is_connected
-              ? "TaleSpire Conectado (Clic para refrescar)"
+              ? t("header.talespireConnected")
               : talespireStatus.is_running
-              ? "TaleSpire en ejecución (Clic para conectar)"
+              ? t("header.talespireRunning")
               : talespireStatus.is_installed
-              ? "TaleSpire Instalado (Cerrado)"
-              : "TaleSpire No Detectado"
+              ? t("header.talespireInstalled")
+              : t("header.talespireNotFound")
           }
           className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded border border-border-iron hover:border-gold/60 bg-card transition-colors"
         >
@@ -142,17 +156,17 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
         {/* Botón Lanzador de Dados */}
         <button
           onClick={() => openDiceDrawer()}
-          title="Bandeja de Dados (Espacio)"
+          title={t("header.diceButtonTooltip")}
           className="flex items-center gap-1.5 px-3 py-1.5 bg-crimson hover:bg-crimson-hover text-white rounded text-xs font-bold transition-all shadow-sm active:scale-95"
         >
           <Dice5 className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Dados</span>
+          <span className="hidden sm:inline">{t("header.diceButton")}</span>
         </button>
 
         {/* Alternar Tema Claro/Oscuro */}
         <button
           onClick={toggleTheme}
-          title={isDark ? "Cambiar a Modo Claro (Pergamino)" : "Cambiar a Modo Oscuro (Obsidiana)"}
+          title={isDark ? t("header.themeLightTooltip") : t("header.themeDarkTooltip")}
           className="p-2 text-muted hover:text-main hover:bg-card border border-transparent hover:border-border-iron rounded transition-colors"
         >
           {isDark ? <Sun className="w-4 h-4 text-amber-200" /> : <Moon className="w-4 h-4 text-slate-700" />}
@@ -161,7 +175,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
         {/* Ajustes */}
         <button
           onClick={openSettings}
-          title="Configuración"
+          title={t("header.settingsTooltip")}
           className="p-2 text-muted hover:text-main hover:bg-card border border-transparent hover:border-border-iron rounded transition-colors"
         >
           <SettingsIcon className="w-4 h-4" />

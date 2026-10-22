@@ -1,26 +1,32 @@
 ---
-id: "fragmento_mental"
-nombre: "Fragmento Mental"
+id: fragmento_mental
+nombre: Fragmento Mental
 nivel: 0
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V"
-duracion: "1 asalto"
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V
+duracion: 1 asalto
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 287
 tags:
-  - "encantamiento"
-  - "nivel_0"
-  - "brujo"
-  - "hechicero"
-  - "mago"
+- encantamiento
+- nivel_0
+- brujo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Mind Sliver
 ---
 
 # Fragmento Mental

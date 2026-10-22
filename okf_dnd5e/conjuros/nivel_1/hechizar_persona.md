@@ -1,30 +1,36 @@
 ---
-id: "hechizar_persona"
-nombre: "Hechizar Persona"
+id: hechizar_persona
+nombre: Hechizar Persona
 nivel: 1
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S"
-duracion: "1 hora"
+- Bardo
+- Brujo
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S
+duracion: 1 hora
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 293
 tags:
-  - "encantamiento"
-  - "nivel_1"
-  - "bardo"
-  - "brujo"
-  - "druida"
-  - "hechicero"
-  - "mago"
+- encantamiento
+- nivel_1
+- bardo
+- brujo
+- druida
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Charm Person
 ---
 
 # Hechizar Persona

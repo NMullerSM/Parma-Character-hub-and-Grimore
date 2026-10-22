@@ -1,27 +1,33 @@
 ---
-id: "nube_apestosa"
-nombre: "Nube Apestosa"
+id: nube_apestosa
+nombre: Nube Apestosa
 nivel: 3
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Bardo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "27 m"
-componentes: "V, S, M (un huevo podrido)"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 27 m
+componentes: V, S, M (un huevo podrido)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 316
 tags:
-  - "conjuración"
-  - "nivel_3"
-  - "bardo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- conjuración
+- nivel_3
+- bardo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Stinking Cloud
 ---
 
 # Nube Apestosa

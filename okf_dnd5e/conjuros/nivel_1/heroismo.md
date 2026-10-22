@@ -1,25 +1,31 @@
 ---
-id: "heroismo"
-nombre: "Heroísmo"
+id: heroismo
+nombre: Heroísmo
 nivel: 1
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 293
 tags:
-  - "encantamiento"
-  - "nivel_1"
-  - "bardo"
-  - "paladín"
-  - "concentracion"
+- encantamiento
+- nivel_1
+- bardo
+- paladín
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Heroism
 ---
 
 # Heroísmo

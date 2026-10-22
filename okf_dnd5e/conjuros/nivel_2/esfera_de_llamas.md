@@ -1,27 +1,33 @@
 ---
-id: "esfera_de_llamas"
-nombre: "Esfera De Llamas"
+id: esfera_de_llamas
+nombre: Esfera De Llamas
 nivel: 2
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S, M (una bola de cera)"
-duracion: "Concentración, hasta 1 minuto"
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S, M (una bola de cera)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 282
 tags:
-  - "conjuración"
-  - "nivel_2"
-  - "druida"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- conjuración
+- nivel_2
+- druida
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Flaming Sphere
 ---
 
 # Esfera De Llamas

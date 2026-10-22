@@ -1,26 +1,32 @@
 ---
-id: "abrir"
-nombre: "Abrir"
+id: abrir
+nombre: Abrir
 nivel: 2
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Bardo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V"
-duracion: "Instantáneo"
+- Bardo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 241
 tags:
-  - "transmutación"
-  - "nivel_2"
-  - "bardo"
-  - "hechicero"
-  - "mago"
+- transmutación
+- nivel_2
+- bardo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Knock
 ---
 
 # Abrir

@@ -1,28 +1,34 @@
 ---
-id: "luz"
-nombre: "Luz"
+id: luz
+nombre: Luz
 nivel: 0
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, M (una luciérnaga o musgo fosforescente)"
-duracion: "1 hora"
+- Bardo
+- Clérigo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, M (una luciérnaga o musgo fosforescente)
+duracion: 1 hora
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 308
 tags:
-  - "evocación"
-  - "nivel_0"
-  - "bardo"
-  - "clérigo"
-  - "hechicero"
-  - "mago"
+- evocación
+- nivel_0
+- bardo
+- clérigo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Light
 ---
 
 # Luz

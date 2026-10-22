@@ -1,14 +1,20 @@
 ---
-id: "moderadamente_acorazado"
-nombre: "Moderadamente Acorazado"
-categoria: "General"
-encabezado: "Dote general (requisitos: nivel 4 o más, entrenamiento"
-fuente: "PHB 2024"
+id: moderadamente_acorazado
+nombre: Moderadamente Acorazado
+categoria: General
+encabezado: 'Dote general (requisitos: nivel 4 o más, entrenamiento'
+fuente: PHB 2024
 pagina: 209
 tags:
-  - "dote"
-  - "generales"
-  - "moderadamente_acorazado"
+- dote
+- generales
+- moderadamente_acorazado
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Moderadamente Acorazado
 ---
 
 # Moderadamente Acorazado

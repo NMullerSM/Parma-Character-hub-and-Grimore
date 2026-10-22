@@ -1,26 +1,32 @@
 ---
-id: "semiplano"
-nombre: "Semiplano"
+id: semiplano
+nombre: Semiplano
 nivel: 8
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "S"
-duracion: "1 hora"
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: S
+duracion: 1 hora
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 334
 tags:
-  - "conjuración"
-  - "nivel_8"
-  - "brujo"
-  - "hechicero"
-  - "mago"
+- conjuración
+- nivel_8
+- brujo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Demiplane
 ---
 
 # Semiplano

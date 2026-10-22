@@ -1,25 +1,31 @@
 ---
-id: "espada_de_mordenkainen"
-nombre: "Espada De Mordenkainen"
+id: espada_de_mordenkainen
+nombre: Espada De Mordenkainen
 nivel: 7
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Bardo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "27 m"
-componentes: "V, S, M (una espada en miniatura que valga  al menos 250 po)"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 27 m
+componentes: V, S, M (una espada en miniatura que valga  al menos 250 po)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 283
 tags:
-  - "evocación"
-  - "nivel_7"
-  - "bardo"
-  - "mago"
-  - "concentracion"
+- evocación
+- nivel_7
+- bardo
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Mordenkainen's Sword
 ---
 
 # Espada De Mordenkainen

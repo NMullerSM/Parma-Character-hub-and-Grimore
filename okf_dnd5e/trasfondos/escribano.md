@@ -9,8 +9,14 @@ pagina: 183
 tags:
 - trasfondo
 - escribano
+- spanish
+- es
+- español
 tipo: trasfondo
+idioma: es
+nombre_ingles: Escribano
 ---
+
 # Trasfondo: Escribano
 
 - **Puntuaciones de Característica**: Inteligencia, Sabiduría, Carisma

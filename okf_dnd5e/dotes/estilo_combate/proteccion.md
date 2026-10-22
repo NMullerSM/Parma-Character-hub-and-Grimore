@@ -1,14 +1,20 @@
 ---
-id: "proteccion"
-nombre: "Protección"
-categoria: "Estilo de Combate"
-encabezado: "Dote de estilo de combate (requisitos: rasgo Estilo de combate)"
-fuente: "PHB 2024"
+id: proteccion
+nombre: Protección
+categoria: Estilo de Combate
+encabezado: 'Dote de estilo de combate (requisitos: rasgo Estilo de combate)'
+fuente: PHB 2024
 pagina: 212
 tags:
-  - "dote"
-  - "estilo_combate"
-  - "proteccion"
+- dote
+- estilo_combate
+- proteccion
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Protection
 ---
 
 # Protección

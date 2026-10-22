@@ -1,12 +1,22 @@
 ---
-id: "picaro_cuchilla_del_alma"
-nombre: "Cuchilla del Alma"
-nombre_ingles: "Soulknife"
-tipo: "subclase"
-clase_padre: "Pícaro"
+id: picaro_cuchilla_del_alma
+nombre: Cuchilla del Alma
+nombre_ingles: Soulknife
+tipo: subclase
+clase_padre: Pícaro
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["pícaro", "psiónico", "hojas psíquicas", "telepatía", "phb2024", "tasha"]
+fuente: PHB 2024
+tags:
+- pícaro
+- psiónico
+- hojas psíquicas
+- telepatía
+- phb2024
+- tasha
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Cuchilla del Alma (Soulknife)

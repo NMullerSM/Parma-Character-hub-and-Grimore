@@ -1,27 +1,33 @@
 ---
-id: "invertir_la_gravedad"
-nombre: "Invertir La Gravedad"
+id: invertir_la_gravedad
+nombre: Invertir La Gravedad
 nivel: 7
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "30 m"
-componentes: "V, S, M (un imán natural y virutas de hierro)"
-duracion: "Concentración, hasta 1 minuto"
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 30 m
+componentes: V, S, M (un imán natural y virutas de hierro)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 297
 tags:
-  - "transmutación"
-  - "nivel_7"
-  - "druida"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- transmutación
+- nivel_7
+- druida
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Reverse Gravity
 ---
 
 # Invertir La Gravedad

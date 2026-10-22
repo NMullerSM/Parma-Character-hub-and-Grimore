@@ -1,27 +1,34 @@
 ---
-id: "adivinacion"
-nombre: "Adivinación"
+id: adivinacion
+nombre: Adivinación
 nivel: 4
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Clérigo"
-  - "Druida"
-  - "Mago"
-tiempo_lanzamiento: "Acción o ritual"
-alcance: "Lanzador"
-componentes: "V, S, M (incienso que valga al menos 25 po,  que se consume como parte del conjuro)"
-duracion: "Instantáneo"
+- Clérigo
+- Druida
+- Mago
+tiempo_lanzamiento: Acción o ritual
+alcance: Lanzador
+componentes: V, S, M (incienso que valga al menos 25 po,  que se consume como parte
+  del conjuro)
+duracion: Instantáneo
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 241
 tags:
-  - "adivinación"
-  - "nivel_4"
-  - "clérigo"
-  - "druida"
-  - "mago"
-  - "ritual"
+- adivinación
+- nivel_4
+- clérigo
+- druida
+- mago
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Divination
 ---
 
 # Adivinación

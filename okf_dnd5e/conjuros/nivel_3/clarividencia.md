@@ -1,29 +1,36 @@
 ---
-id: "clarividencia"
-nombre: "Clarividencia"
+id: clarividencia
+nombre: Clarividencia
 nivel: 3
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "10 minutos"
-alcance: "1,5 km"
-componentes: "V, S, M (un canalizador que valga al menos  100 po; puede ser una trompetilla enjoyada o un ojo de  cristal)"
-duracion: "Concentración, hasta 10 minutos"
+- Bardo
+- Clérigo
+- Hechicero
+- Mago
+tiempo_lanzamiento: 10 minutos
+alcance: 1,5 km
+componentes: V, S, M (un canalizador que valga al menos  100 po; puede ser una trompetilla
+  enjoyada o un ojo de  cristal)
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 259
 tags:
-  - "adivinación"
-  - "nivel_3"
-  - "bardo"
-  - "clérigo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- adivinación
+- nivel_3
+- bardo
+- clérigo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Clairvoyance
 ---
 
 # Clarividencia

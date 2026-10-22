@@ -1,14 +1,20 @@
 ---
-id: "intercepcion"
-nombre: "Intercepción"
-categoria: "Estilo de Combate"
-encabezado: "Dote de estilo de combate (requisitos: rasgo Estilo de combate)"
-fuente: "PHB 2024"
+id: intercepcion
+nombre: Intercepción
+categoria: Estilo de Combate
+encabezado: 'Dote de estilo de combate (requisitos: rasgo Estilo de combate)'
+fuente: PHB 2024
 pagina: 211
 tags:
-  - "dote"
-  - "estilo_combate"
-  - "intercepcion"
+- dote
+- estilo_combate
+- intercepcion
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Interception
 ---
 
 # Intercepción

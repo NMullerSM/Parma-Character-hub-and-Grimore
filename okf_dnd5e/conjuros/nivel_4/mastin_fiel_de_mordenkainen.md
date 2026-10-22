@@ -1,22 +1,28 @@
 ---
-id: "mastin_fiel_de_mordenkainen"
-nombre: "Mastín Fiel De Mordenkainen"
+id: mastin_fiel_de_mordenkainen
+nombre: Mastín Fiel De Mordenkainen
 nivel: 4
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S, M (un silbato de plata)"
-duracion: "3 horas"
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S, M (un silbato de plata)
+duracion: 3 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 312
 tags:
-  - "conjuración"
-  - "nivel_4"
-  - "mago"
+- conjuración
+- nivel_4
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Mordenkainen's Faithful Hound
 ---
 
 # Mastín Fiel De Mordenkainen

@@ -1,26 +1,32 @@
 ---
-id: "sugestion_en_masa"
-nombre: "Sugestión En Masa"
+id: sugestion_en_masa
+nombre: Sugestión En Masa
 nivel: 6
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, M (una lengua de serpiente)"
-duracion: "24 horas"
+- Bardo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, M (una lengua de serpiente)
+duracion: 24 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 336
 tags:
-  - "encantamiento"
-  - "nivel_6"
-  - "bardo"
-  - "hechicero"
-  - "mago"
+- encantamiento
+- nivel_6
+- bardo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Mass Suggestion
 ---
 
 # Sugestión En Masa

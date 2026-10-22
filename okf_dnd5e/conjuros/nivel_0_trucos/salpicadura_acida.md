@@ -1,24 +1,30 @@
 ---
-id: "salpicadura_acida"
-nombre: "Salpicadura Ácida"
+id: salpicadura_acida
+nombre: Salpicadura Ácida
 nivel: 0
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 333
 tags:
-  - "evocación"
-  - "nivel_0"
-  - "hechicero"
-  - "mago"
+- evocación
+- nivel_0
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Acid Splash
 ---
 
 # Salpicadura Ácida

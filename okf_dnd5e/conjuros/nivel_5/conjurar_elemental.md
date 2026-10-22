@@ -1,25 +1,31 @@
 ---
-id: "conjurar_elemental"
-nombre: "Conjurar Elemental"
+id: conjurar_elemental
+nombre: Conjurar Elemental
 nivel: 5
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Druida"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 10 minutos"
+- Druida
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 261
 tags:
-  - "conjuración"
-  - "nivel_5"
-  - "druida"
-  - "mago"
-  - "concentracion"
+- conjuración
+- nivel_5
+- druida
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Conjure Elemental
 ---
 
 # Conjurar Elemental

@@ -1,30 +1,37 @@
 ---
-id: "atadura_planar"
-nombre: "Atadura Planar"
+id: atadura_planar
+nombre: Atadura Planar
 nivel: 5
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Clérigo"
-  - "Druida"
-  - "Mago"
-tiempo_lanzamiento: "1 hora"
-alcance: "18 m"
-componentes: "V, S, M (una joya que valga al menos  1000 po y que se consume como parte del conjuro)"
-duracion: "24 horas"
+- Bardo
+- Brujo
+- Clérigo
+- Druida
+- Mago
+tiempo_lanzamiento: 1 hora
+alcance: 18 m
+componentes: V, S, M (una joya que valga al menos  1000 po y que se consume como parte
+  del conjuro)
+duracion: 24 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 248
 tags:
-  - "abjuración"
-  - "nivel_5"
-  - "bardo"
-  - "brujo"
-  - "clérigo"
-  - "druida"
-  - "mago"
+- abjuración
+- nivel_5
+- bardo
+- brujo
+- clérigo
+- druida
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Planar Binding
 ---
 
 # Atadura Planar

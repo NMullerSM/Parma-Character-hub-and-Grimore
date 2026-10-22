@@ -1,23 +1,30 @@
 ---
-id: "encontrar_familiar"
-nombre: "Encontrar Familiar"
+id: encontrar_familiar
+nombre: Encontrar Familiar
 nivel: 1
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Mago"
-tiempo_lanzamiento: "1 hora o un ritual"
-alcance: "3 m"
-componentes: "V, S, M (incienso para quemar que valga al  menos 10 po, que se consume como parte del conjuro)"
-duracion: "Instantáneo"
+- Mago
+tiempo_lanzamiento: 1 hora o un ritual
+alcance: 3 m
+componentes: V, S, M (incienso para quemar que valga al  menos 10 po, que se consume
+  como parte del conjuro)
+duracion: Instantáneo
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 278
 tags:
-  - "conjuración"
-  - "nivel_1"
-  - "mago"
-  - "ritual"
+- conjuración
+- nivel_1
+- mago
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Find Familiar
 ---
 
 # Encontrar Familiar

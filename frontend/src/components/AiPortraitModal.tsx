@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { X, Sparkles, Copy, Check, Wand2, Image as ImageIcon, Settings2, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
 import { api } from "../api/client";
 import type { CharacterSheetData } from "../api/types";
+import { useTranslation } from "../i18n";
 
 interface AiPortraitModalProps {
   isOpen: boolean;
@@ -21,38 +22,74 @@ interface StyleOption {
   hint: string;
 }
 
-const STYLE_OPTIONS: StyleOption[] = [
-  {
-    id: "pixelart",
-    label: "Pixel Art (16-bit RPG)",
-    badge: "Retro",
-    hint: "Sprite 16-bit nítido con píxeles definidos estilo SNES / GBA",
-  },
-  {
-    id: "fantasy",
-    label: "Fantasía Épica Digital",
-    badge: "Digital Art",
-    hint: "Ilustración oficial moderna de manual D&D 5e",
-  },
-  {
-    id: "oil",
-    label: "Pintura al Óleo Clásica",
-    badge: "Clásico",
-    hint: "Óleo renacentista con claroscuro y textura de lienzo",
-  },
-  {
-    id: "sketch",
-    label: "Boceto a Tinta / Pergamino",
-    badge: "Manual D&D",
-    hint: "Grabado a tinta sepia sobre pergamino envejecido",
-  },
-  {
-    id: "cinematic",
-    label: "Cinemático Realista",
-    badge: "Fotorealista",
-    hint: "Retrato hiperrealista en 8k con iluminación volumétrica",
-  },
-];
+function getStyleOptions(lang: "es" | "en"): StyleOption[] {
+  if (lang === "en") {
+    return [
+      {
+        id: "pixelart",
+        label: "Pixel Art (16-bit RPG)",
+        badge: "Retro",
+        hint: "Crisp 16-bit sprite with defined pixels SNES / GBA style",
+      },
+      {
+        id: "fantasy",
+        label: "Digital Epic Fantasy",
+        badge: "Digital Art",
+        hint: "Modern official D&D 5e rulebook illustration",
+      },
+      {
+        id: "oil",
+        label: "Classical Oil Painting",
+        badge: "Classic",
+        hint: "Renaissance oil painting with chiaroscuro and canvas texture",
+      },
+      {
+        id: "sketch",
+        label: "Ink & Parchment Sketch",
+        badge: "D&D Rulebook",
+        hint: "Sepia ink engraving on aged parchment",
+      },
+      {
+        id: "cinematic",
+        label: "Cinematic Realistic",
+        badge: "Photorealistic",
+        hint: "Hyperrealistic 8k portrait with volumetric lighting",
+      },
+    ];
+  }
+  return [
+    {
+      id: "pixelart",
+      label: "Pixel Art (16-bit RPG)",
+      badge: "Retro",
+      hint: "Sprite 16-bit nítido con píxeles definidos estilo SNES / GBA",
+    },
+    {
+      id: "fantasy",
+      label: "Fantasía Épica Digital",
+      badge: "Digital Art",
+      hint: "Ilustración oficial moderna de manual D&D 5e",
+    },
+    {
+      id: "oil",
+      label: "Pintura al Óleo Clásica",
+      badge: "Clásico",
+      hint: "Óleo renacentista con claroscuro y textura de lienzo",
+    },
+    {
+      id: "sketch",
+      label: "Boceto a Tinta / Pergamino",
+      badge: "Manual D&D",
+      hint: "Grabado a tinta sepia sobre pergamino envejecido",
+    },
+    {
+      id: "cinematic",
+      label: "Cinemático Realista",
+      badge: "Fotorealista",
+      hint: "Retrato hiperrealista en 8k con iluminación volumétrica",
+    },
+  ];
+}
 
 interface ProviderMeta {
   id: AiProvider;
@@ -64,46 +101,90 @@ interface ProviderMeta {
   isFree?: boolean;
 }
 
-const PROVIDER_OPTIONS: ProviderMeta[] = [
-  {
-    id: "pollinations",
-    name: "Gratis / Instantáneo (Recomendado)",
-    defaultUrl: "https://image.pollinations.ai",
-    placeholderKey: "No requiere clave",
-    helpText: "Generador gratuito sin registros ni límites de tarjeta. Listo para usar.",
-    isFree: true,
-  },
-  {
-    id: "google",
-    name: "Google AI Studio (Imagen 3)",
-    defaultUrl: "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict",
-    placeholderKey: "AIzaSy...",
-    helpText: "Requiere proyecto de Google Cloud con facturación activa para Imagen 3.",
-    helpLink: "https://aistudio.google.com/app/apikey",
-  },
-  {
-    id: "openai",
-    name: "OpenAI (DALL-E 3)",
-    defaultUrl: "https://api.openai.com/v1/images/generations",
-    placeholderKey: "sk-...",
-    helpText: "Usa tu clave oficial de OpenAI (platform.openai.com) con saldo disponible.",
-    helpLink: "https://platform.openai.com/api-keys",
-  },
-  {
-    id: "sd_local",
-    name: "Stable Diffusion Local (WebUI)",
-    defaultUrl: "http://127.0.0.1:7860/sdapi/v1/txt2img",
-    placeholderKey: "Opcional",
-    helpText: "A1111 o ComfyUI ejecutándose en tu PC con el argumento --api.",
-  },
-  {
-    id: "custom",
-    name: "Endpoint Personalizado",
-    defaultUrl: "",
-    placeholderKey: "Token o API Key",
-    helpText: "Cualquier proxy o servicio compatible con REST.",
-  },
-];
+function getProviderOptions(lang: "es" | "en"): ProviderMeta[] {
+  if (lang === "en") {
+    return [
+      {
+        id: "pollinations",
+        name: "Free / Instant (Recommended)",
+        defaultUrl: "https://image.pollinations.ai",
+        placeholderKey: "No API key required",
+        helpText: "Free generator without account registration or credit limits. Ready to use.",
+        isFree: true,
+      },
+      {
+        id: "google",
+        name: "Google AI Studio (Imagen 3)",
+        defaultUrl: "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict",
+        placeholderKey: "AIzaSy...",
+        helpText: "Requires Google Cloud project with active billing for Imagen 3.",
+        helpLink: "https://aistudio.google.com/app/apikey",
+      },
+      {
+        id: "openai",
+        name: "OpenAI (DALL-E 3)",
+        defaultUrl: "https://api.openai.com/v1/images/generations",
+        placeholderKey: "sk-...",
+        helpText: "Use your official OpenAI key (platform.openai.com) with available credit.",
+        helpLink: "https://platform.openai.com/api-keys",
+      },
+      {
+        id: "sd_local",
+        name: "Stable Diffusion Local (WebUI)",
+        defaultUrl: "http://127.0.0.1:7860/sdapi/v1/txt2img",
+        placeholderKey: "Optional",
+        helpText: "A1111 or ComfyUI running locally on your PC with the --api argument.",
+      },
+      {
+        id: "custom",
+        name: "Custom Endpoint",
+        defaultUrl: "",
+        placeholderKey: "Token or API Key",
+        helpText: "Any REST-compatible proxy or service.",
+      },
+    ];
+  }
+  return [
+    {
+      id: "pollinations",
+      name: "Gratis / Instantáneo (Recomendado)",
+      defaultUrl: "https://image.pollinations.ai",
+      placeholderKey: "No requiere clave",
+      helpText: "Generador gratuito sin registros ni límites de tarjeta. Listo para usar.",
+      isFree: true,
+    },
+    {
+      id: "google",
+      name: "Google AI Studio (Imagen 3)",
+      defaultUrl: "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict",
+      placeholderKey: "AIzaSy...",
+      helpText: "Requiere proyecto de Google Cloud con facturación activa para Imagen 3.",
+      helpLink: "https://aistudio.google.com/app/apikey",
+    },
+    {
+      id: "openai",
+      name: "OpenAI (DALL-E 3)",
+      defaultUrl: "https://api.openai.com/v1/images/generations",
+      placeholderKey: "sk-...",
+      helpText: "Usa tu clave oficial de OpenAI (platform.openai.com) con saldo disponible.",
+      helpLink: "https://platform.openai.com/api-keys",
+    },
+    {
+      id: "sd_local",
+      name: "Stable Diffusion Local (WebUI)",
+      defaultUrl: "http://127.0.0.1:7860/sdapi/v1/txt2img",
+      placeholderKey: "Opcional",
+      helpText: "A1111 o ComfyUI ejecutándose en tu PC con el argumento --api.",
+    },
+    {
+      id: "custom",
+      name: "Endpoint Personalizado",
+      defaultUrl: "",
+      placeholderKey: "Token o API Key",
+      helpText: "Cualquier proxy o servicio compatible con REST.",
+    },
+  ];
+}
 
 // Generador de plantillas internas optimizadas para modelos de difusión
 function buildInternalPrompt(style: ArtStyle, char: CharacterSheetData): string {
@@ -135,10 +216,14 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
   onPortraitGenerated,
   initialConfigOpen = false,
 }) => {
+  const { t, language } = useTranslation();
   const [selectedStyle, setSelectedStyle] = useState<ArtStyle>("pixelart");
   const [prompt, setPrompt] = useState<string>("");
   const [isCopied, setIsCopied] = useState<boolean>(false);
   const [showAdvancedProviders, setShowAdvancedProviders] = useState<boolean>(initialConfigOpen);
+
+  const styleOptions = getStyleOptions(language);
+  const providerOptions = getProviderOptions(language);
 
   const [provider, setProvider] = useState<AiProvider>(() => {
     return (localStorage.getItem("dnd_ai_img_provider") as AiProvider) || "pollinations";
@@ -188,7 +273,7 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
   const handleProviderSelect = (newProv: AiProvider) => {
     setProvider(newProv);
     localStorage.setItem("dnd_ai_img_provider", newProv);
-    const meta = PROVIDER_OPTIONS.find((p) => p.id === newProv);
+    const meta = providerOptions.find((p) => p.id === newProv);
     if (meta && meta.defaultUrl) {
       setApiUrl(meta.defaultUrl);
       localStorage.setItem("dnd_ai_img_api_url", meta.defaultUrl);
@@ -213,17 +298,19 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
     }
   };
 
+  const activeProviderMeta = providerOptions.find((p) => p.id === provider) || providerOptions[0];
+
   const handleGenerate = async () => {
     const cleanKey = apiKey.trim();
 
     if (!cleanKey && (provider === "google" || provider === "openai" || provider === "custom")) {
-      setStatusMessage(`Ingresa tu API Key de ${PROVIDER_OPTIONS.find(p => p.id === provider)?.name || "proveedor"} o usa el generador gratuito.`);
+      setStatusMessage(t("modals.aiPortrait.enterKeyError", { provider: activeProviderMeta.name }));
       setShowAdvancedProviders(true);
       return;
     }
 
     setLoading(true);
-    setStatusMessage("Generando retrato con IA (espera unos segundos)...");
+    setStatusMessage(t("modals.aiPortrait.generatingWait"));
 
     try {
       const res = await api.generateAiPortrait({
@@ -236,9 +323,9 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
 
       if (res.success && res.image_base64) {
         setPreviewImage(res.image_base64);
-        setStatusMessage("¡Retrato generado exitosamente!");
+        setStatusMessage(t("modals.aiPortrait.generateSuccess"));
       } else {
-        throw new Error(res.error || "La API no devolvió una imagen válida.");
+        throw new Error(res.error || (language === "es" ? "La API no devolvió una imagen válida." : "API returned no valid image."));
       }
     } catch (e: any) {
       console.error("Error generating portrait:", e);
@@ -263,8 +350,6 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
     onClose();
   };
 
-  const activeProviderMeta = PROVIDER_OPTIONS.find((p) => p.id === provider) || PROVIDER_OPTIONS[0];
-
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-canvas/85 backdrop-blur-sm animate-fade-in"
@@ -280,17 +365,17 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
             <Wand2 className="w-5 h-5 text-gold" />
             <div>
               <h2 className="font-display font-bold text-lg text-gold">
-                Generador de Retrato IA de Personaje
+                {t("modals.aiPortrait.title")}
               </h2>
               <p className="text-xs text-muted">
-                Crea una ilustración basada en los rasgos y apariencia de {character.name || "tu héroe"}.
+                {t("modals.aiPortrait.subtitle", { name: character.name || (language === "es" ? "tu héroe" : "your hero") })}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
             className="p-1.5 rounded-lg border border-border-iron hover:border-gold text-muted hover:text-main transition-colors"
-            title="Cerrar (Esc)"
+            title={t("common.close")}
           >
             <X className="w-5 h-5" />
           </button>
@@ -302,14 +387,14 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-semibold uppercase tracking-wider text-muted">
-                Estilo Visual de Ilustración
+                {t("modals.aiPortrait.visualStyle")}
               </label>
               <span className="text-[11px] text-gold/80 font-medium">
-                {STYLE_OPTIONS.find(s => s.id === selectedStyle)?.hint}
+                {styleOptions.find(s => s.id === selectedStyle)?.hint}
               </span>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
-              {STYLE_OPTIONS.map((style) => {
+              {styleOptions.map((style) => {
                 const isSelected = selectedStyle === style.id;
                 return (
                   <button
@@ -340,32 +425,32 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
                 <label className="text-xs font-semibold uppercase tracking-wider text-muted">
-                  Prompt Optimizado para el Estilo
+                  {t("modals.aiPortrait.optimizedPrompt")}
                 </label>
                 {character.appearance && (
                   <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
-                    ✓ Integra Apariencia Física
+                    {t("modals.aiPortrait.appearanceIntegrated")}
                   </span>
                 )}
               </div>
               <button
                 onClick={handleCopyPrompt}
                 className="text-xs text-gold hover:text-gold-hover flex items-center gap-1 font-semibold transition-colors"
-                title="Copiar prompt al portapapeles"
+                title={t("modals.aiPortrait.copyPrompt")}
               >
                 {isCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{isCopied ? "¡Copiado!" : "Copiar Prompt"}</span>
+                <span>{isCopied ? t("modals.aiPortrait.promptCopied") : t("modals.aiPortrait.copyPrompt")}</span>
               </button>
             </div>
             <textarea
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               rows={3}
-              placeholder="Describe los rasgos visuales, vestimenta, colores y pose de tu personaje..."
+              placeholder={t("modals.aiPortrait.promptPlaceholder")}
               className="w-full bg-input text-main border border-border-iron rounded-lg p-2.5 text-xs focus:border-gold outline-none leading-relaxed transition-colors resize-none font-mono"
             />
             <p className="text-[10px] text-muted">
-              La plantilla incluye automáticamente la apariencia física que definiste en la ficha. Puedes editar el texto directamente si deseas agregar detalles extra.
+              {t("modals.aiPortrait.promptHint")}
             </p>
           </div>
 
@@ -383,16 +468,16 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
                 ) : (
                   <div className="p-4 text-center text-muted space-y-1">
                     <ImageIcon className="w-8 h-8 mx-auto opacity-40 text-gold" />
-                    <p className="text-[11px] font-medium">Sin previsualización</p>
+                    <p className="text-[11px] font-medium">{t("modals.aiPortrait.noPreview")}</p>
                     <p className="text-[10px] text-muted/70">
-                      Presiona "Generar Retrato con IA" abajo para crear tu ilustración.
+                      {t("modals.aiPortrait.noPreviewHint")}
                     </p>
                   </div>
                 )}
                 {loading && (
                   <div className="absolute inset-0 bg-black/75 flex flex-col items-center justify-center gap-2 p-2 text-center">
                     <div className="w-6 h-6 border-2 border-gold border-t-transparent rounded-full animate-spin" />
-                    <span className="text-[11px] text-gold font-medium">Generando ilustración...</span>
+                    <span className="text-[11px] text-gold font-medium">{t("modals.aiPortrait.generatingArt")}</span>
                   </div>
                 )}
               </div>
@@ -402,10 +487,10 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
             <div className="space-y-3">
               <div>
                 <h4 className="text-xs font-semibold text-main mb-1">
-                  O pega una URL o Base64 directamente:
+                  {t("modals.aiPortrait.orPasteDirect")}
                 </h4>
                 <p className="text-[11px] text-muted mb-2">
-                  Si ya tienes una imagen generada en Midjourney o guardada en la web:
+                  {t("modals.aiPortrait.pasteHint")}
                 </p>
                 <input
                   type="text"
@@ -432,16 +517,16 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
               className="text-xs text-muted hover:text-gold flex items-center gap-1.5 font-medium transition-colors"
             >
               <Settings2 className="w-3.5 h-3.5" />
-              <span>Opciones Avanzadas de Proveedor (Google AI Studio / OpenAI / Local)</span>
+              <span>{t("modals.aiPortrait.advancedProviders")}</span>
               {showAdvancedProviders ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
             </button>
 
             {showAdvancedProviders && (
               <div className="mt-3 p-3 bg-surface/70 border border-border-iron rounded-lg space-y-3 animate-fade-in text-xs">
                 <div>
-                  <label className="block text-muted text-[11px] mb-1 font-medium">Seleccionar Proveedor</label>
+                  <label className="block text-muted text-[11px] mb-1 font-medium">{t("modals.aiPortrait.selectProvider")}</label>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
-                    {PROVIDER_OPTIONS.map((opt) => (
+                    {providerOptions.map((opt) => (
                       <button
                         key={opt.id}
                         type="button"
@@ -452,7 +537,7 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
                             : "bg-card border-border-iron text-muted hover:text-main"
                         }`}
                       >
-                        {opt.name.split(" ")[0]} {opt.id === "pollinations" ? "(Gratis)" : ""}
+                        {opt.name.split(" ")[0]} {opt.id === "pollinations" ? `(${language === "es" ? "Gratis" : "Free"})` : ""}
                       </button>
                     ))}
                   </div>
@@ -469,7 +554,7 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
                           rel="noreferrer"
                           className="text-[10px] text-gold hover:underline flex items-center gap-1"
                         >
-                          <span>Obtener clave</span>
+                          <span>{t("modals.aiPortrait.getKey")}</span>
                           <ExternalLink className="w-2.5 h-2.5" />
                         </a>
                       )}
@@ -485,7 +570,7 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
                   </div>
                 ) : (
                   <p className="text-[11px] text-emerald-400">
-                    ✓ El proveedor gratuito (Pollinations) está activo y no requiere ninguna clave.
+                    {t("modals.aiPortrait.freeProviderNotice")}
                   </p>
                 )}
               </div>
@@ -502,14 +587,14 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
               className="px-4 py-2 rounded-lg bg-gold hover:bg-gold-hover disabled:opacity-50 text-canvas font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm active:scale-95"
             >
               <Sparkles className="w-4 h-4" />
-              <span>{loading ? "Generando..." : "Generar Retrato con IA"}</span>
+              <span>{loading ? t("modals.aiPortrait.generatingWait") : t("modals.aiPortrait.generateButton")}</span>
             </button>
             <button
               onClick={handleCopyPrompt}
               className="px-3 py-2 rounded-lg bg-surface border border-border-iron hover:border-gold text-muted hover:text-main text-xs font-medium transition-colors flex items-center gap-1"
             >
               <Copy className="w-3.5 h-3.5" />
-              <span>Copiar Prompt</span>
+              <span>{t("modals.aiPortrait.copyPrompt")}</span>
             </button>
           </div>
 
@@ -518,7 +603,7 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
               onClick={onClose}
               className="px-3 py-2 rounded-lg border border-border-iron hover:border-gold text-xs text-muted hover:text-main font-medium transition-colors"
             >
-              Cancelar
+              {t("common.cancel")}
             </button>
             <button
               onClick={handleApplyPreview}
@@ -526,7 +611,7 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
               className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 disabled:pointer-events-none text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm active:scale-95"
             >
               <Check className="w-4 h-4" />
-              <span>Aplicar a la Ficha</span>
+              <span>{t("modals.aiPortrait.applyToSheet")}</span>
             </button>
           </div>
         </div>

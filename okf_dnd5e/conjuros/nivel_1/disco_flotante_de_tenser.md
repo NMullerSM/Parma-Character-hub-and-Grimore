@@ -1,23 +1,29 @@
 ---
-id: "disco_flotante_de_tenser"
-nombre: "Disco Flotante De Tenser"
+id: disco_flotante_de_tenser
+nombre: Disco Flotante De Tenser
 nivel: 1
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Mago"
-tiempo_lanzamiento: "Acción o ritual"
-alcance: "9 m"
-componentes: "V, S, M (una gota de mercurio)"
-duracion: "1 hora"
+- Mago
+tiempo_lanzamiento: Acción o ritual
+alcance: 9 m
+componentes: V, S, M (una gota de mercurio)
+duracion: 1 hora
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 273
 tags:
-  - "conjuración"
-  - "nivel_1"
-  - "mago"
-  - "ritual"
+- conjuración
+- nivel_1
+- mago
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Tenser's Floating Disk
 ---
 
 # Disco Flotante De Tenser

@@ -1,14 +1,20 @@
 ---
-id: "combate_sin_armas"
-nombre: "Combate Sin Armas"
-categoria: "Estilo de Combate"
-encabezado: "Dote de estilo de combate (requisitos: rasgo Estilo de combate)"
-fuente: "PHB 2024"
+id: combate_sin_armas
+nombre: Combate Sin Armas
+categoria: Estilo de Combate
+encabezado: 'Dote de estilo de combate (requisitos: rasgo Estilo de combate)'
+fuente: PHB 2024
 pagina: 211
 tags:
-  - "dote"
-  - "estilo_combate"
-  - "combate_sin_armas"
+- dote
+- estilo_combate
+- combate_sin_armas
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Unarmed Fighting
 ---
 
 # Combate Sin Armas

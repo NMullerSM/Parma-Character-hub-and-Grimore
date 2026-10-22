@@ -1,30 +1,36 @@
 ---
-id: "tronar"
-nombre: "Tronar"
+id: tronar
+nombre: Tronar
 nivel: 0
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "S"
-duracion: "Instantáneo"
+- Bardo
+- Brujo
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 343
 tags:
-  - "evocación"
-  - "nivel_0"
-  - "bardo"
-  - "brujo"
-  - "druida"
-  - "hechicero"
-  - "mago"
+- evocación
+- nivel_0
+- bardo
+- brujo
+- druida
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Thunderclap
 ---
 
 # Tronar

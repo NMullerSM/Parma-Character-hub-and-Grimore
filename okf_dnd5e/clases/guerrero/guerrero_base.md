@@ -1,21 +1,27 @@
 ---
-id: "guerrero"
-nombre: "Guerrero"
-caracteristica_principal: "FUE/DES"
-dado_golpe: "1d10"
+id: guerrero
+nombre: Guerrero
+caracteristica_principal: FUE/DES
+dado_golpe: 1d10
 salvaciones_competentes:
-  - "FUE"
-  - "CON"
+- FUE
+- CON
 subclases_oficiales:
-  - "Maestro de Batalla"
-  - "Campeón"
-  - "Caballero Arcano"
-  - "Guerrero Psiónico"
-fuente: "PHB 2024"
+- Maestro de Batalla
+- Campeón
+- Caballero Arcano
+- Guerrero Psiónico
+fuente: PHB 2024
 pagina: 108
 tags:
-  - "clase"
-  - "guerrero"
+- clase
+- guerrero
+- spanish
+- es
+- español
+idioma: es
+tipo: clase
+nombre_ingles: Fighter
 ---
 
 # Clase: Guerrero

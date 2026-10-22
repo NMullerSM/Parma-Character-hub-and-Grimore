@@ -1,14 +1,20 @@
 ---
-id: "duro"
-nombre: "Duro"
-categoria: "Origen"
-encabezado: "Dote de origen"
-fuente: "PHB 2024"
+id: duro
+nombre: Duro
+categoria: Origen
+encabezado: Dote de origen
+fuente: PHB 2024
 pagina: 203
 tags:
-  - "dote"
-  - "origen"
-  - "duro"
+- dote
+- origen
+- duro
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Duro
 ---
 
 # Duro

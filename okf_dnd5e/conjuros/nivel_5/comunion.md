@@ -1,23 +1,29 @@
 ---
-id: "comunion"
-nombre: "Comunión"
+id: comunion
+nombre: Comunión
 nivel: 5
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Clérigo"
-tiempo_lanzamiento: "1 minuto o un ritual"
-alcance: "Lanzador"
-componentes: "V, S, M (incienso)"
-duracion: "1 minuto"
+- Clérigo
+tiempo_lanzamiento: 1 minuto o un ritual
+alcance: Lanzador
+componentes: V, S, M (incienso)
+duracion: 1 minuto
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 260
 tags:
-  - "adivinación"
-  - "nivel_5"
-  - "clérigo"
-  - "ritual"
+- adivinación
+- nivel_5
+- clérigo
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Commune
 ---
 
 # Comunión

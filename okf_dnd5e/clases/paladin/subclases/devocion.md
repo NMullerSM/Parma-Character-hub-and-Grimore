@@ -1,12 +1,21 @@
 ---
-id: "paladin_devocion"
-nombre: "Juramento de Devoción"
-nombre_ingles: "Oath of Devotion"
-tipo: "subclase"
-clase_padre: "Paladín"
+id: paladin_devocion
+nombre: Juramento de Devoción
+nombre_ingles: Oath of Devotion
+tipo: subclase
+clase_padre: Paladín
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["paladín", "arma sagrada", "luz", "aura de devoción", "phb2024"]
+fuente: PHB 2024
+tags:
+- paladín
+- arma sagrada
+- luz
+- aura de devoción
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Juramento de Devoción (Oath of Devotion)

@@ -1,14 +1,20 @@
 ---
-id: "maton_de_taberna"
-nombre: "Matón De Taberna"
-categoria: "Origen"
-encabezado: "Dote de origen"
-fuente: "PHB 2024"
+id: maton_de_taberna
+nombre: Matón De Taberna
+categoria: Origen
+encabezado: Dote de origen
+fuente: PHB 2024
 pagina: 203
 tags:
-  - "dote"
-  - "origen"
-  - "maton_de_taberna"
+- dote
+- origen
+- maton_de_taberna
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Matón De Taberna
 ---
 
 # Matón De Taberna

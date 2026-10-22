@@ -1,26 +1,32 @@
 ---
-id: "espejismo_arcano"
-nombre: "Espejismo Arcano"
+id: espejismo_arcano
+nombre: Espejismo Arcano
 nivel: 7
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Bardo"
-  - "Druida"
-  - "Mago"
-tiempo_lanzamiento: "10 minutos"
-alcance: "Vista"
-componentes: "V, S"
-duracion: "10 días"
+- Bardo
+- Druida
+- Mago
+tiempo_lanzamiento: 10 minutos
+alcance: Vista
+componentes: V, S
+duracion: 10 días
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 283
 tags:
-  - "ilusionismo"
-  - "nivel_7"
-  - "bardo"
-  - "druida"
-  - "mago"
+- ilusionismo
+- nivel_7
+- bardo
+- druida
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Mirage Arcane
 ---
 
 # Espejismo Arcano

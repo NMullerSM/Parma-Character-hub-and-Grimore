@@ -1,23 +1,29 @@
 ---
-id: "prohibicion"
-nombre: "Prohibición"
+id: prohibicion
+nombre: Prohibición
 nivel: 6
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Clérigo"
-tiempo_lanzamiento: "10 minutos o un ritual"
-alcance: "Toque"
-componentes: "V, S, M (polvo de rubí que valga al menos  1000 po)"
-duracion: "1 día"
+- Clérigo
+tiempo_lanzamiento: 10 minutos o un ritual
+alcance: Toque
+componentes: V, S, M (polvo de rubí que valga al menos  1000 po)
+duracion: 1 día
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 324
 tags:
-  - "abjuración"
-  - "nivel_6"
-  - "clérigo"
-  - "ritual"
+- abjuración
+- nivel_6
+- clérigo
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Forbiddance
 ---
 
 # Prohibición

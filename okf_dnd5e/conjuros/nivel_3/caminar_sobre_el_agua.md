@@ -1,29 +1,35 @@
 ---
-id: "caminar_sobre_el_agua"
-nombre: "Caminar Sobre El Agua"
+id: caminar_sobre_el_agua
+nombre: Caminar Sobre El Agua
 nivel: 3
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Clérigo"
-  - "Druida"
-  - "Explorador"
-  - "Hechicero"
-tiempo_lanzamiento: "Acción o ritual"
-alcance: "9 m"
-componentes: "V, S, M (un trozo de corcho)"
-duracion: "1 hora"
+- Clérigo
+- Druida
+- Explorador
+- Hechicero
+tiempo_lanzamiento: Acción o ritual
+alcance: 9 m
+componentes: V, S, M (un trozo de corcho)
+duracion: 1 hora
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 254
 tags:
-  - "transmutación"
-  - "nivel_3"
-  - "clérigo"
-  - "druida"
-  - "explorador"
-  - "hechicero"
-  - "ritual"
+- transmutación
+- nivel_3
+- clérigo
+- druida
+- explorador
+- hechicero
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Water Walk
 ---
 
 # Caminar Sobre El Agua

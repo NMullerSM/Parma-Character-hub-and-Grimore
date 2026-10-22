@@ -1,12 +1,21 @@
 ---
-id: "clerigo_crepusculo"
-nombre: "Dominio del Crepúsculo"
-nombre_ingles: "Twilight Domain"
-tipo: "subclase"
-clase_padre: "Clérigo"
+id: clerigo_crepusculo
+nombre: Dominio del Crepúsculo
+nombre_ingles: Twilight Domain
+tipo: subclase
+clase_padre: Clérigo
 nivel_desbloqueo: 3
-fuente: "Caldero de Tasha para Todo"
-tags: ["clérigo", "tasha", "visión 90m", "aura crepuscular", "vuelo"]
+fuente: Caldero de Tasha para Todo
+tags:
+- clérigo
+- tasha
+- visión 90m
+- aura crepuscular
+- vuelo
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Dominio del Crepúsculo (Twilight Domain)

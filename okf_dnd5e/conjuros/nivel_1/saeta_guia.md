@@ -1,22 +1,28 @@
 ---
-id: "saeta_guia"
-nombre: "Saeta Guía"
+id: saeta_guia
+nombre: Saeta Guía
 nivel: 1
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Clérigo"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S"
-duracion: "1 asalto"
+- Clérigo
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S
+duracion: 1 asalto
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 333
 tags:
-  - "evocación"
-  - "nivel_1"
-  - "clérigo"
+- evocación
+- nivel_1
+- clérigo
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Guiding Bolt
 ---
 
 # Saeta Guía

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
+  <!-- Opción 9: La Llama de la Creación & El Libro -->
+  <g fill="currentColor">
+    <!-- Libro abierto en la base (trazo limpio) -->
+    <path d="M 128 196 C 94 174 54 176 36 184 L 36 132 C 54 124 94 122 128 144 C 162 122 202 124 220 132 L 220 184 C 202 176 162 174 128 196 Z" fill="none" stroke="currentColor" stroke-width="9" stroke-linejoin="round"/>
+    <!-- Páginas interiores secundarias -->
+    <path d="M 44 196 C 72 186 104 186 128 202 C 152 186 184 186 212 196" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+    <!-- Llama / Chispa de forja emergiendo del centro -->
+    <path d="M 128 42 C 148 76 164 98 152 128 C 146 142 138 148 128 154 C 118 148 110 142 104 128 C 92 98 108 76 128 42 Z"/>
+    <!-- Núcleo interior de la llama (espacio negativo transparente) -->
+    <path d="M 128 88 C 138 108 140 120 134 134 C 132 138 128 142 128 142 C 128 142 124 138 122 134 C 116 120 118 108 128 88 Z" fill="#ffffff"/>
+  </g>
+</svg>

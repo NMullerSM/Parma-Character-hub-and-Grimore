@@ -1,27 +1,33 @@
 ---
-id: "clavo_mental"
-nombre: "Clavo Mental"
+id: clavo_mental
+nombre: Clavo Mental
 nivel: 2
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "S"
-duracion: "Concentración, hasta 1 hora"
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: S
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 259
 tags:
-  - "adivinación"
-  - "nivel_2"
-  - "brujo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- adivinación
+- nivel_2
+- brujo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Mind Spike
 ---
 
 # Clavo Mental

@@ -1,22 +1,28 @@
 ---
-id: "susurros_discordantes"
-nombre: "Susurros Discordantes"
+id: susurros_discordantes
+nombre: Susurros Discordantes
 nivel: 1
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Bardo"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V"
-duracion: "Instantáneo"
+- Bardo
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 336
 tags:
-  - "encantamiento"
-  - "nivel_1"
-  - "bardo"
+- encantamiento
+- nivel_1
+- bardo
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Dissonant Whispers
 ---
 
 # Susurros Discordantes

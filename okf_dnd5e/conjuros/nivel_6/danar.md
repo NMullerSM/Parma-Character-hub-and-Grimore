@@ -1,22 +1,28 @@
 ---
-id: "danar"
-nombre: "Dañar"
+id: danar
+nombre: Dañar
 nivel: 6
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Clérigo"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Clérigo
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 270
 tags:
-  - "nigromancia"
-  - "nivel_6"
-  - "clérigo"
+- nigromancia
+- nivel_6
+- clérigo
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Harm
 ---
 
 # Dañar

@@ -1,25 +1,32 @@
 ---
-id: "invocar_bestia"
-nombre: "Invocar Bestia"
+id: invocar_bestia
+nombre: Invocar Bestia
 nivel: 2
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Druida"
-  - "Explorador"
-tiempo_lanzamiento: "Acción"
-alcance: "27 m"
-componentes: "V, S, M (una pluma, un poco de pelaje y cola  de pez dentro de una bellota bañada en oro que valga al  menos 200 po)"
-duracion: "Concentración, hasta 1 hora"
+- Druida
+- Explorador
+tiempo_lanzamiento: Acción
+alcance: 27 m
+componentes: V, S, M (una pluma, un poco de pelaje y cola  de pez dentro de una bellota
+  bañada en oro que valga al  menos 200 po)
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 299
 tags:
-  - "conjuración"
-  - "nivel_2"
-  - "druida"
-  - "explorador"
-  - "concentracion"
+- conjuración
+- nivel_2
+- druida
+- explorador
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Summon Beast
 ---
 
 # Invocar Bestia

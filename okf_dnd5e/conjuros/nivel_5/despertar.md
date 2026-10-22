@@ -1,24 +1,31 @@
 ---
-id: "despertar"
-nombre: "Despertar"
+id: despertar
+nombre: Despertar
 nivel: 5
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Bardo"
-  - "Druida"
-tiempo_lanzamiento: "8 horas"
-alcance: "Toque"
-componentes: "V, S, M (un ágata que valga al menos  1000 po y que se consume como parte del conjuro)"
-duracion: "Instantáneo"
+- Bardo
+- Druida
+tiempo_lanzamiento: 8 horas
+alcance: Toque
+componentes: V, S, M (un ágata que valga al menos  1000 po y que se consume como parte
+  del conjuro)
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 271
 tags:
-  - "transmutación"
-  - "nivel_5"
-  - "bardo"
-  - "druida"
+- transmutación
+- nivel_5
+- bardo
+- druida
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Awaken
 ---
 
 # Despertar

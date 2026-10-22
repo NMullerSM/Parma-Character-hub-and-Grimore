@@ -1,14 +1,20 @@
 ---
-id: "actor"
-nombre: "Actor"
-categoria: "General"
-encabezado: "Dote general (requisitos: nivel 4 o más, Carisma 13 o más)"
-fuente: "PHB 2024"
+id: actor
+nombre: Actor
+categoria: General
+encabezado: 'Dote general (requisitos: nivel 4 o más, Carisma 13 o más)'
+fuente: PHB 2024
 pagina: 204
 tags:
-  - "dote"
-  - "generales"
-  - "actor"
+- dote
+- generales
+- actor
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Actor
 ---
 
 # Actor

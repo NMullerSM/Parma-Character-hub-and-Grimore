@@ -1,28 +1,34 @@
 ---
-id: "imagen_multiple"
-nombre: "Imagen Múltiple"
+id: imagen_multiple
+nombre: Imagen Múltiple
 nivel: 2
-escuela: "Ilusionismo"
+escuela: Ilusionismo
 clases:
-  - "Bardo"
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V, S"
-duracion: "1 minuto"
+- Bardo
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V, S
+duracion: 1 minuto
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 295
 tags:
-  - "ilusionismo"
-  - "nivel_2"
-  - "bardo"
-  - "brujo"
-  - "hechicero"
-  - "mago"
+- ilusionismo
+- nivel_2
+- bardo
+- brujo
+- hechicero
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Mirror Image
 ---
 
 # Imagen Múltiple

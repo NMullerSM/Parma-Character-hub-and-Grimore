@@ -1,12 +1,21 @@
 ---
-id: "picaro_asesino"
-nombre: "Asesino"
-nombre_ingles: "Assassin"
-tipo: "subclase"
-clase_padre: "Pícaro"
+id: picaro_asesino
+nombre: Asesino
+nombre_ingles: Assassin
+tipo: subclase
+clase_padre: Pícaro
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["pícaro", "emboscada", "crítico automático", "venenos", "phb2024"]
+fuente: PHB 2024
+tags:
+- pícaro
+- emboscada
+- crítico automático
+- venenos
+- phb2024
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Asesino (Assassin)

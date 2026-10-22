@@ -1,12 +1,22 @@
 ---
-id: "explorador_acechador_sombrio"
-nombre: "Acechador Sombrío"
-nombre_ingles: "Gloom Stalker"
-tipo: "subclase"
-clase_padre: "Explorador"
+id: explorador_acechador_sombrio
+nombre: Acechador Sombrío
+nombre_ingles: Gloom Stalker
+tipo: subclase
+clase_padre: Explorador
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["explorador", "infratierra", "invisible en oscuridad", "emboscada", "phb2024", "xanathar"]
+fuente: PHB 2024
+tags:
+- explorador
+- infratierra
+- invisible en oscuridad
+- emboscada
+- phb2024
+- xanathar
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Acechador Sombrío (Gloom Stalker)

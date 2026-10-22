@@ -1,14 +1,20 @@
 ---
-id: "experto_en_habilidades"
-nombre: "Experto En Habilidades"
-categoria: "General"
-encabezado: "Dote general (requisitos: nivel 4 o más)"
-fuente: "PHB 2024"
+id: experto_en_habilidades
+nombre: Experto En Habilidades
+categoria: General
+encabezado: 'Dote general (requisitos: nivel 4 o más)'
+fuente: PHB 2024
 pagina: 206
 tags:
-  - "dote"
-  - "generales"
-  - "experto_en_habilidades"
+- dote
+- generales
+- experto_en_habilidades
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Experto En Habilidades
 ---
 
 # Experto En Habilidades

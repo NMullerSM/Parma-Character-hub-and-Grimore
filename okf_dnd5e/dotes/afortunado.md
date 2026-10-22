@@ -1,19 +1,23 @@
 ---
-id: "dote_afortunado"
-nombre: "Afortunado"
-nombre_ingles: "Lucky"
-fuente: "Manual del Jugador 2024"
+id: dote_afortunado
+nombre: Afortunado
+nombre_ingles: Lucky
+fuente: Manual del Jugador 2024
 pagina: 201
-tipo: "dote"
-categoria: "Dote de Origen / General"
-usos_formula: "Igual al Bonificador de Competencia (PB)"
-recarga: "Descanso Largo"
+tipo: dote
+categoria: Dote de Origen / General
+usos_formula: Igual al Bonificador de Competencia (PB)
+recarga: Descanso Largo
 tags:
-  - "dote"
-  - "suerte"
-  - "ventaja"
-  - "desventaja"
-  - "d20"
+- dote
+- suerte
+- ventaja
+- desventaja
+- d20
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Dote: Afortunado (*Lucky*)

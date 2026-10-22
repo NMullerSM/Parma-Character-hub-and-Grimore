@@ -1,21 +1,27 @@
 ---
-id: "explorador"
-nombre: "Explorador"
-caracteristica_principal: "DES/SAB"
-dado_golpe: "1d10"
+id: explorador
+nombre: Explorador
+caracteristica_principal: DES/SAB
+dado_golpe: 1d10
 salvaciones_competentes:
-  - "FUE"
-  - "DES"
+- FUE
+- DES
 subclases_oficiales:
-  - "Fey Wanderer"
-  - "Gloom Stalker"
-  - "Hunter"
-  - "Beast Master"
-fuente: "PHB 2024"
+- Fey Wanderer
+- Gloom Stalker
+- Hunter
+- Beast Master
+fuente: PHB 2024
 pagina: 98
 tags:
-  - "clase"
-  - "explorador"
+- clase
+- explorador
+- spanish
+- es
+- español
+idioma: es
+tipo: clase
+nombre_ingles: Ranger
 ---
 
 # Clase: Explorador

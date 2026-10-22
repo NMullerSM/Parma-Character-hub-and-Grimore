@@ -1,18 +1,22 @@
 ---
-id: "dote_toque_feerico"
-nombre: "Toque Feérico"
-nombre_ingles: "Fey Touched"
-fuente: "Caldero de Tasha para Todo"
+id: dote_toque_feerico
+nombre: Toque Feérico
+nombre_ingles: Fey Touched
+fuente: Caldero de Tasha para Todo
 pagina: 82
-tipo: "dote"
-categoria: "Mejora de Característica / Feat"
-aumento_estadistica: "+1 a Inteligencia, Sabiduría o Carisma (máx 20)"
+tipo: dote
+categoria: Mejora de Característica / Feat
+aumento_estadistica: +1 a Inteligencia, Sabiduría o Carisma (máx 20)
 tags:
-  - "dote"
-  - "tasha"
-  - "fey-wild"
-  - "paso-brumoso"
-  - "magia-gratis"
+- dote
+- tasha
+- fey-wild
+- paso-brumoso
+- magia-gratis
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Dote: Toque Feérico (*Fey Touched*)

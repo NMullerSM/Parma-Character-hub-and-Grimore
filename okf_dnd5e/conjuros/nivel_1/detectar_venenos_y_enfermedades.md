@@ -1,30 +1,36 @@
 ---
-id: "detectar_venenos_y_enfermedades"
-nombre: "Detectar Venenos Y Enfermedades"
+id: detectar_venenos_y_enfermedades
+nombre: Detectar Venenos Y Enfermedades
 nivel: 1
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Clérigo"
-  - "Druida"
-  - "Explorador"
-  - "Paladín"
-tiempo_lanzamiento: "Acción o ritual"
-alcance: "Lanzador"
-componentes: "V, S, M (una hoja de tejo)"
-duracion: "Concentración, hasta 10 minutos"
+- Clérigo
+- Druida
+- Explorador
+- Paladín
+tiempo_lanzamiento: Acción o ritual
+alcance: Lanzador
+componentes: V, S, M (una hoja de tejo)
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 273
 tags:
-  - "adivinación"
-  - "nivel_1"
-  - "clérigo"
-  - "druida"
-  - "explorador"
-  - "paladín"
-  - "concentracion"
-  - "ritual"
+- adivinación
+- nivel_1
+- clérigo
+- druida
+- explorador
+- paladín
+- concentracion
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Detect Poison and Disease
 ---
 
 # Detectar Venenos Y Enfermedades

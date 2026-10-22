@@ -1,20 +1,26 @@
 ---
-id: "elfo"
-nombre: "Elfo"
-tipo_criatura: "humanoide"
-tamano: "Mediano"
-velocidad: "9 m"
-sentidos: "Visión en la oscuridad 18 m (Drow 36 m)"
-fuente: "PHB 2024"
+id: elfo
+nombre: Elfo
+tipo_criatura: humanoide
+tamano: Mediano
+velocidad: 9 m
+sentidos: Visión en la oscuridad 18 m (Drow 36 m)
+fuente: PHB 2024
 pagina: 190
 rasgos_principales:
-  - "Linaje élfico (Drow, Alto Elfo, Bosques)"
-  - "Sentidos agudos"
-  - "Linaje feérico"
-  - "Trance"
+- Linaje élfico (Drow, Alto Elfo, Bosques)
+- Sentidos agudos
+- Linaje feérico
+- Trance
 tags:
-  - "especie"
-  - "elfo"
+- especie
+- elfo
+- spanish
+- es
+- español
+idioma: es
+tipo: especie
+nombre_ingles: Elf
 ---
 
 # Especie: Elfo
@@ -48,4 +54,4 @@ rodea mientras se sumergen en recuerdos y meditaciones.
 El entorno transforma sutilmente a los elfos si lo habitan 
 durante un milenio o más y les otorga determinados 
 tipos de magia. Los altos elfos, los drows y los elfos de los 
-bosques son ejemplos de elfos que 
+bosques son ejemplos de elfos que

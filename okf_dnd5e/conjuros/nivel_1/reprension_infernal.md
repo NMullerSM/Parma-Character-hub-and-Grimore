@@ -1,22 +1,28 @@
 ---
-id: "reprension_infernal"
-nombre: "Reprensión Infernal"
+id: reprension_infernal
+nombre: Reprensión Infernal
 nivel: 1
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Brujo"
-tiempo_lanzamiento: "Reacción, que llevas a cabo en"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "Instantáneo"
+- Brujo
+tiempo_lanzamiento: Reacción, que llevas a cabo en
+alcance: 18 m
+componentes: V, S
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 329
 tags:
-  - "evocación"
-  - "nivel_1"
-  - "brujo"
+- evocación
+- nivel_1
+- brujo
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Hellish Rebuke
 ---
 
 # Reprensión Infernal

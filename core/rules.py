@@ -384,14 +384,15 @@ def roll_dice_pool(pool: Dict[Any, int], modifier: int = 0, mode: str = "normal"
     }
 
 
-def compute_dynamic_features(char: CharacterSheet) -> List[Any]:
+def compute_dynamic_features(char: CharacterSheet, lang: str = "es") -> List[Any]:
     """
     Calcula y actualiza dinámicamente los rasgos, dotes y habilidades especiales
     del personaje de acuerdo a las reglas oficiales de D&D 5e / 2024 (usos por nivel,
-    dados escalados, recarga en descansos y CDs de salvación).
+    dados escalados, recarga en descansos y CDs de salvación), en español o inglés.
     """
     from .models import CharacterFeature
 
+    is_en = (lang or "").lower().startswith("en")
     car_mod = calc_modifier(char.abilities.get("CAR", 10))
     des_mod = calc_modifier(char.abilities.get("DES", 10))
     fue_mod = calc_modifier(char.abilities.get("FUE", 10))
@@ -403,50 +404,66 @@ def compute_dynamic_features(char: CharacterSheet) -> List[Any]:
     feat_names = {f.name.lower(): f for f in features}
 
     # 1. Inspiración Bárdica (Bardo)
-    if "bardo" in (char.char_class or "").lower() or any("inspiración" in k for k in feat_names):
+    c_lower = (char.char_class or "").lower()
+    if "bardo" in c_lower or "bard" in c_lower or any("inspiración" in k or "bardic" in k for k in feat_names):
         bard_die = "d6" if char.level < 5 else ("d8" if char.level < 10 else ("d10" if char.level < 15 else "d12"))
         max_uses = max(1, car_mod)
-        recharge = "Corto" if char.level >= 5 else "Largo"
-        insp_name = f"Inspiración Bárdica ({bard_die})"
+        recharge_es = "Corto" if char.level >= 5 else "Largo"
+        recharge_en = "Short" if char.level >= 5 else "Long"
+        recharge = recharge_en if is_en else recharge_es
+        insp_name = f"Bardic Inspiration ({bard_die})" if is_en else f"Inspiración Bárdica ({bard_die})"
+        insp_desc = (
+            f"As a Bonus Action, inspire a creature within 60 ft (12 tiles). Add 1{bard_die} to a d20 roll within "
+            f"the next 10 minutes. Max uses: {max_uses} (+{car_mod} CHA). Recharges on a {recharge} Rest."
+            if is_en else
+            f"Con una acción adicional, inspiras a una criatura a 18 m. Añade 1{bard_die} a una tirada de "
+            f"d20 durante los próximos 10 minutos. Usos máximos: {max_uses} (+{car_mod} CAR). "
+            f"Recarga con Descanso {recharge}."
+        )
 
-        # Buscar si ya existe
-        existing = next((f for f in features if "inspiración" in f.name.lower() or "bárdica" in f.name.lower()), None)
+        existing = next((f for f in features if any(k in f.name.lower() for k in ("inspiración", "bárdica", "bardic", "inspiration"))), None)
         if existing:
             existing.name = insp_name
+            existing.source = "Bard" if is_en else "Bardo"
             existing.uses_max = max_uses
             if existing.uses_current is None or existing.uses_current > max_uses:
                 existing.uses_current = max_uses
             existing.recharge = recharge
-            existing.description = (
-                f"Con una acción adicional, inspiras a una criatura a 18 m. Añade 1{bard_die} a una tirada de "
-                f"d20 durante los próximos 10 minutos. Usos máximos: {max_uses} (+{car_mod} CAR). "
-                f"Recarga con Descanso {recharge}."
-            )
+            existing.description = insp_desc
         else:
             features.insert(
                 0,
                 CharacterFeature(
                     id="feat_bardic_insp",
                     name=insp_name,
-                    source="Bardo",
+                    source="Bard" if is_en else "Bardo",
                     uses_max=max_uses,
                     uses_current=max_uses,
                     recharge=recharge,
-                    description=f"Con una acción adicional, inspiras a una criatura a 18 m (1{bard_die}). Recarga con Descanso {recharge}."
+                    description=insp_desc
                 )
             )
 
     # 2. Hojas Psíquicas (Psychic Blades - Colegio de Susurros)
-    if "susurro" in (char.subclass or "").lower() or any("hojas psíquicas" in k or "psychic blades" in k for k in feat_names):
+    s_lower = (char.subclass or "").lower()
+    if "susurro" in s_lower or "whisper" in s_lower or any("hojas psíquicas" in k or "psychic blades" in k for k in feat_names):
         pb_die = "2d6" if char.level < 5 else ("3d6" if char.level < 10 else ("5d6" if char.level < 15 else "8d6"))
-        recharge = "Corto" if char.level >= 5 else "Largo"
+        recharge_es = "Corto" if char.level >= 5 else "Largo"
+        recharge_en = "Short" if char.level >= 5 else "Long"
+        recharge = recharge_en if is_en else recharge_es
         existing = next((f for f in features if "hojas psíquicas" in f.name.lower() or "psychic blades" in f.name.lower()), None)
         desc = (
+            f"When you hit a creature with a weapon attack (finesse or ranged), you can expend one use of Bardic "
+            f"Inspiration to deal +{pb_die} psychic damage to that target (once per turn). Recharges on a {recharge} Rest."
+            if is_en else
             f"Al impactar con un arma sutil o a distancia, puedes gastar 1 uso de Inspiración Bárdica para infligir "
             f"+{pb_die} de daño psíquico a la criatura (1 vez por turno). Recarga con Descanso {recharge}."
         )
+        pb_name = f"Psychic Blades ({pb_die})" if is_en else f"Hojas Psíquicas ({pb_die})"
+        pb_source = "College of Whispers" if is_en else "Colegio de Susurros"
         if existing:
-            existing.name = f"Hojas Psíquicas ({pb_die})"
+            existing.name = pb_name
+            existing.source = pb_source
             existing.description = desc
             existing.recharge = recharge
             existing.uses_max = max(1, car_mod)
@@ -454,8 +471,8 @@ def compute_dynamic_features(char: CharacterSheet) -> List[Any]:
             features.append(
                 CharacterFeature(
                     id="feat_psychic_blades",
-                    name=f"Hojas Psíquicas ({pb_die})",
-                    source="Colegio de Susurros",
+                    name=pb_name,
+                    source=pb_source,
                     uses_max=max(1, car_mod),
                     uses_current=max(1, car_mod),
                     recharge=recharge,
@@ -464,52 +481,73 @@ def compute_dynamic_features(char: CharacterSheet) -> List[Any]:
             )
 
     # 3. Palabras de Terror (Words of Terror - Colegio de Susurros)
-    if "susurro" in (char.subclass or "").lower() or any("palabras de terror" in k or "words of terror" in k for k in feat_names):
+    if "susurro" in s_lower or "whisper" in s_lower or any("palabras de terror" in k or "words of terror" in k for k in feat_names):
         cd_val = 8 + prof + car_mod
         desc = (
+            f"After speaking alone with a humanoid for at least 1 minute, the target must succeed on a WIS saving throw "
+            f"against DC {cd_val} or become frightened of you (or another creature of your choice) for 1 hour. Recharges on a Short Rest."
+            if is_en else
             f"Tras hablar 1 minuto a solas con un humanoide, debe superar una tirada de salvación de SAB "
             f"contra CD {cd_val} o quedará asustado de ti (o de quien elijas) durante 1 hora. Recarga con Descanso Corto o Largo."
         )
+        wot_name = f"Words of Terror (DC {cd_val})" if is_en else f"Palabras de Terror (CD {cd_val})"
+        wot_source = "College of Whispers" if is_en else "Colegio de Susurros"
         existing = next((f for f in features if "palabras de terror" in f.name.lower() or "words of terror" in f.name.lower()), None)
         if existing:
+            existing.name = wot_name
+            existing.source = wot_source
             existing.description = desc
-            existing.recharge = "Corto"
+            existing.recharge = "Short" if is_en else "Corto"
             existing.uses_max = 1
         else:
             features.append(
                 CharacterFeature(
                     id="feat_words_of_terror",
-                    name=f"Palabras de Terror (CD {cd_val})",
-                    source="Colegio de Susurros",
+                    name=wot_name,
+                    source=wot_source,
                     uses_max=1,
                     uses_current=1,
-                    recharge="Corto",
+                    recharge="Short" if is_en else "Corto",
                     description=desc,
                 )
             )
 
     # 4. Magia Drow (Especie / Linaje Drow)
-    if "drow" in (char.race or "").lower() or any("magia drow" in k for k in feat_names):
-        existing = next((f for f in features if "magia drow" in f.name.lower()), None)
+    r_lower = (char.race or "").lower()
+    if "drow" in r_lower or any("magia drow" in k or "drow magic" in k for k in feat_names):
+        existing = next((f for f in features if "magia drow" in f.name.lower() or "drow magic" in f.name.lower()), None)
         desc = (
-            "Conoces el truco Luces Danzantes (a voluntad). "
-            + ("A partir de nivel 3 puedes lanzar Fuego Feérico 1 vez por descanso largo sin gastar ranura. " if char.level >= 3 else "")
-            + ("A nivel 5 puedes lanzar Oscuridad 1 vez por descanso largo. " if char.level >= 5 else "")
-            + f"Tu aptitud mágica es Carisma (CD {8 + prof + car_mod})."
+            (
+                "You know the Dancing Lights cantrip (at will). "
+                + ("At level 3 you can cast Faerie Fire once per long rest without a spell slot. " if char.level >= 3 else "")
+                + ("At level 5 you can cast Darkness once per long rest. " if char.level >= 5 else "")
+                + f"Your spellcasting ability is Charisma (DC {8 + prof + car_mod})."
+            )
+            if is_en else
+            (
+                "Conoces el truco Luces Danzantes (a voluntad). "
+                + ("A partir de nivel 3 puedes lanzar Fuego Feérico 1 vez por descanso largo sin gastar ranura. " if char.level >= 3 else "")
+                + ("A nivel 5 puedes lanzar Oscuridad 1 vez por descanso largo. " if char.level >= 5 else "")
+                + f"Tu aptitud mágica es Carisma (CD {8 + prof + car_mod})."
+            )
         )
+        dm_name = "Drow Magic" if is_en else "Magia Drow"
+        dm_source = "Drow Lineage" if is_en else "Linaje Drow"
         if existing:
+            existing.name = dm_name
+            existing.source = dm_source
             existing.description = desc
             existing.uses_max = 1
-            existing.recharge = "Largo"
+            existing.recharge = "Long" if is_en else "Largo"
         else:
             features.append(
                 CharacterFeature(
                     id="feat_drow_magic",
-                    name="Magia Drow",
-                    source="Linaje Drow",
+                    name=dm_name,
+                    source=dm_source,
                     uses_max=1,
                     uses_current=1,
-                    recharge="Largo",
+                    recharge="Long" if is_en else "Largo",
                     description=desc,
                 )
             )
@@ -518,29 +556,42 @@ def compute_dynamic_features(char: CharacterSheet) -> List[Any]:
     if any("afortunado" in k or "lucky" in k for k in feat_names):
         lucky_feat = next((f for f in features if "afortunado" in f.name.lower() or "lucky" in f.name.lower()), None)
         if lucky_feat:
+            lucky_feat.name = f"Lucky ({prof} Luck Points)" if is_en else f"Afortunado ({prof} Puntos de Suerte)"
+            lucky_feat.source = "Origin Feat" if is_en else "Dote de Origen"
             lucky_feat.uses_max = prof
             if lucky_feat.uses_current is None or lucky_feat.uses_current > prof:
                 lucky_feat.uses_current = prof
-            lucky_feat.recharge = "Largo"
+            lucky_feat.recharge = "Long" if is_en else "Largo"
             lucky_feat.description = (
+                f"You have {prof} Luck Points. When you roll a d20 for an attack, check, or save, or when an attack roll is made "
+                f"against you, you can spend 1 Luck Point to roll an additional d20. Recharges on a Long Rest."
+                if is_en else
                 f"Tienes {prof} puntos de suerte. Puedes gastar 1 punto para tirar un d20 adicional en tiradas de ataque, "
                 f"pruebas o salvaciones y elegir qué dado usar. Recarga con Descanso Largo."
             )
 
     # 6. Ataque Furtivo (Pícaro)
-    if "pícaro" in (char.char_class or "").lower() or "picaro" in (char.char_class or "").lower():
+    if any(k in c_lower for k in ("pícaro", "picaro", "rogue")):
         sneak_dice = f"{(char.level + 1) // 2}d6"
         existing = next((f for f in features if "ataque furtivo" in f.name.lower() or "sneak attack" in f.name.lower()), None)
-        desc = f"1 vez por turno, infliges +{sneak_dice} de daño adicional si tienes ventaja o un aliado a 1.5 m del objetivo."
+        desc = (
+            f"Once per turn, deal an extra {sneak_dice} damage to one creature hit with a finesse or ranged weapon attack "
+            f"if you have Advantage on the attack roll or an ally within 5 ft."
+            if is_en else
+            f"1 vez por turno, infliges +{sneak_dice} de daño adicional si tienes ventaja o un aliado a 1.5 m del objetivo."
+        )
+        sa_name = f"Sneak Attack ({sneak_dice})" if is_en else f"Ataque Furtivo ({sneak_dice})"
+        sa_source = "Rogue" if is_en else "Pícaro"
         if existing:
-            existing.name = f"Ataque Furtivo ({sneak_dice})"
+            existing.name = sa_name
+            existing.source = sa_source
             existing.description = desc
         else:
             features.append(
                 CharacterFeature(
                     id="feat_sneak_attack",
-                    name=f"Ataque Furtivo ({sneak_dice})",
-                    source="Pícaro",
+                    name=sa_name,
+                    source=sa_source,
                     uses_max=0,
                     uses_current=0,
                     recharge="Pasivo",

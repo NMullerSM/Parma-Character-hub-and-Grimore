@@ -1,25 +1,31 @@
 ---
-id: "invocar_infernal"
-nombre: "Invocar Infernal"
+id: invocar_infernal
+nombre: Invocar Infernal
 nivel: 6
-escuela: "Conjuración"
+escuela: Conjuración
 clases:
-  - "Brujo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "27 m"
-componentes: "V, S, M (un vial con sangre que valga  al menos 600 po)"
-duracion: "Concentración, hasta 1 hora"
+- Brujo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 27 m
+componentes: V, S, M (un vial con sangre que valga  al menos 600 po)
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 303
 tags:
-  - "conjuración"
-  - "nivel_6"
-  - "brujo"
-  - "mago"
-  - "concentracion"
+- conjuración
+- nivel_6
+- brujo
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Summon Fiend
 ---
 
 # Invocar Infernal

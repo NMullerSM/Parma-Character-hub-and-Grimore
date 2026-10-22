@@ -1,29 +1,35 @@
 ---
-id: "polimorfar"
-nombre: "Polimorfar"
+id: polimorfar
+nombre: Polimorfar
 nivel: 4
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Bardo"
-  - "Druida"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S, M (un capullo de oruga)"
-duracion: "Concentración, hasta 1 hora"
+- Bardo
+- Druida
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S, M (un capullo de oruga)
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 322
 tags:
-  - "transmutación"
-  - "nivel_4"
-  - "bardo"
-  - "druida"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- transmutación
+- nivel_4
+- bardo
+- druida
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Polymorph
 ---
 
 # Polimorfar

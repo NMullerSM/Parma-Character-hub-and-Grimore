@@ -1,12 +1,21 @@
 ---
-id: "bardo_elocuencia"
-nombre: "Colegio de la Elocuencia"
-nombre_ingles: "College of Eloquence"
-tipo: "subclase"
-clase_padre: "Bardo"
+id: bardo_elocuencia
+nombre: Colegio de la Elocuencia
+nombre_ingles: College of Eloquence
+tipo: subclase
+clase_padre: Bardo
 nivel_desbloqueo: 3
-fuente: "Caldero de Tasha para Todo"
-tags: ["bardo", "tasha", "persuasión", "oratoria", "inspiración infalible"]
+fuente: Caldero de Tasha para Todo
+tags:
+- bardo
+- tasha
+- persuasión
+- oratoria
+- inspiración infalible
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Colegio de la Elocuencia (College of Eloquence)

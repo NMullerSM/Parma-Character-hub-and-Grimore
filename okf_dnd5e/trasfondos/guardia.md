@@ -9,8 +9,14 @@ pagina: 184
 tags:
 - trasfondo
 - guardia
+- spanish
+- es
+- español
 tipo: trasfondo
+idioma: es
+nombre_ingles: Guard
 ---
+
 # Trasfondo: Guardia
 
 - **Puntuaciones de Característica**: Fuerza, Inteligencia, Sabiduría

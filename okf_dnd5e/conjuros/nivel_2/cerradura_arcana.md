@@ -1,22 +1,29 @@
 ---
-id: "cerradura_arcana"
-nombre: "Cerradura Arcana"
+id: cerradura_arcana
+nombre: Cerradura Arcana
 nivel: 2
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S, M (polvo de oro que valga al menos  25 po, que se consume como parte del conjuro)"
-duracion: "Hasta que sea disipado"
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S, M (polvo de oro que valga al menos  25 po, que se consume como
+  parte del conjuro)
+duracion: Hasta que sea disipado
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 258
 tags:
-  - "abjuración"
-  - "nivel_2"
-  - "mago"
+- abjuración
+- nivel_2
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Arcane Lock
 ---
 
 # Cerradura Arcana

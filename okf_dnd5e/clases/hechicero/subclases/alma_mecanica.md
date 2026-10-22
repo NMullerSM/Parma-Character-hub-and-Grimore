@@ -1,12 +1,23 @@
 ---
-id: "hechicero_alma_mecanica"
-nombre: "Alma Mecánica"
-nombre_ingles: "Clockwork Soul"
-tipo: "subclase"
-clase_padre: "Hechicero"
+id: hechicero_alma_mecanica
+nombre: Alma Mecánica
+nombre_ingles: Clockwork Soul
+tipo: subclase
+clase_padre: Hechicero
 nivel_desbloqueo: 3
-fuente: "PHB 2024"
-tags: ["hechicero", "mecanismo", "orden", "modron", "cancelar ventaja", "phb2024", "tasha"]
+fuente: PHB 2024
+tags:
+- hechicero
+- mecanismo
+- orden
+- modron
+- cancelar ventaja
+- phb2024
+- tasha
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Alma Mecánica (Clockwork Soul)

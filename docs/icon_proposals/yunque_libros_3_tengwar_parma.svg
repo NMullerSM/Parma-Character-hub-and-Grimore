@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <!-- Concepto 3: Yunque & Sello Tengwar Parma (Tolkien)
+       La letra Tengwar "Parma" (p/libro) estilizada en las líneas maestras de un yunque de forja -->
+  <g fill="#12181c">
+    <!-- Base sólida heráldica -->
+    <path d="M 52 214 C 52 206 64 200 80 200 L 176 200 C 192 200 204 206 204 214 L 204 224 L 52 224 Z"/>
+    
+    <!-- Pilar / Telco Tengwar central -->
+    <path d="M 104 124 L 152 124 L 144 200 L 112 200 Z"/>
+
+    <!-- Cabeza del Yunque formando el arco 'Lúva' Tengwar y las hojas de un libro -->
+    <!-- Cuerno élfico estilizado a la izquierda -->
+    <path d="M 24 78 C 50 78 84 94 104 124 L 152 124 C 182 96 216 80 232 78 C 236 78 238 74 238 68 C 238 56 226 52 212 52 L 86 52 C 54 52 32 64 24 78 Z"/>
+    
+    <!-- Líneas internas de hojas de grimorio (espacio transparente / blanco) -->
+    <path d="M 88 64 L 216 64" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M 96 76 L 210 76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- Runa / Estrella élfica de Fëanor en el corazón del yunque -->
+    <polygon points="128,88 132,100 144,104 132,108 128,120 124,108 112,104 124,100" fill="#ffffff"/>
+  </g>
+</svg>

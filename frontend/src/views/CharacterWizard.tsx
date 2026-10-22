@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useCharacter } from "../context/CharacterContext";
+import { useTranslation } from "../i18n";
 import { api } from "../api/client";
 import type {
   BuilderCatalog,
@@ -42,7 +43,10 @@ const SpellCard: React.FC<{
   selected?: boolean;
   onToggle?: () => void;
 }> = ({ spell, selectable, selected, onToggle }) => {
+  const { language } = useCharacter();
+  const { translateSchool, translateSpellName } = useTranslation();
   const isCantrip = spell.level === 0;
+  const spellDisplayName = (language === "en" && spell.name_en && spell.name_en !== spell.name) ? spell.name_en : translateSpellName(spell.name);
   return (
     <div
       onClick={selectable && onToggle ? onToggle : undefined}
@@ -62,7 +66,7 @@ const SpellCard: React.FC<{
                 isCantrip ? "bg-cyan-400" : "bg-purple-400"
               }`}
             />
-            <h4 className="font-display font-bold text-sm text-main truncate">{spell.name}</h4>
+            <h4 className="font-display font-bold text-sm text-main truncate">{spellDisplayName}</h4>
           </div>
           <span
             className={`px-1.5 py-0.5 rounded text-[10px] font-stat font-semibold tracking-wider uppercase shrink-0 ${
@@ -71,23 +75,23 @@ const SpellCard: React.FC<{
                 : "bg-purple-950/60 border border-purple-800 text-purple-300"
             }`}
           >
-            {isCantrip ? "Truco" : `Nivel ${spell.level}`}
+            {isCantrip ? (language === "en" ? "Cantrip" : "Truco") : (language === "en" ? `Level ${spell.level}` : `Nivel ${spell.level}`)}
           </span>
         </div>
 
         <div className="text-[11px] text-muted space-y-1 mb-2">
           <div className="flex flex-wrap gap-x-3 gap-y-0.5">
             <span>
-              <strong className="text-zinc-300">Escuela:</strong> {spell.school}
+              <strong className="text-zinc-300">{language === "en" ? "School:" : "Escuela:"}</strong> {translateSchool(spell.school)}
             </span>
             <span>
-              <strong className="text-zinc-300">Tiempo:</strong> {spell.cast_time}
+              <strong className="text-zinc-300">{language === "en" ? "Time:" : "Tiempo:"}</strong> {spell.cast_time}
             </span>
             <span>
-              <strong className="text-zinc-300">Alcance:</strong> {spell.range_area}
+              <strong className="text-zinc-300">{language === "en" ? "Range:" : "Alcance:"}</strong> {spell.range_area}
             </span>
             <span>
-              <strong className="text-zinc-300">Comp:</strong> {spell.components}
+              <strong className="text-zinc-300">{language === "en" ? "Comp:" : "Comp:"}</strong> {spell.components}
             </span>
           </div>
         </div>
@@ -101,7 +105,11 @@ const SpellCard: React.FC<{
 
       {selectable && (
         <div className="mt-2.5 pt-2 border-t border-border-iron/40 flex items-center justify-between text-[11px]">
-          <span className="text-muted">{selected ? "Preparado" : "Click para preparar"}</span>
+          <span className="text-muted">
+            {selected
+              ? (language === "en" ? "Prepared" : "Preparado")
+              : (language === "en" ? "Click to prepare" : "Click para preparar")}
+          </span>
           <span
             className={`w-4 h-4 rounded flex items-center justify-center border ${
               selected
@@ -139,7 +147,20 @@ const FeatureCard: React.FC<{
 };
 
 export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
-  const { reloadCharacters, showToast, dndEdition } = useCharacter();
+  const { reloadCharacters, showToast, dndEdition, language } = useCharacter();
+  const {
+    t,
+    translateClass,
+    translateRace,
+    translateAbility,
+    translateAbilityShort,
+    translateSkill,
+    translateDamageType,
+    translateWeapon,
+    translateBackground,
+    translateAlignment,
+    translateSubclass,
+  } = useTranslation();
 
   const [mode, setMode] = useState<CreationMode>("hub");
   const [step, setStep] = useState<number>(1);
@@ -469,19 +490,19 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                 </div>
                 <div className="flex items-center justify-between">
                   <h3 className="font-display font-bold text-lg text-gold group-hover:text-gold-hover">
-                    Paso a Paso
+                    {t("forge.modeStepTitle")}
                   </h3>
                   <span className="px-2 py-0.5 rounded text-[10px] font-stat bg-surface border border-border-iron text-muted">
-                    Control Total
+                    {t("forge.modeStepTag")}
                   </span>
                 </div>
                 <p className="text-xs text-muted leading-relaxed">
-                  Personalización completa: concepto, linaje, subclase, competencias, Point Buy (27 pts) o Matriz Estándar, y tarjetas completas de conjuros.
+                  {t("forge.modeStepDesc")}
                 </p>
               </div>
 
               <div className="mt-6 pt-4 border-t border-border-iron/60 flex items-center justify-between text-xs font-semibold text-gold">
-                <span>Comenzar Forja</span>
+                <span>{t("forge.modeStepButton")}</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
@@ -500,19 +521,19 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                 </div>
                 <div className="flex items-center justify-between">
                   <h3 className="font-display font-bold text-lg text-cyan-400 group-hover:text-cyan-300">
-                    Creación Rápida
+                    {t("forge.modeQuickTitle")}
                   </h3>
                   <span className="px-2 py-0.5 rounded text-[10px] font-stat bg-cyan-950/40 border border-cyan-800 text-cyan-300">
-                    60 Segundos
+                    {t("forge.modeQuickTag")}
                   </span>
                 </div>
                 <p className="text-xs text-muted leading-relaxed">
-                  Elige clase, especie y nombre. El motor aplica al instante una plantilla legal con atributos óptimos, trasfondo sinérgico, equipo y tarjetas de conjuro preparadas.
+                  {t("forge.modeQuickDesc")}
                 </p>
               </div>
 
               <div className="mt-6 pt-4 border-t border-border-iron/60 flex items-center justify-between text-xs font-semibold text-cyan-400">
-                <span>Forjar en 60s</span>
+                <span>{t("forge.modeQuickButton")}</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
@@ -531,19 +552,19 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                 </div>
                 <div className="flex items-center justify-between">
                   <h3 className="font-display font-bold text-lg text-purple-400 group-hover:text-purple-300">
-                    Tirada Aleatoria
+                    {t("forge.modeRandomTitle")}
                   </h3>
                   <span className="px-2 py-0.5 rounded text-[10px] font-stat bg-purple-950/40 border border-purple-800 text-purple-300">
-                    4d6 Destino
+                    {t("forge.modeRandomTag")}
                   </span>
                 </div>
                 <p className="text-xs text-muted leading-relaxed">
-                  Tiradas auténticas 4d6 descartando el menor, escalado procedural de Nivel 1 a 20, biografía generada por tablas del destino y botón de re-tirada instantánea.
+                  {t("forge.modeRandomDesc")}
                 </p>
               </div>
 
               <div className="mt-6 pt-4 border-t border-border-iron/60 flex items-center justify-between text-xs font-semibold text-purple-400">
-                <span>Lanzar Dados del Destino</span>
+                <span>{t("forge.modeRandomButton")}</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
@@ -558,7 +579,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
               className="px-2.5 py-1.5 rounded text-xs font-semibold text-muted hover:text-main hover:bg-card flex items-center gap-1 transition-colors"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
-              <span>Modos</span>
+              <span>{t("forge.backToMenu")}</span>
             </button>
             <div className="h-4 w-px bg-border-iron" />
             <button
@@ -569,7 +590,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                   : "text-muted hover:text-main"
               }`}
             >
-              1. Paso a Paso
+              1. {t("forge.modeStepTitle")}
             </button>
             <button
               onClick={() => setMode("quick")}
@@ -579,7 +600,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                   : "text-muted hover:text-main"
               }`}
             >
-              2. Creación Rápida
+              2. {t("forge.modeQuickTitle")}
             </button>
             <button
               onClick={() => setMode("random")}
@@ -589,12 +610,12 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                   : "text-muted hover:text-main"
               }`}
             >
-              3. Aleatorio (4d6)
+              3. {t("forge.modeRandomTitle")}
             </button>
           </div>
 
           <span className="text-[11px] text-muted hidden md:inline-block pr-2">
-            Modo activo: <strong className="text-main uppercase">{mode}</strong>
+            {t("forge.activeMode")} <strong className="text-main uppercase">{mode}</strong>
           </span>
         </div>
       )}
@@ -607,11 +628,11 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
           {/* Stepper Progresivo de 5 Pasos */}
           <div className="flex items-center justify-between max-w-2xl bg-surface/50 p-2 rounded-lg border border-border-iron">
             {[
-              { num: 1, label: "Concepto" },
-              { num: 2, label: "Especie" },
-              { num: 3, label: "Clase" },
-              { num: 4, label: "Atributos" },
-              { num: 5, label: "Conjuros & Rasgos" },
+              { num: 1, label: t("forge.step1") },
+              { num: 2, label: t("forge.step2") },
+              { num: 3, label: t("forge.step3") },
+              { num: 4, label: t("forge.step4") },
+              { num: 5, label: t("forge.step5") },
             ].map((s) => (
               <button
                 key={s.num}
@@ -646,22 +667,22 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
               <div className="space-y-5 max-w-2xl">
                 <div>
                   <h2 className="font-display font-semibold text-lg text-gold">
-                    1. Identidad, Nivel y Trasfondo
+                    {t("forge.step1Title")}
                   </h2>
                   <p className="text-xs text-muted mt-0.5">
-                    Define quién es tu personaje y su historia antes de lanzarse a la aventura.
+                    {t("forge.step1Desc")}
                   </p>
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
-                    Nombre del Héroe
+                    {t("forge.charName")}
                   </label>
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Ej: Thorin Escudo de Roble"
+                    placeholder={t("forge.charNamePlaceholder")}
                     className="w-full bg-input text-main border border-border-iron rounded px-3 py-2 text-sm focus:border-gold outline-none"
                   />
                 </div>
@@ -669,7 +690,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
-                      Nivel Inicial (1 - 20)
+                      {t("forge.charLevel")}
                     </label>
                     <input
                       type="number"
@@ -685,7 +706,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
 
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
-                      Alineamiento
+                      {t("forge.charAlignment")}
                     </label>
                     <select
                       value={alignment}
@@ -704,7 +725,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                         "Caótico Malvado",
                       ].map((a) => (
                         <option key={a} value={a}>
-                          {a}
+                          {translateAlignment(a)}
                         </option>
                       ))}
                     </select>
@@ -713,7 +734,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
 
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">
-                    Trasfondo de Origen (Otorga 2 Habilidades y Dote Inicial)
+                    {t("forge.charBackground")}
                   </label>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                     {(catalog?.backgrounds || []).map((bg) => (
@@ -726,9 +747,9 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                             : "border-border-iron bg-surface/40 text-muted hover:text-main"
                         }`}
                       >
-                        <div className="text-xs font-bold">{bg.name}</div>
+                        <div className="text-xs font-bold">{translateBackground(bg.name)}</div>
                         <div className="text-[10px] text-muted truncate mt-0.5">
-                          {bg.skills.join(", ")}
+                          {bg.skills.map((s) => translateSkill(s)).join(", ")}
                         </div>
                       </button>
                     ))}
@@ -737,13 +758,13 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                     <div className="mt-3 p-3 rounded-lg bg-surface/80 border border-border-iron text-xs space-y-1">
                       <div className="flex items-center gap-1.5 text-gold font-semibold">
                         <Sparkles className="w-3.5 h-3.5" />
-                        <span>Dote de Origen: {currentBgObj.feature_name}</span>
+                        <span>{language === "en" ? "Origin Feat:" : "Dote de Origen:"} {currentBgObj.feature_name}</span>
                       </div>
                       <p className="text-muted leading-relaxed">{currentBgObj.feature_desc}</p>
                       <div className="text-[11px] text-zinc-400">
-                        Competencias concedidas:{" "}
+                        {language === "en" ? "Granted Proficiencies:" : "Competencias concedidas:"}{" "}
                         <span className="text-main font-semibold">
-                          {currentBgObj.skills.join(", ")}
+                          {currentBgObj.skills.map((s) => translateSkill(s)).join(", ")}
                         </span>
                       </div>
                     </div>
@@ -757,10 +778,10 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
               <div className="space-y-5">
                 <div>
                   <h2 className="font-display font-semibold text-lg text-gold">
-                    2. Elige tu Especie / Linaje
+                    {t("forge.step2Title")}
                   </h2>
                   <p className="text-xs text-muted mt-0.5">
-                    Tu herencia determina tu velocidad, sentidos y rasgos fisiológicos únicos.
+                    {t("forge.step2Desc")}
                   </p>
                 </div>
 
@@ -778,11 +799,11 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                           : "border-border-iron bg-surface/40 text-muted hover:text-main"
                       }`}
                     >
-                      <div className="text-sm font-bold">{r.name}</div>
+                      <div className="text-sm font-bold">{translateRace(r.name)}</div>
                       <div className="text-[11px] text-muted mt-1 font-stat">
-                        Vel. {r.speed} pies ·{" "}
+                        {t("sheet.speed")}: {r.speed} {t("sheet.speedFeet")} ·{" "}
                         {Object.entries(r.bonuses)
-                          .map(([k, v]) => `${k} +${v}`)
+                          .map(([k, v]) => `${translateAbilityShort(k)} +${v}`)
                           .join(", ")}
                       </div>
                     </button>
@@ -793,7 +814,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                 {currentSpeciesObj && currentSpeciesObj.subraces.length > 0 && (
                   <div className="pt-3 border-t border-border-iron/60 space-y-2">
                     <label className="block text-xs font-semibold uppercase tracking-wider text-gold">
-                      Linaje / Subraza de {race}
+                      {t("forge.selectSubrace")}: {translateRace(race)}
                     </label>
                     <div className="flex flex-wrap gap-2">
                       {currentSpeciesObj.subraces.map((sub) => (
@@ -806,7 +827,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                               : "border-border-iron bg-surface text-muted hover:text-main"
                           }`}
                         >
-                          {sub}
+                          {sub === "Estándar" ? (language === "en" ? "Standard" : "Estándar") : sub}
                         </button>
                       ))}
                     </div>
@@ -817,13 +838,13 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                 {currentSpeciesObj && currentSpeciesObj.traits.length > 0 && (
                   <div className="p-3.5 rounded-lg bg-surface/60 border border-border-iron space-y-2">
                     <span className="text-[11px] font-semibold uppercase tracking-wider text-gold">
-                      Rasgos Raciales de {race}
+                      {t("sheet.traitsTitle")}: {translateRace(race)}
                     </span>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {currentSpeciesObj.traits.map((t) => (
-                        <div key={t.name} className="text-xs">
-                          <strong className="text-main">{t.name}:</strong>{" "}
-                          <span className="text-muted">{t.desc}</span>
+                      {currentSpeciesObj.traits.map((tr) => (
+                        <div key={tr.name} className="text-xs">
+                          <strong className="text-main">{tr.name}:</strong>{" "}
+                          <span className="text-muted">{tr.desc}</span>
                         </div>
                       ))}
                     </div>
@@ -837,10 +858,10 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
               <div className="space-y-5">
                 <div>
                   <h2 className="font-display font-semibold text-lg text-gold">
-                    3. Elige tu Clase Heroica
+                    {t("forge.step3Title")}
                   </h2>
                   <p className="text-xs text-muted mt-0.5">
-                    Tu vocación en el mundo: determina tu dado de vida, competencias y habilidades de combate o magia.
+                    {t("forge.step3Desc")}
                   </p>
                 </div>
 
@@ -860,11 +881,11 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                       }`}
                     >
                       <div className="text-sm font-bold flex items-center justify-between">
-                        <span>{c.name}</span>
+                        <span>{translateClass(c.name)}</span>
                         {c.is_caster && <Sparkles className="w-3.5 h-3.5 text-purple-400" />}
                       </div>
                       <div className="text-[10px] text-muted font-stat mt-1">
-                        Dado Golpe: d{c.hit_die} · Salv: {c.saves.join("/")}
+                        HD: d{c.hit_die} · {t("sheet.savingThrow")}: {c.saves.map(s => translateAbilityShort(s)).join("/")}
                       </div>
                     </button>
                   ))}
@@ -874,10 +895,10 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                 <div className="pt-3 border-t border-border-iron/60 space-y-2">
                   <div className="flex items-center justify-between">
                     <label className="block text-xs font-semibold uppercase tracking-wider text-muted">
-                      Arquetipo / Subclase (Desbloqueo Nvl {unlockLevel} en {dndEdition})
+                      {t("forge.selectSubclass")} (Nvl {unlockLevel} - {dndEdition})
                     </label>
                     <span className="text-[11px] text-muted">
-                      {isSubclassUnlocked ? "Desbloqueado" : `Disponible en Nivel ${unlockLevel}`}
+                      {isSubclassUnlocked ? t("common.active") : `${t("common.level")} ${unlockLevel}`}
                     </span>
                   </div>
 
@@ -893,7 +914,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                               : "border-border-iron bg-surface text-muted hover:text-main"
                           }`}
                         >
-                          {sub}
+                          {translateSubclass(sub)}
                         </button>
                       ))}
                     </div>
@@ -901,8 +922,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                     <div className="p-3 rounded-lg bg-surface/50 border border-border-iron text-xs text-muted flex items-center gap-2">
                       <Info className="w-4 h-4 text-gold shrink-0" />
                       <span>
-                        El arquetipo de {charClass} se desbloqueará automáticamente al alcanzar el{" "}
-                        <strong className="text-gold">Nivel {unlockLevel}</strong> (Nivel actual: {level}).
+                        {translateClass(charClass)}: {t("forge.selectSubclass")} ({level} / {unlockLevel}).
                       </span>
                     </div>
                   )}
@@ -912,7 +932,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                 {currentClassObj && (
                   <div className="pt-3 border-t border-border-iron/60 space-y-2">
                     <label className="block text-xs font-semibold uppercase tracking-wider text-muted">
-                      Habilidades de Clase (Elige {currentClassObj.skill_choices_count} — Seleccionadas:{" "}
+                      {t("sheet.skillsTitle")} ({currentClassObj.skill_choices_count} — {t("common.active")}:{" "}
                       <span className="text-gold font-bold">
                         {selectedSkills.length}/{currentClassObj.skill_choices_count}
                       </span>
@@ -931,7 +951,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                                 : "border-border-iron bg-surface text-muted hover:text-main"
                             }`}
                           >
-                            {sk}
+                            {translateSkill(sk)}
                           </button>
                         );
                       })}
@@ -947,10 +967,10 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div>
                     <h2 className="font-display font-semibold text-lg text-gold">
-                      4. Puntuaciones de Característica
+                      {t("forge.step4Title")}
                     </h2>
                     <p className="text-xs text-muted">
-                      Presupuesto Point Buy: 27 puntos (rango base 8 a 15 antes de bonos raciales).
+                      {t("forge.step4Desc")}
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
@@ -958,10 +978,10 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                       onClick={applyStandardArray}
                       className="px-3 py-1.5 rounded-lg border border-border-iron bg-surface text-xs text-muted hover:text-gold hover:border-gold transition-colors font-semibold"
                     >
-                      Aplicar Matriz Estándar (15,14,13,12,10,8)
+                      {t("forge.methodStandardArray")}
                     </button>
                     <div className="text-right">
-                      <span className="text-xs text-muted uppercase font-semibold">Restantes: </span>
+                      <span className="text-xs text-muted uppercase font-semibold">{t("forge.remainingPoints")} </span>
                       <span
                         className={`font-stat font-bold text-xl ${
                           pointBuyValidation.points_remaining === 0
@@ -995,8 +1015,8 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                         key={attr}
                         className="bg-surface border border-border-iron rounded-xl p-3.5 text-center flex flex-col justify-between"
                       >
-                        <span className="text-xs font-stat font-bold uppercase tracking-widest text-muted">
-                          {attr}
+                        <span className="text-xs font-stat font-bold uppercase tracking-widest text-muted" title={translateAbility(attr)}>
+                          {translateAbilityShort(attr)}
                         </span>
                         <div className="my-2">
                           <div className="font-stat font-bold text-3xl text-main">{finalScore}</div>
@@ -1034,10 +1054,10 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                 <div>
                   <h2 className="font-display font-semibold text-lg text-gold flex items-center gap-2">
                     <BookOpen className="w-5 h-5 text-gold" />
-                    5. Conjuros y Rasgos Heroicos
+                    {t("forge.step5Title")}
                   </h2>
                   <p className="text-xs text-muted mt-0.5">
-                    Revisa las tarjetas de conjuros de tu clase y los rasgos pasivos adquiridos por tu especie y trasfondo.
+                    {t("forge.step5Desc")}
                   </p>
                 </div>
 
@@ -1077,13 +1097,13 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                 {/* Rasgos y Dotes */}
                 <div className="space-y-3 pt-3 border-t border-border-iron/60">
                   <h3 className="font-display font-semibold text-sm text-gold">
-                    Rasgos & Dotes de Origen
+                    {language === "en" ? "Traits & Origin Feats" : "Rasgos & Dotes de Origen"}
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {currentBgObj && (
                       <FeatureCard
-                        title={`Dote de Origen: ${currentBgObj.feature_name}`}
-                        source={`Trasfondo (${background})`}
+                        title={`${language === "en" ? "Origin Feat:" : "Dote de Origen:"} ${currentBgObj.feature_name}`}
+                        source={`${language === "en" ? "Background" : "Trasfondo"} (${translateBackground(background)})`}
                         description={currentBgObj.feature_desc}
                       />
                     )}
@@ -1091,14 +1111,16 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                       <FeatureCard
                         key={t.name}
                         title={t.name}
-                        source={`Especie (${race})`}
+                        source={`${language === "en" ? "Species" : "Especie"} (${translateRace(race)})`}
                         description={t.desc}
                       />
                     ))}
                     <FeatureCard
-                      title={`Competencias de ${charClass}`}
-                      source="Clase"
-                      description={`Salvaciones competentes: ${currentClassObj?.saves.join(", ")}. Habilidades: ${selectedSkills.join(", ")}.`}
+                      title={language === "en" ? `${translateClass(charClass)} Proficiencies` : `Competencias de ${charClass}`}
+                      source={t("common.charClass")}
+                      description={language === "en"
+                        ? `Saving Throws: ${currentClassObj?.saves.map(s => translateAbilityShort(s)).join(", ")}. Skills: ${selectedSkills.map(s => translateSkill(s)).join(", ")}.`
+                        : `Salvaciones competentes: ${currentClassObj?.saves.map(s => translateAbilityShort(s)).join(", ")}. Habilidades: ${selectedSkills.map(s => translateSkill(s)).join(", ")}.`}
                     />
                   </div>
                 </div>
@@ -1113,7 +1135,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
               className="px-4 py-2 rounded-lg border border-border-iron text-xs font-semibold text-muted hover:text-main hover:bg-card transition-colors flex items-center gap-1.5"
             >
               <ChevronLeft className="w-4 h-4" />
-              <span>{step === 1 ? "Volver al Menú" : "Anterior"}</span>
+              <span>{step === 1 ? t("forge.backToMenu") : t("common.back")}</span>
             </button>
 
             {step < 5 ? (
@@ -1121,7 +1143,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                 onClick={() => setStep((s) => Math.min(5, s + 1))}
                 className="px-5 py-2 rounded-lg bg-gold hover:bg-gold-hover text-canvas text-xs font-bold transition-all shadow-sm active:scale-95 flex items-center gap-1.5"
               >
-                <span>Siguiente Paso</span>
+                <span>{t("common.next")}</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
             ) : (
@@ -1131,7 +1153,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                 className="px-6 py-2 rounded-lg bg-crimson hover:bg-crimson-hover disabled:opacity-50 text-white text-xs font-bold transition-all shadow-md active:scale-95 flex items-center gap-2"
               >
                 <Sparkles className="w-4 h-4" />
-                <span>Forjar Aventurero</span>
+                <span>{t("forge.forgeHero")}</span>
               </button>
             )}
           </div>
@@ -1146,30 +1168,30 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
           <div>
             <h2 className="font-display font-semibold text-lg text-cyan-400 flex items-center gap-2">
               <Zap className="w-5 h-5 text-cyan-400" />
-              Creación Rápida en 60 Segundos
+              {t("forge.modeQuickTitle")}
             </h2>
             <p className="text-xs text-muted mt-0.5">
-              Configura los 3 datos principales y el motor construirá un héroe optimizado con reglas completas.
+              {t("forge.modeQuickDesc")}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
-                Nombre (Opcional)
+                {language === "en" ? "Name (Optional)" : "Nombre (Opcional)"}
               </label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Nombre automático si se deja vacío"
+                placeholder={language === "en" ? "Automatic name if left empty" : "Nombre automático si se deja vacío"}
                 className="w-full bg-input text-main border border-border-iron rounded px-3 py-2 text-sm focus:border-cyan-400 outline-none"
               />
             </div>
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
-                Clase Heroica
+                {t("common.charClass")}
               </label>
               <select
                 value={charClass}
@@ -1184,7 +1206,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                   : DEFAULT_CLASSES
                 ).map((cName) => (
                   <option key={cName} value={cName}>
-                    {cName}
+                    {translateClass(cName)}
                   </option>
                 ))}
               </select>
@@ -1192,7 +1214,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
-                Especie / Raza
+                {t("common.race")}
               </label>
               <select
                 value={race}
@@ -1207,7 +1229,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                   : DEFAULT_SPECIES
                 ).map((sName) => (
                   <option key={sName} value={sName}>
-                    {sName}
+                    {translateRace(sName)}
                   </option>
                 ))}
               </select>
@@ -1223,8 +1245,8 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                     {name.trim() || previewChar.name}
                   </h3>
                   <p className="text-xs text-muted">
-                    {previewChar.race} · {previewChar.char_class} Nivel {previewChar.level} ·{" "}
-                    {previewChar.background} ({previewChar.alignment})
+                    {translateRace(previewChar.race)} · {translateClass(previewChar.char_class)} {t("common.level")} {previewChar.level} ·{" "}
+                    {translateBackground(previewChar.background)} ({translateAlignment(previewChar.alignment)})
                   </p>
                 </div>
                 <div className="flex gap-2 font-stat text-xs">
@@ -1235,7 +1257,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                     CA: <strong className="text-gold">{previewChar.ac}</strong>
                   </span>
                   <span className="px-2.5 py-1 rounded bg-card border border-border-iron">
-                    Velocidad: <strong className="text-main">{previewChar.speed}</strong>
+                    {t("sheet.speed")}: <strong className="text-main">{previewChar.speed}</strong>
                   </span>
                 </div>
               </div>
@@ -1244,7 +1266,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
               <div className="grid grid-cols-6 gap-2 text-center">
                 {Object.entries(previewChar.abilities || {}).map(([ab, data]) => (
                   <div key={ab} className="p-2 rounded bg-card border border-border-iron">
-                    <div className="text-[10px] text-muted font-stat">{ab}</div>
+                    <div className="text-[10px] text-muted font-stat">{translateAbilityShort(ab)}</div>
                     <div className="font-stat font-bold text-base text-main">{data.base}</div>
                     <div className="text-[10px] font-stat text-cyan-400 font-semibold">
                       {data.bonus >= 0 ? `+${data.bonus}` : data.bonus}
@@ -1258,7 +1280,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                 <div className="space-y-2 pt-2 border-t border-border-iron/60">
                   <h4 className="font-display font-semibold text-xs text-cyan-400 flex items-center gap-1.5">
                     <BookOpen className="w-3.5 h-3.5" />
-                    <span>Tarjetas de Conjuros Asignados ({previewChar.spells.length})</span>
+                    <span>{language === "en" ? `Assigned Spell Cards (${previewChar.spells.length})` : `Tarjetas de Conjuros Asignados (${previewChar.spells.length})`}</span>
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
                     {previewChar.spells.map((sp) => (
@@ -1273,7 +1295,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                 <div className="space-y-2 pt-2 border-t border-border-iron/60">
                   <h4 className="font-display font-semibold text-xs text-muted flex items-center gap-1.5">
                     <Swords className="w-3.5 h-3.5" />
-                    <span>Armamento Inicial Asignado</span>
+                    <span>{language === "en" ? "Assigned Starting Equipment" : "Armamento Inicial Asignado"}</span>
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {previewChar.weapon_actions.map((w: WeaponActionData) => (
@@ -1281,9 +1303,9 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                         key={w.name}
                         className="p-2.5 rounded bg-card border border-border-iron text-xs flex justify-between"
                       >
-                        <span className="font-semibold text-main">{w.name}</span>
+                        <span className="font-semibold text-main">{translateWeapon(w.name)}</span>
                         <span className="font-stat text-muted">
-                          {w.hit_dc} a impactar · {w.damage_dice} {w.damage_type}
+                          {w.hit_dc} {language === "en" ? "to hit" : "a impactar"} · {w.damage_dice} {translateDamageType(w.damage_type)}
                         </span>
                       </div>
                     ))}
@@ -1298,7 +1320,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
               onClick={() => setMode("hub")}
               className="px-4 py-2 rounded-lg border border-border-iron text-xs font-semibold text-muted hover:text-main"
             >
-              Volver al Menú
+              {t("forge.backToMenu")}
             </button>
             <button
               onClick={handleCreate}
@@ -1306,7 +1328,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
               className="px-6 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-canvas text-xs font-bold shadow-md flex items-center gap-2"
             >
               <Zap className="w-4 h-4" />
-              <span>Forjar Héroe Rápido</span>
+              <span>{t("forge.modeQuickButton")}</span>
             </button>
           </div>
         </div>
@@ -1320,10 +1342,10 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
           <div>
             <h2 className="font-display font-semibold text-lg text-purple-400 flex items-center gap-2">
               <Dice5 className="w-5 h-5 text-purple-400" />
-              Generador Procedural Aleatorio (4d6 Descartando el Menor)
+              {t("forge.modeRandomTitle")}
             </h2>
             <p className="text-xs text-muted mt-0.5">
-              Genera tiradas auténticas con asignación inteligente y escalado de Puntos de Golpe de nivel 1 a 20.
+              {t("forge.modeRandomDesc")}
             </p>
           </div>
 
@@ -1331,17 +1353,17 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 bg-surface p-3 rounded-lg border border-border-iron items-end">
             <div>
               <label className="block text-[11px] font-semibold uppercase tracking-wider text-muted mb-1">
-                Filtro de Clase
+                {language === "en" ? "Class Filter" : "Filtro de Clase"}
               </label>
               <select
                 value={randomClassFilter}
                 onChange={(e) => setRandomClassFilter(e.target.value)}
                 className="w-full bg-input text-main border border-border-iron rounded px-2.5 py-1.5 text-xs outline-none"
               >
-                <option value="any">Cualquier Clase (Aleatoria)</option>
+                <option value="any">{language === "en" ? "Any Class (Random)" : "Cualquier Clase (Aleatoria)"}</option>
                 {(catalog?.classes || []).map((c) => (
                   <option key={c.name} value={c.name}>
-                    {c.name}
+                    {translateClass(c.name)}
                   </option>
                 ))}
               </select>
@@ -1349,17 +1371,17 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
 
             <div>
               <label className="block text-[11px] font-semibold uppercase tracking-wider text-muted mb-1">
-                Filtro de Especie
+                {language === "en" ? "Species Filter" : "Filtro de Especie"}
               </label>
               <select
                 value={randomSpeciesFilter}
                 onChange={(e) => setRandomSpeciesFilter(e.target.value)}
                 className="w-full bg-input text-main border border-border-iron rounded px-2.5 py-1.5 text-xs outline-none"
               >
-                <option value="any">Cualquier Especie</option>
+                <option value="any">{language === "en" ? "Any Species" : "Cualquier Especie"}</option>
                 {(catalog?.species || []).map((s) => (
                   <option key={s.name} value={s.name}>
-                    {s.name}
+                    {translateRace(s.name)}
                   </option>
                 ))}
               </select>
@@ -1367,7 +1389,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
 
             <div>
               <label className="block text-[11px] font-semibold uppercase tracking-wider text-muted mb-1">
-                Nivel (1 - 20): <strong className="text-purple-400 font-stat">{randomLevel}</strong>
+                {t("common.level")} (1 - 20): <strong className="text-purple-400 font-stat">{randomLevel}</strong>
               </label>
               <input
                 type="range"
@@ -1385,7 +1407,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
               className="w-full py-2 px-3 rounded-lg border border-purple-500 bg-purple-950/40 hover:bg-purple-600 hover:text-white text-purple-300 text-xs font-bold transition-all flex items-center justify-center gap-1.5"
             >
               <RotateCcw className={`w-3.5 h-3.5 ${isGenerating ? "animate-spin" : ""}`} />
-              <span>Volver a Tirar 4d6</span>
+              <span>{t("forge.rerollRandom")}</span>
             </button>
           </div>
 
@@ -1398,8 +1420,8 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                     {name.trim() || previewChar.name}
                   </h3>
                   <p className="text-xs text-muted">
-                    {previewChar.race} · {previewChar.char_class} Nivel {previewChar.level} ·{" "}
-                    {previewChar.background} ({previewChar.alignment})
+                    {translateRace(previewChar.race)} · {translateClass(previewChar.char_class)} {t("common.level")} {previewChar.level} ·{" "}
+                    {translateBackground(previewChar.background)} ({translateAlignment(previewChar.alignment)})
                   </p>
                 </div>
                 <div className="flex gap-2 font-stat text-xs">
@@ -1422,7 +1444,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
                   const rollVal = randomRollsLog[ab];
                   return (
                     <div key={ab} className="p-2.5 rounded-lg bg-card border border-border-iron">
-                      <div className="text-[10px] text-muted font-stat font-bold">{ab}</div>
+                      <div className="text-[10px] text-muted font-stat font-bold">{translateAbilityShort(ab)}</div>
                       <div className="font-stat font-bold text-xl text-main my-0.5">
                         {data.base}
                       </div>
@@ -1479,7 +1501,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
               onClick={() => setMode("hub")}
               className="px-4 py-2 rounded-lg border border-border-iron text-xs font-semibold text-muted hover:text-main"
             >
-              Volver al Menú
+              {t("forge.backToMenu")}
             </button>
             <button
               onClick={handleCreate}
@@ -1487,7 +1509,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
               className="px-6 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold shadow-md flex items-center gap-2"
             >
               <Sparkles className="w-4 h-4" />
-              <span>Aceptar Destino y Guardar</span>
+              <span>{t("forge.forgeHero")}</span>
             </button>
           </div>
         </div>

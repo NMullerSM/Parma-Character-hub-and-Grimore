@@ -1,21 +1,27 @@
 ---
-id: "mago"
-nombre: "Mago"
-caracteristica_principal: "INT"
-dado_golpe: "1d6"
+id: mago
+nombre: Mago
+caracteristica_principal: INT
+dado_golpe: 1d6
 salvaciones_competentes:
-  - "INT"
-  - "SAB"
+- INT
+- SAB
 subclases_oficiales:
-  - "Escuela de Abjuración"
-  - "Escuela de Adivinación"
-  - "Escuela de Evocación"
-  - "Escuela de Ilusionismo"
-fuente: "PHB 2024"
+- Escuela de Abjuración
+- Escuela de Adivinación
+- Escuela de Evocación
+- Escuela de Ilusionismo
+fuente: PHB 2024
 pagina: 138
 tags:
-  - "clase"
-  - "mago"
+- clase
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: clase
+nombre_ingles: Wizard
 ---
 
 # Clase: Mago

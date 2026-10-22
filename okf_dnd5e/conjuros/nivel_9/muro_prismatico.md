@@ -1,24 +1,30 @@
 ---
-id: "muro_prismatico"
-nombre: "Muro Prismático"
+id: muro_prismatico
+nombre: Muro Prismático
 nivel: 9
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Bardo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "10 minutos"
+- Bardo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S
+duracion: 10 minutos
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 315
 tags:
-  - "abjuración"
-  - "nivel_9"
-  - "bardo"
-  - "mago"
+- abjuración
+- nivel_9
+- bardo
+- mago
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Prismatic Wall
 ---
 
 # Muro Prismático

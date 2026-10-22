@@ -1,27 +1,33 @@
 ---
-id: "trepar_cual_aracnido"
-nombre: "Trepar Cual Arácnido"
+id: trepar_cual_aracnido
+nombre: Trepar Cual Arácnido
 nivel: 2
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Brujo"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S, M (una gota de betún y una araña)"
-duracion: "Concentración, hasta 1 hora"
+- Brujo
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S, M (una gota de betún y una araña)
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 342
 tags:
-  - "transmutación"
-  - "nivel_2"
-  - "brujo"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- transmutación
+- nivel_2
+- brujo
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Spider Climb
 ---
 
 # Trepar Cual Arácnido

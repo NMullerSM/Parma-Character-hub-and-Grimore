@@ -1,25 +1,31 @@
 ---
-id: "mano_de_bigby"
-nombre: "Mano De Bigby"
+id: mano_de_bigby
+nombre: Mano De Bigby
 nivel: 5
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "36 m"
-componentes: "V, S, M (una cáscara de huevo y un guante)"
-duracion: "Concentración, hasta 1 minuto"
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 36 m
+componentes: V, S, M (una cáscara de huevo y un guante)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 309
 tags:
-  - "evocación"
-  - "nivel_5"
-  - "hechicero"
-  - "mago"
-  - "concentracion"
+- evocación
+- nivel_5
+- hechicero
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Bigby's Hand
 ---
 
 # Mano De Bigby

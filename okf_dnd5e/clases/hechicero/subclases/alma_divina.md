@@ -1,12 +1,22 @@
 ---
-id: "hechicero_alma_divina"
-nombre: "Alma Divina"
-nombre_ingles: "Divine Soul"
-tipo: "subclase"
-clase_padre: "Hechicero"
+id: hechicero_alma_divina
+nombre: Alma Divina
+nombre_ingles: Divine Soul
+tipo: subclase
+clase_padre: Hechicero
 nivel_desbloqueo: 3
-fuente: "Guia de Xanathar Para Todo"
-tags: ["hechicero", "xanathar", "clérigo", "ángel", "sanación", "metamagia"]
+fuente: Guia de Xanathar Para Todo
+tags:
+- hechicero
+- xanathar
+- clérigo
+- ángel
+- sanación
+- metamagia
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Subclase: Alma Divina (Divine Soul)

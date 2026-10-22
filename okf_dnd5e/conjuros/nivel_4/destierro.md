@@ -1,31 +1,37 @@
 ---
-id: "destierro"
-nombre: "Destierro"
+id: destierro
+nombre: Destierro
 nivel: 4
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Brujo"
-  - "Clérigo"
-  - "Hechicero"
-  - "Mago"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S, M (un pentáculo)"
-duracion: "Concentración, hasta 1 minuto"
+- Brujo
+- Clérigo
+- Hechicero
+- Mago
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S, M (un pentáculo)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 272
 tags:
-  - "abjuración"
-  - "nivel_4"
-  - "brujo"
-  - "clérigo"
-  - "hechicero"
-  - "mago"
-  - "paladín"
-  - "concentracion"
+- abjuración
+- nivel_4
+- brujo
+- clérigo
+- hechicero
+- mago
+- paladín
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Banishment
 ---
 
 # Destierro

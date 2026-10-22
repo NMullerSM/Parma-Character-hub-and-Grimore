@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# D&D Sanctum — Compilador PyInstaller Linux Standalone
+# Parma — Compilador PyInstaller Linux Standalone
 # ==============================================================================
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 cd "$SCRIPT_DIR"
 
 echo "==================================================="
-echo " Compilador D&D Sanctum (Binario Nativo Linux)"
+echo " Compilador Parma (Binario Nativo Linux)"
 echo "==================================================="
 
 VENV_PYTHON="$SCRIPT_DIR/.venv/bin/python"

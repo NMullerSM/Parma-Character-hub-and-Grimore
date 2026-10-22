@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
+  <!-- Concepto 4: Yunque de Libros de Máxima Síntesis (Geometría pura, ultra nítido a 16px) -->
+  <g fill="#12181c">
+    <!-- Base: Libro horizontal grueso -->
+    <rect x="56" y="200" width="144" height="24" rx="4"/>
+    <!-- Páginas base -->
+    <line x1="72" y1="212" x2="184" y2="212" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Tronco/Cintura: Tres lomos verticales -->
+    <rect x="96" y="136" width="16" height="64" rx="2"/>
+    <rect x="116" y="128" width="24" height="72" rx="2"/>
+    <rect x="144" y="136" width="16" height="64" rx="2"/>
+
+    <!-- Cabeza del Yunque: Gran volumen con cuerno curvado cónico a la izquierda y mesa plana a la derecha -->
+    <path d="M 32 80 C 56 80 84 94 104 128 L 152 128 C 180 128 224 116 224 84 L 224 56 C 224 50 218 48 210 48 L 92 48 C 62 48 40 62 32 80 Z"/>
+
+    <!-- Detalle de hojas del tomo superior -->
+    <line x1="94" y1="62" x2="210" y2="62" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+    <line x1="102" y1="74" x2="210" y2="74" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+    <line x1="110" y1="86" x2="204" y2="86" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+    
+    <!-- Cinta marcapáginas central -->
+    <polygon points="124,128 124,166 128,160 132,166 132,128" fill="#ffffff"/>
+  </g>
+</svg>

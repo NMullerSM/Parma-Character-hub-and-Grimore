@@ -1,29 +1,35 @@
 ---
-id: "respirar_bajo_el_agua"
-nombre: "Respirar Bajo El Agua"
+id: respirar_bajo_el_agua
+nombre: Respirar Bajo El Agua
 nivel: 3
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Druida"
-  - "Explorador"
-  - "Hechicero"
-  - "Mago"
-tiempo_lanzamiento: "Acción o ritual"
-alcance: "9 m"
-componentes: "V, S, M (un junco corto)"
-duracion: "24 horas"
+- Druida
+- Explorador
+- Hechicero
+- Mago
+tiempo_lanzamiento: Acción o ritual
+alcance: 9 m
+componentes: V, S, M (un junco corto)
+duracion: 24 horas
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 330
 tags:
-  - "transmutación"
-  - "nivel_3"
-  - "druida"
-  - "explorador"
-  - "hechicero"
-  - "mago"
-  - "ritual"
+- transmutación
+- nivel_3
+- druida
+- explorador
+- hechicero
+- mago
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Water Breathing
 ---
 
 # Respirar Bajo El Agua

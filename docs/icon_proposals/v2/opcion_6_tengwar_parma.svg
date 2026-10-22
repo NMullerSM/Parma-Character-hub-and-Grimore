@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
+  <!-- Opción 6: El Monograma Tengwar 'Parma' Élfico -->
+  <g fill="currentColor">
+    <!-- El Telco (Tallo vertical descendente característico de la serie Parmatéma) -->
+    <path d="M 76 54 C 76 46 84 42 92 42 L 108 42 C 114 42 118 46 118 52 L 118 206 C 118 214 110 218 102 218 L 86 218 C 80 218 76 214 76 208 Z"/>
+    <!-- El Lúva (Arco redondeado labial a la derecha que define la letra Parma / Libro) -->
+    <path d="M 118 64 C 158 64 196 82 196 128 C 196 174 158 192 118 192 L 118 162 C 146 162 166 150 166 128 C 166 106 146 94 118 94 Z"/>
+    <!-- Detalle interior: pliegue en forma de página de libro abierta dentro del arco -->
+    <path d="M 126 108 C 140 108 150 116 150 128 C 150 140 140 148 126 148 Z" fill="none" stroke="#ffffff" stroke-width="4"/>
+    <!-- Punto diacrítico tehta élfico en la parte superior -->
+    <circle cx="102" cy="24" r="8"/>
+  </g>
+</svg>

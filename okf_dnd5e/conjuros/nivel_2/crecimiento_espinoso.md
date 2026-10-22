@@ -1,25 +1,31 @@
 ---
-id: "crecimiento_espinoso"
-nombre: "Crecimiento Espinoso"
+id: crecimiento_espinoso
+nombre: Crecimiento Espinoso
 nivel: 2
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Druida"
-  - "Explorador"
-tiempo_lanzamiento: "Acción"
-alcance: "45 m"
-componentes: "V, S, M (siete espinas)"
-duracion: "Concentración, hasta 10 minutos"
+- Druida
+- Explorador
+tiempo_lanzamiento: Acción
+alcance: 45 m
+componentes: V, S, M (siete espinas)
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 268
 tags:
-  - "transmutación"
-  - "nivel_2"
-  - "druida"
-  - "explorador"
-  - "concentracion"
+- transmutación
+- nivel_2
+- druida
+- explorador
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Spike Growth
 ---
 
 # Crecimiento Espinoso

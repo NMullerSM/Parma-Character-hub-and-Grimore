@@ -1,30 +1,36 @@
 ---
-id: "curar_heridas"
-nombre: "Curar Heridas"
+id: curar_heridas
+nombre: Curar Heridas
 nivel: 1
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Druida"
-  - "Explorador"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S  |"
-duracion: "Instantáneo"
+- Bardo
+- Clérigo
+- Druida
+- Explorador
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S  |
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 269
 tags:
-  - "abjuración"
-  - "nivel_1"
-  - "bardo"
-  - "clérigo"
-  - "druida"
-  - "explorador"
-  - "paladín"
+- abjuración
+- nivel_1
+- bardo
+- clérigo
+- druida
+- explorador
+- paladín
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Cure Wounds
 ---
 
 # Curar Heridas

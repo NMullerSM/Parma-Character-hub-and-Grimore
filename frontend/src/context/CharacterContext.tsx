@@ -122,6 +122,10 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       setActiveCharacter(active);
       const settings = await api.getSettings();
       if (settings.dnd_edition) setEditionState(settings.dnd_edition);
+      if (settings.language && (settings.language === "es" || settings.language === "en")) {
+        setLanguageState(settings.language);
+        localStorage.setItem("dnd_sanctum_lang", settings.language);
+      }
     } catch (e) {
       console.error("Error loading character data:", e);
     } finally {
@@ -383,14 +387,14 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   };
 
-  const syncFeatures = async () => {
+  const syncFeatures = async (lang?: "es" | "en") => {
     if (!activeCharacter?.id) return;
     try {
-      const res = await api.syncCharacterFeatures(activeCharacter.id);
+      const res = await api.syncCharacterFeatures(activeCharacter.id, lang || language);
       if (res.success && res.character) {
         setActiveCharacter(res.character);
         latestCharRef.current = res.character;
-        showToast("Rasgos de clase sincronizados", "success");
+        showToast(language === "en" ? "Class features synchronized" : "Rasgos de clase sincronizados", "success");
       }
     } catch (e) {
       console.error("Error syncing features:", e);
@@ -433,7 +437,20 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         setLanguage: (lang: "es" | "en") => {
           setLanguageState(lang);
           localStorage.setItem("dnd_sanctum_lang", lang);
-          showToast(`Idioma cambiado a ${lang === "es" ? "Español" : "English"}`, "info");
+          localStorage.setItem("parma_lang", lang);
+          api.setSetting("language", lang).catch(() => {});
+          if (activeCharacter?.id) {
+            api.syncCharacterFeatures(activeCharacter.id, lang).then((res) => {
+              if (res.success && res.character) {
+                setActiveCharacter(res.character);
+                latestCharRef.current = res.character;
+              }
+            }).catch(() => {});
+          }
+          showToast(
+            lang === "es" ? "Idioma cambiado a Español" : "Language changed to English",
+            "info"
+          );
         },
       }}
     >

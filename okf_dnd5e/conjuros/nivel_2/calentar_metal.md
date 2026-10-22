@@ -1,25 +1,31 @@
 ---
-id: "calentar_metal"
-nombre: "Calentar Metal"
+id: calentar_metal
+nombre: Calentar Metal
 nivel: 2
-escuela: "Transmutación"
+escuela: Transmutación
 clases:
-  - "Bardo"
-  - "Druida"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S, M (un trozo de hierro y una llama)"
-duracion: "Concentración, hasta 1 minuto"
+- Bardo
+- Druida
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S, M (un trozo de hierro y una llama)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 253
 tags:
-  - "transmutación"
-  - "nivel_2"
-  - "bardo"
-  - "druida"
-  - "concentracion"
+- transmutación
+- nivel_2
+- bardo
+- druida
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Heat Metal
 ---
 
 # Calentar Metal

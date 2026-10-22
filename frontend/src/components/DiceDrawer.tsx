@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useCharacter } from "../context/CharacterContext";
+import { useTranslation } from "../i18n";
 import type { RollMode } from "../api/types";
 import { X, RotateCcw, Trash2, History, Dice5 } from "lucide-react";
 
 export const DiceDrawer: React.FC = () => {
+  const { t, language } = useTranslation();
   const {
     isDiceDrawerOpen,
     closeDiceDrawer,
@@ -21,7 +23,7 @@ export const DiceDrawer: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"roller" | "history">("roller");
   const [pool, setPool] = useState<Record<string, number>>({ "20": 1 });
   const [modifier, setModifier] = useState<number>(0);
-  const [label, setLabel] = useState<string>("Tirada Rápida");
+  const [label, setLabel] = useState<string>(t("dice.quickRoll"));
   const [mode, setMode] = useState<RollMode>("normal");
   const [sendToTaleSpire, setSendToTaleSpire] = useState<boolean>(true);
   const [isRolling, setIsRolling] = useState<boolean>(false);
@@ -32,16 +34,16 @@ export const DiceDrawer: React.FC = () => {
     if (diceRequest) {
       setPool(diceRequest.dice || { "20": 1 });
       setModifier(diceRequest.modifier || 0);
-      setLabel(diceRequest.label || "Tirada Rápida");
+      setLabel(diceRequest.label || t("dice.quickRoll"));
       setMode(diceRequest.mode || "normal");
       setDc(diceRequest.dc);
-      setIsDeathSave(Boolean(diceRequest.is_death_save || diceRequest.label?.toLowerCase().includes("muerte")));
+      setIsDeathSave(Boolean(diceRequest.is_death_save || diceRequest.label?.toLowerCase().includes("muerte") || diceRequest.label?.toLowerCase().includes("death")));
       if (typeof diceRequest.send_to_talespire === "boolean") {
         setSendToTaleSpire(diceRequest.send_to_talespire);
       }
       setActiveTab("roller");
     }
-  }, [diceRequest]);
+  }, [diceRequest, t]);
 
   if (!isDiceDrawerOpen) return null;
 
@@ -76,7 +78,7 @@ export const DiceDrawer: React.FC = () => {
   const handleReset = () => {
     setPool({ "20": 1 });
     setModifier(0);
-    setLabel("Tirada Rápida");
+    setLabel(t("dice.quickRoll"));
     setMode("normal");
     setDc(undefined);
     setIsDeathSave(false);
@@ -93,7 +95,7 @@ export const DiceDrawer: React.FC = () => {
         send_to_talespire: sendToTaleSpire,
         dc,
         is_death_save: isDeathSave,
-        is_saving_throw: Boolean(dc !== undefined || isDeathSave || label.toLowerCase().includes("salvaci")),
+        is_saving_throw: Boolean(dc !== undefined || isDeathSave || label.toLowerCase().includes("salvaci") || label.toLowerCase().includes("save")),
       });
     } finally {
       setIsRolling(false);
@@ -116,12 +118,12 @@ export const DiceDrawer: React.FC = () => {
         {/* Cabecera del Drawer */}
         <div className="p-4 border-b border-border-iron flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
-            <h2 className="font-display font-bold text-lg text-gold">Bandeja de Dados</h2>
+            <h2 className="font-display font-bold text-lg text-gold">{t("dice.drawerTitle")}</h2>
           </div>
           <button
             onClick={closeDiceDrawer}
             className="p-1.5 rounded text-muted hover:text-main hover:bg-card transition-colors"
-            title="Cerrar (Esc)"
+            title={t("common.close")}
           >
             <X className="w-5 h-5" />
           </button>
@@ -138,7 +140,7 @@ export const DiceDrawer: React.FC = () => {
             }`}
           >
             <Dice5 className="w-3.5 h-3.5" />
-            <span>Lanzador</span>
+            <span>{t("dice.tabRoller")}</span>
           </button>
           <button
             onClick={() => setActiveTab("history")}
@@ -149,7 +151,7 @@ export const DiceDrawer: React.FC = () => {
             }`}
           >
             <History className="w-3.5 h-3.5" />
-            <span>Historial ({rollHistory.length})</span>
+            <span>{t("dice.tabHistory")} ({rollHistory.length})</span>
           </button>
         </div>
 
@@ -160,13 +162,13 @@ export const DiceDrawer: React.FC = () => {
               {/* Motivo de la tirada */}
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
-                  Motivo de la Tirada
+                  {t("dice.rollReasonLabel")}
                 </label>
                 <input
                   type="text"
                   value={label}
                   onChange={(e) => setLabel(e.target.value)}
-                  placeholder="Ej: Ataque con Espadón..."
+                  placeholder={t("dice.rollReasonPlaceholder")}
                   className="w-full bg-input text-main border border-border-iron rounded px-3 py-1.5 text-sm focus:border-gold outline-none"
                 />
               </div>
@@ -175,14 +177,14 @@ export const DiceDrawer: React.FC = () => {
               {hasD20 && (
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">
-                    Modo de Tirada (d20)
+                    {t("dice.rollModeTitle")} (d20)
                   </label>
                   <div className="grid grid-cols-3 gap-1.5">
                     {(
                       [
-                        { id: "normal", label: "Normal" },
-                        { id: "advantage", label: "Ventaja" },
-                        { id: "disadvantage", label: "Desventaja" },
+                        { id: "normal", label: t("dice.modeNormal") },
+                        { id: "advantage", label: t("dice.modeAdvantage") },
+                        { id: "disadvantage", label: t("dice.modeDisadvantage") },
                       ] as const
                     ).map((m) => (
                       <button
@@ -209,14 +211,14 @@ export const DiceDrawer: React.FC = () => {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="text-xs font-semibold uppercase tracking-wider text-muted">
-                    Reserva de Dados
+                    {t("dice.dicePoolTitle")}
                   </label>
                   <button
                     onClick={handleReset}
                     className="text-xs text-muted hover:text-gold flex items-center gap-1 transition-colors"
                   >
                     <RotateCcw className="w-3 h-3" />
-                    <span>Reiniciar</span>
+                    <span>{t("common.reset")}</span>
                   </button>
                 </div>
 
@@ -263,7 +265,7 @@ export const DiceDrawer: React.FC = () => {
               {/* Modificador Numérico */}
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
-                  Modificador Numérico
+                  {t("dice.modifierTitle")}
                 </label>
                 <div className="flex items-center gap-2">
                   <button
@@ -292,14 +294,14 @@ export const DiceDrawer: React.FC = () => {
                 <div className="p-2.5 rounded border border-border-iron bg-card/40 space-y-1.5">
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-semibold uppercase tracking-wider text-muted">
-                      CD Objetivo (Salvación / Dificultad)
+                      {t("dice.dcTitle")}
                     </label>
                     {dc !== undefined && (
                       <button
                         onClick={() => setDc(undefined)}
                         className="text-[10px] text-muted hover:text-crimson"
                       >
-                        Quitar CD
+                        {t("dice.removeDc")}
                       </button>
                     )}
                   </div>
@@ -307,7 +309,7 @@ export const DiceDrawer: React.FC = () => {
                     <input
                       type="number"
                       value={dc ?? ""}
-                      placeholder="Sin CD (Opcional, ej: 10, 15...)"
+                      placeholder={t("dice.dcPlaceholder")}
                       onChange={(e) => setDc(e.target.value ? parseInt(e.target.value, 10) : undefined)}
                       className="flex-1 bg-input text-main border border-border-iron rounded px-2.5 py-1 text-xs focus:border-gold outline-none"
                     />
@@ -341,12 +343,12 @@ export const DiceDrawer: React.FC = () => {
                       onChange={(e) => setSendToTaleSpire(e.target.checked)}
                       className="rounded border-border-iron text-crimson focus:ring-0"
                     />
-                    <span>Enviar al tablero 3D de TaleSpire</span>
+                    <span>{t("dice.sendToTalespire")}</span>
                   </label>
                   <p className="text-[11px] text-muted leading-tight">
                     {talespireStatus.is_connected
-                      ? "Conectado. Los dados caerán físicamente con micro-gesto."
-                      : "Juego detectado en el equipo."}
+                      ? t("dice.talespireConnected")
+                      : t("dice.talespireInstalled")}
                   </p>
                 </div>
               )}
@@ -355,11 +357,11 @@ export const DiceDrawer: React.FC = () => {
               {lastRollResult && (
                 <div className="p-3 rounded-lg border border-gold/40 bg-card text-center space-y-1.5">
                   <p className="text-[11px] text-muted uppercase tracking-wider font-semibold">
-                    Última: {lastRollResult.label}
+                    {t("dice.lastRoll", { label: lastRollResult.label })}
                   </p>
                   {lastRollResult.talespire_sent ? (
                     <div className="font-stat font-bold text-sm text-gold py-1">
-                      Lanzado en mesa 3D (TaleSpire)
+                      {t("dice.rolledInTalespire")}
                     </div>
                   ) : (
                     <>
@@ -382,15 +384,15 @@ export const DiceDrawer: React.FC = () => {
                         >
                           {lastRollResult.is_death_save
                             ? lastRollResult.is_crit
-                              ? "¡ÉXITO CRÍTICO! (+2 Éxitos)"
+                              ? t("dice.critSuccessSave")
                               : lastRollResult.is_fumble
-                              ? "¡FALLO CRÍTICO! (+2 Fallos)"
+                              ? t("dice.critFumbleSave")
                               : lastRollResult.success
-                              ? "¡ÉXITO! (+1 Éxito)"
-                              : "¡FRACASO! (+1 Fallo)"
+                              ? t("dice.successSave")
+                              : t("dice.failureSave")
                             : lastRollResult.success
-                            ? `¡ÉXITO! (${lastRollResult.total} vs CD ${lastRollResult.dc || 10})`
-                            : `FRACASO (${lastRollResult.total} vs CD ${lastRollResult.dc || 10})`}
+                            ? t("dice.successVsDc", { total: lastRollResult.total, dc: lastRollResult.dc || 10 })
+                            : t("dice.failureVsDc", { total: lastRollResult.total, dc: lastRollResult.dc || 10 })}
                         </div>
                       )}
 
@@ -403,24 +405,24 @@ export const DiceDrawer: React.FC = () => {
                                 const addCount = lastRollResult.is_crit ? 2 : 1;
                                 const nextSucc = Math.min(3, (activeCharacter.death_save_successes || 0) + addCount);
                                 updateActiveCharacter({ death_save_successes: nextSucc });
-                                showToast(`Registrado: ${nextSucc}/3 Éxitos contra Muerte`, "success");
+                                showToast(t("dice.recordedDeathSuccess", { count: nextSucc }), "success");
                               } else {
                                 const addCount = lastRollResult.is_fumble ? 2 : 1;
                                 const nextFail = Math.min(3, (activeCharacter.death_save_failures || 0) + addCount);
                                 updateActiveCharacter({ death_save_failures: nextFail });
-                                showToast(`Registrado: ${nextFail}/3 Fallos contra Muerte`, "warn");
+                                showToast(t("dice.recordedDeathFailure", { count: nextFail }), "warn");
                               }
                             }}
                             className="px-2.5 py-1 rounded bg-surface border border-border-iron hover:border-gold text-[11px] font-semibold text-main transition-colors"
                           >
-                            ✓ Asentar en Salvaciones de Muerte
+                            {t("dice.recordDeathSave")}
                           </button>
                         </div>
                       )}
 
                       <div className="text-[11px] text-muted font-stat">
                         {lastRollResult.detail ||
-                          `Dados: [${lastRollResult.dice_rolls.map((r) => r.roll).join(", ")}]`}
+                          `${language === "es" ? "Dados" : "Dice"}: [${lastRollResult.dice_rolls.map((r) => r.roll).join(", ")}]`}
                         {lastRollResult.modifier !== 0 && (
                           <span>
                             {" "}
@@ -442,14 +444,14 @@ export const DiceDrawer: React.FC = () => {
                 onClick={closeDiceDrawer}
                 className="w-1/3 py-2 rounded border border-border-iron text-xs font-semibold text-muted hover:text-main hover:bg-card transition-colors"
               >
-                Cerrar
+                {t("common.close")}
               </button>
               <button
                 onClick={handleRoll}
                 disabled={totalDiceCount === 0 || isRolling}
                 className="flex-1 py-2 rounded bg-crimson hover:bg-crimson-hover disabled:opacity-40 text-white font-bold text-sm transition-all shadow-md active:scale-95"
               >
-                {isRolling ? "Lanzando..." : `Lanzar (${totalDiceCount} dados)`}
+                {isRolling ? t("dice.rolling") : t("dice.rollCount", { count: totalDiceCount })}
               </button>
             </div>
           </>
@@ -457,14 +459,14 @@ export const DiceDrawer: React.FC = () => {
           /* CONTENIDO 2: HISTORIAL DE TIRADAS DE LA SESIÓN */
           <div className="flex-1 flex flex-col min-h-0">
             <div className="flex items-center justify-between px-4 py-2 bg-card/30 border-b border-border-iron/60 text-xs text-muted">
-              <span>Registros en memoria: {rollHistory.length}</span>
+              <span>{t("dice.historyCount", { count: rollHistory.length })}</span>
               {rollHistory.length > 0 && (
                 <button
                   onClick={clearRollHistory}
                   className="flex items-center gap-1 text-crimson hover:underline"
                 >
                   <Trash2 className="w-3 h-3" />
-                  <span>Vaciar</span>
+                  <span>{t("dice.clearHistory")}</span>
                 </button>
               )}
             </div>
@@ -508,7 +510,7 @@ export const DiceDrawer: React.FC = () => {
                 ))
               ) : (
                 <div className="h-full flex items-center justify-center p-8 text-center text-xs text-muted">
-                  No se han registrado tiradas en esta sesión aún.
+                  {t("dice.noHistory")}
                 </div>
               )}
             </div>

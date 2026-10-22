@@ -1,14 +1,20 @@
 ---
-id: "lider_inspirador"
-nombre: "Líder Inspirador"
-categoria: "General"
-encabezado: "Dote general (requisitos: nivel 4 o más, Sabiduría o Carisma 13"
-fuente: "PHB 2024"
+id: lider_inspirador
+nombre: Líder Inspirador
+categoria: General
+encabezado: 'Dote general (requisitos: nivel 4 o más, Sabiduría o Carisma 13'
+fuente: PHB 2024
 pagina: 207
 tags:
-  - "dote"
-  - "generales"
-  - "lider_inspirador"
+- dote
+- generales
+- lider_inspirador
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Inspiring Leader
 ---
 
 # Líder Inspirador

@@ -9,8 +9,14 @@ pagina: 187
 tags:
 - trasfondo
 - vagabundo
+- spanish
+- es
+- español
 tipo: trasfondo
+idioma: es
+nombre_ingles: Vagabundo
 ---
+
 # Trasfondo: Vagabundo
 
 - **Puntuaciones de Característica**: Destreza, Sabiduría, Carisma

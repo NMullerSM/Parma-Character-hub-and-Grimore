@@ -1,19 +1,23 @@
 ---
-id: "draconido_cromatico"
-nombre: "Dracónido Cromático"
-nombre_ingles: "Chromatic Dragonborn"
-fuente: "Manual del Jugador 2024"
+id: draconido_cromatico
+nombre: Dracónido Cromático
+nombre_ingles: Chromatic Dragonborn
+fuente: Manual del Jugador 2024
 pagina: 184
-tipo: "especie_linaje"
-velocidad: "9 m (30 pies)"
-tamano: "Mediano"
-vision_oscuridad: "18 m (60 pies)"
+tipo: especie_linaje
+velocidad: 9 m (30 pies)
+tamano: Mediano
+vision_oscuridad: 18 m (60 pies)
 tags:
-  - "especie"
-  - "draconido"
-  - "cromatico"
-  - "linaje"
-  - "aliento"
+- especie
+- draconido
+- cromatico
+- linaje
+- aliento
+- spanish
+- es
+- español
+idioma: es
 ---
 
 # Especie: Dracónido Cromático

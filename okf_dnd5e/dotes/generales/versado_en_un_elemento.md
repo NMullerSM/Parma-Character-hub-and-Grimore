@@ -1,14 +1,20 @@
 ---
-id: "versado_en_un_elemento"
-nombre: "Versado En Un Elemento"
-categoria: "General"
-encabezado: "Dote general (requisitos: nivel 4 o más, rasgo Lanzamiento"
-fuente: "PHB 2024"
+id: versado_en_un_elemento
+nombre: Versado En Un Elemento
+categoria: General
+encabezado: 'Dote general (requisitos: nivel 4 o más, rasgo Lanzamiento'
+fuente: PHB 2024
 pagina: 211
 tags:
-  - "dote"
-  - "generales"
-  - "versado_en_un_elemento"
+- dote
+- generales
+- versado_en_un_elemento
+- spanish
+- es
+- español
+idioma: es
+tipo: dote
+nombre_ingles: Versado En Un Elemento
 ---
 
 # Versado En Un Elemento

@@ -1,22 +1,28 @@
 ---
-id: "palabra_divina"
-nombre: "Palabra Divina"
+id: palabra_divina
+nombre: Palabra Divina
 nivel: 7
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Clérigo"
-tiempo_lanzamiento: "Acción adicional"
-alcance: "9 m"
-componentes: "V"
-duracion: "Instantáneo"
+- Clérigo
+tiempo_lanzamiento: Acción adicional
+alcance: 9 m
+componentes: V
+duracion: Instantáneo
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 319
 tags:
-  - "evocación"
-  - "nivel_7"
-  - "clérigo"
+- evocación
+- nivel_7
+- clérigo
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Divine Word
 ---
 
 # Palabra Divina

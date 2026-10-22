@@ -1,30 +1,36 @@
 ---
-id: "auxilio"
-nombre: "Auxilio"
+id: auxilio
+nombre: Auxilio
 nivel: 2
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Bardo"
-  - "Clérigo"
-  - "Druida"
-  - "Explorador"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S, M (una tira de tela blanca)"
-duracion: "8 horas"
+- Bardo
+- Clérigo
+- Druida
+- Explorador
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S, M (una tira de tela blanca)
+duracion: 8 horas
 concentracion: false
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 249
 tags:
-  - "abjuración"
-  - "nivel_2"
-  - "bardo"
-  - "clérigo"
-  - "druida"
-  - "explorador"
-  - "paladín"
+- abjuración
+- nivel_2
+- bardo
+- clérigo
+- druida
+- explorador
+- paladín
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Aid
 ---
 
 # Auxilio

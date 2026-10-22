@@ -1,23 +1,29 @@
 ---
-id: "maleficio"
-nombre: "Maleficio"
+id: maleficio
+nombre: Maleficio
 nivel: 1
-escuela: "Encantamiento"
+escuela: Encantamiento
 clases:
-  - "Brujo"
-tiempo_lanzamiento: "Acción adicional"
-alcance: "27 m"
-componentes: "V, S, M (el ojo petrificado de un tritón)"
-duracion: "Concentración, hasta 1 hora"
+- Brujo
+tiempo_lanzamiento: Acción adicional
+alcance: 27 m
+componentes: V, S, M (el ojo petrificado de un tritón)
+duracion: Concentración, hasta 1 hora
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 309
 tags:
-  - "encantamiento"
-  - "nivel_1"
-  - "brujo"
-  - "concentracion"
+- encantamiento
+- nivel_1
+- brujo
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Hex
 ---
 
 # Maleficio

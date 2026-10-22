@@ -1,27 +1,33 @@
 ---
-id: "circulo_de_poder"
-nombre: "Círculo De Poder"
+id: circulo_de_poder
+nombre: Círculo De Poder
 nivel: 5
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Clérigo"
-  - "Mago"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "Lanzador"
-componentes: "V"
-duracion: "Concentración, hasta 10 minutos"
+- Clérigo
+- Mago
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: Lanzador
+componentes: V
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 258
 tags:
-  - "abjuración"
-  - "nivel_5"
-  - "clérigo"
-  - "mago"
-  - "paladín"
-  - "concentracion"
+- abjuración
+- nivel_5
+- clérigo
+- mago
+- paladín
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Circle of Power
 ---
 
 # Círculo De Poder

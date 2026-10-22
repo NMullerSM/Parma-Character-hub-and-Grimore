@@ -1,23 +1,29 @@
 ---
-id: "esfera_elastica_de_otiluke"
-nombre: "Esfera Elástica De Otiluke"
+id: esfera_elastica_de_otiluke
+nombre: Esfera Elástica De Otiluke
 nivel: 4
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "9 m"
-componentes: "V, S, M (una esfera de cristal)"
-duracion: "Concentración, hasta 1 minuto"
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 9 m
+componentes: V, S, M (una esfera de cristal)
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 282
 tags:
-  - "abjuración"
-  - "nivel_4"
-  - "mago"
-  - "concentracion"
+- abjuración
+- nivel_4
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Otiluke's Resilient Sphere
 ---
 
 # Esfera Elástica De Otiluke

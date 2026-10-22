@@ -1,27 +1,33 @@
 ---
-id: "localizar_animales_o_plantas"
-nombre: "Localizar Animales O Plantas"
+id: localizar_animales_o_plantas
+nombre: Localizar Animales O Plantas
 nivel: 2
-escuela: "Adivinación"
+escuela: Adivinación
 clases:
-  - "Bardo"
-  - "Druida"
-  - "Explorador"
-tiempo_lanzamiento: "Acción o ritual"
-alcance: "Lanzador"
-componentes: "V, S, M (pelaje de un sabueso)"
-duracion: "Instantáneo"
+- Bardo
+- Druida
+- Explorador
+tiempo_lanzamiento: Acción o ritual
+alcance: Lanzador
+componentes: V, S, M (pelaje de un sabueso)
+duracion: Instantáneo
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 307
 tags:
-  - "adivinación"
-  - "nivel_2"
-  - "bardo"
-  - "druida"
-  - "explorador"
-  - "ritual"
+- adivinación
+- nivel_2
+- bardo
+- druida
+- explorador
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Locate Animals or Plants
 ---
 
 # Localizar Animales O Plantas

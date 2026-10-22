@@ -1,25 +1,31 @@
 ---
-id: "pequena_choza_de_leomund"
-nombre: "Pequeña Choza De Leomund"
+id: pequena_choza_de_leomund
+nombre: Pequeña Choza De Leomund
 nivel: 3
-escuela: "Evocación"
+escuela: Evocación
 clases:
-  - "Bardo"
-  - "Mago"
-tiempo_lanzamiento: "1 minuto o un ritual"
-alcance: "Lanzador"
-componentes: "V, S, M (una cuenta de cristal)"
-duracion: "8 horas"
+- Bardo
+- Mago
+tiempo_lanzamiento: 1 minuto o un ritual
+alcance: Lanzador
+componentes: V, S, M (una cuenta de cristal)
+duracion: 8 horas
 concentracion: false
 ritual: true
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 320
 tags:
-  - "evocación"
-  - "nivel_3"
-  - "bardo"
-  - "mago"
-  - "ritual"
+- evocación
+- nivel_3
+- bardo
+- mago
+- ritual
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Leomund's Tiny Hut
 ---
 
 # Pequeña Choza De Leomund

@@ -1,25 +1,31 @@
 ---
-id: "rayo_debilitador"
-nombre: "Rayo Debilitador"
+id: rayo_debilitador
+nombre: Rayo Debilitador
 nivel: 2
-escuela: "Nigromancia"
+escuela: Nigromancia
 clases:
-  - "Brujo"
-  - "Mago"
-tiempo_lanzamiento: "Acción"
-alcance: "18 m"
-componentes: "V, S"
-duracion: "Concentración, hasta 1 minuto"
+- Brujo
+- Mago
+tiempo_lanzamiento: Acción
+alcance: 18 m
+componentes: V, S
+duracion: Concentración, hasta 1 minuto
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 328
 tags:
-  - "nigromancia"
-  - "nivel_2"
-  - "brujo"
-  - "mago"
-  - "concentracion"
+- nigromancia
+- nivel_2
+- brujo
+- mago
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Ray of Enfeeblement
 ---
 
 # Rayo Debilitador

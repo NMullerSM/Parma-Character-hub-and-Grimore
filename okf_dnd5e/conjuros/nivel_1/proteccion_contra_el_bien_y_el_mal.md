@@ -1,31 +1,38 @@
 ---
-id: "proteccion_contra_el_bien_y_el_mal"
-nombre: "Protección Contra El Bien Y El Mal"
+id: proteccion_contra_el_bien_y_el_mal
+nombre: Protección Contra El Bien Y El Mal
 nivel: 1
-escuela: "Abjuración"
+escuela: Abjuración
 clases:
-  - "Brujo"
-  - "Clérigo"
-  - "Druida"
-  - "Mago"
-  - "Paladín"
-tiempo_lanzamiento: "Acción"
-alcance: "Toque"
-componentes: "V, S, M (un frasco de agua bendita que valga  al menos 25 po, que se consume como parte del conjuro)"
-duracion: "Concentración, hasta 10 minutos"
+- Brujo
+- Clérigo
+- Druida
+- Mago
+- Paladín
+tiempo_lanzamiento: Acción
+alcance: Toque
+componentes: V, S, M (un frasco de agua bendita que valga  al menos 25 po, que se
+  consume como parte del conjuro)
+duracion: Concentración, hasta 10 minutos
 concentracion: true
 ritual: false
-fuente: "PHB 2024"
+fuente: PHB 2024
 pagina: 324
 tags:
-  - "abjuración"
-  - "nivel_1"
-  - "brujo"
-  - "clérigo"
-  - "druida"
-  - "mago"
-  - "paladín"
-  - "concentracion"
+- abjuración
+- nivel_1
+- brujo
+- clérigo
+- druida
+- mago
+- paladín
+- concentracion
+- spanish
+- es
+- español
+idioma: es
+tipo: conjuro
+nombre_ingles: Protection from Evil and Good
 ---
 
 # Protección Contra El Bien Y El Mal
