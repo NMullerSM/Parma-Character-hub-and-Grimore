@@ -76,20 +76,27 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
             : "scale-100 opacity-100 translate-y-0"
         }`}
       >
-        {/* Halo de resplandor rúnico sutil detrás del logo */}
-        <div className="absolute w-72 h-72 rounded-full bg-gold/10 blur-3xl -z-10 pointer-events-none" />
+        {/* Halo y brillo translúcido detrás del logo para realzar contraste */}
+        <div className="absolute w-[36rem] sm:w-[46rem] md:w-[56rem] h-[24rem] sm:h-[30rem] md:h-[36rem] max-w-[95vw] -z-10 pointer-events-none flex items-center justify-center">
+          {/* Fondo negro sutil difuminado para garantizar legibilidad */}
+          <div className="absolute w-3/4 h-3/4 rounded-full bg-black/40 blur-3xl -z-20" />
+          {/* Halo blanco suave translúcido con leve luz */}
+          <div className="absolute w-2/3 h-2/3 rounded-full bg-white/[0.08] dark:bg-white/[0.09] blur-2xl -z-10 shadow-[0_0_90px_rgba(255,255,255,0.15)] ring-1 ring-white/10" />
+          {/* Resplandor dorado místico atenuado */}
+          <div className="absolute w-1/2 h-1/2 rounded-full bg-gold/15 blur-3xl -z-10" />
+        </div>
 
-        {/* Logotipo vectorial completo de Parma */}
+        {/* Logotipo vectorial completo de Parma (tamaño ampliado al doble) */}
         <img
           src={currentLogo}
           alt="Parma"
-          className="w-72 sm:w-80 md:w-96 h-auto object-contain drop-shadow-[0_4px_16px_rgba(0,0,0,0.3)]"
+          className="w-[28rem] sm:w-[38rem] md:w-[48rem] lg:w-[54rem] max-w-[92vw] h-auto object-contain drop-shadow-[0_8px_32px_rgba(0,0,0,0.5)] transition-transform duration-500"
         />
 
         {/* Indicador sutil de inicio */}
-        <div className="mt-8 flex items-center gap-1.5 opacity-60">
-          <div className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
-          <span className="text-[11px] font-stat tracking-widest uppercase text-muted">
+        <div className="mt-10 flex items-center gap-2 opacity-70">
+          <div className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse shadow-[0_0_8px_rgba(201,164,92,0.8)]" />
+          <span className="text-xs font-stat tracking-widest uppercase text-muted">
             {language === "es" ? "Iniciando grimorio..." : "Opening Grimoire..."}
           </span>
         </div>

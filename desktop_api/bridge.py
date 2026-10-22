@@ -2099,8 +2099,12 @@ class DesktopBridge:
         """Retorna temas base y temas personalizados en themes/ sin duplicar IDs."""
         themes_map: Dict[str, Dict[str, Any]] = {
             "dark-obsidian": {"id": "dark-obsidian", "name": "Obsidian & Steel (Oscuro)", "is_dark": True},
-            "dark-amethyst": {"id": "dark-amethyst", "name": "Arcane Amethyst (Oscuro)", "is_dark": True},
+            "light-obsidian": {"id": "light-obsidian", "name": "Obsidian & Steel (Claro)", "is_dark": False},
+            "dark-parchment": {"id": "dark-parchment", "name": "Illuminated Parchment (Oscuro)", "is_dark": True},
             "light-parchment": {"id": "light-parchment", "name": "Illuminated Parchment (Claro)", "is_dark": False},
+            "dark-amethyst": {"id": "dark-amethyst", "name": "Arcane Amethyst (Oscuro)", "is_dark": True},
+            "light-amethyst": {"id": "light-amethyst", "name": "Arcane Amethyst (Claro)", "is_dark": False},
+            "dark-mithril": {"id": "dark-mithril", "name": "Mithril Scribe (Oscuro)", "is_dark": True},
             "light-mithril": {"id": "light-mithril", "name": "Mithril Scribe (Claro)", "is_dark": False},
         }
         themes_dir = os.path.join(self._base_dir, "themes")

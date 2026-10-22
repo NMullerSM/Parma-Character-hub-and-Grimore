@@ -6,6 +6,7 @@ import { DiceDrawer } from "./components/DiceDrawer";
 import { DiceRollAnimation } from "./components/DiceRollAnimation";
 import { ToastContainer } from "./components/ToastContainer";
 import { SplashScreen } from "./components/SplashScreen";
+import { ScreenVignette } from "./components/ScreenVignette";
 
 import { SheetView } from "./views/SheetView";
 import { CombatView } from "./views/CombatView";
@@ -54,7 +55,10 @@ export const AppContent: React.FC = () => {
       {/* 5. Modal de Configuración */}
       {isSettingsOpen && <SettingsView onClose={() => setIsSettingsOpen(false)} />}
 
-      {/* 6. Contenedor de Notificaciones Toast */}
+      {/* 6. Destello de Viñeta Cinemática (Daño / Curación) */}
+      <ScreenVignette />
+
+      {/* 7. Contenedor de Notificaciones Toast */}
       <ToastContainer />
     </div>
   );

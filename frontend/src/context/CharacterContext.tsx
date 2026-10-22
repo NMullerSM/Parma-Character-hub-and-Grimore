@@ -29,6 +29,10 @@ interface CharacterContextType {
   toasts: ToastMessage[];
   language: "es" | "en";
 
+  // Efectos visuales de impacto en pantalla (Daño / Curación)
+  vignetteFlash: "damage" | "heal" | null;
+  triggerVignetteFlash: (type: "damage" | "heal") => void;
+
   // Animación física de dados
   isRollingAnimation: boolean;
   currentRollingData: RollResult | null;
@@ -83,6 +87,19 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [isRollingAnimation, setIsRollingAnimation] = useState<boolean>(false);
   const [currentRollingData, setCurrentRollingData] = useState<RollResult | null>(null);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  const [vignetteFlash, setVignetteFlash] = useState<"damage" | "heal" | null>(null);
+  const vignetteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const triggerVignetteFlash = useCallback((type: "damage" | "heal") => {
+    if (vignetteTimerRef.current) {
+      clearTimeout(vignetteTimerRef.current);
+    }
+    setVignetteFlash(type);
+    vignetteTimerRef.current = setTimeout(() => {
+      setVignetteFlash(null);
+      vignetteTimerRef.current = null;
+    }, 850);
+  }, []);
 
   const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const latestCharRef = useRef<CharacterSheetData | null>(null);
@@ -208,6 +225,20 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const updateActiveCharacter = (updates: Partial<CharacterSheetData>) => {
     setActiveCharacter((prev) => {
       if (!prev) return null;
+
+      // Disparar destello cinemático de daño (rojo) o curación (verde) en pantalla
+      if (
+        updates.hp_current !== undefined &&
+        prev.hp_current !== undefined &&
+        updates.hp_current !== prev.hp_current
+      ) {
+        if (updates.hp_current < prev.hp_current) {
+          triggerVignetteFlash("damage");
+        } else if (updates.hp_current > prev.hp_current) {
+          triggerVignetteFlash("heal");
+        }
+      }
+
       const updated = { ...prev, ...updates };
       latestCharRef.current = updated;
 
@@ -414,6 +445,8 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         lastRollResult,
         rollHistory,
         toasts,
+        vignetteFlash,
+        triggerVignetteFlash,
         isRollingAnimation,
         currentRollingData,
         setDndEdition,

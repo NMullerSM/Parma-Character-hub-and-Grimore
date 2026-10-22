@@ -24,8 +24,8 @@
 }
 
 /* ==========================================================================
-   TEMA 1: OBSIDIAN & STEEL (OSCURO)
-   Elegancia fría: Piedra obsidiana, acero rúnico y carmesí D&D (sin amarillo chillón).
+   FAMILIA 1: OBSIDIAN & STEEL (OSCURO & CLARO)
+   Elegancia fría: Piedra obsidiana, acero rúnico y carmesí D&D.
    ========================================================================== */
 :root,
 [data-theme="dark-obsidian"] {
@@ -49,8 +49,29 @@
   color-scheme: dark;
 }
 
+[data-theme="light-obsidian"] {
+  --bg-canvas: #eef2f6;
+  --bg-surface: #e2e8f0;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f8fafc;
+  --bg-input: #e2e8f0;
+
+  --border-iron: #cbd5e1;
+  --border-accent: #3b82f6;
+
+  --accent-crimson: #dc2626;
+  --accent-crimson-hover: #b91c1c;
+  --accent-secondary: #2563eb;
+  --accent-secondary-hover: #1d4ed8;
+
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+
+  color-scheme: light;
+}
+
 /* ==========================================================================
-   TEMA 2: ILLUMINATED PARCHMENT (CLARO)
+   FAMILIA 2: ILLUMINATED PARCHMENT (OSCURO & CLARO)
    Atmósfera editorial de manuscrito: Pergamino noble, tinta sepia y carmesí lacre.
    ========================================================================== */
 [data-theme="light-parchment"] {
@@ -74,8 +95,29 @@
   color-scheme: light;
 }
 
+[data-theme="dark-parchment"] {
+  --bg-canvas: #181512;
+  --bg-surface: #221e1a;
+  --bg-card: #2a2520;
+  --bg-card-hover: #342e28;
+  --bg-input: #14110e;
+
+  --border-iron: #423a32;
+  --border-accent: #d4a373;
+
+  --accent-crimson: #e63946;
+  --accent-crimson-hover: #ff4d5e;
+  --accent-secondary: #ddb892;        /* Oro y pergamino envejecido */
+  --accent-secondary-hover: #e6ccb2;
+
+  --text-main: #ede0d4;
+  --text-muted: #9c8e80;
+
+  color-scheme: dark;
+}
+
 /* ==========================================================================
-   TEMA 3: ARCANE AMETHYST (OSCURO)
+   FAMILIA 3: ARCANE AMETHYST (OSCURO & CLARO)
    Misterio arcano: Noche violeta profunda, runas amatista y destellos rubí.
    ========================================================================== */
 [data-theme="dark-amethyst"] {
@@ -99,9 +141,30 @@
   color-scheme: dark;
 }
 
+[data-theme="light-amethyst"] {
+  --bg-canvas: #f8f6fc;
+  --bg-surface: #efeaf7;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f5f0fa;
+  --bg-input: #ede5f5;
+
+  --border-iron: #d8cce8;
+  --border-accent: #9333ea;
+
+  --accent-crimson: #e11d48;
+  --accent-crimson-hover: #be123c;
+  --accent-secondary: #7e22ce;        /* Violeta intenso */
+  --accent-secondary-hover: #6b21a8;
+
+  --text-main: #241434;
+  --text-muted: #6b5c7e;
+
+  color-scheme: light;
+}
+
 /* ==========================================================================
-   TEMA 4: MITHRIL SCRIBE (CLARO)
-   Claridad táctica: Plata mithril suave, azul real y carmesí de heráldica.
+   FAMILIA 4: MITHRIL SCRIBE (OSCURO & CLARO)
+   Claridad táctica: Plata mithril forjada, azul real y carmesí heráldico.
    ========================================================================== */
 [data-theme="light-mithril"] {
   --bg-canvas: #f1f5f9;
@@ -122,6 +185,27 @@
   --text-muted: #64748b;
 
   color-scheme: light;
+}
+
+[data-theme="dark-mithril"] {
+  --bg-canvas: #0c111d;
+  --bg-surface: #141c2e;
+  --bg-card: #1c263c;
+  --bg-card-hover: #24304b;
+  --bg-input: #080d17;
+
+  --border-iron: #2d3b58;
+  --border-accent: #60a5fa;
+
+  --accent-crimson: #ef4444;
+  --accent-crimson-hover: #f87171;
+  --accent-secondary: #93c5fd;        /* Brillo de mithril pulido */
+  --accent-secondary-hover: #bfdbfe;
+
+  --text-main: #f1f5f9;
+  --text-muted: #8494ab;
+
+  color-scheme: dark;
 }
 
 /* Scrollbars personalizados discretos y estéticos */
@@ -169,4 +253,43 @@
 
 .animate-pop-in {
   animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Efectos de Viñeta Cinemática de Daño y Curación en Pantalla */
+@keyframes vignettePulseDamage {
+  0% {
+    opacity: 0;
+    box-shadow: inset 0 0 0px 0px rgba(230, 57, 70, 0);
+  }
+  20% {
+    opacity: 1;
+    box-shadow: inset 0 0 70px 24px rgba(230, 57, 70, 0.55), inset 0 0 140px 50px rgba(180, 20, 30, 0.35);
+  }
+  100% {
+    opacity: 0;
+    box-shadow: inset 0 0 30px 10px rgba(230, 57, 70, 0);
+  }
+}
+
+@keyframes vignettePulseHeal {
+  0% {
+    opacity: 0;
+    box-shadow: inset 0 0 0px 0px rgba(16, 185, 129, 0);
+  }
+  20% {
+    opacity: 1;
+    box-shadow: inset 0 0 70px 24px rgba(16, 185, 129, 0.55), inset 0 0 140px 50px rgba(5, 150, 105, 0.35);
+  }
+  100% {
+    opacity: 0;
+    box-shadow: inset 0 0 30px 10px rgba(16, 185, 129, 0);
+  }
+}
+
+.vignette-damage {
+  animation: vignettePulseDamage 0.85s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+
+.vignette-heal {
+  animation: vignettePulseHeal 0.85s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
 }

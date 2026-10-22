@@ -106,7 +106,7 @@ export const CompendiumView: React.FC = () => {
       {/* 3. Panel Dividido: Lista de Resultados a la izquierda, Detalle a la derecha */}
       <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 min-h-0 overflow-hidden">
         {/* Lista de Entradas */}
-        <div className="bg-card border border-border-iron rounded-xl overflow-y-auto divide-y divide-border-iron/50">
+        <div className="bg-card border border-border-iron rounded-xl overflow-y-auto divide-y divide-border-iron/50 min-h-0">
           {loading ? (
             <div className="p-6 text-center text-xs text-muted">{t("common.loading")}</div>
           ) : results.length > 0 ? (

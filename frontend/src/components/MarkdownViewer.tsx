@@ -52,42 +52,68 @@ export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({ content, classNa
       continue;
     }
 
-    // Tablas Markdown
-    if (trimmed.startsWith("|") && trimmed.endsWith("|")) {
+    // Tablas Markdown (robusto para tablas con o sin barra final)
+    if (trimmed.startsWith("|") && (trimmed.endsWith("|") || trimmed.includes("|"))) {
       const tableLines: string[] = [];
       while (i < lines.length && lines[i].trim().startsWith("|")) {
         tableLines.push(lines[i].trim());
         i++;
       }
       if (tableLines.length >= 2) {
-        const parseRow = (rowStr: string) =>
-          rowStr
-            .slice(1, -1)
-            .split("|")
-            .map((c) => c.trim());
-        const headers = parseRow(tableLines[0]);
-        const dataRows = tableLines
+        const parseRow = (rowStr: string): string[] => {
+          let s = rowStr.trim();
+          if (s.startsWith("|")) s = s.slice(1);
+          if (s.endsWith("|")) s = s.slice(0, -1);
+          return s.split("|").map((c) => c.trim());
+        };
+
+        const rawHeaders = parseRow(tableLines[0]);
+        // Ignorar fila separadora tipo |---|---|
+        const dataLines = tableLines
           .slice(1)
-          .filter((r) => !/^\|?[\s:-]+\|/.test(r))
-          .map(parseRow);
+          .filter((r) => !/^\|?[\s:-]+(?:\|[\s:-]+)*\|?$/.test(r));
+
+        const maxCols = Math.max(
+          rawHeaders.length,
+          ...dataLines.map((r) => parseRow(r).length)
+        );
+
+        // Rellenar cabeceras si faltan
+        const headers = [...rawHeaders];
+        while (headers.length < maxCols) headers.push("");
+
+        const dataRows = dataLines.map((lineStr) => {
+          const cells = parseRow(lineStr);
+          while (cells.length < maxCols) cells.push("");
+          return cells;
+        });
 
         elements.push(
-          <div key={`tbl-${i}`} className="overflow-x-auto my-3 border border-border-iron rounded-lg">
-            <table className="w-full text-left text-xs border-collapse">
-              <thead className="bg-surface border-b border-border-iron text-gold font-semibold">
+          <div
+            key={`tbl-${i}`}
+            className="overflow-x-auto my-4 border border-border-iron rounded-xl shadow-xs bg-surface/20 clear-both"
+          >
+            <table className="w-full min-w-[320px] text-left text-xs border-collapse">
+              <thead className="bg-surface/90 border-b border-border-iron text-gold font-semibold uppercase tracking-wider text-[11px]">
                 <tr>
                   {headers.map((h, hIdx) => (
-                    <th key={hIdx} className="px-3 py-2">
+                    <th key={hIdx} className="px-3.5 py-2.5 whitespace-nowrap">
                       {renderInline(h)}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border-iron/50">
+              <tbody className="divide-y divide-border-iron/40">
                 {dataRows.map((row, rIdx) => (
-                  <tr key={rIdx} className="hover:bg-surface/40">
+                  <tr
+                    key={rIdx}
+                    className="hover:bg-surface/50 transition-colors even:bg-surface/15"
+                  >
                     {row.map((cell, cIdx) => (
-                      <td key={cIdx} className="px-3 py-1.5 text-main/90">
+                      <td
+                        key={cIdx}
+                        className="px-3.5 py-2 text-main/90 align-top leading-relaxed break-words"
+                      >
                         {renderInline(cell)}
                       </td>
                     ))}
