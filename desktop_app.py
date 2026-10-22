@@ -5,6 +5,15 @@ y expone el puente RPC hacia el frontend de React 18.
 """
 import os
 import sys
+
+# ==============================================================================
+# Compatibilidad Gráfica en Linux (Pop!_OS / Ubuntu / NVIDIA / Wayland / GStreamer):
+# Desactiva el renderizador DMABUF de WebKitGTK que causa pantallas negras / cuelgues
+# por fallos en la negociación de buffers de video y formatos DRM.
+# ==============================================================================
+if sys.platform.startswith("linux"):
+    os.environ.setdefault("WEBKIT_DISABLE_DMABUF_RENDERER", "1")
+
 import argparse
 import webview
 
