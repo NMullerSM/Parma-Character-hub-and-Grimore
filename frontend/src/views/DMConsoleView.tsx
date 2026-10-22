@@ -4,7 +4,6 @@ import { api } from "../api/client";
 import type { DmSessionStatus, DmSessionPlayer, DmHomebrewItem, DmSessionEventLog } from "../api/types";
 import {
   Wifi,
-  WifiOff,
   Copy,
   QrCode,
   Shield,
@@ -18,10 +17,11 @@ import {
   X,
   FileText,
   Tag,
+  Power,
 } from "lucide-react";
 
 export const DMConsoleView: React.FC = () => {
-  const { showToast, setActiveSessionId } = useCharacter();
+  const { showToast, setActiveSessionId, sessionScopeActive, toggleSessionScope } = useCharacter();
 
   const [sessionStatus, setSessionStatus] = useState<DmSessionStatus>({
     is_running: false,
@@ -250,127 +250,113 @@ export const DMConsoleView: React.FC = () => {
 
   return (
     <div className="h-full flex flex-col bg-canvas text-main overflow-hidden select-none">
-      {/* 1. Barra de Control de Túnel Superior */}
-      <div className="px-6 py-3.5 border-b border-border-iron bg-surface flex flex-wrap items-center justify-between gap-4 shrink-0">
-        <div className="flex items-center gap-3">
-          <div
-            className={`w-3.5 h-3.5 rounded-full ${
-              sessionStatus.is_running
-                ? "bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.8)] animate-pulse"
-                : "bg-muted"
-            }`}
-          />
-          <div>
-            <h1 className="font-display font-bold text-lg text-gold flex items-center gap-2">
-              <span>{sessionStatus.session_name || sessionNameInput}</span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-card border border-border-iron text-muted font-normal">
-                {sessionStatus.campaign_name || campaignNameInput}
-              </span>
-            </h1>
-            <p className="text-xs text-muted">
-              {sessionStatus.is_running
-                ? `En línea vía Cloudflare • ${sessionStatus.connected_count} jugadores conectados`
-                : "Túnel desconectado. Selecciona o crea una sesión para iniciar el túnel Cloudflare."}
-            </p>
-          </div>
-        </div>
-
-        {/* Acciones de Conectividad */}
-        <div className="flex items-center gap-2.5">
-          {sessionStatus.is_running ? (
-            <button
-              onClick={handleStopSession}
-              disabled={isLoading}
-              className="px-3.5 py-1.5 rounded-lg bg-crimson/15 border border-crimson hover:bg-crimson hover:text-white text-crimson text-xs font-semibold transition-colors flex items-center gap-1.5"
-            >
-              <WifiOff className="w-3.5 h-3.5" />
-              <span>{isLoading ? "Cerrando..." : "Terminar Sesión"}</span>
-            </button>
-          ) : (
-            <button
-              onClick={handleStartSession}
-              disabled={isLoading}
-              className="px-4 py-2 rounded-lg bg-gold hover:bg-gold-hover text-canvas font-bold text-xs shadow-md transition-all flex items-center gap-2 active:scale-95"
-            >
-              <Wifi className="w-4 h-4" />
-              <span>{isLoading ? "Iniciando Túnel..." : (selectedSessionId !== "new" ? "Reanudar Sesión Online" : "Iniciar Sesión Online")}</span>
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* BANNER DESTACADO DE INVITACIÓN (Visible cuando el túnel está activo) */}
-      {sessionStatus.is_running && (
-        <div className="bg-gradient-to-r from-emerald-950/40 via-card to-emerald-950/20 border-b border-emerald-500/40 px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 shadow-sm shrink-0">
-          <div className="flex items-center gap-3">
-            <span className="flex h-3 w-3 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-            </span>
-            <div>
-              <div className="text-xs font-bold text-emerald-300 flex items-center gap-2">
-                <span>Enlace Público de Partida</span>
-                {sessionStatus.session_id && (
-                  <span className="text-[11px] font-mono text-muted bg-surface/90 px-2 py-0.5 rounded border border-border-iron">
-                    ID: {sessionStatus.session_id}
-                  </span>
-                )}
-                {sessionStatus.session_id && (
-                  <button
-                    onClick={handleCopySessionId}
-                    className="text-[11px] text-gold hover:underline font-mono"
-                    title="Copiar ID de la sesión"
-                  >
-                    {copiedId ? "✓ ID Copiado" : "Copiar ID"}
-                  </button>
-                )}
-              </div>
-              <div className="text-xs text-main font-mono truncate max-w-sm sm:max-w-md md:max-w-xl select-all mt-0.5">
-                {sessionStatus.tunnel_url || "Estableciendo túnel de Cloudflare..."}
-              </div>
+      {/* Barra de Sesión Unificada (Slim & Hick's Law compliant) */}
+      {sessionStatus.is_running ? (
+        <div className="px-5 py-2.5 border-b border-border-iron bg-surface flex flex-wrap items-center justify-between gap-3 shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0 flex-1">
+            {/* Indicador ONLINE */}
+            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/40 text-[10px] font-bold text-emerald-400 shrink-0">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>ONLINE</span>
             </div>
+
+            {/* Nombre de la Sesión */}
+            <span className="font-display font-bold text-sm text-gold truncate shrink-0 max-w-[180px]">
+              {sessionStatus.session_name || sessionNameInput}
+            </span>
+
+            {/* ID de la Sesión */}
+            {sessionStatus.session_id && (
+              <div className="flex items-center gap-1 text-[11px] font-mono text-muted bg-card px-2 py-0.5 rounded border border-border-iron shrink-0">
+                <span>ID: {sessionStatus.session_id}</span>
+                <button
+                  onClick={handleCopySessionId}
+                  className="text-gold hover:underline ml-0.5 font-sans"
+                  title="Copiar ID de la Sesión"
+                >
+                  {copiedId ? "✓" : <Copy className="w-3 h-3 inline" />}
+                </button>
+              </div>
+            )}
+
+            {/* Enlace Público Truncado */}
+            {sessionStatus.tunnel_url && (
+              <div className="flex items-center gap-1.5 text-xs font-mono text-muted bg-card/60 px-2 py-0.5 rounded border border-border-iron/80 truncate flex-1 min-w-0 max-w-md">
+                <span className="text-gold font-semibold shrink-0">Link:</span>
+                <span className="truncate text-main select-all">{sessionStatus.tunnel_url}</span>
+              </div>
+            )}
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* Acciones del DM a la Derecha */}
+          <div className="flex items-center gap-2 shrink-0">
+            {/* Ámbito de Recursos de Sesión (Session Scope) */}
             <button
-              onClick={handleCopyLink}
-              disabled={!sessionStatus.tunnel_url}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-2 active:scale-95 ${
-                copiedUrl
-                  ? "bg-emerald-500 text-canvas font-bold"
-                  : "bg-gold hover:bg-gold-hover text-canvas"
+              onClick={toggleSessionScope}
+              title={
+                sessionScopeActive
+                  ? "Recursos de Sesión: ACTIVADO (Mostrando solo personajes y notas de esta sesión). Clic para ver todos."
+                  : "Recursos de Sesión: DESACTIVADO (Mostrando todos los recursos globales). Clic para filtrar solo esta sesión."
+              }
+              className={`px-2.5 py-1 rounded-lg border text-xs font-semibold transition-all ${
+                sessionScopeActive
+                  ? "bg-amber-500/20 border-amber-500/60 text-amber-300 ring-1 ring-amber-500/40"
+                  : "bg-card border-border-iron text-muted hover:text-main"
               }`}
             >
-              {copiedUrl ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-              <span>{copiedUrl ? "¡Enlace Copiado!" : "Copiar Enlace de Partida"}</span>
+              {sessionScopeActive ? "🎯 Sesión: ON" : "🎯 Sesión: OFF"}
             </button>
 
+            {/* Copiar Enlace */}
+            {sessionStatus.tunnel_url && (
+              <button
+                onClick={handleCopyLink}
+                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 active:scale-95 ${
+                  copiedUrl
+                    ? "bg-emerald-500 text-canvas font-bold"
+                    : "bg-gold hover:bg-gold-hover text-canvas"
+                }`}
+                title="Copiar enlace de invitación"
+              >
+                {copiedUrl ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                <span>{copiedUrl ? "¡Copiado!" : "Copiar Link"}</span>
+              </button>
+            )}
+
+            {/* Código QR */}
             {sessionStatus.qr_code && (
               <button
                 onClick={() => setIsQrModalOpen(true)}
-                className="px-3 py-2 rounded-xl border border-border-iron bg-surface hover:bg-card text-muted hover:text-gold text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs"
-                title="Mostrar código QR para celulares"
+                className="p-1.5 rounded-lg border border-border-iron bg-card hover:bg-surface text-muted hover:text-gold transition-colors"
+                title="Ver código QR para móviles"
               >
                 <QrCode className="w-4 h-4" />
-                <span className="hidden sm:inline">Código QR</span>
               </button>
             )}
+
+            {/* Botón de Solo Apagar (Power) para terminar sesión */}
+            <button
+              onClick={handleStopSession}
+              disabled={isLoading}
+              className="p-1.5 rounded-lg border border-crimson/50 bg-crimson/10 text-crimson hover:bg-crimson hover:text-white transition-colors"
+              title="Terminar y cerrar sesión online (Apagar túnel)"
+            >
+              <Power className="w-4 h-4" />
+            </button>
           </div>
         </div>
-      )}
-
-      {/* SELECTOR Y GESTOR DE SESIÓN (Visible cuando no está en línea para reanudar o crear nueva) */}
-      {!sessionStatus.is_running && (
-        <div className="bg-card/70 border-b border-border-iron px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 shrink-0">
+      ) : (
+        /* Barra de Control cuando NO está en línea */
+        <div className="px-5 py-2.5 border-b border-border-iron bg-surface flex flex-wrap items-center justify-between gap-3 shrink-0">
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-2">
-              <span className="text-xs text-muted font-medium">Sesión en SQLite:</span>
+              <span className="text-xs text-muted font-medium">Sesión:</span>
               <select
                 value={selectedSessionId}
                 onChange={(e) => handleSelectSession(e.target.value)}
-                className="bg-surface text-main border border-border-iron rounded-lg px-3 py-1.5 text-xs font-semibold focus:border-gold outline-none"
+                className="bg-card text-main border border-border-iron rounded-lg px-2.5 py-1 text-xs font-semibold focus:border-gold outline-none"
               >
-                <option value="new">+ Crear Nueva Sesión...</option>
+                <option value="new">+ Nueva Sesión...</option>
                 {pastSessions.map((s) => (
                   <option key={s.id} value={s.id}>
                     {s.name} ({s.campaign_name}) — {s.created_at ? s.created_at.split(" ")[0] : s.id}
@@ -386,35 +372,34 @@ export const DMConsoleView: React.FC = () => {
                   value={sessionNameInput}
                   onChange={(e) => setSessionNameInput(e.target.value)}
                   placeholder="Nombre de la Sesión"
-                  className="bg-surface text-main border border-border-iron rounded-lg px-2.5 py-1 text-xs focus:border-gold outline-none w-44"
+                  className="bg-card text-main border border-border-iron rounded-lg px-2.5 py-1 text-xs focus:border-gold outline-none w-44"
                 />
                 <input
                   type="text"
                   value={campaignNameInput}
                   onChange={(e) => setCampaignNameInput(e.target.value)}
                   placeholder="Campaña"
-                  className="bg-surface text-main border border-border-iron rounded-lg px-2.5 py-1 text-xs focus:border-gold outline-none w-36"
+                  className="bg-card text-main border border-border-iron rounded-lg px-2.5 py-1 text-xs focus:border-gold outline-none w-36"
                 />
               </div>
             ) : (
               <div className="flex items-center gap-2 text-xs text-muted">
-                <span className="font-mono bg-surface px-2 py-0.5 rounded border border-border-iron">
+                <span className="font-mono bg-card px-2 py-0.5 rounded border border-border-iron">
                   ID: {selectedSessionId}
                 </span>
-                <button
-                  onClick={handleCopySessionId}
-                  className="text-gold hover:underline text-[11px]"
-                >
-                  {copiedId ? "✓ Copiado" : "Copiar ID"}
-                </button>
               </div>
             )}
           </div>
 
-          <div className="text-xs text-muted">
-            {selectedSessionId !== "new"
-              ? "Reanudarás esta sesión existente con sus notas y bitácora previas."
-              : "Se creará un registro separado en la base de datos local para esta sesión."}
+          <div>
+            <button
+              onClick={handleStartSession}
+              disabled={isLoading}
+              className="px-4 py-1.5 rounded-lg bg-gold hover:bg-gold-hover text-canvas font-bold text-xs shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
+            >
+              <Wifi className="w-3.5 h-3.5" />
+              <span>{isLoading ? "Iniciando..." : (selectedSessionId !== "new" ? "Reanudar Sesión" : "Iniciar Sesión Online")}</span>
+            </button>
           </div>
         </div>
       )}

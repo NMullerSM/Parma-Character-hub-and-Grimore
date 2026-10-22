@@ -10,7 +10,6 @@ import {
   Moon,
   Crown,
   Globe,
-  Target,
   X,
   Clipboard,
 } from "lucide-react";
@@ -42,7 +41,6 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
     activeSessionId,
     setActiveSessionId,
     sessionScopeActive,
-    toggleSessionScope,
     showToast,
   } = useCharacter();
   const { isDark, toggleTheme } = useTheme();
@@ -246,33 +244,11 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
             </button>
           </div>
 
-          {/* Ámbito de Recursos de Sesión (Session Scope) */}
-          {activeSessionId && (
-            <button
-              onClick={toggleSessionScope}
-              title={
-                sessionScopeActive
-                  ? "Recursos de Sesión: ACTIVADO (Mostrando solo personajes y notas de esta sesión). Haz clic para ver todos los recursos."
-                  : "Recursos de Sesión: DESACTIVADO (Mostrando todos los recursos globales). Haz clic para filtrar solo esta sesión."
-              }
-              className={`flex items-center gap-1 px-2 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
-                sessionScopeActive
-                  ? "bg-amber-500/20 border-amber-500/60 text-amber-300 ring-1 ring-amber-500/40"
-                  : "bg-card border-border-iron text-muted hover:text-main"
-              }`}
-            >
-              <Target className="w-3.5 h-3.5 text-amber-400" />
-              <span className="hidden xl:inline text-[11px]">
-                {sessionScopeActive ? "Sesión ON" : "Sesión OFF"}
-              </span>
-            </button>
-          )}
-
           {/* Botón Distintivo según Rol */}
           {userRole === "dm" ? (
             <button
               onClick={() => setActiveTab("dm")}
-              title="Mesa del DM Online (Consola & Cloudflare Tunnel)"
+              title="Host DM Online (Consola & Cloudflare Tunnel)"
               className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg border text-xs font-bold transition-all shadow-xs ${
                 activeTab === "dm"
                   ? "bg-gold text-canvas border-gold shadow-[0_0_12px_rgba(201,164,92,0.4)]"
@@ -280,7 +256,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
               }`}
             >
               <Crown className="w-3.5 h-3.5 text-gold shrink-0" />
-              <span className="hidden md:inline">Mesa DM</span>
+              <span className="hidden md:inline">Host DM</span>
               {activeSessionId && (
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse ml-0.5" />
               )}

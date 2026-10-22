@@ -15,6 +15,13 @@ if not exist "%~dp0.venv\Scripts\python.exe" (
     exit /b 1
 )
 
+if not exist "%~dp0frontend\dist\index.html" (
+    echo [Parma] Compilando frontend React + Vite...
+    pushd "%~dp0frontend"
+    call npm run build
+    popd
+)
+
 "%~dp0.venv\Scripts\python.exe" desktop_app.py %*
 if %ERRORLEVEL% NEQ 0 (
     echo.
