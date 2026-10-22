@@ -16,6 +16,9 @@ import type {
   PointBuyValidationResult,
   SpellItemData,
   ClassProgressionLimits,
+  DmSessionStatus,
+  DmHomebrewItem,
+  DmSessionEventLog,
 } from "./types";
 
 declare global {
@@ -763,4 +766,79 @@ export const api = {
       { id: "light-parchment", name: "Illuminated Parchment (Claro)", is_dark: false },
     ];
   },
+
+  // =========================================================================
+  // DM ONLINE & CLOUDFLARE TUNNELS
+  // =========================================================================
+
+  async startDmSession(name: string = "Sesión de Campaña", campaignName: string = "Campaña Principal"): Promise<DmSessionStatus> {
+    if (this.isNative()) return await window.pywebview!.api.start_dm_session(name, campaignName);
+    return {
+      is_running: true,
+      session_id: "mock_session_1",
+      session_name: name,
+      campaign_name: campaignName,
+      tunnel_url: "https://parma-preview.trycloudflare.com",
+      qr_code: "",
+      port: 8765,
+      players: [],
+      connected_count: 0,
+    };
+  },
+
+  async stopDmSession(): Promise<{ success: boolean }> {
+    if (this.isNative()) return await window.pywebview!.api.stop_dm_session();
+    return { success: true };
+  },
+
+  async getDmSessionStatus(): Promise<DmSessionStatus> {
+    if (this.isNative()) return await window.pywebview!.api.get_dm_session_status();
+    return {
+      is_running: false,
+      session_id: null,
+      session_name: "Sesión",
+      campaign_name: "Campaña Principal",
+      tunnel_url: null,
+      qr_code: "",
+      port: 8765,
+      players: [],
+      connected_count: 0,
+    };
+  },
+
+  async dmApplyHpChange(playerToken: string, delta: number): Promise<boolean> {
+    if (this.isNative()) return await window.pywebview!.api.dm_apply_hp_change(playerToken, delta);
+    return true;
+  },
+
+  async dmGiftItem(playerToken: string, item: DmHomebrewItem): Promise<boolean> {
+    if (this.isNative()) return await window.pywebview!.api.dm_gift_item(playerToken, item);
+    return true;
+  },
+
+  async dmListHomebrewItems(): Promise<DmHomebrewItem[]> {
+    if (this.isNative()) return await window.pywebview!.api.dm_list_homebrew_items();
+    return [];
+  },
+
+  async dmSaveHomebrewItem(item: DmHomebrewItem): Promise<string> {
+    if (this.isNative()) return await window.pywebview!.api.dm_save_homebrew_item(item);
+    return "hb_mock_1";
+  },
+
+  async dmDeleteHomebrewItem(itemId: string): Promise<boolean> {
+    if (this.isNative()) return await window.pywebview!.api.dm_delete_homebrew_item(itemId);
+    return true;
+  },
+
+  async dmGetSessionLogs(sessionId?: string): Promise<DmSessionEventLog[]> {
+    if (this.isNative()) return await window.pywebview!.api.dm_get_session_logs(sessionId);
+    return [];
+  },
+
+  async dmSaveSessionNotes(notes: string): Promise<boolean> {
+    if (this.isNative()) return await window.pywebview!.api.dm_save_session_notes(notes);
+    return true;
+  },
 };
+

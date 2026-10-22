@@ -17,6 +17,8 @@ import { PdfViewerView } from "./views/PdfViewerView";
 import { CompendiumView } from "./views/CompendiumView";
 import { CharacterWizard } from "./views/CharacterWizard";
 import { SettingsView } from "./views/SettingsView";
+import { DMConsoleView } from "./views/DMConsoleView";
+import { OnlinePlayerSync } from "./components/OnlinePlayerSync";
 
 export const AppContent: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("sheet");
@@ -24,6 +26,9 @@ export const AppContent: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-canvas text-main font-body">
+      {/* Sincronización en tiempo real para sesiones DM/Jugador */}
+      <OnlinePlayerSync />
+
       {/* 0. Animación de Bienvenida / Splash Screen */}
       <SplashScreen />
 
@@ -39,6 +44,7 @@ export const AppContent: React.FC = () => {
         {activeTab === "sheet" && <SheetView />}
         {activeTab === "combat" && <CombatView />}
         {activeTab === "spells" && <SpellsView />}
+        {activeTab === "dm" && <DMConsoleView />}
         {activeTab === "journal" && <JournalView />}
         {activeTab === "network" && <NetworkView />}
         {activeTab === "pdf" && <PdfViewerView />}

@@ -54,6 +54,8 @@ from core.rules import (
 )
 from core.session_ledger import SessionRollLedger
 from core.srd_importer import SrdImporter
+from .tunnel_manager import CloudflareTunnelManager
+from .session_server import DmSessionServer
 
 
 
@@ -120,6 +122,8 @@ class DesktopBridge:
         self._okf = OkfEngine(os.path.join(base_dir, "okf_dnd5e"))
         self._ts = TaleSpireBridge()
         self._pdf_reader = PdfReaderEngine()
+        self._tunnel_mgr = CloudflareTunnelManager(base_dir)
+        self._session_server = DmSessionServer(self._db, base_dir)
         self._window = None
 
         # Migrar autosave_character.json si la base de datos está vacía
@@ -2151,3 +2155,140 @@ class DesktopBridge:
         if result and len(result) > 0:
             return result[0]
         return None
+
+    # =========================================================================
+    # MÉTODOS DE SESIÓN ONLINE DEL DM Y CLOUDFLARE TUNNELS
+    # =========================================================================
+
+    def start_dm_session(self, name: str = "Sesión de Campaña", campaign_name: str = "Campaña Principal") -> Dict[str, Any]:
+        """Inicia el servidor local WebSocket y levanta el túnel Cloudflare seguro."""
+        import uuid
+        session_id = f"sess_{uuid.uuid4().hex[:8]}"
+
+        # 1. Iniciar servidor FastAPI embebido
+        port = self._session_server.start(session_id, name, campaign_name)
+
+        # 2. Registrar en SQLite
+        self._db.create_dm_session(session_id, name, campaign_name)
+
+        # 3. Iniciar Cloudflare Quick Tunnel en hilo secundario
+        def on_url_ready(url: str):
+            self._db.update_dm_session_tunnel(session_id, url)
+
+        self._tunnel_mgr.start_tunnel(port, on_url=on_url_ready)
+
+        # Si ya hay URL o esperamos un momento
+        import time
+        for _ in range(10):
+            if self._tunnel_mgr.tunnel_url:
+                break
+            time.sleep(0.3)
+
+        tunnel_url = self._tunnel_mgr.tunnel_url or f"http://127.0.0.1:{port}"
+        qr_code = self._tunnel_mgr.generate_qr_base64(tunnel_url)
+
+        return {
+            "success": True,
+            "session_id": session_id,
+            "name": name,
+            "campaign_name": campaign_name,
+            "port": port,
+            "tunnel_url": tunnel_url,
+            "qr_code": qr_code,
+            "is_running": True,
+        }
+
+    def stop_dm_session(self) -> Dict[str, Any]:
+        """Cierra el túnel Cloudflare y marca la sesión como terminada."""
+        current_sess = self._session_server.current_session_id
+        if current_sess:
+            self._db.close_dm_session(current_sess)
+
+        self._tunnel_mgr.stop_tunnel()
+        self._session_server.stop()
+
+        return {"success": True, "is_running": False}
+
+    def get_dm_session_status(self) -> Dict[str, Any]:
+        """Obtiene el estado en tiempo real del túnel, la URL y los jugadores conectados."""
+        session_id = self._session_server.current_session_id
+        tunnel_url = self._tunnel_mgr.tunnel_url
+        is_running = self._session_server.current_session_id is not None
+        qr_code = self._tunnel_mgr.generate_qr_base64(tunnel_url) if tunnel_url else ""
+
+        players = []
+        if session_id:
+            players = self._db.get_session_players(session_id)
+
+        # Añadir bandera de si el socket está activo en este instante
+        for p in players:
+            token = p.get("player_token")
+            p["is_online"] = token in self._session_server.manager.active_players
+
+        return {
+            "is_running": is_running,
+            "session_id": session_id,
+            "session_name": self._session_server.session_name,
+            "campaign_name": self._session_server.campaign_name,
+            "tunnel_url": tunnel_url,
+            "qr_code": qr_code,
+            "port": self._session_server.port,
+            "players": players,
+            "connected_count": len(self._session_server.manager.active_players),
+        }
+
+    def dm_apply_hp_change(self, player_token: str, delta: int) -> bool:
+        """Aplica daño (delta < 0) o curación (delta > 0) a un jugador en tiempo real."""
+        session_id = self._session_server.current_session_id
+        if not session_id:
+            return False
+
+        # Actualizar en BD
+        players = self._db.get_session_players(session_id)
+        target = next((p for p in players if p["player_token"] == player_token), None)
+        if target:
+            new_hp = max(0, min(target["hp_max"], target["hp_current"] + delta))
+            self._db.update_player_hp(session_id, player_token, new_hp)
+
+        if delta < 0:
+            self._session_server.apply_damage(player_token, abs(delta))
+        elif delta > 0:
+            self._session_server.apply_heal(player_token, delta)
+
+        return True
+
+    def dm_gift_item(self, player_token: str, item_data: Dict[str, Any]) -> bool:
+        """Entrega un objeto Homebrew al inventario del jugador conectado."""
+        return self._session_server.gift_homebrew_item(player_token, item_data)
+
+    def dm_list_homebrew_items(self) -> List[Dict[str, Any]]:
+        """Lista los objetos Homebrew guardados en la biblioteca del DM."""
+        return self._db.list_homebrew_items()
+
+    def dm_save_homebrew_item(self, item_data: Dict[str, Any]) -> str:
+        """Guarda un objeto Homebrew creado por el DM."""
+        return self._db.save_homebrew_item(item_data)
+
+    def dm_delete_homebrew_item(self, item_id: str) -> bool:
+        """Elimina un objeto Homebrew de la biblioteca."""
+        return self._db.delete_homebrew_item(item_id)
+
+    def dm_get_session_logs(self, session_id: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Obtiene la bitácora de eventos y tiradas de la sesión."""
+        sess = session_id or self._session_server.current_session_id
+        if not sess:
+            # Obtener última sesión si no hay activa
+            sessions = self._db.list_dm_sessions()
+            if sessions:
+                sess = sessions[0]["id"]
+            else:
+                return []
+        return self._db.get_session_logs(sess)
+
+    def dm_save_session_notes(self, notes: str) -> bool:
+        """Guarda las notas del DM para la sesión activa."""
+        session_id = self._session_server.current_session_id
+        if not session_id:
+            return False
+        return self._db.save_dm_session_notes(session_id, notes)
+

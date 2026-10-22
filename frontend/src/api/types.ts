@@ -326,3 +326,61 @@ export interface PointBuyValidationResult {
   error?: string;
   standard_array: number[];
 }
+
+export interface DmSessionPlayer {
+  session_id: string;
+  player_token: string;
+  character_id?: number;
+  character_name: string;
+  character_class?: string;
+  character_level: number;
+  hp_current: number;
+  hp_max: number;
+  ac: number;
+  status: "ALIVE" | "UNCONSCIOUS" | "DEAD";
+  joined_at: string;
+  last_seen_at: string;
+  is_online?: boolean;
+  data_json?: string;
+}
+
+export interface DmSessionStatus {
+  is_running: boolean;
+  session_id: string | null;
+  session_name: string;
+  campaign_name: string;
+  tunnel_url: string | null;
+  qr_code: string;
+  port: number;
+  players: DmSessionPlayer[];
+  connected_count: number;
+}
+
+export interface DmHomebrewItem {
+  id?: string;
+  name: string;
+  category: "weapon" | "armor" | "wondrous" | "potion" | "ring" | "scroll" | "wand";
+  rarity: "common" | "uncommon" | "rare" | "very_rare" | "legendary" | "artifact";
+  requires_attunement: boolean;
+  damage_dice?: string;
+  damage_type?: string;
+  secondary_dice?: string;
+  secondary_type?: string;
+  bonus_attack?: number;
+  bonus_damage?: number;
+  ac_bonus?: number;
+  properties?: string[];
+  description: string;
+  created_at?: string;
+}
+
+export interface DmSessionEventLog {
+  id: number;
+  session_id: string;
+  timestamp: string;
+  event_type: string;
+  actor_name: string;
+  target_name?: string;
+  details: Record<string, any>;
+}
+

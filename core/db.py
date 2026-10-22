@@ -114,6 +114,75 @@ class DatabaseManager:
                     value TEXT
                 );
             """)
+
+            # 6. Sesiones de DM Online (Cloudflare Tunnels)
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS dm_sessions (
+                    id TEXT PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    campaign_name TEXT DEFAULT 'Campaña',
+                    tunnel_url TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    closed_at TIMESTAMP,
+                    notes TEXT DEFAULT ''
+                );
+            """)
+
+            # 7. Jugadores en Sesión DM
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS dm_session_players (
+                    session_id TEXT NOT NULL,
+                    player_token TEXT NOT NULL,
+                    character_id INTEGER,
+                    character_name TEXT NOT NULL,
+                    character_class TEXT,
+                    character_level INTEGER DEFAULT 1,
+                    hp_current INTEGER DEFAULT 10,
+                    hp_max INTEGER DEFAULT 10,
+                    ac INTEGER DEFAULT 10,
+                    status TEXT DEFAULT 'ALIVE',
+                    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    last_seen_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    data_json TEXT,
+                    PRIMARY KEY (session_id, player_token),
+                    FOREIGN KEY (session_id) REFERENCES dm_sessions(id) ON DELETE CASCADE
+                );
+            """)
+
+            # 8. Bitácora de Eventos y Tiradas de Sesión
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS dm_session_logs (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    session_id TEXT NOT NULL,
+                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    event_type TEXT NOT NULL,
+                    actor_name TEXT NOT NULL,
+                    target_name TEXT,
+                    details_json TEXT NOT NULL,
+                    FOREIGN KEY (session_id) REFERENCES dm_sessions(id) ON DELETE CASCADE
+                );
+            """)
+
+            # 9. Forja de Objetos Homebrew del DM
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS dm_homebrew_items (
+                    id TEXT PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    category TEXT NOT NULL,
+                    rarity TEXT DEFAULT 'common',
+                    requires_attunement INTEGER DEFAULT 0,
+                    damage_dice TEXT,
+                    damage_type TEXT,
+                    secondary_dice TEXT,
+                    secondary_type TEXT,
+                    bonus_attack INTEGER DEFAULT 0,
+                    bonus_damage INTEGER DEFAULT 0,
+                    ac_bonus INTEGER DEFAULT 0,
+                    properties_json TEXT DEFAULT '[]',
+                    description TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            """)
             conn.commit()
 
     def get_active_character(self) -> Optional[CharacterSheet]:
@@ -323,3 +392,238 @@ class DatabaseManager:
         except Exception as e:
             print(f"[DatabaseManager] Error al copiar imagen de retrato: {e}")
             return src_path
+
+    # =========================================================================
+    # GESTIÓN DE SESIONES ONLINE (DM CONSOLE & CLOUDFLARE TUNNELS)
+    # =========================================================================
+
+    def create_dm_session(self, session_id: str, name: str, campaign_name: str = "Campaña Principal", tunnel_url: str = "") -> bool:
+        """Crea o reinicia una sesión de juego del DM."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO dm_sessions (id, name, campaign_name, tunnel_url, created_at, notes)
+                VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, '')
+                ON CONFLICT(id) DO UPDATE SET
+                    name = excluded.name,
+                    campaign_name = excluded.campaign_name,
+                    tunnel_url = excluded.tunnel_url,
+                    closed_at = NULL;
+            """, (session_id, name, campaign_name, tunnel_url))
+            conn.commit()
+            return True
+
+    def update_dm_session_tunnel(self, session_id: str, tunnel_url: str) -> bool:
+        """Actualiza la URL pública del túnel Cloudflare para la sesión."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("UPDATE dm_sessions SET tunnel_url = ? WHERE id = ?;", (tunnel_url, session_id))
+            conn.commit()
+            return True
+
+    def close_dm_session(self, session_id: str) -> bool:
+        """Marca una sesión de DM como finalizada."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("UPDATE dm_sessions SET closed_at = CURRENT_TIMESTAMP WHERE id = ?;", (session_id,))
+            conn.commit()
+            return True
+
+    def save_dm_session_notes(self, session_id: str, notes: str) -> bool:
+        """Guarda notas de campaña de la sesión."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("UPDATE dm_sessions SET notes = ? WHERE id = ?;", (notes, session_id))
+            conn.commit()
+            return True
+
+    def get_dm_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """Obtiene la información de una sesión por su ID."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM dm_sessions WHERE id = ?;", (session_id,))
+            row = cursor.fetchone()
+            if row:
+                return dict(row)
+        return None
+
+    def list_dm_sessions(self) -> List[Dict[str, Any]]:
+        """Lista todas las sesiones históricas del DM."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM dm_sessions ORDER BY created_at DESC;")
+            return [dict(r) for r in cursor.fetchall()]
+
+    def upsert_session_player(
+        self,
+        session_id: str,
+        player_token: str,
+        character_name: str,
+        character_id: Optional[int] = None,
+        character_class: str = "",
+        character_level: int = 1,
+        hp_current: int = 10,
+        hp_max: int = 10,
+        ac: int = 10,
+        status: str = "ALIVE",
+        data_json: str = "{}",
+    ) -> bool:
+        """Registra o actualiza el estado de un jugador en la sesión."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO dm_session_players (
+                    session_id, player_token, character_id, character_name,
+                    character_class, character_level, hp_current, hp_max,
+                    ac, status, last_seen_at, data_json
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?)
+                ON CONFLICT(session_id, player_token) DO UPDATE SET
+                    character_id = coalesce(excluded.character_id, dm_session_players.character_id),
+                    character_name = excluded.character_name,
+                    character_class = excluded.character_class,
+                    character_level = excluded.character_level,
+                    hp_current = excluded.hp_current,
+                    hp_max = excluded.hp_max,
+                    ac = excluded.ac,
+                    status = excluded.status,
+                    last_seen_at = CURRENT_TIMESTAMP,
+                    data_json = excluded.data_json;
+            """, (session_id, player_token, character_id, character_name, character_class, character_level, hp_current, hp_max, ac, status, data_json))
+            conn.commit()
+            return True
+
+    def update_player_hp(self, session_id: str, player_token: str, new_hp: int) -> bool:
+        """Actualiza los puntos de vida de un jugador y su estado de combate."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            status = "UNCONSCIOUS" if new_hp <= 0 else "ALIVE"
+            cursor.execute("""
+                UPDATE dm_session_players
+                SET hp_current = ?, status = ?, last_seen_at = CURRENT_TIMESTAMP
+                WHERE session_id = ? AND player_token = ?;
+            """, (new_hp, status, session_id, player_token))
+            conn.commit()
+            return True
+
+    def get_session_players(self, session_id: str) -> List[Dict[str, Any]]:
+        """Obtiene la lista de jugadores participantes de una sesión."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT * FROM dm_session_players
+                WHERE session_id = ?
+                ORDER BY character_name ASC;
+            """, (session_id,))
+            return [dict(r) for r in cursor.fetchall()]
+
+    def log_session_event(
+        self,
+        session_id: str,
+        event_type: str,
+        actor_name: str,
+        target_name: Optional[str] = None,
+        details: Optional[Dict[str, Any]] = None,
+    ) -> int:
+        """Registra un evento en la bitácora de la sesión (tiradas, daño, curación, etc.)."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            details_json = json.dumps(details or {}, ensure_ascii=False)
+            cursor.execute("""
+                INSERT INTO dm_session_logs (session_id, event_type, actor_name, target_name, details_json)
+                VALUES (?, ?, ?, ?, ?);
+            """, (session_id, event_type, actor_name, target_name, details_json))
+            conn.commit()
+            return cursor.lastrowid or 0
+
+    def get_session_logs(self, session_id: str, limit: int = 100) -> List[Dict[str, Any]]:
+        """Obtiene los registros históricos de eventos de la sesión."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT * FROM dm_session_logs
+                WHERE session_id = ?
+                ORDER BY timestamp DESC
+                LIMIT ?;
+            """, (session_id, limit))
+            logs = []
+            for row in cursor.fetchall():
+                d = dict(row)
+                try:
+                    d["details"] = json.loads(d.get("details_json", "{}"))
+                except Exception:
+                    d["details"] = {}
+                logs.append(d)
+            return logs
+
+    # =========================================================================
+    # FORJA Y DISTRIBUCIÓN DE OBJETOS HOMEBREW DEL DM
+    # =========================================================================
+
+    def save_homebrew_item(self, item: Dict[str, Any]) -> str:
+        """Guarda o actualiza un objeto Homebrew creado por el DM."""
+        item_id = item.get("id") or f"hb_{int(os.urandom(4).hex(), 16)}"
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            props = json.dumps(item.get("properties", []), ensure_ascii=False)
+            cursor.execute("""
+                INSERT INTO dm_homebrew_items (
+                    id, name, category, rarity, requires_attunement,
+                    damage_dice, damage_type, secondary_dice, secondary_type,
+                    bonus_attack, bonus_damage, ac_bonus, properties_json, description
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(id) DO UPDATE SET
+                    name = excluded.name,
+                    category = excluded.category,
+                    rarity = excluded.rarity,
+                    requires_attunement = excluded.requires_attunement,
+                    damage_dice = excluded.damage_dice,
+                    damage_type = excluded.damage_type,
+                    secondary_dice = excluded.secondary_dice,
+                    secondary_type = excluded.secondary_type,
+                    bonus_attack = excluded.bonus_attack,
+                    bonus_damage = excluded.bonus_damage,
+                    ac_bonus = excluded.ac_bonus,
+                    properties_json = excluded.properties_json,
+                    description = excluded.description;
+            """, (
+                item_id,
+                item.get("name", "Objeto sin nombre"),
+                item.get("category", "wondrous"),
+                item.get("rarity", "common"),
+                1 if item.get("requires_attunement") else 0,
+                item.get("damage_dice"),
+                item.get("damage_type"),
+                item.get("secondary_dice"),
+                item.get("secondary_type"),
+                int(item.get("bonus_attack") or 0),
+                int(item.get("bonus_damage") or 0),
+                int(item.get("ac_bonus") or 0),
+                props,
+                item.get("description", ""),
+            ))
+            conn.commit()
+            return item_id
+
+    def list_homebrew_items(self) -> List[Dict[str, Any]]:
+        """Lista todos los objetos Homebrew guardados en la forja."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM dm_homebrew_items ORDER BY name ASC;")
+            items = []
+            for row in cursor.fetchall():
+                d = dict(row)
+                try:
+                    d["properties"] = json.loads(d.get("properties_json", "[]"))
+                except Exception:
+                    d["properties"] = []
+                items.append(d)
+            return items
+
+    def delete_homebrew_item(self, item_id: str) -> bool:
+        """Elimina un objeto Homebrew de la forja."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM dm_homebrew_items WHERE id = ?;", (item_id,))
+            conn.commit()
+            return True
+

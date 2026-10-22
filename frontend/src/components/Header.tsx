@@ -37,6 +37,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
     { id: "sheet", label: t("header.tabSheet") },
     { id: "combat", label: t("header.tabCombat") },
     { id: "spells", label: t("header.tabSpells") },
+    { id: "dm", label: language === "es" ? "Mesa DM" : "DM Table" },
     { id: "journal", label: t("header.tabJournal") },
     { id: "network", label: t("header.tabNetwork") },
     { id: "pdf", label: t("header.tabPdf") },

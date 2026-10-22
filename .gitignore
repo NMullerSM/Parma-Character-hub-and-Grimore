@@ -38,6 +38,7 @@ data/*.db
 data/*.db-wal
 data/*.db-shm
 data/characters/portraits/
+data/bin/
 
 # Frontend Node / Vite
 frontend/node_modules/

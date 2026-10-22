@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { es, type Translations } from "./es";
 import { en } from "./en";
 import { useCharacter } from "../context/CharacterContext";
@@ -70,9 +71,12 @@ export function translate(
 export function useTranslation() {
   const { language, setLanguage } = useCharacter();
 
-  const t = (path: string, params?: Record<string, string | number>): string => {
-    return translate(language, path, params);
-  };
+  const t = useCallback(
+    (path: string, params?: Record<string, string | number>): string => {
+      return translate(language, path, params);
+    },
+    [language]
+  );
 
   return {
     t,

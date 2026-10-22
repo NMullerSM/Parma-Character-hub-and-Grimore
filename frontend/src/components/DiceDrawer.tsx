@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useCharacter } from "../context/CharacterContext";
 import { useTranslation } from "../i18n";
 import type { RollMode } from "../api/types";
@@ -30,20 +30,29 @@ export const DiceDrawer: React.FC = () => {
   const [dc, setDc] = useState<number | undefined>(undefined);
   const [isDeathSave, setIsDeathSave] = useState<boolean>(false);
 
+  const lastSyncedRequestRef = useRef<any>(null);
+  const wasOpenRef = useRef<boolean>(false);
+
   useEffect(() => {
-    if (diceRequest) {
-      setPool(diceRequest.dice || { "20": 1 });
-      setModifier(diceRequest.modifier || 0);
-      setLabel(diceRequest.label || t("dice.quickRoll"));
-      setMode(diceRequest.mode || "normal");
-      setDc(diceRequest.dc);
-      setIsDeathSave(Boolean(diceRequest.is_death_save || diceRequest.label?.toLowerCase().includes("muerte") || diceRequest.label?.toLowerCase().includes("death")));
-      if (typeof diceRequest.send_to_talespire === "boolean") {
-        setSendToTaleSpire(diceRequest.send_to_talespire);
+    const justOpened = isDiceDrawerOpen && !wasOpenRef.current;
+    wasOpenRef.current = isDiceDrawerOpen;
+
+    if (isDiceDrawerOpen && diceRequest) {
+      if (justOpened || diceRequest !== lastSyncedRequestRef.current) {
+        lastSyncedRequestRef.current = diceRequest;
+        setPool(diceRequest.dice || { "20": 1 });
+        setModifier(diceRequest.modifier || 0);
+        setLabel(diceRequest.label || t("dice.quickRoll"));
+        setMode(diceRequest.mode || "normal");
+        setDc(diceRequest.dc);
+        setIsDeathSave(Boolean(diceRequest.is_death_save || diceRequest.label?.toLowerCase().includes("muerte") || diceRequest.label?.toLowerCase().includes("death")));
+        if (typeof diceRequest.send_to_talespire === "boolean") {
+          setSendToTaleSpire(diceRequest.send_to_talespire);
+        }
+        setActiveTab("roller");
       }
-      setActiveTab("roller");
     }
-  }, [diceRequest, t]);
+  }, [diceRequest, isDiceDrawerOpen]);
 
   if (!isDiceDrawerOpen) return null;
 
