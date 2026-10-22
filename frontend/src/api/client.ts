@@ -219,7 +219,10 @@ const POINT_BUY_COSTS: Record<number, number> = {
 // Cliente unificado
 export const api = {
   isNative: (): boolean => {
-    return typeof window !== "undefined" && !!window.pywebview?.api;
+    return (
+      typeof window !== "undefined" &&
+      typeof window.pywebview?.api?.list_characters === "function"
+    );
   },
 
   async listCharacters(): Promise<CharacterSummary[]> {

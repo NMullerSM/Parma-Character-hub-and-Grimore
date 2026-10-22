@@ -122,13 +122,50 @@ def apply_win32_icon(window, icon_path: str):
         print(f"[Parma] Warning al asignar icono Win32 nativo: {e}")
 
 
+def check_linux_gui_backend():
+    """Verifica si el entorno Linux cuenta con los enlaces nativos WebKitGTK / Qt para PyWebView."""
+    if not sys.platform.startswith("linux"):
+        return
+
+    has_gtk = False
+    try:
+        import gi
+        gi.require_version("Gtk", "3.0")
+        has_gtk = True
+    except Exception:
+        has_gtk = False
+
+    has_qt = False
+    if not has_gtk:
+        try:
+            import PyQt5.QtWebEngineWidgets
+            has_qt = True
+        except ImportError:
+            try:
+                import PyQt6.QtWebEngineWidgets
+                has_qt = True
+            except ImportError:
+                has_qt = False
+
+    if not has_gtk and not has_qt:
+        print("\n" + "=" * 68)
+        print(" [AVISO IMPORTANTE - PARMA EN LINUX]")
+        print(" PyWebView necesita el motor nativo WebKitGTK (PyGObject / 'gi')")
+        print(" para comunicar la interfaz con las funciones de Python (SQLite/Tiradas).")
+        print(" ")
+        print(" Para activarlo, ejecuta en tu terminal:")
+        print("   sudo apt update && sudo apt install -y python3-gi python3-gi-cairo gir1.2-gtk-3.0 gir1.2-webkit2-4.1")
+        print("=" * 68 + "\n")
+
+
 def start_app():
     parser = argparse.ArgumentParser(description="Parma Desktop")
     parser.add_argument("--dev", action="store_true", help="Usa servidor de desarrollo Vite (localhost:5173)")
     parser.add_argument("--port", type=int, default=5173, help="Puerto del servidor de desarrollo")
     args = parser.parse_args()
 
-    # 1. Configurar identidad de proceso en Windows
+    # 1. Comprobar entorno gráfico en Linux y configurar identidad en Windows
+    check_linux_gui_backend()
     setup_windows_app_id()
 
     base_dir = get_base_dir()
