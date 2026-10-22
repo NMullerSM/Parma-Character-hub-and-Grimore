@@ -205,8 +205,8 @@ def start_app():
             if os.path.exists(alt_dist):
                 dist_path = alt_dist
 
-        target_url = f"file:///{os.path.abspath(dist_path).replace(os.sep, '/')}"
-        print(f"[Parma] Iniciando en Modo Producción: {target_url}")
+        target_url = os.path.abspath(dist_path)
+        print(f"[Parma] Iniciando en Modo Producción (Servidor Local Seguro): {target_url}")
 
     # Crear la ventana de escritorio
     window = webview.create_window(
@@ -224,13 +224,23 @@ def start_app():
     def on_app_started():
         apply_win32_icon(window, icon_path)
 
-    # Iniciar el bucle de eventos del WebView nativo con el icono asignado
+    # Iniciar el bucle de eventos del WebView nativo
+    # http_server=True activa el servidor Bottle interno para servir ES Modules de Vite sin bloqueos CORS en Linux
+    start_kwargs = {
+        "func": on_app_started,
+        "debug": args.dev,
+        "http_server": True,
+    }
+    if icon_path:
+        start_kwargs["icon"] = icon_path
+
     try:
-        webview.start(func=on_app_started, debug=args.dev, icon=icon_path)
+        webview.start(**start_kwargs)
     except Exception as e:
-        if icon_path:
+        if "icon" in start_kwargs:
             print(f"[Parma] Aviso: Falló al inicializar ventana con icono ({e}). Reintentando sin icono...")
-            webview.start(func=on_app_started, debug=args.dev)
+            start_kwargs.pop("icon", None)
+            webview.start(**start_kwargs)
         else:
             raise
 

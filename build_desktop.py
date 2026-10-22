@@ -26,10 +26,10 @@ def build():
         npm_cmd = "npm.cmd" if sys.platform == "win32" else "npm"
         subprocess.check_call([npm_cmd, "run", "build"], cwd=os.path.join(base_dir, "frontend"))
 
-    # 2. Detección de plataforma
+    # 2. Detección de plataforma y destino
     is_windows = sys.platform == "win32"
     platform_dir = "windows" if is_windows else "linux"
-    dist_dir = os.path.join(base_dir, "dist", platform_dir)
+    dist_dir = os.path.join(base_dir, "ejecutables", platform_dir)
     build_dir = os.path.join(base_dir, "build", platform_dir)
 
     sep = os.pathsep
@@ -43,6 +43,11 @@ def build():
 
     if os.path.exists(themes_dir):
         add_data_args.append(f"--add-data={themes_dir}{sep}themes")
+
+    for asset_file in ["parma.png", "parma.ico", "parma_taskbar_dark.ico", "parma_taskbar_light.ico"]:
+        asset_path = os.path.join(base_dir, asset_file)
+        if os.path.exists(asset_path):
+            add_data_args.append(f"--add-data={asset_path}{sep}.")
 
     icon_name = "parma.ico" if is_windows else "parma.png"
     icon_path = os.path.join(base_dir, icon_name)
@@ -65,6 +70,7 @@ def build():
         "--hidden-import=pypdf",
         "--hidden-import=yaml",
         "--hidden-import=PIL",
+        "--hidden-import=bottle",
         "--hidden-import=desktop_api",
         "--hidden-import=core",
         entry_point,

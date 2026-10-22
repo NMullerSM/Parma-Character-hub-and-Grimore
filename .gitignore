@@ -15,6 +15,9 @@ __pycache__/
 dist/
 build/
 *.spec
+ejecutables/*/Parma/
+ejecutables/*/*.exe
+ejecutables/*/_internal/
 
 # IDE y Sistema Operativo
 .vscode/
