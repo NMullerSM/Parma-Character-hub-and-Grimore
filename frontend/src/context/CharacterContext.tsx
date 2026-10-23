@@ -125,7 +125,7 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     vignetteTimerRef.current = setTimeout(() => {
       setVignetteFlash(null);
       vignetteTimerRef.current = null;
-    }, 850);
+    }, 1950);
   }, []);
 
   const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);

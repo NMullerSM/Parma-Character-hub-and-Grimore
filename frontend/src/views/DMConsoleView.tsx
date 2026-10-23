@@ -13,11 +13,15 @@ import {
   Users,
   Check,
   Sparkles,
-  BookOpen,
   X,
   FileText,
   Tag,
   Power,
+  Dices,
+  Swords,
+  Activity,
+  Eye,
+  Wand2,
 } from "lucide-react";
 
 export const DMConsoleView: React.FC = () => {
@@ -46,8 +50,12 @@ export const DMConsoleView: React.FC = () => {
   const [isQrModalOpen, setIsQrModalOpen] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<"party" | "forge" | "ledger" | "notes">("party");
 
-  // Jugador seleccionado para inspección completa de ficha
+  // Jugador seleccionado para inspección completa de ficha 5e
   const [inspectedPlayer, setInspectedPlayer] = useState<DmSessionPlayer | null>(null);
+  const [sheetModalTab, setSheetModalTab] = useState<"general" | "skills" | "combat" | "spells" | "features">("general");
+
+  // Filtro de bitácora
+  const [logFilter, setLogFilter] = useState<"all" | "rolls" | "combat" | "session">("all");
 
   // Forja Homebrew
   const [homebrewItems, setHomebrewItems] = useState<DmHomebrewItem[]>([]);
@@ -63,6 +71,7 @@ export const DMConsoleView: React.FC = () => {
   const [hbBonusDamage, setHbBonusDamage] = useState<number>(0);
   const [hbAcBonus, setHbAcBonus] = useState<number>(0);
   const [hbDesc, setHbDesc] = useState<string>("");
+  const [hbScrollContent, setHbScrollContent] = useState<string>("");
   const [selectedRecipientToken, setSelectedRecipientToken] = useState<string>("");
 
   // Ledger y notas
@@ -71,6 +80,21 @@ export const DMConsoleView: React.FC = () => {
 
   // Jugadores seguros contra null
   const players = sessionStatus?.players || [];
+
+  // Atajo de escape universal para modales (Hick's Law: escape hatch explícito)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (inspectedPlayer) {
+          setInspectedPlayer(null);
+        } else if (isQrModalOpen) {
+          setIsQrModalOpen(false);
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [inspectedPlayer, isQrModalOpen]);
 
   useEffect(() => {
     loadStatus();
@@ -247,33 +271,36 @@ export const DMConsoleView: React.FC = () => {
         category: hbCategory,
         rarity: hbRarity,
         requires_attunement: hbAttunement,
-        damage_dice: hbDamageDice.trim() || undefined,
-        damage_type: hbDamageType.trim() || undefined,
-        secondary_dice: hbSecondaryDice.trim() || undefined,
-        secondary_type: hbSecondaryType.trim() || undefined,
-        bonus_attack: hbBonusAttack,
-        bonus_damage: hbBonusDamage,
-        ac_bonus: hbAcBonus,
+        damage_dice: hbCategory === "weapon" ? (hbDamageDice.trim() || undefined) : undefined,
+        damage_type: hbCategory === "weapon" ? (hbDamageType.trim() || undefined) : undefined,
+        secondary_dice: hbCategory === "weapon" ? (hbSecondaryDice.trim() || undefined) : undefined,
+        secondary_type: hbCategory === "weapon" ? (hbSecondaryType.trim() || undefined) : undefined,
+        bonus_attack: hbCategory === "weapon" ? hbBonusAttack : 0,
+        bonus_damage: hbCategory === "weapon" ? hbBonusDamage : 0,
+        ac_bonus: hbCategory === "armor" ? hbAcBonus : 0,
         description: hbDesc.trim(),
+        scroll_content: hbCategory === "scroll" ? hbScrollContent.trim() : undefined,
       };
       await api.dmSaveHomebrewItem(newItem);
       showToast(`Objeto "${newItem.name}" forjado y guardado`, "success");
       setHbName("");
       setHbDesc("");
+      setHbScrollContent("");
       await loadHomebrewItems();
     } catch (e) {
       showToast("Error al guardar objeto homebrew", "warn");
     }
   };
 
-  const handleGiftItem = async (item: DmHomebrewItem) => {
-    if (!selectedRecipientToken) {
+  const handleGiftItem = async (item: DmHomebrewItem, targetToken?: string) => {
+    const recipientToken = targetToken || selectedRecipientToken;
+    if (!recipientToken) {
       showToast("Selecciona a qué jugador deseas entregar el objeto", "warn");
       return;
     }
-    const targetPlayer = players.find((p) => p.player_token === selectedRecipientToken);
+    const targetPlayer = players.find((p) => p.player_token === recipientToken);
     try {
-      await api.dmGiftItem(selectedRecipientToken, item);
+      await api.dmGiftItem(recipientToken, item);
       showToast(`¡"${item.name}" entregado a ${targetPlayer?.character_name || "jugador"}!`, "success");
       await loadStatus();
     } catch (e) {
@@ -515,7 +542,7 @@ export const DMConsoleView: React.FC = () => {
                 )}
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3.5">
                 {players.map((p) => {
                   const hpPct = Math.max(0, Math.min(100, (p.hp_current / (p.hp_max || 1)) * 100));
                   const isDead = p.status === "DEAD";
@@ -530,60 +557,61 @@ export const DMConsoleView: React.FC = () => {
                   return (
                     <div
                       key={p.player_token}
-                      className={`p-4 rounded-xl border bg-card/70 flex flex-col justify-between space-y-3 transition-all ${
+                      className={`p-3.5 rounded-xl border bg-card/75 hover:bg-card/90 flex flex-col justify-between space-y-2.5 transition-all shadow-xs ${
                         isDead
                           ? "border-red-900/50 opacity-60"
                           : isUnconscious
-                          ? "border-crimson shadow-[0_0_15px_rgba(230,57,70,0.2)]"
-                          : "border-border-iron hover:border-gold/60"
+                          ? "border-crimson shadow-[0_0_12px_rgba(230,57,70,0.25)]"
+                          : "border-border-iron hover:border-gold/50"
                       }`}
                     >
-                      {/* Cabecera del Jugador con Avatar */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2.5">
+                      {/* Cabecera compacta: Avatar, Nombre, Clase y CA */}
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2.5 min-w-0">
                           {portraitUrl ? (
                             <img
                               src={portraitUrl}
                               alt={p.character_name}
-                              className="w-9 h-9 rounded-full object-cover border border-gold/40 shadow-xs shrink-0"
+                              className="w-10 h-10 rounded-full object-cover border border-gold/40 shadow-xs shrink-0"
                             />
                           ) : (
-                            <div className="w-9 h-9 rounded-full bg-surface border border-border-iron flex items-center justify-center font-bold text-xs text-gold shrink-0">
+                            <div className="w-10 h-10 rounded-full bg-surface border border-border-iron flex items-center justify-center font-bold text-xs text-gold shrink-0">
                               {p.character_name.slice(0, 2).toUpperCase()}
                             </div>
                           )}
-                          <div>
-                            <h4 className="font-bold text-sm text-main flex items-center gap-1.5">
-                              <span>{p.character_name}</span>
-                              {p.is_online ? (
-                                <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" title="En línea" />
-                              ) : (
-                                <span className="w-2 h-2 rounded-full bg-muted inline-block" title="Desconectado" />
-                              )}
+                          <div className="min-w-0">
+                            <h4 className="font-bold text-sm text-main truncate flex items-center gap-1.5">
+                              <span className="truncate">{p.character_name}</span>
+                              <span
+                                className={`w-2 h-2 rounded-full shrink-0 ${p.is_online ? "bg-emerald-400" : "bg-muted"}`}
+                                title={p.is_online ? "Conectado en vivo" : "Desconectado"}
+                              />
                             </h4>
-                            <p className="text-xs text-muted">
+                            <p className="text-[11px] text-muted truncate">
                               Nvl {p.character_level} {p.character_class || "Aventurero"}
                             </p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-1 bg-surface px-2 py-1 rounded border border-border-iron text-xs font-stat">
+
+                        {/* CA Pill */}
+                        <div className="flex items-center gap-1 bg-surface px-2 py-1 rounded-md border border-border-iron text-xs font-stat shrink-0" title="Clase de Armadura">
                           <Shield className="w-3.5 h-3.5 text-gold" />
-                          <span className="font-bold">{p.ac || 10} CA</span>
+                          <span className="font-bold text-main">{p.ac || 10}</span>
                         </div>
                       </div>
 
-                      {/* Barra de Vida Interactiva */}
-                      <div className="space-y-1.5">
+                      {/* Barra de Vida y Valores Numéricos */}
+                      <div className="space-y-1">
                         <div className="flex items-center justify-between text-xs font-stat">
-                          <span className="flex items-center gap-1 text-muted">
-                            <Heart className={`w-3.5 h-3.5 ${isUnconscious ? "text-crimson" : "text-emerald-500"}`} />
+                          <span className="flex items-center gap-1 text-[11px] text-muted">
+                            <Heart className={`w-3 h-3 ${isUnconscious ? "text-crimson" : "text-emerald-500"}`} />
                             <span>Puntos de Golpe</span>
                           </span>
-                          <span className="font-bold text-main">
+                          <span className="font-bold text-main text-xs">
                             {p.hp_current} / {p.hp_max}
                           </span>
                         </div>
-                        <div className="w-full h-2.5 rounded-full bg-canvas border border-border-iron overflow-hidden">
+                        <div className="w-full h-2 rounded-full bg-canvas border border-border-iron overflow-hidden">
                           <div
                             className={`h-full transition-all duration-300 ${
                               isUnconscious
@@ -597,55 +625,46 @@ export const DMConsoleView: React.FC = () => {
                         </div>
                       </div>
 
-                      {/* Controles de Daño y Curación Inmediatos */}
-                      <div className="space-y-2 pt-2 border-t border-border-iron/50">
-                        <div className="flex items-center justify-between text-[11px] text-muted">
-                          <span>Acción Rápida de DM:</span>
-                          {isUnconscious && (
-                            <span className="text-crimson font-bold uppercase tracking-wider text-[10px]">
-                              Inconsciente
-                            </span>
-                          )}
-                        </div>
-                        <div className="grid grid-cols-4 gap-1.5">
-                          <button
-                            onClick={() => handleHpChange(p.player_token, -5, p.character_name)}
-                            className="py-1 rounded bg-crimson/15 hover:bg-crimson text-crimson hover:text-white border border-crimson text-xs font-bold transition-colors"
-                            title="Infligir 5 de daño"
-                          >
-                            -5
-                          </button>
-                          <button
-                            onClick={() => handleHpChange(p.player_token, -1, p.character_name)}
-                            className="py-1 rounded bg-crimson/10 hover:bg-crimson text-crimson hover:text-white border border-crimson/60 text-xs font-bold transition-colors"
-                            title="Infligir 1 de daño"
-                          >
-                            -1
-                          </button>
-                          <button
-                            onClick={() => handleHpChange(p.player_token, 1, p.character_name)}
-                            className="py-1 rounded bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-white border border-emerald-500/60 text-xs font-bold transition-colors"
-                            title="Curar 1 punto"
-                          >
-                            +1
-                          </button>
-                          <button
-                            onClick={() => handleHpChange(p.player_token, 5, p.character_name)}
-                            className="py-1 rounded bg-emerald-500/15 hover:bg-emerald-500 text-emerald-400 hover:text-white border border-emerald-500 text-xs font-bold transition-colors"
-                            title="Curar 5 puntos"
-                          >
-                            +5
-                          </button>
-                        </div>
+                      {/* Botones de Acción Rápida de Daño / Curación */}
+                      <div className="grid grid-cols-4 gap-1 pt-1">
+                        <button
+                          onClick={() => handleHpChange(p.player_token, -5, p.character_name)}
+                          className="py-1 rounded bg-crimson/15 hover:bg-crimson text-crimson hover:text-white border border-crimson/70 text-xs font-bold transition-colors"
+                          title="Infligir 5 de daño"
+                        >
+                          -5
+                        </button>
+                        <button
+                          onClick={() => handleHpChange(p.player_token, -1, p.character_name)}
+                          className="py-1 rounded bg-crimson/10 hover:bg-crimson text-crimson hover:text-white border border-crimson/50 text-xs font-bold transition-colors"
+                          title="Infligir 1 de daño"
+                        >
+                          -1
+                        </button>
+                        <button
+                          onClick={() => handleHpChange(p.player_token, 1, p.character_name)}
+                          className="py-1 rounded bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-white border border-emerald-500/50 text-xs font-bold transition-colors"
+                          title="Curar 1 punto"
+                        >
+                          +1
+                        </button>
+                        <button
+                          onClick={() => handleHpChange(p.player_token, 5, p.character_name)}
+                          className="py-1 rounded bg-emerald-500/15 hover:bg-emerald-500 text-emerald-400 hover:text-white border border-emerald-500/70 text-xs font-bold transition-colors"
+                          title="Curar 5 puntos"
+                        >
+                          +5
+                        </button>
                       </div>
 
-                      {/* Botón de Auditoría / Ver Hoja Completa */}
+                      {/* Botón Hick's Law: Ver Ficha Completa */}
                       <button
                         onClick={() => setInspectedPlayer(p)}
-                        className="w-full mt-2 py-1 rounded bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-medium text-muted hover:text-main flex items-center justify-center gap-1.5 transition-colors"
+                        className="w-full py-1.5 rounded-lg bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-semibold text-main hover:text-gold flex items-center justify-center gap-1.5 transition-colors shadow-2xs"
+                        title="Abrir hoja de personaje completa del jugador"
                       >
-                        <BookOpen className="w-3.5 h-3.5 text-gold" />
-                        <span>Concordar / Ver Ficha</span>
+                        <Eye className="w-3.5 h-3.5 text-gold" />
+                        <span>Ver Ficha</span>
                       </button>
                     </div>
                   );
@@ -694,7 +713,7 @@ export const DMConsoleView: React.FC = () => {
                       <option value="wondrous">Objeto Maravilloso</option>
                       <option value="potion">Poción</option>
                       <option value="ring">Anillo</option>
-                      <option value="scroll">Pergamino</option>
+                      <option value="scroll">📜 Pergamino / Documento</option>
                       <option value="wand">Vara / Varita</option>
                     </select>
                   </div>
@@ -718,6 +737,7 @@ export const DMConsoleView: React.FC = () => {
                   </div>
                 </div>
 
+                {/* Campos específicos según categoría */}
                 {hbCategory === "weapon" && (
                   <div className="grid grid-cols-2 gap-2">
                     <div>
@@ -771,41 +791,59 @@ export const DMConsoleView: React.FC = () => {
                   </div>
                 )}
 
-                <div className="grid grid-cols-3 gap-2">
-                  <div>
-                    <label className="block text-[10px] font-semibold uppercase text-muted mb-1">
-                      Bono Ataque
+                {hbCategory === "scroll" && (
+                  <div className="space-y-1">
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-gold flex items-center gap-1.5 mb-1">
+                      <Scroll className="w-3.5 h-3.5" />
+                      <span>Contenido del Pergamino / Carta</span>
                     </label>
-                    <input
-                      type="number"
-                      value={hbBonusAttack}
-                      onChange={(e) => setHbBonusAttack(parseInt(e.target.value, 10) || 0)}
-                      className="w-full bg-input text-main border border-border-iron rounded px-2 py-1 text-xs text-center focus:border-gold outline-none"
+                    <textarea
+                      rows={5}
+                      value={hbScrollContent}
+                      onChange={(e) => setHbScrollContent(e.target.value)}
+                      placeholder="Escribe el texto íntegro que el jugador podrá leer en su ficha (cartas, acertijos, decretos reales, mapas textuales)..."
+                      className="w-full bg-input text-main border border-border-iron rounded-lg p-2.5 text-xs focus:border-gold outline-none resize-none font-serif leading-relaxed"
                     />
                   </div>
-                  <div>
-                    <label className="block text-[10px] font-semibold uppercase text-muted mb-1">
-                      Bono Daño
-                    </label>
-                    <input
-                      type="number"
-                      value={hbBonusDamage}
-                      onChange={(e) => setHbBonusDamage(parseInt(e.target.value, 10) || 0)}
-                      className="w-full bg-input text-main border border-border-iron rounded px-2 py-1 text-xs text-center focus:border-gold outline-none"
-                    />
+                )}
+
+                {hbCategory !== "scroll" && (
+                  <div className="grid grid-cols-3 gap-2">
+                    <div>
+                      <label className="block text-[10px] font-semibold uppercase text-muted mb-1">
+                        Bono Ataque
+                      </label>
+                      <input
+                        type="number"
+                        value={hbBonusAttack}
+                        onChange={(e) => setHbBonusAttack(parseInt(e.target.value, 10) || 0)}
+                        className="w-full bg-input text-main border border-border-iron rounded px-2 py-1 text-xs text-center focus:border-gold outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-semibold uppercase text-muted mb-1">
+                        Bono Daño
+                      </label>
+                      <input
+                        type="number"
+                        value={hbBonusDamage}
+                        onChange={(e) => setHbBonusDamage(parseInt(e.target.value, 10) || 0)}
+                        className="w-full bg-input text-main border border-border-iron rounded px-2 py-1 text-xs text-center focus:border-gold outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-semibold uppercase text-muted mb-1">
+                        Bono CA
+                      </label>
+                      <input
+                        type="number"
+                        value={hbAcBonus}
+                        onChange={(e) => setHbAcBonus(parseInt(e.target.value, 10) || 0)}
+                        className="w-full bg-input text-main border border-border-iron rounded px-2 py-1 text-xs text-center focus:border-gold outline-none"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-[10px] font-semibold uppercase text-muted mb-1">
-                      Bono CA
-                    </label>
-                    <input
-                      type="number"
-                      value={hbAcBonus}
-                      onChange={(e) => setHbAcBonus(parseInt(e.target.value, 10) || 0)}
-                      className="w-full bg-input text-main border border-border-iron rounded px-2 py-1 text-xs text-center focus:border-gold outline-none"
-                    />
-                  </div>
-                </div>
+                )}
 
                 <label className="flex items-center gap-2 cursor-pointer text-xs text-muted">
                   <input
@@ -819,13 +857,13 @@ export const DMConsoleView: React.FC = () => {
 
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
-                    Descripción & Propiedades Mágicas
+                    Descripción & Propiedades
                   </label>
                   <textarea
-                    rows={3}
+                    rows={2}
                     value={hbDesc}
                     onChange={(e) => setHbDesc(e.target.value)}
-                    placeholder="Efectos mágicos, activación, daño elemental adicional..."
+                    placeholder="Efectos mágicos, activación, notas breves..."
                     className="w-full bg-input text-main border border-border-iron rounded px-3 py-1.5 text-xs focus:border-gold outline-none resize-none"
                   />
                 </div>
@@ -839,7 +877,7 @@ export const DMConsoleView: React.FC = () => {
               </div>
             </div>
 
-            {/* Catálogo de Objetos Homebrew Guardados & Entrega en Vivo */}
+            {/* Catálogo de Objetos Homebrew Guardados & Entrega Directa */}
             <div className="lg:col-span-2 space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="font-display font-semibold text-base text-main">
@@ -848,13 +886,13 @@ export const DMConsoleView: React.FC = () => {
 
                 {players.length > 0 && (
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-muted">Destinatario:</span>
+                    <span className="text-xs text-muted">Destinatario por Defecto:</span>
                     <select
                       value={selectedRecipientToken}
                       onChange={(e) => setSelectedRecipientToken(e.target.value)}
                       className="bg-card text-main border border-border-iron rounded px-2.5 py-1 text-xs focus:border-gold outline-none"
                     >
-                      <option value="">Selecciona un jugador</option>
+                      <option value="">Selecciona un jugador...</option>
                       {players.map((p) => (
                         <option key={p.player_token} value={p.player_token}>
                           {p.character_name}
@@ -867,55 +905,69 @@ export const DMConsoleView: React.FC = () => {
 
               {homebrewItems.length === 0 ? (
                 <div className="p-8 text-center border border-dashed border-border-iron rounded-xl text-muted text-xs">
-                  Aún no has creado objetos Homebrew. Usa el formulario para forjar armas, armaduras o reliquias mágicas.
+                  Aún no has creado objetos Homebrew. Usa el formulario para forjar armas, armaduras, pergaminos o reliquias mágicas.
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {homebrewItems.map((item) => (
                     <div
                       key={item.id}
-                      className="p-3.5 rounded-xl border border-border-iron bg-card/70 flex flex-col justify-between space-y-2 hover:border-gold/50 transition-colors"
+                      className="p-3.5 rounded-xl border border-border-iron bg-card/70 flex flex-col justify-between space-y-2.5 hover:border-gold/50 transition-colors shadow-2xs"
                     >
-                      <div>
-                        <div className="flex items-center justify-between">
-                          <h4 className="font-bold text-sm text-gold">{item.name}</h4>
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-surface border border-border-iron text-muted capitalize">
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between gap-1">
+                          <h4 className="font-bold text-sm text-gold truncate flex items-center gap-1.5">
+                            {item.category === "scroll" ? <Scroll className="w-3.5 h-3.5 shrink-0 text-amber-400" /> : <Sparkles className="w-3.5 h-3.5 shrink-0 text-gold" />}
+                            <span className="truncate">{item.name}</span>
+                          </h4>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-surface border border-border-iron text-muted capitalize shrink-0">
                             {item.rarity}
                           </span>
                         </div>
-                        <p className="text-xs text-muted capitalize mt-0.5">{item.category}</p>
+                        <p className="text-[11px] text-muted capitalize">
+                          {item.category === "scroll" ? "Pergamino / Documento" : item.category}
+                        </p>
                         {item.damage_dice && (
-                          <div className="mt-1 font-stat text-xs font-semibold text-main">
+                          <div className="font-stat text-xs font-semibold text-main">
                             Daño: {item.damage_dice} {item.damage_type}
                           </div>
                         )}
                         {item.description && (
-                          <p className="text-xs text-muted/90 mt-1.5 line-clamp-2">{item.description}</p>
+                          <p className="text-xs text-muted/90 line-clamp-2">{item.description}</p>
+                        )}
+                        {item.category === "scroll" && item.scroll_content && (
+                          <div className="p-2 bg-surface/70 rounded border border-border-iron/80 text-[11px] text-main font-serif italic line-clamp-3">
+                            "{item.scroll_content}"
+                          </div>
                         )}
                       </div>
 
-                      <div className="pt-2 border-t border-border-iron/40 flex items-center justify-between gap-2">
-                        <button
-                          onClick={() => handleGiftItem(item)}
-                          disabled={!selectedRecipientToken}
-                          className="flex-1 py-1 px-2.5 rounded bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-semibold text-main disabled:opacity-30 flex items-center justify-center gap-1.5 transition-colors"
-                          title="Entregar al jugador seleccionado"
-                        >
-                          <Gift className="w-3.5 h-3.5 text-gold" />
-                          <span>Entregar a Jugador</span>
-                        </button>
-                        <button
-                          onClick={async () => {
-                            if (item.id && window.confirm(`¿Eliminar ${item.name}?`)) {
-                              await api.dmDeleteHomebrewItem(item.id);
-                              await loadHomebrewItems();
-                            }
-                          }}
-                          className="p-1 rounded text-muted hover:text-crimson"
-                          title="Eliminar de la forja"
-                        >
-                          <X className="w-3.5 h-3.5" />
-                        </button>
+                      <div className="pt-2 border-t border-border-iron/40 space-y-2">
+                        <div className="flex items-center gap-1.5">
+                          {players.length > 0 && (
+                            <button
+                              onClick={() => handleGiftItem(item)}
+                              disabled={!selectedRecipientToken}
+                              className="flex-1 py-1.5 px-2.5 rounded bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-semibold text-main disabled:opacity-30 flex items-center justify-center gap-1.5 transition-colors shadow-2xs"
+                              title={selectedRecipientToken ? "Entregar al jugador seleccionado por defecto" : "Selecciona un jugador en el desplegable superior"}
+                            >
+                              <Gift className="w-3.5 h-3.5 text-gold" />
+                              <span>Entregar</span>
+                            </button>
+                          )}
+                          <button
+                            onClick={async () => {
+                              if (item.id && window.confirm(`¿Eliminar ${item.name}?`)) {
+                                await api.dmDeleteHomebrewItem(item.id);
+                                await loadHomebrewItems();
+                              }
+                            }}
+                            className="p-1.5 rounded text-muted hover:text-crimson hover:bg-surface border border-transparent hover:border-crimson/30 transition-colors"
+                            title="Eliminar de la forja"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -926,46 +978,238 @@ export const DMConsoleView: React.FC = () => {
         )}
 
         {/* PESTAÑA 3: LEDGER DE TIRADAS & BITÁCORA */}
-        {activeTab === "ledger" && (
-          <div className="space-y-3 max-w-4xl">
-            <h3 className="font-display font-semibold text-base text-main">
-              Historial de Tiradas y Eventos en Vivo
-            </h3>
-            {eventLogs.length === 0 ? (
-              <div className="p-8 text-center border border-dashed border-border-iron rounded-xl text-muted text-xs">
-                No hay tiradas ni eventos registrados en esta sesión aún.
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {eventLogs.map((log) => (
-                  <div
-                    key={log.id}
-                    className="p-3 rounded-lg border border-border-iron bg-card/60 flex items-center justify-between text-xs"
+        {activeTab === "ledger" && (() => {
+          const rollLogsCount = eventLogs.filter((l) => l.event_type === "ROLL").length;
+          const combatLogsCount = eventLogs.filter((l) => l.event_type === "DAMAGE" || l.event_type === "HEAL").length;
+          const sessionLogsCount = eventLogs.filter((l) => l.event_type !== "ROLL" && l.event_type !== "DAMAGE" && l.event_type !== "HEAL").length;
+
+          const filteredLogs = eventLogs.filter((log) => {
+            if (logFilter === "rolls") return log.event_type === "ROLL";
+            if (logFilter === "combat") return log.event_type === "DAMAGE" || log.event_type === "HEAL";
+            if (logFilter === "session") return log.event_type !== "ROLL" && log.event_type !== "DAMAGE" && log.event_type !== "HEAL";
+            return true;
+          });
+
+          return (
+            <div className="space-y-4 max-w-4xl">
+              {/* Encabezado y Barra de Filtros de Bitácora */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-border-iron/60">
+                <div>
+                  <h3 className="font-display font-semibold text-base text-main">
+                    Bitácora de Sesión y Tiradas en Vivo
+                  </h3>
+                  <p className="text-xs text-muted">
+                    Historial sincronizado en tiempo real de todos los participantes.
+                  </p>
+                </div>
+
+                {/* Filtros tipo Tabs para evitar saturación visual */}
+                <div className="flex items-center gap-1 bg-surface p-1 rounded-xl border border-border-iron text-xs">
+                  <button
+                    onClick={() => setLogFilter("all")}
+                    className={`px-3 py-1 rounded-lg font-semibold transition-all ${
+                      logFilter === "all"
+                        ? "bg-gold text-canvas shadow-xs font-bold"
+                        : "text-muted hover:text-main"
+                    }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="font-stat text-[11px] text-muted">{log.timestamp}</span>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-surface border border-border-iron text-gold">
-                        {log.event_type}
-                      </span>
-                      <span className="font-semibold text-main">{log.actor_name}:</span>
-                      <span className="text-muted">
-                        {log.event_type === "ROLL"
-                          ? `Total: ${log.details?.total || log.details?.result || "Tirada"} (${log.details?.label || "Dado"})`
-                          : log.event_type === "DAMAGE"
-                          ? `Infligió ${log.details?.delta} daño`
-                          : log.event_type === "HEAL"
-                          ? `Curó ${log.details?.delta} vida`
-                          : log.event_type === "ITEM_GIFT"
-                          ? `Entregó: ${log.details?.item_name}`
-                          : "Evento de sesión"}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                    Todas ({eventLogs.length})
+                  </button>
+                  <button
+                    onClick={() => setLogFilter("rolls")}
+                    className={`px-3 py-1 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
+                      logFilter === "rolls"
+                        ? "bg-gold text-canvas shadow-xs font-bold"
+                        : "text-muted hover:text-main"
+                    }`}
+                  >
+                    <Dices className="w-3.5 h-3.5" />
+                    <span>Tiradas ({rollLogsCount})</span>
+                  </button>
+                  <button
+                    onClick={() => setLogFilter("combat")}
+                    className={`px-3 py-1 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
+                      logFilter === "combat"
+                        ? "bg-gold text-canvas shadow-xs font-bold"
+                        : "text-muted hover:text-main"
+                    }`}
+                  >
+                    <Swords className="w-3.5 h-3.5" />
+                    <span>Combate ({combatLogsCount})</span>
+                  </button>
+                  <button
+                    onClick={() => setLogFilter("session")}
+                    className={`px-3 py-1 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
+                      logFilter === "session"
+                        ? "bg-gold text-canvas shadow-xs font-bold"
+                        : "text-muted hover:text-main"
+                    }`}
+                  >
+                    <Activity className="w-3.5 h-3.5" />
+                    <span>Sesión ({sessionLogsCount})</span>
+                  </button>
+                </div>
               </div>
-            )}
-          </div>
-        )}
+
+              {filteredLogs.length === 0 ? (
+                <div className="p-10 text-center border border-dashed border-border-iron rounded-xl text-muted text-xs space-y-1">
+                  <p className="font-semibold text-main">No hay eventos en esta categoría</p>
+                  <p className="text-[11px]">
+                    {logFilter === "rolls"
+                      ? "Aún no se han realizado tiradas de dados en la mesa."
+                      : logFilter === "combat"
+                      ? "No hay registros de daño o curación todavía."
+                      : "No hay eventos registrados en esta categoría aún."}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {filteredLogs.map((log) => {
+                    const isRoll = log.event_type === "ROLL";
+                    const isDamage = log.event_type === "DAMAGE";
+                    const isHeal = log.event_type === "HEAL";
+
+                    if (isRoll) {
+                      return (
+                        <div
+                          key={log.id}
+                          className="p-3 rounded-xl border border-border-iron bg-card/70 hover:bg-card/90 flex flex-wrap items-center justify-between gap-3 text-xs transition-colors shadow-2xs"
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div className="w-8 h-8 rounded-lg bg-gold/10 border border-gold/40 flex items-center justify-center text-gold shrink-0">
+                              <Dices className="w-4 h-4" />
+                            </div>
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2">
+                                <span className="font-bold text-main">{log.actor_name}</span>
+                                <span className="px-1.5 py-0.5 rounded text-[10px] font-mono text-muted bg-surface border border-border-iron/80">
+                                  {log.details?.formula || "d20"}
+                                </span>
+                                <span className="text-[11px] text-muted truncate">
+                                  {log.details?.label || "Tirada"}
+                                </span>
+                              </div>
+                              <div className="text-[10px] text-muted font-stat mt-0.5">
+                                {log.timestamp}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 shrink-0">
+                            {log.details?.is_crit && (
+                              <span className="px-2 py-0.5 rounded-full bg-gold/20 border border-gold text-gold font-bold text-[10px] animate-pulse">
+                                ¡CRÍTICO!
+                              </span>
+                            )}
+                            {log.details?.is_fumble && (
+                              <span className="px-2 py-0.5 rounded-full bg-crimson/20 border border-crimson text-crimson font-bold text-[10px]">
+                                PIFIA
+                              </span>
+                            )}
+                            <div className="px-3 py-1 rounded-lg bg-surface border border-border-iron font-stat font-bold text-sm text-gold">
+                              Total: {log.details?.total ?? log.details?.result ?? "—"}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    if (isDamage) {
+                      return (
+                        <div
+                          key={log.id}
+                          className="p-3 rounded-xl border border-crimson/30 bg-crimson/5 hover:bg-crimson/10 flex flex-wrap items-center justify-between gap-3 text-xs transition-colors shadow-2xs"
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div className="w-8 h-8 rounded-lg bg-crimson/15 border border-crimson/40 flex items-center justify-center text-crimson shrink-0">
+                              <Swords className="w-4 h-4" />
+                            </div>
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2">
+                                <span className="font-bold text-main">{log.actor_name}</span>
+                                <span className="text-muted">infligió daño a</span>
+                                <span className="font-bold text-crimson">{log.details?.target_name || log.target_name || "Objetivo"}</span>
+                              </div>
+                              <div className="text-[10px] text-muted font-stat mt-0.5">
+                                {log.timestamp}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="px-2.5 py-1 rounded-lg bg-crimson/20 border border-crimson text-crimson font-bold font-stat text-xs shrink-0">
+                            -{log.details?.delta} HP
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    if (isHeal) {
+                      return (
+                        <div
+                          key={log.id}
+                          className="p-3 rounded-xl border border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 flex flex-wrap items-center justify-between gap-3 text-xs transition-colors shadow-2xs"
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div className="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0">
+                              <Heart className="w-4 h-4" />
+                            </div>
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2">
+                                <span className="font-bold text-main">{log.actor_name}</span>
+                                <span className="text-muted">recibió curación</span>
+                                {log.details?.target_name && (
+                                  <span className="font-bold text-emerald-400">({log.details.target_name})</span>
+                                )}
+                              </div>
+                              <div className="text-[10px] text-muted font-stat mt-0.5">
+                                {log.timestamp}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="px-2.5 py-1 rounded-lg bg-emerald-500/20 border border-emerald-500 text-emerald-400 font-bold font-stat text-xs shrink-0">
+                            +{log.details?.delta} HP
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div
+                        key={log.id}
+                        className="p-3 rounded-xl border border-border-iron bg-card/60 flex flex-wrap items-center justify-between gap-3 text-xs shadow-2xs"
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-8 h-8 rounded-lg bg-surface border border-border-iron flex items-center justify-center text-gold shrink-0">
+                            <Activity className="w-4 h-4" />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-main">{log.actor_name}</span>
+                              <span className="text-muted">
+                                {log.event_type === "ITEM_GIFT"
+                                  ? `Entregó "${log.details?.item_name}" a ${log.details?.recipient_name || "jugador"}`
+                                  : log.event_type === "PLAYER_JOIN"
+                                  ? "Se unió a la sesión de juego"
+                                  : "Evento registrado en sesión"}
+                              </span>
+                            </div>
+                            <div className="text-[10px] text-muted font-stat mt-0.5">
+                              {log.timestamp}
+                            </div>
+                          </div>
+                        </div>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-surface border border-border-iron text-muted">
+                          {log.event_type}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })()}
 
         {/* PESTAÑA 4: NOTAS DEL DM (Guardadas por session_id) */}
         {activeTab === "notes" && (
@@ -1042,103 +1286,563 @@ export const DMConsoleView: React.FC = () => {
         </div>
       )}
 
-      {/* MODAL DE AUDITORÍA / CONCORDANCIA DE FICHA DEL JUGADOR */}
-      {inspectedPlayer && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs select-none">
-          <div className="relative bg-surface border border-border-iron rounded-2xl p-6 max-w-2xl w-full flex flex-col max-h-[85vh] space-y-4 shadow-2xl overflow-hidden">
-            <div className="flex items-center justify-between border-b border-border-iron pb-3">
-              <div className="flex items-center gap-3">
-                {(() => {
-                  let pImg: string | null = null;
-                  try {
-                    if (inspectedPlayer.data_json) {
-                      const d = JSON.parse(inspectedPlayer.data_json);
-                      pImg = d.portrait_base64 || d.avatar_url || null;
-                    }
-                  } catch (_) {}
-                  return pImg ? (
+      {/* MODAL DE FICHA COMPLETA 5E DEL JUGADOR */}
+      {inspectedPlayer && (() => {
+        let charData: any = {};
+        try {
+          if (inspectedPlayer.data_json) {
+            charData = JSON.parse(inspectedPlayer.data_json);
+          }
+        } catch (_) {}
+
+        const portraitUrl = charData?.portrait_base64 || charData?.avatar_url || null;
+        const profBonus = Number(charData?.proficiency_bonus) || 2;
+
+        const STANDARD_SKILLS: Array<{ id: string; name: string; ability: "str" | "dex" | "con" | "int" | "wis" | "cha" }> = [
+          { id: "athletics", name: "Atletismo", ability: "str" },
+          { id: "acrobatics", name: "Acrobacias", ability: "dex" },
+          { id: "sleight_of_hand", name: "Juego de Manos", ability: "dex" },
+          { id: "stealth", name: "Sigilo", ability: "dex" },
+          { id: "arcana", name: "Arcanos", ability: "int" },
+          { id: "history", name: "Historia", ability: "int" },
+          { id: "investigation", name: "Investigación", ability: "int" },
+          { id: "nature", name: "Naturaleza", ability: "int" },
+          { id: "religion", name: "Religión", ability: "int" },
+          { id: "animal_handling", name: "Trato con Animales", ability: "wis" },
+          { id: "insight", name: "Perspicacia", ability: "wis" },
+          { id: "medicine", name: "Medicina", ability: "wis" },
+          { id: "perception", name: "Percepción", ability: "wis" },
+          { id: "survival", name: "Supervivencia", ability: "wis" },
+          { id: "deception", name: "Engaño", ability: "cha" },
+          { id: "intimidation", name: "Intimidación", ability: "cha" },
+          { id: "performance", name: "Interpretación", ability: "cha" },
+          { id: "persuasion", name: "Persuasión", ability: "cha" },
+        ];
+
+        const ABILITY_KEYS: Array<{ key: "str" | "dex" | "con" | "int" | "wis" | "cha"; short: string; full: string }> = [
+          { key: "str", short: "FUE", full: "Fuerza" },
+          { key: "dex", short: "DES", full: "Destreza" },
+          { key: "con", short: "CON", full: "Constitución" },
+          { key: "int", short: "INT", full: "Inteligencia" },
+          { key: "wis", short: "SAB", full: "Sabiduría" },
+          { key: "cha", short: "CAR", full: "Carisma" },
+        ];
+
+        const getAbilityScore = (ab: string): number => {
+          const val = charData?.abilities?.[ab] || charData?.[ab];
+          if (typeof val === "number") return val;
+          if (val && typeof val.override === "number" && val.override > 0) return val.override;
+          if (val && typeof val.base === "number") return val.base;
+          return 10;
+        };
+
+        const getAbilityMod = (score: number): number => {
+          return Math.floor((score - 10) / 2);
+        };
+
+        const formatModifier = (mod: number): string => {
+          return mod >= 0 ? `+${mod}` : `${mod}`;
+        };
+
+        const getSaveData = (abKey: string) => {
+          const ab = charData?.abilities?.[abKey] || charData?.[abKey];
+          const isProf = Boolean(ab?.proficient);
+          const score = getAbilityScore(abKey);
+          const mod = getAbilityMod(score);
+          const extra = ab?.save_bonus || 0;
+          const total = mod + (isProf ? profBonus : 0) + extra;
+          return { isProf, bonus: total, bonusStr: formatModifier(total) };
+        };
+
+        const getSkillData = (skillId: string, abilityKey: string) => {
+          const sk = charData?.skills?.[skillId];
+          const isProf = Boolean(sk?.proficient);
+          const isExpert = Boolean(sk?.expertise);
+          const abScore = getAbilityScore(abilityKey);
+          const baseMod = getAbilityMod(abScore);
+          let total = baseMod;
+          if (isExpert) total += profBonus * 2;
+          else if (isProf) total += profBonus;
+          if (sk?.bonus) total += sk.bonus;
+          return { isProf, isExpert, bonus: total, bonusStr: formatModifier(total) };
+        };
+
+        const weaponActions = charData?.weapon_actions || [];
+        const spells = charData?.spells || [];
+        const features = charData?.features || [];
+        const inventory = charData?.inventory || [];
+        const spellSlotsTotal = charData?.spell_slots_total || {};
+        const spellSlotsUsed = charData?.spell_slots_used || {};
+
+        return (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-3 md:p-6 bg-black/80 backdrop-blur-xs select-none"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setInspectedPlayer(null);
+            }}
+          >
+            <div className="relative bg-surface border border-border-iron rounded-2xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+              {/* Cabecera de la Ficha Completa */}
+              <div className="p-4 md:p-5 border-b border-border-iron bg-card/50 flex items-start justify-between gap-4">
+                <div className="flex items-center gap-3.5 min-w-0">
+                  {portraitUrl ? (
                     <img
-                      src={pImg}
+                      src={portraitUrl}
                       alt={inspectedPlayer.character_name}
-                      className="w-12 h-12 rounded-full object-cover border border-gold shadow-sm shrink-0"
+                      className="w-14 h-14 rounded-full object-cover border-2 border-gold shadow-md shrink-0"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-surface border border-border-iron flex items-center justify-center font-bold text-sm text-gold shrink-0">
+                    <div className="w-14 h-14 rounded-full bg-surface border-2 border-border-iron flex items-center justify-center font-bold text-base text-gold shrink-0">
                       {inspectedPlayer.character_name.slice(0, 2).toUpperCase()}
                     </div>
-                  );
-                })()}
-                <div>
-                  <h3 className="font-display font-bold text-lg text-gold">
-                    Ficha de {inspectedPlayer.character_name}
-                  </h3>
-                  <p className="text-xs text-muted">
-                    Nivel {inspectedPlayer.character_level} {inspectedPlayer.character_class} • {inspectedPlayer.ac} CA • {inspectedPlayer.hp_current}/{inspectedPlayer.hp_max} HP
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => setInspectedPlayer(null)}
-                className="p-1 text-muted hover:text-main rounded hover:bg-card transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+                  )}
 
-            <div className="flex-1 overflow-y-auto space-y-3 p-2 text-xs">
-              {inspectedPlayer.data_json ? (
-                <div className="space-y-3 font-mono">
-                  {(() => {
-                    try {
-                      const data = JSON.parse(inspectedPlayer.data_json);
-                      return (
-                        <div className="space-y-3">
-                          <div className="grid grid-cols-6 gap-2 text-center">
-                            {["str", "dex", "con", "int", "wis", "cha"].map((ab) => (
-                              <div key={ab} className="p-2 rounded bg-card border border-border-iron">
-                                <div className="uppercase text-[10px] text-muted">{ab}</div>
-                                <div className="text-sm font-bold text-main">{data[ab]?.base || 10}</div>
-                              </div>
-                            ))}
+                  <div className="min-w-0 space-y-0.5">
+                    <h3 className="font-display font-bold text-lg md:text-xl text-gold truncate">
+                      {inspectedPlayer.character_name}
+                    </h3>
+                    <p className="text-xs text-muted truncate">
+                      Nivel {charData.level || inspectedPlayer.character_level} {charData.race || ""} • {charData.char_class || inspectedPlayer.character_class} {charData.subclass ? `(${charData.subclass})` : ""}
+                    </p>
+                    <p className="text-[11px] text-muted/80 truncate">
+                      Trasfondo: {charData.background || "Aventurero"} • Alineamiento: {charData.alignment || "Neutral"}
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setInspectedPlayer(null)}
+                  className="p-1.5 text-muted hover:text-main rounded-lg hover:bg-card border border-transparent hover:border-border-iron transition-colors shrink-0"
+                  title="Cerrar Ficha (Esc)"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Estadísticas Clave en Banda Horizontal */}
+              <div className="px-4 py-2.5 bg-canvas/60 border-b border-border-iron flex flex-wrap items-center gap-2 md:gap-4 text-xs font-stat">
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface border border-border-iron">
+                  <Shield className="w-3.5 h-3.5 text-gold" />
+                  <span className="text-muted">CA:</span>
+                  <span className="font-bold text-main">{charData.ac || inspectedPlayer.ac || 10}</span>
+                </div>
+
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface border border-border-iron">
+                  <Heart className="w-3.5 h-3.5 text-crimson" />
+                  <span className="text-muted">Puntos de Golpe:</span>
+                  <span className="font-bold text-main">
+                    {charData.hp_current ?? inspectedPlayer.hp_current} / {charData.hp_max ?? inspectedPlayer.hp_max}
+                  </span>
+                  {charData.hp_temp > 0 && (
+                    <span className="text-amber-400 font-bold">(+{charData.hp_temp} Temp)</span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface border border-border-iron">
+                  <span className="text-muted">Dados de Golpe:</span>
+                  <span className="font-bold text-main">{charData.hit_dice_current || charData.hit_dice_total || "1d8"}</span>
+                </div>
+
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface border border-border-iron">
+                  <span className="text-muted">Velocidad:</span>
+                  <span className="font-bold text-main">{charData.speed || 30} pies</span>
+                </div>
+
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface border border-border-iron">
+                  <span className="text-muted">Iniciativa:</span>
+                  <span className="font-bold text-main">{formatModifier(charData.initiative || 0)}</span>
+                </div>
+
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface border border-border-iron">
+                  <span className="text-muted">Competencia:</span>
+                  <span className="font-bold text-main">+{profBonus}</span>
+                </div>
+
+                {charData.inspiration && (
+                  <span className="px-2 py-0.5 rounded-full bg-gold/15 border border-gold/50 text-gold font-bold text-[11px]">
+                    ⭐ Inspiración
+                  </span>
+                )}
+              </div>
+
+              {/* Sub-navegación de la Ficha (Hick's Law: Organización clara en 5 secciones) */}
+              <div className="px-4 border-b border-border-iron bg-card/30 flex gap-1 shrink-0 overflow-x-auto">
+                <button
+                  onClick={() => setSheetModalTab("general")}
+                  className={`py-2 px-3 text-xs font-semibold border-b-2 flex items-center gap-1.5 transition-colors whitespace-nowrap ${
+                    sheetModalTab === "general"
+                      ? "border-gold text-gold font-bold"
+                      : "border-transparent text-muted hover:text-main"
+                  }`}
+                >
+                  <Users className="w-3.5 h-3.5" />
+                  <span>Atributos y Salvaciones</span>
+                </button>
+                <button
+                  onClick={() => setSheetModalTab("skills")}
+                  className={`py-2 px-3 text-xs font-semibold border-b-2 flex items-center gap-1.5 transition-colors whitespace-nowrap ${
+                    sheetModalTab === "skills"
+                      ? "border-gold text-gold font-bold"
+                      : "border-transparent text-muted hover:text-main"
+                  }`}
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Habilidades (18)</span>
+                </button>
+                <button
+                  onClick={() => setSheetModalTab("combat")}
+                  className={`py-2 px-3 text-xs font-semibold border-b-2 flex items-center gap-1.5 transition-colors whitespace-nowrap ${
+                    sheetModalTab === "combat"
+                      ? "border-gold text-gold font-bold"
+                      : "border-transparent text-muted hover:text-main"
+                  }`}
+                >
+                  <Swords className="w-3.5 h-3.5" />
+                  <span>Armas y Ataques ({weaponActions.length})</span>
+                </button>
+                <button
+                  onClick={() => setSheetModalTab("spells")}
+                  className={`py-2 px-3 text-xs font-semibold border-b-2 flex items-center gap-1.5 transition-colors whitespace-nowrap ${
+                    sheetModalTab === "spells"
+                      ? "border-gold text-gold font-bold"
+                      : "border-transparent text-muted hover:text-main"
+                  }`}
+                >
+                  <Wand2 className="w-3.5 h-3.5" />
+                  <span>Grimorio ({spells.length})</span>
+                </button>
+                <button
+                  onClick={() => setSheetModalTab("features")}
+                  className={`py-2 px-3 text-xs font-semibold border-b-2 flex items-center gap-1.5 transition-colors whitespace-nowrap ${
+                    sheetModalTab === "features"
+                      ? "border-gold text-gold font-bold"
+                      : "border-transparent text-muted hover:text-main"
+                  }`}
+                >
+                  <Scroll className="w-3.5 h-3.5" />
+                  <span>Rasgos y Pergaminos ({features.length})</span>
+                </button>
+              </div>
+
+              {/* Contenido Dinámico de la Pestaña Activa de la Ficha */}
+              <div className="flex-1 overflow-y-auto p-5 text-xs">
+                {/* 1. ATRIBUTOS Y TIRADAS DE SALVACIÓN */}
+                {sheetModalTab === "general" && (
+                  <div className="space-y-5">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 text-center">
+                      {ABILITY_KEYS.map(({ key, short, full }) => {
+                        const score = getAbilityScore(key);
+                        const mod = getAbilityMod(score);
+                        const save = getSaveData(key);
+
+                        return (
+                          <div
+                            key={key}
+                            className="p-3 rounded-xl bg-card border border-border-iron flex flex-col justify-between space-y-1 shadow-xs"
+                          >
+                            <span className="text-[10px] font-bold text-muted uppercase tracking-wider">
+                              {short} • {full}
+                            </span>
+                            <div className="font-stat font-bold text-2xl text-gold">
+                              {formatModifier(mod)}
+                            </div>
+                            <div className="text-[11px] font-stat text-muted">
+                              Puntuación: <span className="font-bold text-main">{score}</span>
+                            </div>
+                            <div className="pt-1.5 border-t border-border-iron/60 flex items-center justify-center gap-1 text-[11px]">
+                              <span
+                                className={`w-1.5 h-1.5 rounded-full ${
+                                  save.isProf ? "bg-gold" : "bg-muted/40"
+                                }`}
+                              />
+                              <span className="text-muted">Salvación:</span>
+                              <span className={`font-bold font-stat ${save.isProf ? "text-gold" : "text-main"}`}>
+                                {save.bonusStr}
+                              </span>
+                            </div>
                           </div>
-                          {data.spells && data.spells.length > 0 && (
-                            <div className="p-3 rounded bg-card border border-border-iron space-y-1">
-                              <span className="font-semibold text-gold font-body">Conjuros Preparados:</span>
-                              <div className="flex flex-wrap gap-1 mt-1 font-body">
-                                {data.spells.map((s: any, idx: number) => (
-                                  <span key={idx} className="px-2 py-0.5 rounded bg-surface border border-border-iron text-[11px]">
-                                    {s.name} (Nvl {s.level})
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Sentidos, Idiomas y Rasgos Biográficos */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                      <div className="p-3.5 rounded-xl bg-card border border-border-iron space-y-2">
+                        <h4 className="font-bold text-gold text-xs flex items-center gap-1.5">
+                          <Eye className="w-3.5 h-3.5" />
+                          <span>Sentidos e Idiomas</span>
+                        </h4>
+                        <div className="space-y-1 text-muted">
+                          <p>
+                            <span className="font-semibold text-main">Percepción Pasiva:</span>{" "}
+                            {10 + getAbilityMod(getAbilityScore("wis")) + (charData?.skills?.perception?.proficient ? profBonus : 0)}
+                          </p>
+                          <p>
+                            <span className="font-semibold text-main">Sentidos especiales:</span>{" "}
+                            {charData.senses || "Visión normal"}
+                          </p>
+                          <p>
+                            <span className="font-semibold text-main">Idiomas:</span>{" "}
+                            {charData.languages || "Común"}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="p-3.5 rounded-xl bg-card border border-border-iron space-y-2">
+                        <h4 className="font-bold text-gold text-xs flex items-center gap-1.5">
+                          <FileText className="w-3.5 h-3.5" />
+                          <span>Personalidad y Trasfondo</span>
+                        </h4>
+                        <div className="space-y-1 text-muted text-[11px] leading-relaxed">
+                          {charData.personality_traits && (
+                            <p><span className="font-semibold text-main">Rasgos:</span> {charData.personality_traits}</p>
                           )}
-                          {data.inventory && data.inventory.length > 0 && (
-                            <div className="p-3 rounded bg-card border border-border-iron space-y-1">
-                              <span className="font-semibold text-gold font-body">Inventario del Jugador:</span>
-                              <div className="flex flex-wrap gap-1 mt-1 font-body">
-                                {data.inventory.map((inv: any, idx: number) => (
-                                  <span key={idx} className="px-2 py-0.5 rounded bg-surface border border-border-iron text-[11px]">
-                                    {inv.name} (x{inv.quantity || 1})
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
+                          {charData.ideals && (
+                            <p><span className="font-semibold text-main">Ideales:</span> {charData.ideals}</p>
+                          )}
+                          {charData.bonds && (
+                            <p><span className="font-semibold text-main">Vínculos:</span> {charData.bonds}</p>
+                          )}
+                          {charData.flaws && (
+                            <p><span className="font-semibold text-main">Defectos:</span> {charData.flaws}</p>
+                          )}
+                          {!charData.personality_traits && !charData.ideals && !charData.bonds && (
+                            <p className="italic text-muted">Sin detalles de personalidad registrados.</p>
                           )}
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 2. HABILIDADES */}
+                {sheetModalTab === "skills" && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                    {STANDARD_SKILLS.map((sk) => {
+                      const data = getSkillData(sk.id, sk.ability);
+                      return (
+                        <div
+                          key={sk.id}
+                          className={`p-2.5 rounded-lg border flex items-center justify-between transition-colors ${
+                            data.isProf
+                              ? "bg-gold/10 border-gold/40 text-main"
+                              : "bg-card border-border-iron text-muted"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span
+                              className={`w-2 h-2 rounded-full shrink-0 ${
+                                data.isExpert
+                                  ? "bg-amber-400 ring-2 ring-amber-400/40"
+                                  : data.isProf
+                                  ? "bg-gold"
+                                  : "border border-border-iron bg-transparent"
+                              }`}
+                              title={data.isExpert ? "Maestría (Doble Bono)" : data.isProf ? "Competente" : "No competente"}
+                            />
+                            <span className="font-medium truncate">{sk.name}</span>
+                            <span className="text-[10px] text-muted uppercase">({sk.ability.toUpperCase()})</span>
+                          </div>
+                          <span className={`font-stat font-bold text-xs shrink-0 ${data.isProf ? "text-gold" : "text-main"}`}>
+                            {data.bonusStr}
+                          </span>
+                        </div>
                       );
-                    } catch (e) {
-                      return <pre className="text-muted">{inspectedPlayer.data_json}</pre>;
-                    }
-                  })()}
-                </div>
-              ) : (
-                <p className="text-muted text-center py-6">No hay datos extendidos recibidos de la ficha.</p>
-              )}
+                    })}
+                  </div>
+                )}
+
+                {/* 3. ARMAS Y ACCIONES DE COMBATE */}
+                {sheetModalTab === "combat" && (
+                  <div className="space-y-3">
+                    {weaponActions.length === 0 ? (
+                      <div className="p-8 text-center border border-dashed border-border-iron rounded-xl text-muted">
+                        No hay armas ni acciones de combate registradas en la ficha.
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {weaponActions.map((w: any, idx: number) => (
+                          <div
+                            key={idx}
+                            className="p-3 rounded-xl border border-border-iron bg-card space-y-1.5 shadow-2xs"
+                          >
+                            <div className="flex items-center justify-between">
+                              <h4 className="font-bold text-sm text-gold">{w.name}</h4>
+                              <span className="font-stat font-bold text-xs px-2 py-0.5 rounded bg-surface border border-border-iron text-main">
+                                Bono: {w.hit_dc || "+0"}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2 font-stat text-xs text-main">
+                              <span className="text-muted">Daño:</span>
+                              <span className="font-bold text-gold">{w.damage_dice || "1d8"}</span>
+                              <span className="text-muted capitalize">({w.damage_type || "cortante"})</span>
+                              {w.range_val && (
+                                <span className="text-muted ml-auto">• Alcance: {w.range_val}</span>
+                              )}
+                            </div>
+                            {w.notes && (
+                              <p className="text-[11px] text-muted italic line-clamp-2">{w.notes}</p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 4. GRIMORIO Y ESPACIOS DE CONJURO */}
+                {sheetModalTab === "spells" && (
+                  <div className="space-y-4">
+                    {/* Espacios de Conjuro */}
+                    {Object.keys(spellSlotsTotal).length > 0 && (
+                      <div className="p-3 rounded-xl bg-card border border-border-iron space-y-2">
+                        <h4 className="font-bold text-gold text-xs uppercase tracking-wider">
+                          Espacios de Conjuro por Nivel
+                        </h4>
+                        <div className="flex flex-wrap gap-2 font-stat">
+                          {Object.entries(spellSlotsTotal).map(([lvl, total]) => {
+                            const used = spellSlotsUsed[lvl] || 0;
+                            const totalNum = Number(total);
+                            const remaining = Math.max(0, totalNum - used);
+
+                            return (
+                              <div
+                                key={lvl}
+                                className="px-2.5 py-1 rounded bg-surface border border-border-iron text-center text-xs"
+                              >
+                                <div className="text-[10px] text-muted uppercase">Nvl {lvl}</div>
+                                <div className="font-bold text-main">
+                                  <span className="text-gold">{remaining}</span> / {totalNum}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Lista de Conjuros */}
+                    {spells.length === 0 ? (
+                      <div className="p-8 text-center border border-dashed border-border-iron rounded-xl text-muted">
+                        No hay conjuros ni trucos registrados en el grimorio de este personaje.
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {spells.map((s: any, idx: number) => (
+                          <div
+                            key={idx}
+                            className="p-3 rounded-xl border border-border-iron bg-card space-y-1.5 shadow-2xs"
+                          >
+                            <div className="flex items-center justify-between">
+                              <h4 className="font-bold text-sm text-gold">{s.name}</h4>
+                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-surface border border-border-iron text-muted">
+                                {s.level === 0 ? "Truco" : `Nivel ${s.level}`}
+                              </span>
+                            </div>
+                            <div className="flex flex-wrap gap-x-3 text-[11px] text-muted">
+                              {s.school && <span>Escuela: {s.school}</span>}
+                              {s.cast_time && <span>Casteo: {s.cast_time}</span>}
+                              {s.range_area && <span>Alcance: {s.range_area}</span>}
+                            </div>
+                            {(s.notes || s.description) && (
+                              <p className="text-[11px] text-muted/90 line-clamp-3">
+                                {s.notes || s.description}
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 5. RASGOS, TALENTOS Y PERGAMINOS / DOCUMENTOS */}
+                {sheetModalTab === "features" && (
+                  <div className="space-y-4">
+                    {features.length === 0 && inventory.length === 0 ? (
+                      <div className="p-8 text-center border border-dashed border-border-iron rounded-xl text-muted">
+                        No hay rasgos ni objetos de inventario registrados.
+                      </div>
+                    ) : (
+                      <>
+                        {features.length > 0 && (
+                          <div className="space-y-2">
+                            <h4 className="font-bold text-gold text-xs uppercase tracking-wider">
+                              Rasgos de Clase, Raza y Documentos ({features.length})
+                            </h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              {features.map((f: any, idx: number) => {
+                                const isScroll = f.source?.includes("Pergamino") || f.source?.includes("Documento") || f.source?.startsWith("📜");
+                                return (
+                                  <div
+                                    key={idx}
+                                    className={`p-3.5 rounded-xl border space-y-1.5 ${
+                                      isScroll
+                                        ? "bg-amber-950/20 border-amber-500/40 text-amber-200"
+                                        : "bg-card border-border-iron text-main"
+                                    }`}
+                                  >
+                                    <div className="flex items-center justify-between">
+                                      <h5 className="font-bold text-sm text-gold flex items-center gap-1.5">
+                                        {isScroll && <Scroll className="w-3.5 h-3.5 text-amber-400" />}
+                                        <span>{f.name}</span>
+                                      </h5>
+                                      <span className="text-[10px] px-2 py-0.5 rounded bg-surface border border-border-iron text-muted">
+                                        {f.source || "Rasgo"}
+                                      </span>
+                                    </div>
+                                    <p className={`text-[11px] leading-relaxed whitespace-pre-wrap ${isScroll ? "font-serif text-main" : "text-muted"}`}>
+                                      {f.description}
+                                    </p>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+
+                        {inventory.length > 0 && (
+                          <div className="space-y-2 pt-2 border-t border-border-iron/50">
+                            <h4 className="font-bold text-gold text-xs uppercase tracking-wider">
+                              Inventario / Pertenencias ({inventory.length})
+                            </h4>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                              {inventory.map((inv: any, idx: number) => (
+                                <div
+                                  key={idx}
+                                  className="p-2 rounded-lg bg-surface border border-border-iron flex items-center justify-between text-xs"
+                                >
+                                  <span className="truncate">{inv.name}</span>
+                                  <span className="text-[10px] font-mono text-muted shrink-0 ml-1">
+                                    x{inv.quantity || 1}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Pie del Modal con Botón de Cierre Explícito */}
+              <div className="p-3 border-t border-border-iron bg-card/40 flex items-center justify-between">
+                <span className="text-[11px] text-muted">
+                  Presiona <kbd className="px-1.5 py-0.5 rounded bg-surface border border-border-iron font-mono text-[10px]">Esc</kbd> para cerrar
+                </span>
+                <button
+                  onClick={() => setInspectedPlayer(null)}
+                  className="px-4 py-1.5 rounded-lg bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-semibold text-main transition-colors"
+                >
+                  Cerrar Ficha
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 };

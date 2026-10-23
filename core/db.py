@@ -180,9 +180,14 @@ class DatabaseManager:
                     ac_bonus INTEGER DEFAULT 0,
                     properties_json TEXT DEFAULT '[]',
                     description TEXT,
+                    scroll_content TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
             """)
+            try:
+                cursor.execute("ALTER TABLE dm_homebrew_items ADD COLUMN scroll_content TEXT;")
+            except Exception:
+                pass
             conn.commit()
 
     def get_active_character(self) -> Optional[CharacterSheet]:
@@ -581,8 +586,8 @@ class DatabaseManager:
                 INSERT INTO dm_homebrew_items (
                     id, name, category, rarity, requires_attunement,
                     damage_dice, damage_type, secondary_dice, secondary_type,
-                    bonus_attack, bonus_damage, ac_bonus, properties_json, description
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    bonus_attack, bonus_damage, ac_bonus, properties_json, description, scroll_content
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(id) DO UPDATE SET
                     name = excluded.name,
                     category = excluded.category,
@@ -596,7 +601,8 @@ class DatabaseManager:
                     bonus_damage = excluded.bonus_damage,
                     ac_bonus = excluded.ac_bonus,
                     properties_json = excluded.properties_json,
-                    description = excluded.description;
+                    description = excluded.description,
+                    scroll_content = excluded.scroll_content;
             """, (
                 item_id,
                 item.get("name", "Objeto sin nombre"),
@@ -612,6 +618,7 @@ class DatabaseManager:
                 int(item.get("ac_bonus") or 0),
                 props,
                 item.get("description", ""),
+                item.get("scroll_content", ""),
             ))
             conn.commit()
             return item_id

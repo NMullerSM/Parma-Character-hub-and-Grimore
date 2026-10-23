@@ -21,12 +21,12 @@ export const ScreenVignette: React.FC = () => {
         isDamage ? "vignette-damage" : "vignette-heal"
       }`}
     >
-      {/* Marco de luz interior alrededor de los 4 bordes de la ventana */}
+      {/* Marco de luz interior perimetral sin invadir el centro de la pantalla */}
       <div
-        className={`absolute inset-0 border-[5px] transition-colors ${
+        className={`absolute inset-0 border-[2px] transition-colors ${
           isDamage
-            ? "border-crimson/40 shadow-[inset_0_0_80px_rgba(230,57,70,0.5)]"
-            : "border-emerald-500/40 shadow-[inset_0_0_80px_rgba(16,185,129,0.5)]"
+            ? "border-crimson/50 shadow-[inset_0_0_24px_rgba(230,57,70,0.55)]"
+            : "border-emerald-500/50 shadow-[inset_0_0_24px_rgba(16,185,129,0.55)]"
         }`}
       />
     </div>

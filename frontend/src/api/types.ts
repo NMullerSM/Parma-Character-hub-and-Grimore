@@ -374,6 +374,7 @@ export interface DmHomebrewItem {
   ac_bonus?: number;
   properties?: string[];
   description: string;
+  scroll_content?: string;
   created_at?: string;
 }
 

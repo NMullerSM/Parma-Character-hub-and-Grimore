@@ -129,6 +129,18 @@ export const OnlinePlayerSync: React.FC = () => {
                   proficient: true,
                 };
                 updateActiveCharacter({ weapon_actions: [...currentWeapons, newWeapon] });
+              } else if (item.category === "scroll") {
+                const currentFeatures = char.features || [];
+                const scrollDesc = [
+                  item.description ? item.description : "",
+                  item.scroll_content ? `\n\n📜 Contenido del documento:\n${item.scroll_content}` : "",
+                ].filter(Boolean).join("");
+                const newScrollFeature = {
+                  name: item.name,
+                  source: "📜 Pergamino / Documento",
+                  description: scrollDesc || "Documento entregado por el DM.",
+                };
+                updateActiveCharacter({ features: [...currentFeatures, newScrollFeature] });
               } else {
                 const currentFeatures = char.features || [];
                 const newFeature = {
@@ -139,7 +151,7 @@ export const OnlinePlayerSync: React.FC = () => {
                 updateActiveCharacter({ features: [...currentFeatures, newFeature] });
               }
             }
-            showToast(data.message || `¡Has recibido un objeto mágico del DM!`, "success");
+            showToast(data.message || `¡Has recibido un objeto del DM!`, "success");
           } else if (data.type === "DICE_ROLL_SHARED") {
             // Tirada compartida en la mesa
             if (data.player_token !== playerToken) {

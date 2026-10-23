@@ -63,6 +63,11 @@ def get_taskbar_icon_path(base_dir: str) -> str:
                 return png_candidate
         return None
 
+    # Priorizar el icono negro sólido del escudo (brand/es/icon-mono-black / parma_taskbar_dark.ico)
+    dark_icon = os.path.join(base_dir, "parma_taskbar_dark.ico")
+    if os.path.exists(dark_icon):
+        return dark_icon
+
     is_light = is_windows_taskbar_light()
     chosen_name = "parma_taskbar_dark.ico" if is_light else "parma_taskbar_light.ico"
     candidate = os.path.join(base_dir, chosen_name)
