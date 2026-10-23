@@ -115,7 +115,7 @@ const PolyhedralDieSvg: React.FC<DieSvgProps> = ({ sides, roll, isNat20, isNat1 
 };
 
 export const DiceRollAnimation: React.FC = () => {
-  const { isRollingAnimation, currentRollingData } = useCharacter();
+  const { isRollingAnimation, currentRollingData, rollingActorName, dismissRollingAnimation } = useCharacter();
   const { t } = useTranslation();
   const [animState, setAnimState] = useState<"launch" | "settle">("launch");
 
@@ -129,21 +129,41 @@ export const DiceRollAnimation: React.FC = () => {
     }
   }, [isRollingAnimation]);
 
+  // Soporte para tecla Escape como salida rápida de emergencia
+  useEffect(() => {
+    if (!isRollingAnimation) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        dismissRollingAnimation();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isRollingAnimation, dismissRollingAnimation]);
+
   if (!isRollingAnimation || !currentRollingData) return null;
 
-  const { dice_rolls, total, label, modifier } = currentRollingData;
+  const { dice_rolls, total, label, modifier, is_crit, is_fumble } = currentRollingData;
   const displayLabel = label === "Tirada Rápida" || label === "Quick Roll" ? t("dice.quickRoll") : label;
+  const actorBadge = rollingActorName ? `${rollingActorName} • ${displayLabel}` : displayLabel;
 
   return (
-    <div className="fixed inset-0 z-50 pointer-events-none flex items-center justify-center p-4">
-      {/* Fondo con viñeta cinematográfica */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity duration-300" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 select-none">
+      {/* Fondo con viñeta cinematográfica (clic para cerrar y anotar con calma) */}
+      <div
+        className="absolute inset-0 bg-black/65 backdrop-blur-xs transition-opacity duration-300 cursor-pointer"
+        onClick={dismissRollingAnimation}
+        title="Clic para cerrar"
+      />
 
       {/* Contenedor Central de Lanzamiento */}
-      <div className="relative z-10 flex flex-col items-center gap-5 max-w-2xl w-full">
-        {/* Motivo de la tirada */}
-        <div className="px-5 py-1.5 rounded-full bg-surface/95 border border-border-iron shadow-xl text-xs font-semibold text-gold tracking-wider uppercase animate-in fade-in duration-300">
-          {displayLabel}
+      <div className="relative z-10 flex flex-col items-center gap-5 max-w-2xl w-full pointer-events-auto">
+        {/* Motivo de la tirada y Actor */}
+        <div className="px-5 py-1.5 rounded-full bg-surface/95 border border-border-iron shadow-xl text-xs font-semibold text-gold tracking-wider uppercase animate-in fade-in duration-300 flex items-center gap-2">
+          <span>{actorBadge}</span>
+          {is_crit && <span className="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">¡CRÍTICO!</span>}
+          {is_fumble && <span className="px-1.5 py-0.2 rounded bg-crimson/20 text-crimson text-[10px] font-bold">¡PIFIA!</span>}
         </div>
 
         {/* Mesa de Dados: Dispersión limpia sin colisiones ni superposiciones */}
@@ -196,6 +216,14 @@ export const DiceRollAnimation: React.FC = () => {
             </span>
           )}
         </div>
+
+        {/* Salida Clara / Botón de Anotar y Cerrar (Ley de Hick) */}
+        <button
+          onClick={dismissRollingAnimation}
+          className="px-5 py-2 rounded-xl bg-surface/90 hover:bg-card border border-border-iron hover:border-gold text-xs font-semibold text-main hover:text-gold shadow-lg transition-all duration-200 cursor-pointer"
+        >
+          Anotar / Cerrar (Esc)
+        </button>
       </div>
     </div>
   );

@@ -505,6 +505,18 @@ class DatabaseManager:
             conn.commit()
             return True
 
+    def update_player_status(self, session_id: str, player_token: str, status: str) -> bool:
+        """Actualiza el estado de conexión o combate de un jugador en la sesión."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE dm_session_players
+                SET status = ?, last_seen_at = CURRENT_TIMESTAMP
+                WHERE session_id = ? AND player_token = ?;
+            """, (status, session_id, player_token))
+            conn.commit()
+            return True
+
     def get_session_players(self, session_id: str) -> List[Dict[str, Any]]:
         """Obtiene la lista de jugadores participantes de una sesión."""
         with self._get_connection() as conn:

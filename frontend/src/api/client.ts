@@ -232,6 +232,10 @@ export const api = {
 
   async getActiveCharacter(): Promise<CharacterSheetData | null> {
     if (this.isNative()) return await window.pywebview!.api.get_active_character();
+    try {
+      const saved = localStorage.getItem("parma_web_active_character");
+      if (saved) return JSON.parse(saved);
+    } catch (_) {}
     return mockActiveCharacter;
   },
 
@@ -248,6 +252,9 @@ export const api = {
   async saveCharacter(charData: CharacterSheetData): Promise<{ success: boolean; id: number; character?: CharacterSheetData }> {
     if (this.isNative()) return await window.pywebview!.api.save_character(charData);
     mockActiveCharacter = { ...mockActiveCharacter, ...charData };
+    try {
+      localStorage.setItem("parma_web_active_character", JSON.stringify(mockActiveCharacter));
+    } catch (_) {}
     return { success: true, id: charData.id || 1, character: mockActiveCharacter };
   },
 
@@ -801,6 +808,26 @@ export const api = {
 
   async getDmSessionStatus(): Promise<DmSessionStatus> {
     if (this.isNative()) return await window.pywebview!.api.get_dm_session_status();
+    try {
+      const origin = localStorage.getItem("parma_session_url") || (typeof window !== "undefined" ? window.location.origin : "");
+      if (origin) {
+        const res = await fetch(`${origin}/api/session/info`);
+        if (res.ok) {
+          const info = await res.json();
+          return {
+            is_running: Boolean(info.is_active),
+            session_id: info.session_id || null,
+            session_name: info.session_name || "Sesión",
+            campaign_name: info.campaign_name || "Campaña Principal",
+            tunnel_url: origin,
+            qr_code: "",
+            port: 8765,
+            players: [],
+            connected_count: info.connected_count || 0,
+          };
+        }
+      }
+    } catch (_) {}
     return {
       is_running: false,
       session_id: null,
@@ -812,6 +839,63 @@ export const api = {
       players: [],
       connected_count: 0,
     };
+  },
+
+  async joinPlayerSession(
+    sessionUrlOrHost: string,
+    character: CharacterSheetData
+  ): Promise<{ success: boolean; token: string; session_id: string; session_name?: string; campaign_name?: string; error?: string }> {
+    try {
+      let targetOrigin = window.location.origin;
+      if (sessionUrlOrHost.startsWith("http://") || sessionUrlOrHost.startsWith("https://")) {
+        const u = new URL(sessionUrlOrHost);
+        targetOrigin = u.origin;
+      }
+      let playerToken = localStorage.getItem("parma_player_token");
+      if (!playerToken) {
+        playerToken = `p_${Math.random().toString(36).substring(2, 10)}`;
+        localStorage.setItem("parma_player_token", playerToken);
+      }
+      const res = await fetch(`${targetOrigin}/api/player/join`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token: playerToken,
+          character_name: character.name || "Aventurero",
+          character: character,
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        localStorage.setItem("parma_session_url", targetOrigin);
+        if (data.session_id) {
+          localStorage.setItem("parma_active_session_id", data.session_id);
+        }
+        return data;
+      }
+      return { success: false, token: playerToken, session_id: "", error: `Status ${res.status}` };
+    } catch (e: any) {
+      return { success: false, token: "", session_id: "", error: e?.message || "Error al conectar" };
+    }
+  },
+
+  async leavePlayerSession(sessionUrlOrHost?: string): Promise<{ success: boolean }> {
+    try {
+      const targetOrigin = sessionUrlOrHost || localStorage.getItem("parma_session_url") || window.location.origin;
+      const playerToken = localStorage.getItem("parma_player_token");
+      if (playerToken) {
+        await fetch(`${targetOrigin}/api/player/leave`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: playerToken }),
+        });
+      }
+      localStorage.removeItem("parma_session_url");
+      localStorage.removeItem("parma_active_session_id");
+      return { success: true };
+    } catch (_) {
+      return { success: true };
+    }
   },
 
   async dmApplyHpChange(playerToken: string, delta: number): Promise<boolean> {

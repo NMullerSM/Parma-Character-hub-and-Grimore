@@ -36,6 +36,8 @@ interface CharacterContextType {
   // Animación física de dados
   isRollingAnimation: boolean;
   currentRollingData: RollResult | null;
+  rollingActorName: string;
+  dismissRollingAnimation: () => void;
 
   // Acciones
   setDndEdition: (edition: string) => Promise<void>;
@@ -96,9 +98,19 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [rollHistory, setRollHistory] = useState<RollHistoryEntry[]>([]);
   const [isRollingAnimation, setIsRollingAnimation] = useState<boolean>(false);
   const [currentRollingData, setCurrentRollingData] = useState<RollResult | null>(null);
+  const [rollingActorName, setRollingActorName] = useState<string>("");
+  const rollingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [vignetteFlash, setVignetteFlash] = useState<"damage" | "heal" | null>(null);
   const vignetteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const dismissRollingAnimation = useCallback(() => {
+    if (rollingTimerRef.current) {
+      clearTimeout(rollingTimerRef.current);
+      rollingTimerRef.current = null;
+    }
+    setIsRollingAnimation(false);
+  }, []);
 
   // Estados de Rol y Sesión Online
   const [userRole, setUserRoleState] = useState<"dm" | "player">("dm");
@@ -228,6 +240,71 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       window.removeEventListener("pywebviewready", initAll);
     };
   }, [reloadCharacters, refreshTaleSpire, fetchRollHistory]);
+
+  // Auto-detección de sesión online en navegador web (móvil, tablet u otro PC)
+  useEffect(() => {
+    if (typeof window !== "undefined" && !api.isNative()) {
+      const checkWebSession = async () => {
+        try {
+          const origin = localStorage.getItem("parma_session_url") || window.location.origin;
+          const res = await fetch(`${origin}/api/session/info`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.is_active && data.session_id) {
+              setActiveSessionId(data.session_id);
+              localStorage.setItem("parma_session_url", origin);
+            }
+          }
+        } catch (_) {}
+      };
+      checkWebSession();
+    }
+  }, []);
+
+  // Escuchar tiradas remotas compartidas (del DM o de otros jugadores)
+  useEffect(() => {
+    const handleRemoteRoll = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      const data = customEvent.detail;
+      if (!data || !data.roll) return;
+
+      const actor = data.actor_name || "Compañero";
+      const rollData = data.roll as RollResult;
+
+      // Animar dados compartidos en pantalla
+      setRollingActorName(actor);
+      setCurrentRollingData(rollData);
+      setIsRollingAnimation(true);
+      if (rollingTimerRef.current) {
+        clearTimeout(rollingTimerRef.current);
+      }
+      rollingTimerRef.current = setTimeout(() => {
+        setIsRollingAnimation(false);
+        rollingTimerRef.current = null;
+      }, 5000);
+
+      // Agregar a historial local de tiradas
+      const newEntry: RollHistoryEntry = {
+        id: Date.now() + Math.floor(Math.random() * 1000),
+        time_str: rollData.timestamp || new Date().toLocaleTimeString(),
+        character_name: actor,
+        reason: rollData.label || "Tirada de Mesa",
+        formula: rollData.formula || "",
+        detail: rollData.detail || "",
+        total: rollData.total || 0,
+        is_crit: Boolean(rollData.is_crit),
+        is_fumble: Boolean(rollData.is_fumble),
+        channel: "Mesa Online",
+      };
+      setRollHistory((prev) => [newEntry, ...prev.slice(0, 49)]);
+      showToast(`🎲 ${actor}: ${rollData.label} (${rollData.total})`, "info");
+    };
+
+    window.addEventListener("parma_remote_dice_roll", handleRemoteRoll);
+    return () => {
+      window.removeEventListener("parma_remote_dice_roll", handleRemoteRoll);
+    };
+  }, [showToast]);
 
   // Atajos globales: Espacio para bandeja de dados, Escape para cerrar bandeja
   useEffect(() => {
@@ -365,13 +442,31 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       if (result.talespire_sent) {
         showToast(`🎲 ${result.label}: Lanzado en mesa 3D (TaleSpire)`, "success");
       } else {
+        setRollingActorName(activeCharacter?.name || "Tú");
         setCurrentRollingData(result);
         setIsRollingAnimation(true);
-        setTimeout(() => {
+        if (rollingTimerRef.current) {
+          clearTimeout(rollingTimerRef.current);
+        }
+        rollingTimerRef.current = setTimeout(() => {
           setIsRollingAnimation(false);
-        }, 2400);
+          rollingTimerRef.current = null;
+        }, 5000);
         showToast(`🎲 ${result.label}: ${result.total}`, "info");
       }
+
+      // Notificar por evento a OnlinePlayerSync para que retransmita por socket si está en sesión
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("parma_send_dice_roll", {
+            detail: {
+              roll: result,
+              character_name: activeCharacter?.name || "Aventurero",
+            },
+          })
+        );
+      }
+
       return result;
     } catch (e) {
       showToast("Error ejecutando tirada", "warn");
@@ -504,6 +599,8 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         triggerVignetteFlash,
         isRollingAnimation,
         currentRollingData,
+        rollingActorName,
+        dismissRollingAnimation,
         setDndEdition,
         reloadCharacters,
         selectCharacter,

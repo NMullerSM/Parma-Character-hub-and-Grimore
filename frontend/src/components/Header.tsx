@@ -85,17 +85,19 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
     }
     setIsConnecting(true);
     try {
-      let resolvedId = sessionInput.trim();
-      // Si el usuario pegó una URL completa, extraer el ID si viene como parámetro o usar el host
-      if (resolvedId.includes("http://") || resolvedId.includes("https://")) {
+      const inputVal = sessionInput.trim();
+      let targetOrigin = window.location.origin;
+      let resolvedId = inputVal;
+
+      if (inputVal.startsWith("http://") || inputVal.startsWith("https://")) {
         try {
-          const parsed = new URL(resolvedId);
+          const parsed = new URL(inputVal);
+          targetOrigin = parsed.origin;
           const sessParam = parsed.searchParams.get("session") || parsed.searchParams.get("session_id");
           if (sessParam) {
             resolvedId = sessParam;
           } else {
-            // Intentar consultar sesión al endpoint del túnel
-            const res = await fetch(`${parsed.origin}/api/session/info`);
+            const res = await fetch(`${targetOrigin}/api/session/info`);
             if (res.ok) {
               const data = await res.json();
               if (data.session_id) resolvedId = data.session_id;
@@ -104,14 +106,17 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
         } catch (_) {}
       }
 
-      setActiveSessionId(resolvedId);
+      localStorage.setItem("parma_session_url", targetOrigin);
 
-      // Si el usuario tiene un personaje activo, asociarlo a esta sesión
-      if (activeCharacter?.id) {
-        try {
-          await api.saveCharacter({ ...activeCharacter, session_id: resolvedId });
-        } catch (_) {}
+      // Enrolamiento formal del personaje con el servidor DM (persiste en SQLite dm_session_players)
+      if (activeCharacter) {
+        const joinRes = await api.joinPlayerSession(targetOrigin, activeCharacter);
+        if (joinRes.success && joinRes.session_id) {
+          resolvedId = joinRes.session_id;
+        }
       }
+
+      setActiveSessionId(resolvedId);
 
       showToast(`¡Conectado exitosamente a la sesión "${resolvedId}"!`, "success");
       setIsJoinModalOpen(false);
@@ -123,7 +128,10 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
     }
   };
 
-  const handleDisconnectSession = () => {
+  const handleDisconnectSession = async () => {
+    try {
+      await api.leavePlayerSession();
+    } catch (_) {}
     setActiveSessionId(null);
     showToast("Te has desconectado de la sesión online.", "info");
     setIsJoinModalOpen(false);

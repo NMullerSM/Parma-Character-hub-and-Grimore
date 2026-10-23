@@ -74,6 +74,24 @@ class ConnectionManager:
             except Exception:
                 pass
 
+    async def close_all(self, reason: str = "El DM ha finalizado la sesión online."):
+        payload = json.dumps({"type": "SESSION_CLOSED", "message": reason}, ensure_ascii=False)
+        for ws in list(self.active_players.values()):
+            try:
+                await ws.send_text(payload)
+                await ws.close(code=1000, reason=reason)
+            except Exception:
+                pass
+        self.active_players.clear()
+
+        for ws in list(self.dm_sockets):
+            try:
+                await ws.send_text(payload)
+                await ws.close(code=1000, reason=reason)
+            except Exception:
+                pass
+        self.dm_sockets.clear()
+
 
 def find_free_port(start_port: int = 8765) -> int:
     """Encuentra un puerto TCP disponible para el servidor."""
@@ -125,7 +143,10 @@ class DmSessionServer:
         async def session_players():
             if not self.current_session_id:
                 return []
-            return self.db.get_session_players(self.current_session_id)
+            players = self.db.get_session_players(self.current_session_id)
+            for p in players:
+                p["is_online"] = p.get("player_token") in self.manager.active_players
+            return players
 
         @app.post("/api/player/join")
         async def player_join(request: Request):
@@ -154,21 +175,55 @@ class DmSessionServer:
                     actor_name=char_name,
                     details={"token": token, "level": char.get("level", 1)},
                 )
-                # Notificar a la consola DM
+                # Notificar a la consola DM y a los demás jugadores
                 await self.manager.send_to_dm({
                     "type": "PLAYER_JOINED",
                     "player_token": token,
                     "character_name": char_name,
                     "character": char,
                 })
+                await self.manager.broadcast_to_all({
+                    "type": "PLAYER_LIST_UPDATED",
+                    "player_token": token,
+                    "character_name": char_name,
+                })
 
-            return {"success": True, "token": token, "session_id": self.current_session_id}
+            return {
+                "success": True,
+                "token": token,
+                "session_id": self.current_session_id,
+                "session_name": self.session_name,
+                "campaign_name": self.campaign_name,
+            }
+
+        @app.post("/api/player/leave")
+        async def player_leave(request: Request):
+            data = await request.json()
+            token = data.get("token")
+            if token and self.current_session_id:
+                self.db.update_player_status(self.current_session_id, token, "OFFLINE")
+                self.manager.disconnect_player(token)
+                await self.manager.send_to_dm({
+                    "type": "PLAYER_SOCKET_OFFLINE",
+                    "player_token": token,
+                })
+                await self.manager.broadcast_to_all({
+                    "type": "PLAYER_LIST_UPDATED",
+                    "player_token": token,
+                })
+            return {"success": True}
 
         @app.websocket("/ws")
         async def websocket_endpoint(websocket: WebSocket, token: Optional[str] = None, role: str = "player"):
             if role == "dm":
                 await self.manager.connect_dm(websocket)
                 try:
+                    await websocket.send_text(json.dumps({
+                        "type": "DM_CONNECTED",
+                        "session_id": self.current_session_id,
+                        "session_name": self.session_name,
+                        "campaign_name": self.campaign_name,
+                    }, ensure_ascii=False))
                     while True:
                         msg_text = await websocket.receive_text()
                         msg = json.loads(msg_text)
@@ -178,9 +233,29 @@ class DmSessionServer:
             else:
                 player_token = token or f"p_{os.urandom(4).hex()}"
                 await self.manager.connect_player(player_token, websocket)
+                # Confirmar conexión al jugador
+                try:
+                    await websocket.send_text(json.dumps({
+                        "type": "CONNECTION_ESTABLISHED",
+                        "player_token": player_token,
+                        "session_id": self.current_session_id,
+                        "session_name": self.session_name,
+                        "campaign_name": self.campaign_name,
+                    }, ensure_ascii=False))
+                except Exception:
+                    pass
+
+                # Si el jugador ya está en la DB, marcarlo como ALIVE
+                if self.current_session_id:
+                    self.db.update_player_status(self.current_session_id, player_token, "ALIVE")
+
                 # Notificar a DM que el socket está en línea
                 await self.manager.send_to_dm({
                     "type": "PLAYER_SOCKET_ONLINE",
+                    "player_token": player_token,
+                })
+                await self.manager.broadcast_to_all({
+                    "type": "PLAYER_LIST_UPDATED",
                     "player_token": player_token,
                 })
                 try:
@@ -190,8 +265,14 @@ class DmSessionServer:
                         await self._handle_player_ws_message(player_token, msg)
                 except WebSocketDisconnect:
                     self.manager.disconnect_player(player_token)
+                    if self.current_session_id:
+                        self.db.update_player_status(self.current_session_id, player_token, "OFFLINE")
                     await self.manager.send_to_dm({
                         "type": "PLAYER_SOCKET_OFFLINE",
+                        "player_token": player_token,
+                    })
+                    await self.manager.broadcast_to_all({
+                        "type": "PLAYER_LIST_UPDATED",
                         "player_token": player_token,
                     })
 
@@ -219,7 +300,7 @@ class DmSessionServer:
         if msg_type == "DICE_ROLL":
             # Tirada realizada por el jugador
             roll_data = msg.get("roll", {})
-            actor = msg.get("character_name", "Jugador")
+            actor = msg.get("character_name") or msg.get("actor_name") or "Jugador"
             if self.current_session_id:
                 self.db.log_session_event(
                     session_id=self.current_session_id,
@@ -227,7 +308,7 @@ class DmSessionServer:
                     actor_name=actor,
                     details=roll_data,
                 )
-            # Retransmitir a todos (historial de tiradas compartido)
+            # Retransmitir a todos (historial de tiradas compartido y animación en pantalla)
             await self.manager.broadcast_to_all({
                 "type": "DICE_ROLL_SHARED",
                 "player_token": player_token,
@@ -238,22 +319,28 @@ class DmSessionServer:
             # Actualización de ficha del jugador
             char = msg.get("character", {})
             if self.current_session_id and char:
+                char_name = char.get("name") or "Jugador"
                 self.db.upsert_session_player(
                     session_id=self.current_session_id,
                     player_token=player_token,
-                    character_name=char.get("name", "Jugador"),
+                    character_name=char_name,
                     character_id=char.get("id"),
                     character_class=char.get("char_class", ""),
                     character_level=int(char.get("level", 1)),
                     hp_current=int(char.get("hp_current", 10)),
                     hp_max=int(char.get("hp_max", 10)),
                     ac=int(char.get("ac", 10)),
+                    status="ALIVE",
                     data_json=json.dumps(char, ensure_ascii=False),
                 )
                 await self.manager.send_to_dm({
                     "type": "PLAYER_SHEET_UPDATED",
                     "player_token": player_token,
                     "character": char,
+                })
+                await self.manager.broadcast_to_all({
+                    "type": "PLAYER_LIST_UPDATED",
+                    "player_token": player_token,
                 })
 
     async def _handle_dm_ws_message(self, msg: Dict[str, Any]):
@@ -289,7 +376,17 @@ class DmSessionServer:
         return self.port
 
     def stop(self):
-        """Detiene el servidor."""
+        """Detiene el servidor y desconecta limpiamente a todos los clientes notificándoles."""
+        if self.loop and self.loop.is_running():
+            try:
+                future = asyncio.run_coroutine_threadsafe(
+                    self.manager.close_all("El DM ha finalizado la sesión online."),
+                    self.loop
+                )
+                future.result(timeout=1.5)
+            except Exception:
+                pass
+
         if self.server:
             self.server.should_exit = True
         self.current_session_id = None

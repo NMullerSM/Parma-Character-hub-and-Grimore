@@ -781,7 +781,7 @@ class DesktopBridge:
                 channel="TaleSpire 3D",
             )
 
-            return {
+            ts_payload = {
                 "total": 0,
                 "dice_rolls": [],
                 "modifier": modifier,
@@ -794,6 +794,25 @@ class DesktopBridge:
                 "timestamp": datetime.now().strftime("%H:%M:%S"),
                 "talespire_sent": True,
             }
+            if self._session_server.current_session_id:
+                try:
+                    actor = "DM" if char_name in ("Héroe", "Aventurero") else f"{char_name} (DM)"
+                    self._db.log_session_event(
+                        session_id=self._session_server.current_session_id,
+                        event_type="ROLL",
+                        actor_name=actor,
+                        details=ts_payload,
+                    )
+                    coro = self._session_server.manager.broadcast_to_all({
+                        "type": "DICE_ROLL_SHARED",
+                        "actor_name": actor,
+                        "player_token": "dm",
+                        "roll": ts_payload,
+                    })
+                    self._session_server.execute_async(coro)
+                except Exception as e:
+                    print(f"[DesktopBridge] Error retransmitiendo tirada TS: {e}")
+            return ts_payload
 
         # Resolución mediante el motor de reglas local (core/rules.py)
         pool_res = roll_dice_pool(pool, modifier=modifier, mode=mode)
@@ -866,7 +885,7 @@ class DesktopBridge:
             channel="Motor Local",
         )
 
-        return {
+        roll_res = {
             "total": pool_res["total"],
             "dice_rolls": rolls_flat,
             "modifier": modifier,
@@ -885,6 +904,27 @@ class DesktopBridge:
             "success_count": success_cnt,
             "failure_count": failure_cnt,
         }
+
+        if self._session_server.current_session_id:
+            try:
+                actor = "DM" if char_name in ("Héroe", "Aventurero") else f"{char_name} (DM)"
+                self._db.log_session_event(
+                    session_id=self._session_server.current_session_id,
+                    event_type="ROLL",
+                    actor_name=actor,
+                    details=roll_res,
+                )
+                coro = self._session_server.manager.broadcast_to_all({
+                    "type": "DICE_ROLL_SHARED",
+                    "actor_name": actor,
+                    "player_token": "dm",
+                    "roll": roll_res,
+                })
+                self._session_server.execute_async(coro)
+            except Exception as e:
+                print(f"[DesktopBridge] Error retransmitiendo tirada local: {e}")
+
+        return roll_res
 
     def get_roll_history(self) -> List[Dict[str, Any]]:
         """Retorna el historial completo de tiradas de la sesión activa."""

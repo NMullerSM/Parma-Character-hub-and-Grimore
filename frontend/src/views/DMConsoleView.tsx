@@ -80,6 +80,41 @@ export const DMConsoleView: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Canal WebSocket en tiempo real para eventos de la mesa hacia la consola DM
+  useEffect(() => {
+    if (!sessionStatus.is_running || !sessionStatus.port) return;
+
+    let ws: WebSocket | null = null;
+    try {
+      ws = new WebSocket(`ws://127.0.0.1:${sessionStatus.port}/ws?role=dm`);
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (
+            data.type === "PLAYER_JOINED" ||
+            data.type === "PLAYER_SOCKET_ONLINE" ||
+            data.type === "PLAYER_SOCKET_OFFLINE" ||
+            data.type === "PLAYER_SHEET_UPDATED" ||
+            data.type === "PLAYER_LIST_UPDATED"
+          ) {
+            loadStatus();
+            if (data.type === "PLAYER_JOINED" && data.character_name) {
+              showToast(`¡${data.character_name} se ha unido a la mesa!`, "success");
+            }
+          } else if (data.type === "DICE_ROLL_SHARED") {
+            loadStatus();
+          }
+        } catch (_) {}
+      };
+    } catch (_) {}
+
+    return () => {
+      if (ws) {
+        ws.close();
+      }
+    };
+  }, [sessionStatus.is_running, sessionStatus.port, showToast]);
+
   const loadStatus = async () => {
     try {
       const status = await api.getDmSessionStatus();
@@ -486,6 +521,12 @@ export const DMConsoleView: React.FC = () => {
                   const isDead = p.status === "DEAD";
                   const isUnconscious = p.hp_current <= 0 || p.status === "UNCONSCIOUS";
 
+                  let parsedData: any = null;
+                  try {
+                    if (p.data_json) parsedData = JSON.parse(p.data_json);
+                  } catch (_) {}
+                  const portraitUrl = parsedData?.portrait_base64 || parsedData?.avatar_url || null;
+
                   return (
                     <div
                       key={p.player_token}
@@ -497,20 +538,33 @@ export const DMConsoleView: React.FC = () => {
                           : "border-border-iron hover:border-gold/60"
                       }`}
                     >
-                      {/* Cabecera del Jugador */}
+                      {/* Cabecera del Jugador con Avatar */}
                       <div className="flex items-center justify-between">
-                        <div>
-                          <h4 className="font-bold text-sm text-main flex items-center gap-1.5">
-                            <span>{p.character_name}</span>
-                            {p.is_online ? (
-                              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" title="En línea" />
-                            ) : (
-                              <span className="w-2 h-2 rounded-full bg-muted inline-block" title="Desconectado" />
-                            )}
-                          </h4>
-                          <p className="text-xs text-muted">
-                            Nvl {p.character_level} {p.character_class || "Aventurero"}
-                          </p>
+                        <div className="flex items-center gap-2.5">
+                          {portraitUrl ? (
+                            <img
+                              src={portraitUrl}
+                              alt={p.character_name}
+                              className="w-9 h-9 rounded-full object-cover border border-gold/40 shadow-xs shrink-0"
+                            />
+                          ) : (
+                            <div className="w-9 h-9 rounded-full bg-surface border border-border-iron flex items-center justify-center font-bold text-xs text-gold shrink-0">
+                              {p.character_name.slice(0, 2).toUpperCase()}
+                            </div>
+                          )}
+                          <div>
+                            <h4 className="font-bold text-sm text-main flex items-center gap-1.5">
+                              <span>{p.character_name}</span>
+                              {p.is_online ? (
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" title="En línea" />
+                              ) : (
+                                <span className="w-2 h-2 rounded-full bg-muted inline-block" title="Desconectado" />
+                              )}
+                            </h4>
+                            <p className="text-xs text-muted">
+                              Nvl {p.character_level} {p.character_class || "Aventurero"}
+                            </p>
+                          </div>
                         </div>
                         <div className="flex items-center gap-1 bg-surface px-2 py-1 rounded border border-border-iron text-xs font-stat">
                           <Shield className="w-3.5 h-3.5 text-gold" />
@@ -993,13 +1047,35 @@ export const DMConsoleView: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs select-none">
           <div className="relative bg-surface border border-border-iron rounded-2xl p-6 max-w-2xl w-full flex flex-col max-h-[85vh] space-y-4 shadow-2xl overflow-hidden">
             <div className="flex items-center justify-between border-b border-border-iron pb-3">
-              <div>
-                <h3 className="font-display font-bold text-lg text-gold">
-                  Ficha de {inspectedPlayer.character_name}
-                </h3>
-                <p className="text-xs text-muted">
-                  Nivel {inspectedPlayer.character_level} {inspectedPlayer.character_class} • {inspectedPlayer.ac} CA • {inspectedPlayer.hp_current}/{inspectedPlayer.hp_max} HP
-                </p>
+              <div className="flex items-center gap-3">
+                {(() => {
+                  let pImg: string | null = null;
+                  try {
+                    if (inspectedPlayer.data_json) {
+                      const d = JSON.parse(inspectedPlayer.data_json);
+                      pImg = d.portrait_base64 || d.avatar_url || null;
+                    }
+                  } catch (_) {}
+                  return pImg ? (
+                    <img
+                      src={pImg}
+                      alt={inspectedPlayer.character_name}
+                      className="w-12 h-12 rounded-full object-cover border border-gold shadow-sm shrink-0"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-surface border border-border-iron flex items-center justify-center font-bold text-sm text-gold shrink-0">
+                      {inspectedPlayer.character_name.slice(0, 2).toUpperCase()}
+                    </div>
+                  );
+                })()}
+                <div>
+                  <h3 className="font-display font-bold text-lg text-gold">
+                    Ficha de {inspectedPlayer.character_name}
+                  </h3>
+                  <p className="text-xs text-muted">
+                    Nivel {inspectedPlayer.character_level} {inspectedPlayer.character_class} • {inspectedPlayer.ac} CA • {inspectedPlayer.hp_current}/{inspectedPlayer.hp_max} HP
+                  </p>
+                </div>
               </div>
               <button
                 onClick={() => setInspectedPlayer(null)}
