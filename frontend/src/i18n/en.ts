@@ -1,4 +1,4 @@
-import type { Translations } from "./es";
+import { Translations } from "./es";
 
 export const en: Translations = {
   common: {
@@ -444,6 +444,21 @@ export const en: Translations = {
       title: "AI Character Portrait Generator",
       subtitle: "Create an illustration based on the traits and appearance of {name}.",
       visualStyle: "Visual Illustration Style",
+      genderLabel: "Character Gender / Sex",
+      genderMale: "Male",
+      genderMaleSub: "Man / Warrior",
+      genderMaleHint: "Forces masculine facial features and build (1man, adult male)",
+      genderFemale: "Female",
+      genderFemaleSub: "Woman / Heroine",
+      genderFemaleHint: "Forces feminine facial features and build (1woman, adult female)",
+      genderAndro: "Androgynous",
+      genderAndroSub: "Neutral / Elven",
+      genderAndroHint: "Neutral, graceful, or stylized androgynous features",
+      genderCreature: "Creature",
+      genderCreatureSub: "Beast / Monster",
+      genderCreatureHint: "Beastly, dragonborn, or monstrous focus",
+      resetPrompt: "Rebuild Prompt",
+      resetPromptTooltip: "Re-build prompt with current style and gender selection",
       promptLabel: "Character Appearance Prompt",
       optimizedPrompt: "Style-Optimized Prompt",
       appearanceIntegrated: "✓ Integrates Physical Appearance",
