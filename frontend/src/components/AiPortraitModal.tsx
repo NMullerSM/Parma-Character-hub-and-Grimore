@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { X, Sparkles, Copy, Check, Wand2, Image as ImageIcon, Settings2, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
+import { X, Sparkles, Copy, Check, Wand2, Image as ImageIcon, Settings2, ExternalLink, ChevronDown, ChevronUp, RotateCcw } from "lucide-react";
 import { api } from "../api/client";
 import type { CharacterSheetData } from "../api/types";
 import { useTranslation } from "../i18n";
@@ -10,6 +10,16 @@ interface AiPortraitModalProps {
   character: CharacterSheetData;
   onPortraitGenerated: (base64OrUrl: string) => void;
   initialConfigOpen?: boolean;
+}
+
+export type CharacterGender = "male" | "female" | "androgynous" | "creature";
+
+export interface GenderOption {
+  id: CharacterGender;
+  label: string;
+  sub: string;
+  icon: string;
+  hint: string;
 }
 
 type ArtStyle = "pixelart" | "fantasy" | "oil" | "sketch" | "cinematic";
@@ -186,26 +196,180 @@ function getProviderOptions(lang: "es" | "en"): ProviderMeta[] {
   ];
 }
 
-// Generador de plantillas internas optimizadas para modelos de difusión
-function buildInternalPrompt(style: ArtStyle, char: CharacterSheetData): string {
+const RACE_EN_MAP: Record<string, string> = {
+  humano: "human",
+  humana: "human",
+  elfo: "elf",
+  elfa: "elf",
+  "alto elfo": "high elf",
+  "alta elfa": "high elf",
+  "elfo de los bosques": "wood elf",
+  "elfa de los bosques": "wood elf",
+  "elfo oscuro": "drow dark elf",
+  "elfa oscura": "drow dark elf",
+  drow: "drow dark elf",
+  enano: "dwarf",
+  enana: "dwarf",
+  "enano de las colinas": "hill dwarf",
+  "enana de las colinas": "hill dwarf",
+  "enano de las montañas": "mountain dwarf",
+  "enana de las montañas": "mountain dwarf",
+  semielfo: "half-elf",
+  semielfa: "half-elf",
+  mediano: "halfling",
+  mediana: "halfling",
+  dracónido: "dragonborn",
+  draconido: "dragonborn",
+  gnomo: "gnome",
+  gnoma: "gnome",
+  orco: "orc",
+  orca: "orc",
+  semiorco: "half-orc",
+  semiorca: "half-orc",
+  tiefling: "tiefling",
+  goliat: "goliath",
+  goliath: "goliath",
+  aasimar: "aasimar",
+};
+
+const CLASS_EN_MAP: Record<string, string> = {
+  bárbaro: "barbarian",
+  barbaro: "barbarian",
+  bárbara: "barbarian",
+  bardo: "bard",
+  barda: "bard",
+  clérigo: "cleric",
+  clerigo: "cleric",
+  clériga: "cleric",
+  druida: "druid",
+  explorador: "ranger",
+  exploradora: "ranger",
+  guerrero: "fighter warrior",
+  guerrera: "fighter warrior",
+  hechicero: "sorcerer",
+  hechicera: "sorcerer",
+  mago: "wizard",
+  maga: "wizard",
+  monje: "monk",
+  monja: "monk",
+  paladín: "paladin",
+  paladin: "paladin",
+  paladina: "paladin",
+  pícaro: "rogue",
+  picaro: "rogue",
+  pícara: "rogue",
+  brujo: "warlock",
+  bruja: "warlock",
+  artífice: "artificer",
+  artifice: "artificer",
+};
+
+export function detectInitialGender(char: CharacterSheetData): CharacterGender {
+  const combined = `${char.name || ""} ${char.appearance || ""} ${char.history || ""} ${char.char_class || ""} ${char.race || ""}`.toLowerCase();
+  
+  if (/\b(mujer|femenin[ao]|ella|dama|chica|maga|bruja|guerrera|paladina|barda|clériga|exploradora|female|woman|lady|girl|heroine)\b/i.test(combined)) {
+    return "female";
+  }
+  if (/\b(hombre|masculin[ao]|él|el|varon|varón|chico|caballero|barba|bigote|mago|brujo|guerrero|paladín|bardo|clérigo|explorador|male|man|guy|lord|hero)\b/i.test(combined)) {
+    return "male";
+  }
+  return "male";
+}
+
+export function getGenderOptions(t: (key: string) => string): GenderOption[] {
+  return [
+    {
+      id: "male",
+      label: t("modals.aiPortrait.genderMale"),
+      sub: t("modals.aiPortrait.genderMaleSub"),
+      icon: "♂",
+      hint: t("modals.aiPortrait.genderMaleHint"),
+    },
+    {
+      id: "female",
+      label: t("modals.aiPortrait.genderFemale"),
+      sub: t("modals.aiPortrait.genderFemaleSub"),
+      icon: "♀",
+      hint: t("modals.aiPortrait.genderFemaleHint"),
+    },
+    {
+      id: "androgynous",
+      label: t("modals.aiPortrait.genderAndro"),
+      sub: t("modals.aiPortrait.genderAndroSub"),
+      icon: "⚥",
+      hint: t("modals.aiPortrait.genderAndroHint"),
+    },
+    {
+      id: "creature",
+      label: t("modals.aiPortrait.genderCreature"),
+      sub: t("modals.aiPortrait.genderCreatureSub"),
+      icon: "🐉",
+      hint: t("modals.aiPortrait.genderCreatureHint"),
+    },
+  ];
+}
+
+// Generador de plantillas internas optimizadas para modelos de difusión con reforzamiento estricto de género
+function buildInternalPrompt(
+  style: ArtStyle,
+  gender: CharacterGender,
+  char: CharacterSheetData
+): string {
   const name = char.name || "Adventurer";
-  const race = char.race || "Human";
-  const charClass = char.char_class || "Warrior";
-  const identity = `${name}, ${race} ${charClass}`;
+  const rawRace = (char.race || "Humano").toLowerCase().trim();
+  const rawClass = (char.char_class || "Guerrero").toLowerCase().trim();
+
+  let raceEn = "human";
+  for (const [esKey, enVal] of Object.entries(RACE_EN_MAP)) {
+    if (rawRace.includes(esKey)) {
+      raceEn = enVal;
+      break;
+    }
+  }
+
+  let classEn = "warrior adventurer";
+  for (const [esKey, enVal] of Object.entries(CLASS_EN_MAP)) {
+    if (rawClass.includes(esKey)) {
+      classEn = enVal;
+      break;
+    }
+  }
+
+  // Tokens reforzados al inicio del prompt para fijar la atención del modelo de difusión
+  let genderTokens = "";
+  let subjectNoun = "";
+
+  if (gender === "male") {
+    genderTokens = "solo 1man, adult male hero, strong masculine facial features, handsome male, rugged";
+    subjectNoun = `male ${raceEn} ${classEn}`;
+  } else if (gender === "female") {
+    genderTokens = "solo 1woman, adult female heroine, beautiful feminine facial features, female warrior";
+    subjectNoun = `female ${raceEn} ${classEn}`;
+  } else if (gender === "androgynous") {
+    genderTokens = "solo androgynous adventurer, elegant neutral features, ethereal non-binary hero";
+    subjectNoun = `androgynous ${raceEn} ${classEn}`;
+  } else {
+    genderTokens = "solo fantasy creature, non-humanoid beastly fantasy character, detailed anatomical features";
+    subjectNoun = `monstrous ${raceEn} ${classEn}`;
+  }
+
+  const identity = `${genderTokens}, ${subjectNoun}, named "${name}"`;
   const rawAppearance = (char.appearance || "").trim();
-  const appearanceText = rawAppearance ? `Physical appearance, face and equipment: ${rawAppearance}.` : "";
+  const appearanceText = rawAppearance
+    ? `Character physical details, clothing and equipment: ${rawAppearance}.`
+    : "";
 
   switch (style) {
     case "pixelart":
-      return `16-bit pixel art character portrait, authentic retro RPG sprite, crisp square pixels, pixelated art, detailed pixel shading, Fire Emblem and Chrono Trigger sprite style: ${identity}. ${appearanceText} Clean pixel outlines, sharp pixel details, vibrant 16-bit color palette, solid dark background, centered portrait icon.`;
+      return `16-bit pixel art character portrait of a ${subjectNoun}, authentic retro RPG sprite, crisp square pixels, pixelated art, detailed pixel shading, classic RPG sprite: ${identity}. ${appearanceText} Clean pixel outlines, sharp pixel details, vibrant 16-bit color palette, solid dark background, centered portrait icon.`;
     case "fantasy":
-      return `Masterpiece digital fantasy illustration, official D&D 5e character portrait art: ${identity}. ${appearanceText} Dramatic cinematic lighting, rich textures, sharp focus, highly detailed face and armor, epic fantasy atmosphere, ArtStation trending.`;
+      return `Masterpiece digital fantasy illustration of a ${subjectNoun}, official D&D 5e character portrait art: ${identity}. ${appearanceText} Dramatic cinematic lighting, rich textures, sharp focus, highly detailed face and armor, epic fantasy atmosphere, ArtStation trending.`;
     case "oil":
-      return `Classical Renaissance oil painting on canvas, masterwork portrait of a fantasy hero: ${identity}. ${appearanceText} Dramatic chiaroscuro lighting, rich impasto brushstrokes, Rembrandt style, aged canvas texture, majestic pose.`;
+      return `Classical Renaissance oil painting on canvas of a ${subjectNoun}, masterwork fantasy portrait: ${identity}. ${appearanceText} Dramatic chiaroscuro lighting, rich impasto brushstrokes, Rembrandt style, aged canvas texture, majestic pose.`;
     case "sketch":
-      return `Detailed ink and graphite sketch on antique aged parchment, vintage tabletop RPG manual illustration: ${identity}. ${appearanceText} Fine crosshatching, sepia and black ink wash, hand-drawn medieval etching, high contrast lineart.`;
+      return `Detailed ink and graphite sketch on antique aged parchment of a ${subjectNoun}, vintage tabletop RPG manual illustration: ${identity}. ${appearanceText} Fine crosshatching, sepia and black ink wash, hand-drawn medieval etching, high contrast lineart.`;
     case "cinematic":
-      return `Cinematic hyperrealistic fantasy portrait, 8k resolution, Unreal Engine 5 render: ${identity}. ${appearanceText} Volumetric studio lighting, photorealistic skin and armor textures, shallow depth of field, atmospheric depth.`;
+      return `Cinematic hyperrealistic fantasy portrait of a ${subjectNoun}, 8k resolution, Unreal Engine 5 render: ${identity}. ${appearanceText} Volumetric studio lighting, photorealistic skin and armor textures, shallow depth of field, atmospheric depth.`;
   }
 }
 
@@ -218,12 +382,14 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
 }) => {
   const { t, language } = useTranslation();
   const [selectedStyle, setSelectedStyle] = useState<ArtStyle>("pixelart");
+  const [selectedGender, setSelectedGender] = useState<CharacterGender>(() => detectInitialGender(character));
   const [prompt, setPrompt] = useState<string>("");
   const [isCopied, setIsCopied] = useState<boolean>(false);
   const [showAdvancedProviders, setShowAdvancedProviders] = useState<boolean>(initialConfigOpen);
 
   const styleOptions = getStyleOptions(language);
   const providerOptions = getProviderOptions(language);
+  const genderOptions = getGenderOptions(t);
 
   const [provider, setProvider] = useState<AiProvider>(() => {
     return (localStorage.getItem("dnd_ai_img_provider") as AiProvider) || "pollinations";
@@ -244,11 +410,16 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
     }
   }, [initialConfigOpen]);
 
-  // Sincronizar prompt con la plantilla interna cuando cambia el estilo o la apariencia
+  // Sincronizar prompt con la plantilla interna cuando cambia el estilo, género o apariencia
   useEffect(() => {
-    const constructed = buildInternalPrompt(selectedStyle, character);
+    const constructed = buildInternalPrompt(selectedStyle, selectedGender, character);
     setPrompt(constructed);
-  }, [selectedStyle, character.name, character.race, character.char_class, character.appearance]);
+  }, [selectedStyle, selectedGender, character.name, character.race, character.char_class, character.appearance]);
+
+  const handleResetPrompt = () => {
+    const constructed = buildInternalPrompt(selectedStyle, selectedGender, character);
+    setPrompt(constructed);
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -318,7 +489,7 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
         provider,
         apiKey: cleanKey,
         apiUrl: apiUrl.trim(),
-        model: provider === "openai" ? "dall-e-3" : "imagen-3.0-generate-002",
+        model: provider === "pollinations" ? "flux" : (provider === "openai" ? "dall-e-3" : "imagen-3.0-generate-002"),
       });
 
       if (res.success && res.image_base64) {
@@ -420,7 +591,44 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
             </div>
           </div>
 
-          {/* 2. Prompt Generado & Editor */}
+          {/* 2. Selector de Género / Sexo del Personaje */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-muted">
+                {t("modals.aiPortrait.genderLabel")}
+              </label>
+              <span className="text-[11px] text-gold/80 font-medium">
+                {genderOptions.find(g => g.id === selectedGender)?.hint}
+              </span>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {genderOptions.map((g) => {
+                const isSelected = selectedGender === g.id;
+                return (
+                  <button
+                    key={g.id}
+                    type="button"
+                    onClick={() => setSelectedGender(g.id)}
+                    className={`p-2 rounded-lg border text-left flex items-center gap-2.5 transition-all ${
+                      isSelected
+                        ? "bg-gold/15 border-gold shadow-sm ring-1 ring-gold"
+                        : "bg-surface/50 border-border-iron hover:border-gold/60 text-muted"
+                    }`}
+                  >
+                    <span className={`text-base font-bold ${isSelected ? "text-gold" : "text-muted"}`}>{g.icon}</span>
+                    <div className="flex flex-col min-w-0">
+                      <span className={`text-xs font-semibold truncate ${isSelected ? "text-gold" : "text-main"}`}>
+                        {g.label}
+                      </span>
+                      <span className="text-[10px] text-muted truncate">{g.sub}</span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 3. Prompt Generado & Editor */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
@@ -433,14 +641,25 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
                   </span>
                 )}
               </div>
-              <button
-                onClick={handleCopyPrompt}
-                className="text-xs text-gold hover:text-gold-hover flex items-center gap-1 font-semibold transition-colors"
-                title={t("modals.aiPortrait.copyPrompt")}
-              >
-                {isCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{isCopied ? t("modals.aiPortrait.promptCopied") : t("modals.aiPortrait.copyPrompt")}</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleResetPrompt}
+                  className="text-xs text-muted hover:text-gold flex items-center gap-1 font-medium transition-colors"
+                  title={t("modals.aiPortrait.resetPromptTooltip")}
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>{t("modals.aiPortrait.resetPrompt")}</span>
+                </button>
+                <button
+                  onClick={handleCopyPrompt}
+                  className="text-xs text-gold hover:text-gold-hover flex items-center gap-1 font-semibold transition-colors"
+                  title={t("modals.aiPortrait.copyPrompt")}
+                >
+                  {isCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{isCopied ? t("modals.aiPortrait.promptCopied") : t("modals.aiPortrait.copyPrompt")}</span>
+                </button>
+              </div>
             </div>
             <textarea
               value={prompt}
@@ -454,7 +673,7 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
             </p>
           </div>
 
-          {/* 3. Panel de Previsualización & Pegar Imagen Externa */}
+          {/* 4. Panel de Previsualización & Pegar Imagen Externa */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center bg-surface/30 p-3 rounded-lg border border-border-iron">
             {/* Contenedor de la Imagen */}
             <div className="flex flex-col items-center justify-center">
