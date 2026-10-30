@@ -15,7 +15,6 @@ import type {
   BuilderCatalog,
   PointBuyValidationResult,
   SpellItemData,
-  ClassProgressionLimits,
   DmSessionStatus,
   DmHomebrewItem,
   DmSessionEventLog,
@@ -24,35 +23,106 @@ import type {
 declare global {
   interface Window {
     pywebview?: {
-      api: any;
+      api: {
+        list_characters: () => Promise<CharacterSummary[]>;
+        get_active_character: () => Promise<CharacterSheetData | null>;
+        get_character_by_id: (id: number) => Promise<CharacterSheetData | null>;
+        set_active_character: (id: number) => Promise<CharacterSheetData | null>;
+        save_character: (charData: CharacterSheetData) => Promise<{ success: boolean; id: number; character?: CharacterSheetData }>;
+        delete_character: (id: number) => Promise<boolean>;
+        upload_character_portrait: (charId: number) => Promise<{ success: boolean; portrait_path?: string; portrait_base64?: string; character?: CharacterSheetData; error?: string }>;
+        set_character_portrait_base64: (charId: number, imageBase64: string) => Promise<{ success: boolean; portrait_base64?: string; character?: CharacterSheetData; error?: string }>;
+        generate_ai_portrait: (prompt: string, provider: string, apiKey: string, apiUrl: string, model: string) => Promise<{ success: boolean; image_base64?: string; error?: string }>;
+        export_character_json: (charId: number) => Promise<{ success: boolean; path?: string; error?: string }>;
+        import_character_json: () => Promise<{ success: boolean; id?: number; character?: CharacterSheetData; error?: string }>;
+        export_character_pdf: (charId: number) => Promise<{ success: boolean; path?: string; error?: string; cancelled?: boolean }>;
+        import_character_pdf: () => Promise<{ success: boolean; id?: number; character?: CharacterSheetData; error?: string }>;
+        get_talespire_status: () => Promise<TaleSpireStatus>;
+        connect_talespire: () => Promise<{ success: boolean; message: string }>;
+        disconnect_talespire: () => Promise<void>;
+        reinstall_talespire_symbiote?: () => Promise<{ success: boolean; message?: string; error?: string }>;
+        open_talespire_symbiotes_folder?: () => Promise<{ success: boolean; error?: string }>;
+        roll_dice: (request: RollRequest) => Promise<RollResult>;
+        get_roll_history: () => Promise<RollHistoryEntry[]>;
+        clear_roll_history: () => Promise<boolean>;
+        trigger_talespire_gesture: () => Promise<boolean>;
+        get_character_journals: (charId: number) => Promise<any[]>;
+        save_character_journal: (charId: number, journalData: any) => Promise<any>;
+        delete_character_journal: (charId: number, sessionId: number) => Promise<any>;
+        get_character_network: (charId: number) => Promise<{ nodes: any[]; edges: any[] }>;
+        save_network_node: (charId: number, nodeData: any) => Promise<any>;
+        delete_network_node: (charId: number, nodeId: string) => Promise<any>;
+        save_network_edge: (charId: number, edgeData: any) => Promise<any>;
+        delete_network_edge: (charId: number, edgeData: any) => Promise<any>;
+        list_pdf_documents: () => Promise<PdfDocumentSummary[]>;
+        open_pdf_dialog: () => Promise<string | null>;
+        open_pdf_document: (filePath: string) => Promise<PdfDocumentInfo>;
+        render_pdf_page: (pageNum: number, zoom?: number, trimMargins?: boolean) => Promise<PdfPageRenderResult>;
+        get_compendium_categories: (lang?: string) => Promise<CompendiumCategory[]>;
+        search_compendium: (query: string, category?: string, lang?: string) => Promise<CompendiumSearchResult[]>;
+        get_compendium_entry: (category: string, entryName: string, lang?: string) => Promise<any>;
+        get_available_spells: (
+          className: string | null,
+          maxLevel: number | null,
+          query: string,
+          school: string | null,
+          level: number | null,
+          limit: number,
+          lang: string
+        ) => Promise<SpellItemData[]>;
+        add_spell_to_character: (charId: number, spellData: any) => Promise<{ success: boolean; character?: CharacterSheetData; error?: string }>;
+        remove_spell_from_character: (charId: number, spellName: string) => Promise<{ success: boolean; character?: CharacterSheetData; error?: string }>;
+        sync_character_features: (charId: number, lang?: string) => Promise<{ success: boolean; character?: CharacterSheetData; error?: string }>;
+        sync_compendium_from_srd: (edition?: string) => Promise<{ success: boolean; total_entities?: number; error?: string }>;
+        get_builder_catalog: (edition?: string, lang?: string) => Promise<BuilderCatalog>;
+        validate_point_buy: (scores: Record<string, number>) => Promise<PointBuyValidationResult>;
+        build_character_from_wizard: (payload: any) => Promise<CharacterSheetData>;
+        generate_quick_build_preview: (charClass: string, species?: string) => Promise<CharacterSheetData>;
+        generate_random_character_preview: (charClass?: string, species?: string, level?: number) => Promise<{ character: CharacterSheetData; raw_rolls: Record<string, any> }>;
+        perform_rest: (charId: number, restType: string, hitDiceSpent: number) => Promise<any>;
+        get_settings: () => Promise<AppSettings>;
+        set_setting: (key: string, value: any) => Promise<boolean>;
+        get_available_themes: () => Promise<ThemeOption[]>;
+        start_dm_session: (name?: string, campaignName?: string, sessionId?: string) => Promise<DmSessionStatus>;
+        dm_list_sessions: () => Promise<any[]>;
+        stop_dm_session: () => Promise<{ success: boolean }>;
+        get_dm_session_status: () => Promise<DmSessionStatus>;
+        dm_apply_hp_change: (playerToken: string, delta: number) => Promise<boolean>;
+        dm_gift_item: (playerToken: string, itemData: any) => Promise<boolean>;
+        dm_list_homebrew_items: () => Promise<DmHomebrewItem[]>;
+        dm_save_homebrew_item: (itemData: any) => Promise<string>;
+        dm_delete_homebrew_item: (itemId: string) => Promise<boolean>;
+        dm_get_session_logs: (sessionId?: string) => Promise<DmSessionEventLog[]>;
+        dm_save_session_notes: (notes: string, sessionId?: string) => Promise<boolean>;
+        dm_get_session_notes: (sessionId?: string) => Promise<string>;
+      };
     };
   }
 }
 
-// Datos Mock para previsualización directa en navegador (npm run dev)
-const mockCharacters: CharacterSummary[] = [
+let mockCharacters: CharacterSummary[] = [
   {
     id: 1,
-    name: "Artanis",
+    name: "Artanis de Caelum",
     char_class: "Paladín",
     subclass: "Juramento de Venganza",
     level: 4,
-    race: "Semielfo",
+    race: "Humano",
     hp_current: 36,
     hp_max: 36,
     is_active: 1,
-    updated_at: "2026-10-17 18:00:00",
+    session_id: "sess_mock",
+    updated_at: new Date().toISOString(),
   },
 ];
 
 let mockActiveCharacter: CharacterSheetData = {
   id: 1,
-  name: "Artanis",
+  name: "Artanis de Caelum",
   char_class: "Paladín",
   subclass: "Juramento de Venganza",
   level: 4,
-  race: "Semielfo",
-  subrace: "Estándar",
+  race: "Humano",
   background: "Soldado",
   alignment: "Legal Bueno",
   xp: 2700,
@@ -120,83 +190,86 @@ let mockActiveCharacter: CharacterSheetData = {
       components: "V, S",
       duration: "Instantáneo",
       prepared: true,
-      notes: "Cura 1d8 + mod Carisma.",
+      notes: "Cura 1d8 + Modificador de Lanzamiento.",
+    },
+    {
+      name: "Protección contra el Bien y el Mal",
+      level: 1,
+      school: "Abjuración",
+      cast_time: "1 Acción",
+      range_area: "Toque",
+      components: "V, S, M",
+      duration: "Concentración, hasta 10 minutos",
+      prepared: false,
+      notes: "Protege contra aberraciones, celestiales, etc.",
     },
   ],
   spell_slots_total: { "1": 3 },
   spell_slots_used: { "1": 1 },
   spell_stats: {
-    ability: "CAR",
-    dc: 13,
-    attack_bonus: 5,
-    is_caster: true,
+    casting_ability: "CAR",
+    spell_save_dc: 13,
+    spell_attack_bonus: 5,
+    ability_mod: 3,
   },
   weapon_actions: [
     {
-      name: "Espadón +1",
+      name: "Espada Larga Radiante",
       type: "Cuerpo a cuerpo",
-      range_val: "5 pies",
-      hit_dc: "+6",
-      damage_dice: "2d6+4",
-      damage_type: "Cortante",
-      notes: "Pesada, dos manos.",
+      range_val: "5 pies (1 tile)",
+      hit_dc: "+5",
+      damage_dice: "1d8+3",
+      damage_type: "cortante",
+      notes: "Versátil (1d10+3)",
+      proficient: true,
+    },
+    {
+      name: "Jabalina de Repuesto",
+      type: "A distancia",
+      range_val: "30/120 pies",
+      hit_dc: "+5",
+      damage_dice: "1d6+3",
+      damage_type: "perforante",
+      notes: "Arrojadiza",
       proficient: true,
     },
   ],
   features: [
     {
+      id: "feat_1",
       name: "Sentido Divino",
-      source: "Paladín Nvl 1",
-      description: "Detecta celestiales, infernales y no muertos a 60 pies.",
+      source: "Paladín (Clase)",
+      description: "Detectas presencia de celestiales, infernales o muertos vivientes.",
       uses_max: 4,
-      uses_current: 4,
-      recharge: "LR",
+      uses_current: 2,
+      recharge: "Descanso Largo",
+      origin: "class",
     },
     {
+      id: "feat_2",
       name: "Imposición de Manos",
-      source: "Paladín Nvl 1",
-      description: "Reserva de 20 PG de curación por descanso largo.",
+      source: "Paladín (Clase)",
+      description: "Reserva curativa sagrada igual a Nivel × 5 (20 PV).",
       uses_max: 20,
-      uses_current: 20,
-      recharge: "LR",
-    },
-    {
-      name: "Castigo Divino",
-      source: "Paladín Nvl 2",
-      description: "Gasta ranura de nivel 1 para infligir +2d8 radiante.",
-      uses_max: 0,
-      uses_current: 0,
-      recharge: "At-Will",
+      uses_current: 15,
+      recharge: "Descanso Largo",
+      origin: "class",
     },
   ],
   sessions: [
     {
       id: 1,
-      date: "2026-10-15",
-      title: "La Cripta de los Reyes Olvidados",
-      summary:
-        "El grupo descendió por las catacumbas oscuras de Oakhaven. Enfrentamos a **4 esqueletos** y descubrimos una *puerta rúnica*.\n\n- Hallamos el sello de la Orden.\n- Recuperamos las reliquias del altar.",
-      loot: "50 PO, Gema de cuarzo",
+      date: "14 de Flamerule, 1492 CV",
+      title: "El Asedio de Phandalin",
+      summary: "Emboscada exitosa contra los trasgos.",
+      loot: "50 po, Poción de Curación",
       xp_gained: 450,
+      session_id: "sess_mock",
     },
   ],
   network_nodes: [
-    {
-      id: "node_1",
-      name: "Sir Roderick",
-      role: "Mentor",
-      description: "Comandante de la Orden del Roble Plateado.",
-      x: 200,
-      y: 150,
-    },
-    {
-      id: "node_2",
-      name: "Malakar",
-      role: "Rival",
-      description: "Caballero desterrado que busca venganza.",
-      x: 450,
-      y: 150,
-    },
+    { id: "node_1", name: "Artanis", role: "Protagonista", description: "Héroe juramentado", x: 100, y: 150 },
+    { id: "node_2", name: "Lord Saren", role: "Némesis", description: "Caballero caído", x: 350, y: 150 },
   ],
   network_edges: [{ source_id: "node_1", target_id: "node_2", relation: "Enemigo" }],
   senses: "Visión en la Oscuridad 60 pies",
@@ -323,6 +396,20 @@ export const api = {
 
   async disconnectTaleSpire(): Promise<void> {
     if (this.isNative()) await window.pywebview!.api.disconnect_talespire();
+  },
+
+  async reinstallTaleSpireSymbiote(): Promise<{ success: boolean; message?: string; error?: string }> {
+    if (this.isNative() && window.pywebview?.api?.reinstall_talespire_symbiote) {
+      return await window.pywebview.api.reinstall_talespire_symbiote();
+    }
+    return { success: true, message: "Symbiote cargado (modo navegador)" };
+  },
+
+  async openTaleSpireSymbiotesFolder(): Promise<{ success: boolean; error?: string }> {
+    if (this.isNative() && window.pywebview?.api?.open_talespire_symbiotes_folder) {
+      return await window.pywebview.api.open_talespire_symbiotes_folder();
+    }
+    return { success: true };
   },
 
   async rollDice(request: RollRequest): Promise<RollResult> {
@@ -578,22 +665,18 @@ export const api = {
         { name: "Guerrero", hit_die: 10, primary_ability: "FUE", saves: ["FUE", "CON"], skill_choices_count: 2, skill_options: ["Acrobacias", "Atletismo", "Historia", "Intimidación", "Percepción", "Perspicacia", "Supervivencia"], subclasses: ["Campeón", "Maestro de Batalla", "Caballero Arcano"], subclass_unlock_level: 3, is_caster: false },
         { name: "Mago", hit_die: 6, primary_ability: "INT", saves: ["INT", "SAB"], skill_choices_count: 2, skill_options: ["Conocimiento Arcano", "Historia", "Investigación", "Medicina", "Perspicacia", "Religión"], subclasses: ["Escuela de Evocación", "Escuela de Abjuración", "Escuela de Adivinación"], subclass_unlock_level: 3, is_caster: true },
         { name: "Clérigo", hit_die: 8, primary_ability: "SAB", saves: ["SAB", "CAR"], skill_choices_count: 2, skill_options: ["Historia", "Medicina", "Perspicacia", "Persuasión", "Religión"], subclasses: ["Dominio de la Vida", "Dominio de la Luz", "Dominio de la Guerra"], subclass_unlock_level: edition === "5.5e" ? 3 : 1, is_caster: true },
-        { name: "Pícaro", hit_die: 8, primary_ability: "DES", saves: ["DES", "INT"], skill_choices_count: 4, skill_options: ["Acrobacias", "Atletismo", "Engaño", "Intimidación", "Investigación", "Juego de Manos", "Percepción", "Perspicacia", "Persuasión", "Sigilo"], subclasses: ["Ladrón", "Asesino", "Bribón Arcano"], subclass_unlock_level: 3, is_caster: false },
-        { name: "Paladín", hit_die: 10, primary_ability: "FUE", saves: ["SAB", "CAR"], skill_choices_count: 2, skill_options: ["Atletismo", "Intimidación", "Medicina", "Perspicacia", "Persuasión", "Religión"], subclasses: ["Juramento de Devoción", "Juramento de Venganza", "Juramento de los Antiguos"], subclass_unlock_level: 3, is_caster: true },
       ],
       backgrounds: [
-        { name: "Soldado", skills: ["Atletismo", "Intimidación"], feature_name: "Rango Militar", feature_desc: "Reconocimiento e influencia entre soldados." },
-        { name: "Sabio", skills: ["Conocimiento Arcano", "Historia"], feature_name: "Investigador", feature_desc: "Sabes dónde obtener información erudita." },
-        { name: "Acólito", skills: ["Perspicacia", "Religión"], feature_name: "Refugio de los Fieles", feature_desc: "Asistencia en templos de tu fe." },
-        { name: "Criminal", skills: ["Engaño", "Sigilo"], feature_name: "Contacto Criminal", feature_desc: "Enlace con los bajos fondos." },
+        { name: "Soldado", skills: ["Atletismo", "Intimidación"], feature_name: "Rango Militar", feature_desc: "Reconocimiento y alojamiento en campamentos afines." },
+        { name: "Sabio", skills: ["Conocimiento Arcano", "Historia"], feature_name: "Investigador", feature_desc: "Sabes dónde encontrar cualquier manuscrito o fuente." },
       ],
-      all_skills: Object.keys(mockActiveCharacter.skills),
+      all_skills: [
+        "Acrobacias", "Atletismo", "Conocimiento Arcano", "Engaño", "Historia",
+        "Interpretación", "Intimidación", "Investigación", "Juego de Manos", "Medicina",
+        "Naturaleza", "Percepción", "Perspicacia", "Persuasión", "Religión",
+        "Sigilo", "Supervivencia", "Trato con Animales"
+      ],
     };
-  },
-
-  async getClassSpells(className: string, maxLevel: number = 1, lang: string = "es"): Promise<SpellItemData[]> {
-    if (this.isNative()) return await window.pywebview!.api.get_class_spells(className, maxLevel, lang);
-    return mockActiveCharacter.spells.filter((s) => s.level <= maxLevel);
   },
 
   async getAvailableSpells(options: {
@@ -620,22 +703,6 @@ export const api = {
     if (options.level !== undefined) filtered = filtered.filter((s) => s.level === options.level);
     if (options.query) filtered = filtered.filter((s) => s.name.toLowerCase().includes(options.query!.toLowerCase()));
     return filtered;
-  },
-
-  async getClassProgressionLimits(className: string, level: number, edition: string = "5.5e"): Promise<ClassProgressionLimits> {
-    if (this.isNative()) {
-      return await window.pywebview!.api.get_class_progression_limits(className, level, edition);
-    }
-    return {
-      is_caster: true,
-      edition,
-      cantrips_limit: 3,
-      spells_limit: 7,
-      max_spell_level: 2,
-      spell_slots: { "1": 4, "2": 3 },
-      weapon_mastery_slots: 0,
-      casting_ability: "CAR",
-    };
   },
 
   async addSpellToCharacter(charId: number, spell: SpellItemData): Promise<{ success: boolean; character?: CharacterSheetData; error?: string }> {
@@ -854,4 +921,3 @@ export const api = {
     return "";
   },
 };
-

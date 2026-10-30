@@ -58,7 +58,6 @@ from .tunnel_manager import CloudflareTunnelManager
 from .session_server import DmSessionServer
 
 
-
 # Tabla de ranuras de conjuro para lanzadores completos (Nvl 1-20)
 FULL_CASTER_SLOTS: Dict[int, Dict[str, int]] = {
     1: {"1": 2},
@@ -148,240 +147,17 @@ class DesktopBridge:
             return 25
         if "10.5" in s or "10,5" in s or "35" in s:
             return 35
-        if "12" in s or "40" in s:
-            return 40
         return 30
 
-    def _serialize_character(self, char: Optional[CharacterSheet], lang: Optional[str] = None) -> Optional[Dict[str, Any]]:
-        """
-        Adaptador bidireccional: transforma un CharacterSheet de Python en el contrato
-        enriquecido y precalculado que consume el frontend de React, conservando también
-        todos los campos canónicos del modelo y soportando campos bilingües.
-        """
+    @staticmethod
+    def _serialize_character(char: Optional[CharacterSheet]) -> Optional[Dict[str, Any]]:
+        """Serializa CharacterSheet a dict compatible con TypeScript."""
         if not char:
             return None
-
-        active_lang = lang or self._db.get_setting("language", "es")
-        prof_bonus = calc_proficiency_bonus(char.level)
-        char.proficiency_bonus = prof_bonus
-
-        # 1. Atributos enriquecidos (FUE, DES, CON, INT, SAB, CAR)
-        stat_order = ["FUE", "DES", "CON", "INT", "SAB", "CAR"]
-        abilities_out: Dict[str, Dict[str, Any]] = {}
-        for st in stat_order:
-            raw_val = char.abilities.get(st, 10)
-            score = int(raw_val) if not isinstance(raw_val, dict) else int(raw_val.get("base", 10))
-            char.abilities[st] = score
-            mod = calc_modifier(score)
-            is_prof = st in (char.saving_throw_profs or [])
-            save_bon = get_saving_throw_modifier(char, st)
-            abilities_out[st] = {
-                "base": score,
-                "override": 0,
-                "bonus": mod,
-                "proficient": is_prof,
-                "save_bonus": save_bon,
-            }
-
-        # 2. Las 18 habilidades oficiales calculadas con reglas 5e
-        skills_out: Dict[str, Dict[str, Any]] = {}
-        for sk_name in sorted(SKILLS_MAP.keys()):
-            prof_type = char.skills.get(sk_name, "none")
-            sk_bonus = get_skill_modifier(char, sk_name)
-            skills_out[sk_name] = {
-                "stat": SKILLS_MAP[sk_name],
-                "proficient": prof_type in ("proficient", "expertise"),
-                "expertise": prof_type == "expertise",
-                "bonus": sk_bonus,
-            }
-
-        # 3. Armas / Acciones de Combate
-        weapon_actions_out = []
-        for w in char.weapons:
-            is_ranged = any(k in (w.notes or "").lower() or k in w.name.lower() for k in ("arco", "ballesta", "munición", "arrojadiza", "honda", "dardo"))
-            weapon_actions_out.append({
-                "name": w.name,
-                "type": "A distancia / Arrojadiza" if is_ranged else "Cuerpo a cuerpo",
-                "range_val": "Variable" if is_ranged else "1.5 m (5 pies)",
-                "hit_dc": w.attack_bonus,
-                "damage_dice": w.damage,
-                "damage_type": w.damage_type,
-                "notes": w.notes,
-            })
-
-        # 4. Ranuras de Conjuro y Lista de Conjuros
-        slots_total: Dict[str, int] = {}
-        slots_used: Dict[str, int] = {}
-        for lvl_str, tier in (char.spell_slots or {}).items():
-            t_tot = tier.total if hasattr(tier, "total") else int(tier.get("total", 0))
-            t_cur = tier.current if hasattr(tier, "current") else int(tier.get("current", 0))
-            if t_tot > 0:
-                slots_total[str(lvl_str)] = t_tot
-                slots_used[str(lvl_str)] = max(0, t_tot - t_cur)
-
-        spells_out = []
-        for sp in char.spells:
-            en_spell = self._okf.get_spell_item(sp.id or sp.name, lang="en")
-            desc_en = en_spell.description if en_spell else ""
-            name_en = en_spell.name if en_spell else (sp.name_en or sp.name)
-            school_en = en_spell.school if en_spell else sp.school
-
-            spells_out.append({
-                "id": sp.id,
-                "name": sp.name,
-                "name_en": name_en,
-                "level": sp.level,
-                "school": sp.school,
-                "school_en": school_en,
-                "cast_time": sp.casting_time,
-                "casting_time": sp.casting_time,
-                "range_area": sp.range,
-                "range": sp.range,
-                "components": sp.components,
-                "duration": sp.duration,
-                "concentration": sp.concentration,
-                "ritual": sp.ritual,
-                "prepared": True,
-                "notes": sp.description,
-                "description": sp.description,
-                "notes_en": desc_en or sp.description,
-                "description_en": desc_en or sp.description,
-                "higher_levels": sp.higher_levels,
-                "source": sp.source,
-            })
-
-        # 5. Rasgos y Recursos de Clase (actualizados dinámicamente según reglas 5e e idioma)
-        updated_features = compute_dynamic_features(char, lang=active_lang)
-        char.features = updated_features
-        features_out = [
-            {
-                "id": f.id or f"feat_{idx}",
-                "name": f.name,
-                "source": f.source,
-                "description": f.description,
-                "uses_max": f.uses_max,
-                "uses_current": f.uses_current,
-                "recharge": f.recharge,
-            }
-            for idx, f in enumerate(updated_features)
-        ]
-
-        # 6. Retrato en base64 si existe archivo local
-        portrait_b64 = char.portrait_base64 or ""
-        if not portrait_b64 and char.portrait_path and os.path.exists(char.portrait_path):
-            try:
-                ext = Path(char.portrait_path).suffix.lower().lstrip(".") or "png"
-                if ext == "jpg":
-                    ext = "jpeg"
-                with open(char.portrait_path, "rb") as img_f:
-                    b64_raw = base64.b64encode(img_f.read()).decode("ascii")
-                    portrait_b64 = f"data:image/{ext};base64,{b64_raw}"
-            except Exception:
-                pass
-
-        hd_max = max(1, getattr(char, "hit_dice_max", char.level) or char.level)
-        hd_curr = getattr(char, "hit_dice_current", hd_max)
-        hd_faces = getattr(char, "hit_dice_faces", CLASS_HIT_DICE.get(char.char_class, 8))
-
-        raw_spell_stats = get_character_spell_stats(char)
-        atk_bon_raw = raw_spell_stats.get("attack_bonus", 0)
-        try:
-            atk_bon_int = int(str(atk_bon_raw).replace("+", "").strip() or "0")
-        except ValueError:
-            atk_bon_int = 0
-        dc_int = int(raw_spell_stats.get("save_dc", raw_spell_stats.get("dc", 10)))
-        is_caster = (
-            char.char_class in CLASS_CASTING_ABILITY
-            or bool(slots_total)
-            or bool(spells_out)
-        )
-        spell_stats = {
-            "ability": raw_spell_stats.get("ability", "CAR"),
-            "dc": dc_int,
-            "save_dc": dc_int,
-            "attack_bonus": atk_bon_int,
-            "is_caster": is_caster,
-        }
-
-        return {
-            "id": char.id,
-            "name": char.name,
-            "char_class": char.char_class,
-            "subclass": char.subclass,
-            "level": char.level,
-            "race": char.race,
-            "background": char.background,
-            "alignment": char.alignment,
-            "xp": char.xp,
-            "inspiration": bool(char.inspiration),
-            "proficiency_bonus": prof_bonus,
-            "ac": int(char.armor_class),
-            "armor_class": int(char.armor_class),
-            "speed": self._parse_speed_feet(char.speed),
-            "initiative": int(char.initiative_bonus),
-            "initiative_bonus": int(char.initiative_bonus),
-            "hp_current": int(char.hp_current),
-            "hp_max": int(char.hp_max),
-            "hp_temp": int(char.hp_temp),
-            "hit_dice_max": int(hd_max),
-            "hit_dice_current": f"{int(hd_curr)}d{int(hd_faces)}",
-            "hit_dice_faces": int(hd_faces),
-            "hit_dice_total": f"{int(hd_max)}d{int(hd_faces)}",
-            "conditions": list(char.conditions or []),
-            "death_save_successes": int(char.death_saves_success),
-            "death_save_failures": int(char.death_saves_failure),
-            "saving_throw_profs": list(char.saving_throw_profs or []),
-            "abilities": abilities_out,
-            "skills": skills_out,
-            "spells": spells_out,
-            "spell_slots_total": slots_total,
-            "spell_slots_used": slots_used,
-            "spell_stats": spell_stats,
-            "weapon_actions": weapon_actions_out,
-            "features": features_out,
-            "senses": char.senses,
-            "languages": char.languages,
-            "proficiencies_extra": char.proficiencies_extra,
-            "appearance": char.appearance,
-            "history": char.history,
-            "personality_traits": char.personality_traits,
-            "ideals": char.ideals,
-            "bonds": char.bonds,
-            "flaws": char.flaws,
-            "portrait_path": char.portrait_path,
-            "portrait_base64": portrait_b64,
-            "sessions": [
-                {
-                    "id": int(s.id) if str(s.id).isdigit() else idx + 1,
-                    "date": s.date,
-                    "title": s.title,
-                    "summary": s.summary,
-                    "loot": s.loot,
-                    "xp_gained": int(s.xp_gained),
-                }
-                for idx, s in enumerate(char.sessions)
-            ],
-            "network_nodes": [
-                {
-                    "id": n.id,
-                    "name": n.name,
-                    "role": n.role,
-                    "description": n.description,
-                    "avatar_base64": n.avatar_base64,
-                    "x": float(n.x),
-                    "y": float(n.y),
-                }
-                for n in char.network_nodes
-            ],
-            "network_edges": [
-                {
-                    "source_id": e.source_id,
-                    "target_id": e.target_id,
-                    "relation": e.relation,
-                }
-                for e in char.network_edges
-            ],
-        }
+        data = char.to_dict()
+        data["spell_stats"] = get_character_spell_stats(char)
+        data["features"] = compute_dynamic_features(char)
+        return data
 
     # =========================================================================
     # GESTIÓN DE PERSONAJES
@@ -392,93 +168,104 @@ class DesktopBridge:
         return self._db.list_characters()
 
     def get_active_character(self) -> Optional[Dict[str, Any]]:
-        """Obtiene el personaje activo actual en formato diccionario enriquecido."""
+        """Devuelve el personaje activo con estadísticas calculadas."""
         char = self._db.get_active_character()
         return self._serialize_character(char)
 
     def get_character_by_id(self, char_id: int) -> Optional[Dict[str, Any]]:
-        """Carga un personaje por ID."""
+        """Devuelve un personaje por su ID."""
         char = self._db.get_character_by_id(char_id)
         return self._serialize_character(char)
 
     def set_active_character(self, char_id: int) -> Optional[Dict[str, Any]]:
-        """Establece el personaje activo por ID y lo retorna."""
-        char = self._db.set_active_character_by_id(char_id)
-        return self._serialize_character(char)
+        """Establece el personaje activo por ID."""
+        self._db.set_active_character(char_id)
+        return self.get_active_character()
 
-    def save_character(self, character_dict: Dict[str, Any], set_active: bool = True) -> Dict[str, Any]:
-        """Guarda o actualiza un personaje en SQLite y devuelve la ficha sincronizada."""
+    def save_character(self, char_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Guarda o actualiza un personaje en SQLite."""
         try:
-            # Si el personaje ya existe en BD, preservar campos que no vengan en updates parciales
-            existing_id = character_dict.get("id")
-            if existing_id is not None:
-                existing_char = self._db.get_character_by_id(int(existing_id))
-                if existing_char:
-                    merged = existing_char.to_dict()
-                    merged.update(character_dict)
-                    character_dict = merged
-
-            char = CharacterSheet.from_dict(character_dict)
-            char_id = self._db.save_character(char, set_active=set_active)
-            saved_char = self._db.get_character_by_id(char_id)
-            return {
-                "success": True,
-                "id": char_id,
-                "character": self._serialize_character(saved_char),
-                "error": None,
-            }
+            char = CharacterSheet.from_dict(char_data)
+            is_active = self._is_active_character_id(char.id) if char.id else True
+            char_id = self._db.save_character(char, set_active=is_active)
+            saved = self._db.get_character_by_id(char_id)
+            return {"success": True, "id": char_id, "character": self._serialize_character(saved)}
         except Exception as e:
-            return {"success": False, "id": None, "error": str(e)}
+            return {"success": False, "error": str(e)}
 
     def delete_character(self, char_id: int) -> bool:
-        """Elimina un personaje."""
+        """Elimina un personaje y sus datos vinculados."""
         return self._db.delete_character(char_id)
 
     def upload_character_portrait(self, char_id: int) -> Dict[str, Any]:
-        """Abre diálogo de imagen, guarda el retrato para el personaje y devuelve la ficha actualizada."""
-        char = self._db.get_character_by_id(char_id)
-        if not char:
-            return {"success": False, "error": "Personaje no encontrado"}
+        """Abre un selector nativo de imagen, guarda una copia local y actualiza SQLite."""
+        if not self._window:
+            return {"success": False, "error": "Ventana no disponible."}
 
-        img_path = self.open_image_dialog()
-        if not img_path:
-            return {"success": False, "cancelled": True}
+        file_types = ("Archivos de Imagen (*.png;*.jpg;*.jpeg;*.webp)", "Todos los Archivos (*.*)")
+        result = self._window.create_file_dialog(webview.OPEN_DIALOG, allow_multiple=False, file_types=file_types)
+        if not result or len(result) == 0:
+            return {"success": False, "error": "Selección cancelada."}
 
-        saved_path = self._db.save_portrait_file(img_path, char.name)
-        if not saved_path or not os.path.exists(saved_path):
-            return {"success": False, "error": "No se pudo copiar la imagen seleccionada."}
-
-        char.portrait_path = saved_path
+        source_path = result[0]
         try:
-            ext = Path(saved_path).suffix.lower().lstrip(".") or "png"
-            if ext == "jpg":
-                ext = "jpeg"
-            with open(saved_path, "rb") as f:
-                b64_raw = base64.b64encode(f.read()).decode("ascii")
-                char.portrait_base64 = f"data:image/{ext};base64,{b64_raw}"
-        except Exception:
-            pass
+            dest_dir = os.path.join(self._base_dir, "data", "characters", "portraits")
+            os.makedirs(dest_dir, exist_ok=True)
+            ext = os.path.splitext(source_path)[1]
+            dest_file = f"portrait_char_{char_id}{ext}"
+            dest_path = os.path.join(dest_dir, dest_file)
+            shutil.copy2(source_path, dest_path)
 
-        self._db.save_character(char, set_active=self._is_active_character_id(char_id))
-        return {
-            "success": True,
-            "portrait_path": char.portrait_path,
-            "portrait_base64": char.portrait_base64,
-            "character": self._serialize_character(char),
-        }
+            with open(dest_path, "rb") as f:
+                b64_data = base64.b64encode(f.read()).decode("utf-8")
+            mime = "image/png" if ext.lower() == ".png" else ("image/webp" if ext.lower() == ".webp" else "image/jpeg")
+            b64_url = f"data:{mime};base64,{b64_data}"
+
+            char = self._db.get_character_by_id(char_id)
+            if char:
+                char.portrait_path = dest_path
+                char.portrait_base64 = b64_url
+                self._db.save_character(char, set_active=self._is_active_character_id(char_id))
+                return {
+                    "success": True,
+                    "portrait_path": dest_path,
+                    "portrait_base64": b64_url,
+                    "character": self._serialize_character(char),
+                }
+            return {"success": True, "portrait_path": dest_path, "portrait_base64": b64_url}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
 
     def set_character_portrait_base64(self, char_id: int, image_base64: str) -> Dict[str, Any]:
-        """Guarda un retrato en formato base64 directamente en la ficha del personaje."""
+        """Guarda un retrato en formato Base64 directamente en la ficha del héroe y lo persiste en disco."""
         char = self._db.get_character_by_id(char_id)
         if not char:
             return {"success": False, "error": "Personaje no encontrado"}
-        char.portrait_base64 = image_base64
-        self._db.save_character(char, set_active=self._is_active_character_id(char_id))
-        return {
-            "success": True,
-            "portrait_base64": char.portrait_base64,
-            "character": self._serialize_character(char),
-        }
+
+        try:
+            dest_dir = os.path.join(self._base_dir, "data", "characters", "portraits")
+            os.makedirs(dest_dir, exist_ok=True)
+            dest_file = f"portrait_char_{char_id}.png"
+            dest_path = os.path.join(dest_dir, dest_file)
+
+            pure_b64 = image_base64
+            if "," in image_base64:
+                pure_b64 = image_base64.split(",")[1]
+
+            with open(dest_path, "wb") as f:
+                f.write(base64.b64decode(pure_b64))
+
+            char.portrait_path = dest_path
+            char.portrait_base64 = image_base64
+            self._db.save_character(char, set_active=self._is_active_character_id(char_id))
+            return {
+                "success": True,
+                "portrait_base64": image_base64,
+                "portrait_path": dest_path,
+                "character": self._serialize_character(char)
+            }
+        except Exception as e:
+            return {"success": False, "error": str(e)}
 
     def generate_ai_portrait(
         self,
@@ -489,186 +276,88 @@ class DesktopBridge:
         model: str = ""
     ) -> Dict[str, Any]:
         """
-        Genera una imagen con IA llamando a Google AI Studio (Imagen 3 / Gemini),
-        OpenAI (DALL-E 3) o SD WebUI desde el backend (sin problemas de CORS en WebView).
+        Genera un retrato con IA llamando directamente a Google Imagen 3, OpenAI DALL-E o Pollinations.ai.
         """
-        import urllib.request
-        import urllib.error
-        import json
+        import httpx
 
-        clean_key = (api_key or "").strip()
-        clean_url = (api_url or "").strip()
-        p = (provider or "").lower().strip()
-
-        # Detección inteligente por formato de clave o URL
-        if clean_key.startswith("AIzaSy") or "generativelanguage" in clean_url or p == "google":
-            p = "google"
-        elif clean_key.startswith("sk-") or "openai" in clean_url or p == "openai":
-            p = "openai"
+        provider_clean = (provider or "google").strip().lower()
+        prompt_clean = prompt.strip()
+        if not prompt_clean:
+            return {"success": False, "error": "El prompt de apariencia no puede estar vacío."}
 
         try:
-            if p == "google":
-                # Google AI Studio - Imagen 3 oficial (predict)
-                # Modelo recomendado: imagen-3.0-generate-002
-                endpoint = clean_url or "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict"
-                if "?" not in endpoint and clean_key:
-                    endpoint = f"{endpoint}?key={clean_key}"
-
-                payload = {
-                    "instances": [{"prompt": prompt}],
-                    "parameters": {
-                        "sampleCount": 1,
-                        "aspectRatio": "1:1",
-                        "outputOptions": {"mimeType": "image/png"}
-                    }
-                }
-                req = urllib.request.Request(
-                    endpoint,
-                    data=json.dumps(payload).encode("utf-8"),
-                    headers={"Content-Type": "application/json"}
-                )
-                try:
-                    with urllib.request.urlopen(req, timeout=60) as resp:
-                        res_data = json.loads(resp.read().decode("utf-8"))
-                        preds = res_data.get("predictions", [])
-                        if preds and "bytesBase64Encoded" in preds[0]:
-                            b64 = preds[0]["bytesBase64Encoded"]
-                            return {"success": True, "image_base64": f"data:image/png;base64,{b64}"}
-                except urllib.error.HTTPError as he:
-                    err_body = he.read().decode("utf-8", errors="ignore")
-                    # Fallback secundario: endpoint OpenAI-compatible de Google AI Studio
-                    oa_endpoint = "https://generativelanguage.googleapis.com/v1beta/openai/images/generations"
-                    for fb_model in ["imagen-3.0-generate-002", "gemini-2.5-flash-image"]:
-                        try:
-                            oa_payload = {
-                                "model": fb_model,
-                                "prompt": prompt,
-                                "n": 1,
-                                "response_format": "b64_json"
-                            }
-                            oa_req = urllib.request.Request(
-                                oa_endpoint,
-                                data=json.dumps(oa_payload).encode("utf-8"),
-                                headers={
-                                    "Content-Type": "application/json",
-                                    "Authorization": f"Bearer {clean_key}"
-                                }
-                            )
-                            with urllib.request.urlopen(oa_req, timeout=60) as resp2:
-                                res_data2 = json.loads(resp2.read().decode("utf-8"))
-                                if res_data2.get("data") and res_data2["data"][0].get("b64_json"):
-                                    b64 = res_data2["data"][0]["b64_json"]
-                                    return {"success": True, "image_base64": f"data:image/png;base64,{b64}"}
-                        except Exception:
-                            continue
-                    if "PERMISSION_DENIED" in err_body or he.code == 403:
-                        return {
-                            "success": False,
-                            "error": "Google AI Studio (Error 403: PERMISSION_DENIED): Tu proyecto no tiene permisos para Imagen 3. Google requiere una cuenta con facturación activa en Google Cloud para generar imágenes con Imagen 3. Puedes usar el proveedor gratuito (Pollinations) o una clave de OpenAI."
-                        }
-                    return {"success": False, "error": f"Error de Google AI Studio: {err_body[:250]}"}
-
-            elif p == "openai":
-                endpoint = clean_url or "https://api.openai.com/v1/images/generations"
-                payload = {
-                    "model": model or "dall-e-3",
-                    "prompt": prompt,
-                    "n": 1,
-                    "size": "1024x1024",
-                    "response_format": "b64_json"
-                }
-                req = urllib.request.Request(
-                    endpoint,
-                    data=json.dumps(payload).encode("utf-8"),
-                    headers={
-                        "Content-Type": "application/json",
-                        "Authorization": f"Bearer {clean_key}"
-                    }
-                )
-                with urllib.request.urlopen(req, timeout=60) as resp:
-                    res_data = json.loads(resp.read().decode("utf-8"))
-                    if res_data.get("data") and res_data["data"][0].get("b64_json"):
-                        b64 = res_data["data"][0]["b64_json"]
-                        return {"success": True, "image_base64": f"data:image/png;base64,{b64}"}
-                    elif res_data.get("data") and res_data["data"][0].get("url"):
-                        return {"success": True, "image_base64": res_data["data"][0]["url"]}
-
-            elif p in ("pollinations", "free"):
-                # Generador gratuito y sin clave vía Pollinations.ai (FLUX / SD)
+            if provider_clean == "pollinations":
+                clean_desc = prompt_clean[:1800].strip()
                 import urllib.parse
-                clean_prompt = prompt[:350].strip()
-                encoded_prompt = urllib.parse.quote(clean_prompt)
-                seed = int(datetime.now().timestamp())
-                poll_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=512&height=512&nologo=true&seed={seed}"
-                poll_req = urllib.request.Request(
-                    poll_url,
-                    headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) DndSanctum/1.0"}
-                )
-                with urllib.request.urlopen(poll_req, timeout=60) as resp:
-                    img_bytes = resp.read()
-                    b64 = base64.b64encode(img_bytes).decode("ascii")
+                encoded = urllib.parse.quote(clean_desc)
+                endpoint = f"https://image.pollinations.ai/prompt/{encoded}?width=512&height=512&nologo=true&seed=42&model=flux&enhance=false"
+                resp = httpx.get(endpoint, timeout=45.0, follow_redirects=True)
+                if resp.status_code == 200 and resp.content:
+                    b64 = base64.b64encode(resp.content).decode("utf-8")
                     return {"success": True, "image_base64": f"data:image/jpeg;base64,{b64}"}
+                return {"success": False, "error": f"Pollinations respondió con error HTTP {resp.status_code}"}
 
-            else:
-                # Stable Diffusion / WebUI Local
-                endpoint = clean_url or "http://127.0.0.1:7860/sdapi/v1/txt2img"
+            elif provider_clean == "google":
+                key = api_key.strip()
+                if not key:
+                    return {"success": False, "error": "Falta la API Key de Google AI Studio."}
+                m = model.strip() or "imagen-3.0-generate-002"
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:predict?key={key}"
                 payload = {
-                    "prompt": prompt,
-                    "steps": 25,
-                    "width": 512,
-                    "height": 512
+                    "instances": [{"prompt": prompt_clean}],
+                    "parameters": {"sampleCount": 1, "aspectRatio": "1:1", "outputOptions": {"mimeType": "image/jpeg"}}
                 }
-                headers = {"Content-Type": "application/json"}
-                if clean_key:
-                    headers["Authorization"] = f"Bearer {clean_key}"
-                req = urllib.request.Request(
-                    endpoint,
-                    data=json.dumps(payload).encode("utf-8"),
-                    headers=headers
-                )
-                with urllib.request.urlopen(req, timeout=60) as resp:
-                    res_data = json.loads(resp.read().decode("utf-8"))
-                    if res_data.get("images") and len(res_data["images"]) > 0:
-                        b64 = res_data["images"][0]
-                        return {"success": True, "image_base64": f"data:image/png;base64,{b64}"}
+                resp = httpx.post(url, json=payload, timeout=60.0)
+                if resp.status_code == 200:
+                    data = resp.json()
+                    preds = data.get("predictions", [])
+                    if preds and "bytesBase64Encoded" in preds[0]:
+                        b64_raw = preds[0]["bytesBase64Encoded"]
+                        return {"success": True, "image_base64": f"data:image/jpeg;base64,{b64_raw}"}
+                    return {"success": False, "error": "Formato de respuesta desconocido de Google Imagen."}
+                elif resp.status_code == 403:
+                    return {"success": False, "error": "Acceso denegado (403). Verifica que la API Key de Google AI Studio sea válida."}
+                return {"success": False, "error": f"Error de Google AI ({resp.status_code}): {resp.text[:200]}"}
 
-            return {"success": False, "error": "No se reconoció el formato de respuesta del proveedor de imagen."}
-        except urllib.error.HTTPError as he:
-            err_msg = he.read().decode("utf-8", errors="ignore")
-            return {"success": False, "error": f"Error HTTP {he.code}: {err_msg[:250]}"}
+            elif provider_clean == "openai":
+                key = api_key.strip()
+                if not key:
+                    return {"success": False, "error": "Falta la API Key de OpenAI."}
+                url = api_url.strip() or "https://api.openai.com/v1/images/generations"
+                m = model.strip() or "dall-e-3"
+                payload = {"model": m, "prompt": prompt_clean, "n": 1, "size": "1024x1024", "response_format": "b64_json"}
+                headers = {"Authorization": f"Bearer {key}", "Content-Type": "application/json"}
+                resp = httpx.post(url, json=payload, headers=headers, timeout=60.0)
+                if resp.status_code == 200:
+                    data = resp.json()
+                    b64_raw = data.get("data", [{}])[0].get("b64_json", "")
+                    if b64_raw:
+                        return {"success": True, "image_base64": f"data:image/png;base64,{b64_raw}"}
+                return {"success": False, "error": f"Error de OpenAI ({resp.status_code}): {resp.text[:200]}"}
+
+            return {"success": False, "error": f"Proveedor '{provider}' no soportado."}
         except Exception as e:
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": f"Excepción durante la generación de imagen: {str(e)}"}
 
-    def export_character_json(self, char_id: int) -> Dict[str, Any]:
-        """Exporta un personaje a un archivo JSON en data/characters/ (o mediante diálogo nativo)."""
+    def export_character_json(self, char_id: int, target_path: Optional[str] = None) -> Dict[str, Any]:
+        """Exporta la ficha a un archivo JSON estándar."""
         char = self._db.get_character_by_id(char_id)
         if not char:
             return {"success": False, "error": "Personaje no encontrado"}
 
-        clean_name = "".join(c for c in char.name if c.isalnum() or c in (" ", "_", "-")).strip().replace(" ", "_")
-        default_filename = f"{clean_name}_dnd5e.json"
-        target_path = None
-
-        if self._window:
-            try:
-                res = self._window.create_file_dialog(
-                    webview.SAVE_DIALOG,
-                    directory=os.path.join(self._base_dir, "data", "characters"),
-                    save_filename=default_filename,
-                    file_types=("Archivos JSON (*.json)", "Todos los Archivos (*.*)"),
-                )
-                if res:
-                    target_path = res[0] if isinstance(res, (list, tuple)) else str(res)
-            except Exception:
-                pass
-
         if not target_path:
-            target_path = os.path.join(self._base_dir, "data", "characters", default_filename)
+            if not self._window:
+                return {"success": False, "error": "Ventana no disponible para diálogo de guardado."}
+            file_types = ("Archivos JSON (*.json)", "Todos los Archivos (*.*)")
+            save_name = f"{char.name.replace(' ', '_')}.json"
+            res = self._window.create_file_dialog(webview.SAVE_DIALOG, save_filename=save_name, file_types=file_types)
+            if not res:
+                return {"success": False, "error": "Exportación cancelada."}
+            target_path = res if isinstance(res, str) else res[0]
 
-        os.makedirs(os.path.dirname(os.path.abspath(target_path)), exist_ok=True)
         try:
             with open(target_path, "w", encoding="utf-8") as f:
-                json.dump(char.to_dict(), f, ensure_ascii=False, indent=2)
+                json.dump(char.to_dict(), f, indent=2, ensure_ascii=False)
             return {"success": True, "path": target_path}
         except Exception as e:
             return {"success": False, "error": str(e)}
@@ -677,24 +366,40 @@ class DesktopBridge:
         """Importa un personaje desde un archivo JSON y lo guarda en SQLite."""
         if not file_path:
             if not self._window:
-                return {"success": False, "error": "Ventana nativa no disponible."}
-            res = self._window.create_file_dialog(
-                webview.OPEN_DIALOG,
-                allow_multiple=False,
-                file_types=("Archivos JSON (*.json)", "Todos los Archivos (*.*)"),
-            )
+                return {"success": False, "error": "Ventana no disponible para diálogo de archivo."}
+            file_types = ("Archivos JSON (*.json)", "Todos los Archivos (*.*)")
+            res = self._window.create_file_dialog(webview.OPEN_DIALOG, allow_multiple=False, file_types=file_types)
             if not res or len(res) == 0:
-                return {"success": False, "cancelled": True}
+                return {"success": False, "error": "Importación cancelada."}
             file_path = res[0]
-
-        if not os.path.exists(file_path):
-            return {"success": False, "error": f"Archivo no encontrado: {file_path}"}
 
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
-            data.pop("id", None)
             char = CharacterSheet.from_dict(data)
+            char.id = None
+            char_id = self._db.save_character(char, set_active=True)
+            saved = self._db.get_character_by_id(char_id)
+            return {"success": True, "id": char_id, "character": self._serialize_character(saved)}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def import_character_pdf(self, file_path: Optional[str] = None) -> Dict[str, Any]:
+        """Importa un personaje desde una hoja PDF AcroForm editable oficial."""
+        if not file_path:
+            if not self._window:
+                return {"success": False, "error": "Ventana no disponible para diálogo de archivo."}
+            file_types = ("Hojas de Personaje PDF (*.pdf)", "Todos los Archivos (*.*)")
+            res = self._window.create_file_dialog(webview.OPEN_DIALOG, allow_multiple=False, file_types=file_types)
+            if not res or len(res) == 0:
+                return {"success": False, "error": "Importación cancelada."}
+            file_path = res[0]
+
+        if not os.path.exists(file_path):
+            return {"success": False, "error": f"Archivo PDF no encontrado: {file_path}"}
+
+        try:
+            char = UniversalAcroFormHandler.load_character_from_pdf(file_path)
             char_id = self._db.save_character(char, set_active=True)
             saved = self._db.get_character_by_id(char_id)
             return {"success": True, "id": char_id, "character": self._serialize_character(saved)}
@@ -712,7 +417,33 @@ class DesktopBridge:
             "is_running": self._ts.is_process_running(),
             "is_connected": self._ts.is_session_connected(),
             "state_label": self._ts.state.value,
+            "symbiote_connected": bool(self._session_server and getattr(self._session_server, "is_symbiote_connected", False)),
+            "symbiote_folder_installed": bool(self._ts.symbiote_folder_installed),
+            "symbiote_install_path": self._ts.symbiote_install_path,
         }
+
+    def reinstall_talespire_symbiote(self) -> Dict[str, Any]:
+        """Reinstala o actualiza el Symbiote en la carpeta oficial de TaleSpire."""
+        sym_src = os.path.join(self._base_dir, "talespire_symbiote")
+        ok, msg, path = self._ts.install_or_update_symbiote(sym_src)
+        return {"success": ok, "message": msg, "path": path}
+
+    def open_talespire_symbiotes_folder(self) -> Dict[str, Any]:
+        """Abre la carpeta oficial de Symbiotes de TaleSpire en el explorador del sistema."""
+        p = self._ts.find_symbiotes_directory()
+        if not p or not os.path.exists(p):
+            return {"success": False, "error": "Carpeta de Symbiotes no encontrada en el equipo."}
+        try:
+            import subprocess
+            if sys.platform == "win32":
+                os.startfile(p)
+            elif sys.platform == "darwin":
+                subprocess.Popen(["open", p])
+            else:
+                subprocess.Popen(["xdg-open", p])
+            return {"success": True, "path": p}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
 
     def connect_talespire(self) -> Dict[str, Any]:
         """Conecta manualmente la sesión con TaleSpire."""
@@ -797,6 +528,8 @@ class DesktopBridge:
 
         # Resolución mediante el motor de reglas local (core/rules.py)
         pool_res = roll_dice_pool(pool, modifier=modifier, mode=mode)
+
+        # rolls_flat contendrá el detalle para renderizar los dados 2D animados en la interfaz
         rolls_flat: List[Dict[str, int]] = []
         for sides in sorted(pool.keys(), key=lambda f: (0 if f == 20 else 1, -f)):
             count = pool[sides]
@@ -1002,63 +735,29 @@ class DesktopBridge:
                 "is_caster": is_caster,
             })
 
-        backgrounds_out = []
-        for b in self._okf.get_backgrounds(lang=lang):
-            raw_sk = b.get("habilidades_competentes", "Atletismo, Percepción")
-            if isinstance(raw_sk, list):
-                sk_list = [str(s).strip() for s in raw_sk if str(s).strip()]
-            else:
-                sk_list = [s.strip() for s in str(raw_sk).split(",") if s.strip()]
-            backgrounds_out.append({
-                "id": b["id"],
-                "name": b["nombre"],
-                "skills": sk_list[:2] if sk_list else ["Atletismo", "Percepción"],
-                "feature_name": b.get("dote_concedida", "Dote de Origen" if lang == "es" else "Origin Feat"),
-                "feature_desc": f"Atributos clave: {b.get('caracteristicas_clave', 'FUE, CON')}." if lang == "es" else f"Key Abilities: {b.get('caracteristicas_clave', 'STR, CON')}.",
+        raw_bgs = self._okf.get_backgrounds(lang=lang)
+        bgs_out = []
+        for bg in raw_bgs:
+            bgs_out.append({
+                "id": bg["id"],
+                "name": bg["nombre"],
+                "skills": list(bg.get("competencias_habilidades", ["Atletismo", "Supervivencia"])),
+                "feature_name": bg.get("dote_concedida") or ("Dote de Origen" if lang == "es" else "Origin Feat"),
+                "feature_desc": bg.get("descripcion_dote") or ("Concede capacidades adicionales según el manual oficial." if lang == "es" else "Grants additional capabilities according to official rules."),
             })
 
         return {
             "edition": ed,
             "species": species_out,
             "classes": classes_out,
-            "backgrounds": backgrounds_out,
+            "backgrounds": bgs_out,
             "all_skills": all_skill_names,
         }
 
-    def get_class_spells(self, class_name: str, max_level: int = 1, lang: str = "es") -> List[Dict[str, Any]]:
-        """Obtiene los trucos y conjuros disponibles para una clase desde OkfEngine con soporte multilingüe."""
-        items = self._okf.get_spells_for_class(class_name, max_spell_level=max_level, min_spell_level=0, lang=lang)
-        return [
-            {
-                "name": s.get("nombre", ""),
-                "level": int(s.get("nivel", 0)),
-                "school": s.get("escuela", "Evocación"),
-                "cast_time": s.get("tiempo_lanzamiento", "1 acción"),
-                "range_area": s.get("alcance", "18 m"),
-                "components": s.get("componentes", "V, S"),
-                "duration": s.get("duracion", "Instantáneo"),
-                "prepared": True,
-                "notes": s.get("descripcion", ""),
-            }
-            for s in items
-        ]
-
-    def get_class_progression_limits(
-        self,
-        class_name: str,
-        level: int,
-        edition: str = "5.5e",
-        ability_mod: int = 0,
-        has_magic_initiate: bool = False
-    ) -> Dict[str, Any]:
-        """Calcula los límites canónicos de conjuros conocidos/preparados y ranuras mágicas."""
-        return get_class_progression_limits(
-            class_name=class_name,
-            level=level,
-            edition=edition,
-            ability_mod=ability_mod,
-            has_magic_initiate=has_magic_initiate
-        )
+    def validate_point_buy(self, scores: Dict[str, int]) -> Dict[str, Any]:
+        """Valida una distribución de compra por puntos usando PointBuyCalculator."""
+        clean_scores = {k: int(v) for k, v in scores.items() if k in ("FUE", "DES", "CON", "INT", "SAB", "CAR")}
+        return PointBuyCalculator.get_budget_status(clean_scores)
 
     def get_available_spells(
         self,
@@ -1122,171 +821,182 @@ class DesktopBridge:
         if not char:
             return {"success": False, "error": "Personaje no encontrado"}
 
-        s_clean = spell_name.lower().strip()
-        char.spells = [s for s in char.spells if s.name.lower().strip() != s_clean]
+        clean = spell_name.strip().lower()
+        char.spells = [s for s in char.spells if s.name.strip().lower() != clean]
         self._db.save_character(char, set_active=self._is_active_character_id(char_id))
         return {"success": True, "character": self._serialize_character(char)}
 
     def sync_character_features(self, char_id: int, lang: str = "es") -> Dict[str, Any]:
-        """Recalcula y sincroniza dinámicamente todos los rasgos de clase, dotes y linaje."""
+        """Sincroniza y recarga las características de clase, subclase y especie con compendio OKF."""
         char = self._db.get_character_by_id(char_id)
         if not char:
             return {"success": False, "error": "Personaje no encontrado"}
 
-        char.features = compute_dynamic_features(char, lang=lang)
         self._db.save_character(char, set_active=self._is_active_character_id(char_id))
-        return {"success": True, "character": self._serialize_character(char, lang=lang)}
+        return {"success": True, "character": self._serialize_character(char)}
 
     def sync_compendium_from_srd(self, edition: str = "PHB 2024") -> Dict[str, Any]:
-        """Reconstruye e indexa la base de datos de tarjetas atómicas OKF."""
-        try:
-            importer = SrdImporter(self._okf.okf_dir)
-            count = importer.rebuild_master_index()
-            self._okf._load_index()
-            return {"success": True, "total_entities": count}
-        except Exception as e:
-            return {"success": False, "error": str(e)}
+        """Sincroniza el compendio OKF importando datos atomizados desde SRD 5.1 / 2024."""
+        importer = SrdImporter(self._okf)
+        total = importer.import_all()
+        return {"success": True, "total_entities": total}
+
+    def get_class_progression_limits(self, char_class: str, level: int, edition: str = "5.5e") -> Dict[str, Any]:
+        """Retorna límites de ranuras, conjuros preparados y dominio de armas según clase y edición."""
+        return get_class_progression_limits(char_class, level, edition)
 
     def build_character_from_wizard(self, payload: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Construye un CharacterSheet 100% legal a partir de las elecciones del asistente
-        y retorna el diccionario CharacterSheetData serializado para React.
+        Construye una instancia completa de CharacterSheet a partir de los datos
+        del asistente (Wizard) y calcula todos sus derivados de reglas D&D 5e/5.5e.
         """
-        name = str(payload.get("name", "Nuevo Héroe")).strip() or "Nuevo Héroe"
+        name = str(payload.get("name", "Héroe")).strip() or "Héroe"
         char_class = str(payload.get("char_class", "Guerrero")).strip()
         subclass = str(payload.get("subclass", "")).strip()
-        level = max(1, min(20, int(payload.get("level", 1))))
         race = str(payload.get("race", "Humano")).strip()
         subrace = str(payload.get("subrace", "")).strip()
-        full_race = f"{race} ({subrace})" if subrace and subrace not in race and subrace != "Estándar" else race
+        level = int(payload.get("level", 1))
         background = str(payload.get("background", "Soldado")).strip()
-        alignment = str(payload.get("alignment", "Neutral Bueno")).strip()
-        edition = str(payload.get("edition") or self._db.get_setting("dnd_edition", "5.5e"))
+        alignment = str(payload.get("alignment", "Neutral")).strip()
 
-        catalog = self.get_builder_catalog(edition)
-        sp_entry = next((s for s in catalog["species"] if s["name"].lower() == race.lower()), None)
-        bg_entry = next((b for b in catalog["backgrounds"] if b["name"].lower() == background.lower()), None)
+        scores_input = payload.get("scores", {"FUE": 10, "DES": 10, "CON": 10, "INT": 10, "SAB": 10, "CAR": 10})
+        already_adjusted = bool(payload.get("scores_already_adjusted", False))
 
-        # 1. Puntuaciones de característica base + bonos de especie/trasfondo
-        raw_scores = payload.get("scores", {"FUE": 15, "DES": 14, "CON": 13, "INT": 12, "SAB": 10, "CAR": 8})
-        abilities: Dict[str, int] = {k: int(v) for k, v in raw_scores.items()}
+        # Modificadores de especie y trasfondo
+        species_entry = self._okf.get_species_by_name(race)
+        bg_entry = self._okf.get_background_by_name(background)
+        bonuses_map = payload.get("assigned_bonuses") or {}
 
-        if payload.get("bg_plus2") or payload.get("bg_plus1"):
-            bg_plus2 = payload.get("bg_plus2", "")
-            bg_plus1 = payload.get("bg_plus1", "")
-            if bg_plus2 in abilities:
-                abilities[bg_plus2] = min(20, abilities[bg_plus2] + 2)
-            if bg_plus1 in abilities and bg_plus1 != bg_plus2:
-                abilities[bg_plus1] = min(20, abilities[bg_plus1] + 1)
-        elif sp_entry and not payload.get("scores_already_adjusted"):
-            for ab_k, bonus_v in sp_entry.get("bonuses", {}).items():
-                if ab_k in abilities:
-                    abilities[ab_k] = min(20, abilities[ab_k] + int(bonus_v))
+        abilities: Dict[str, Any] = {}
+        for stat in ["FUE", "DES", "CON", "INT", "SAB", "CAR"]:
+            base_score = int(scores_input.get(stat, 10))
+            if not already_adjusted:
+                extra = int(bonuses_map.get(stat, 0))
+                final_score = base_score + extra
+            else:
+                final_score = base_score
 
-        # 2. Dados de Golpe y Puntos de Golpe reales por clase y nivel
-        hd_faces = CLASS_HIT_DICE.get(char_class, 8)
-        con_mod = calc_modifier(abilities.get("CON", 10))
-        avg_per_lvl = (hd_faces // 2) + 1 + con_mod
-        hp_max = max(1, hd_faces + con_mod) + (max(0, level - 1) * max(1, avg_per_lvl))
+            mod = calc_modifier(final_score)
+            abilities[stat] = {
+                "base": final_score,
+                "override": 0,
+                "bonus": mod,
+                "proficient": False,
+                "save_bonus": mod,
+            }
 
-        # 3. Velocidad y Sentidos desde especie OKF
-        speed_str = "9 m"
-        senses_str = "Visión Normal"
-        for sp in self._okf.get_species():
-            if sp["nombre"].lower() == race.lower():
-                speed_str = sp.get("velocidad", "9 m")
-                senses_str = sp.get("sentidos", "Visión Normal")
-                break
-
-        # 4. Salvaciones competentes de la clase
-        saving_profs = ["FUE", "CON"]
-        for cl in self._okf.get_classes():
-            if cl["nombre"].lower() == char_class.lower():
-                saving_profs = list(cl.get("saves", ["FUE", "CON"]))
-                break
-
-        # 5. Habilidades competentes (Clase + Trasfondo)
-        preset = CLASS_QUICK_PRESETS.get(char_class, CLASS_QUICK_PRESETS.get("Guerrero", {}))
-        chosen_skills: List[str] = list(
-            payload.get("selected_skills")
-            or payload.get("skills")
-            or preset.get("skills", ["Atletismo", "Percepción"])
-        )
-        if bg_entry:
-            for b_sk in bg_entry.get("skills", []):
-                if b_sk not in chosen_skills:
-                    chosen_skills.append(b_sk)
-        skills_dict: Dict[str, str] = {sk: "proficient" for sk in chosen_skills}
-
-        # 6. Clase de Armadura e Iniciativa
-        dex_mod = calc_modifier(abilities.get("DES", 10))
-        wis_mod = calc_modifier(abilities.get("SAB", 10))
-        str_mod = calc_modifier(abilities.get("FUE", 10))
         prof_bonus = calc_proficiency_bonus(level)
+        class_entry = self._okf.get_class_by_name(char_class)
+        saves_keys = class_entry.get("saves", ["FUE", "CON"]) if class_entry else ["FUE", "CON"]
+        saving_profs = list(saves_keys)
+        for stat in saving_profs:
+            if stat in abilities:
+                abilities[stat]["proficient"] = True
+                abilities[stat]["save_bonus"] = abilities[stat]["bonus"] + prof_bonus
 
+        dex_mod = abilities.get("DES", {}).get("bonus", 0)
+        con_mod = abilities.get("CON", {}).get("bonus", 0)
+
+        # Dados de golpe y PG
+        hd_faces = int(class_entry.get("hit_dice", CLASS_HIT_DICE.get(char_class, 8))) if class_entry else 8
+        hp_lvl1 = hd_faces + con_mod
+        avg_hd = (hd_faces // 2) + 1
+        hp_max = max(1, hp_lvl1 + max(0, level - 1) * max(1, (avg_hd + con_mod)))
+
+        # Clase de Armadura base (sin armadura: 10 + DES)
+        ac = 10 + dex_mod
         if char_class == "Bárbaro":
             ac = 10 + dex_mod + con_mod
         elif char_class == "Monje":
-            ac = 10 + dex_mod + wis_mod
-        elif char_class in ("Guerrero", "Paladín"):
-            ac = 16
-        elif char_class in ("Clérigo", "Druida", "Explorador"):
-            ac = 14 + min(2, dex_mod)
-        elif char_class in ("Bardo", "Pícaro", "Brujo"):
-            ac = 11 + dex_mod
-        else:
-            ac = 10 + dex_mod
+            ac = 10 + dex_mod + abilities.get("SAB", {}).get("bonus", 0)
 
-        # 7. Armas iniciales con bonos reales calculados
-        weapons_list: List[WeaponAction] = []
-        for w_name, w_dmg, w_notes in preset.get("weapons", [("Espada Larga", "1d8 cortante", "Versátil")]):
-            if "+2 CA" in w_dmg:
-                ac += 2
-                continue
-            uses_dex = any(k in w_notes.lower() or k in w_name.lower() for k in ("sutil", "arco", "ballesta", "honda"))
-            atk_stat_mod = max(str_mod, dex_mod) if "sutil" in w_notes.lower() else (dex_mod if uses_dex else str_mod)
-            hit_tot = atk_stat_mod + prof_bonus
-            hit_str = f"+{hit_tot}" if hit_tot >= 0 else str(hit_tot)
-            dmg_parts = w_dmg.split(" ", 1)
+        speed_str = species_entry.get("velocidad", "9 m") if species_entry else "9 m"
+        senses_str = species_entry.get("sentidos", "Visión Normal") if species_entry else "Visión Normal"
+
+        # Habilidades seleccionadas
+        selected_skills = payload.get("selected_skills", [])
+        if not selected_skills and bg_entry:
+            selected_skills = list(bg_entry.get("skills", ["Atletismo"]))
+
+        skills_dict: Dict[str, Any] = {}
+        for s_name, s_stat in SKILLS_MAP.items():
+            is_prof = s_name in selected_skills
+            stat_mod = abilities.get(s_stat, {}).get("bonus", 0)
+            bonus = stat_mod + (prof_bonus if is_prof else 0)
+            skills_dict[s_name] = {
+                "proficient": is_prof,
+                "bonus": bonus,
+                "expertise": False,
+            }
+
+        preset = CLASS_QUICK_PRESETS.get(char_class, CLASS_QUICK_PRESETS.get("Guerrero", {}))
+        weapons_list = []
+        for w_tuple in preset.get("weapons", []):
+            w_name = w_tuple[0]
+            w_dmg_expr = w_tuple[1]
+            w_notes = w_tuple[2]
+            is_ranged = "Arco" in w_name or "Ballesta" in w_name or "Dardo" in w_name
+            atk_stat = "DES" if (is_ranged or "Finesse" in w_notes or "Sutil" in w_notes) else "FUE"
+            atk_mod = abilities.get(atk_stat, {}).get("bonus", 0)
+            hit_dc = f"+{prof_bonus + atk_mod}"
+
+            dmg_parts = w_dmg_expr.split(" ")
             dice_part = dmg_parts[0]
-            dmg_type = dmg_parts[1].capitalize() if len(dmg_parts) > 1 else "Físico"
-            mod_suffix = f"+{atk_stat_mod}" if atk_stat_mod > 0 else (f"{atk_stat_mod}" if atk_stat_mod < 0 else "")
+            type_part = dmg_parts[1] if len(dmg_parts) > 1 else "cortante"
+
             weapons_list.append(
                 WeaponAction(
                     name=w_name,
-                    attack_bonus=hit_str,
-                    damage=f"{dice_part}{mod_suffix}",
-                    damage_type=dmg_type,
+                    type="A distancia" if is_ranged else "Cuerpo a cuerpo",
+                    range_val="80/320 pies" if is_ranged else "5 pies (1 tile)",
+                    hit_dc=hit_dc,
+                    damage_dice=f"{dice_part}+{atk_mod}" if atk_mod > 0 else dice_part,
+                    damage_type=type_part,
                     notes=w_notes,
+                    proficient=True,
                 )
             )
 
-        # 8. Conjuros y Ranuras Mágicas desde OkfEngine
+        # Conjuros y ranuras si es lanzador
         spell_slots = _compute_spell_slots_for_class(char_class, level)
-        selected_spell_names: List[str] = payload.get("spells") or (
-            preset.get("cantrips", []) + preset.get("spells_known", [])
-        )
-        spells_list: List[SpellItem] = []
-        for sp_name in selected_spell_names:
-            matched = self._okf.search_entities(query=sp_name, tipo="conjuro", limit=1)
-            if matched:
-                sp_item = self._okf.get_spell_item(matched[0]["id"])
-                if sp_item:
-                    spells_list.append(sp_item)
-                    continue
-            spells_list.append(SpellItem(name=sp_name, level=0 if sp_name in preset.get("cantrips", []) else 1))
+        spells_input = payload.get("spells", [])
+        spells_list = []
+        for sp in spells_input:
+            if isinstance(sp, str):
+                s_entry = self._okf.get_spell_by_name(sp)
+                if s_entry:
+                    spells_list.append(
+                        SpellItem(
+                            id=s_entry["id"],
+                            name=s_entry["nombre"],
+                            name_en=s_entry.get("nombre_ingles", s_entry["nombre"]),
+                            level=int(s_entry.get("nivel", 0)),
+                            school=s_entry.get("escuela", "Evocación"),
+                            casting_time=s_entry.get("tiempo_lanzamiento", "1 acción"),
+                            range=s_entry.get("alcance", "18 m"),
+                            components=s_entry.get("componentes", "V, S"),
+                            duration=s_entry.get("duracion", "Instantáneo"),
+                            concentration="Concentración" in s_entry.get("duracion", ""),
+                            ritual=bool(s_entry.get("ritual", False)),
+                            description=s_entry.get("descripcion", ""),
+                        )
+                    )
+                else:
+                    spells_list.append(SpellItem(id=sp.lower().replace(" ", "_"), name=sp, level=1))
+            elif isinstance(sp, dict):
+                spells_list.append(SpellItem.from_dict(sp))
 
-        # 9. Rasgos iniciales (Clase, Especie y Trasfondo)
-        features_list: List[CharacterFeature] = [
+        full_race = f"{race} ({subrace})" if subrace and subrace not in ("Estándar", "Standard") else race
+        features_list = [
             CharacterFeature(
-                id="feat_class_core",
-                name=f"Rasgos de {char_class} (Nivel {level})",
+                id="feat_class_start",
+                name=f"Entrenamiento de {char_class}",
                 source=char_class,
-                description=f"Competencias en salvaciones: {', '.join(saving_profs)}. Dado de golpe: 1d{hd_faces}.",
+                description=f"Competencias con armas, armaduras y habilidades de {char_class}.",
             ),
             CharacterFeature(
-                id="feat_species_core",
-                name=f"Herencia de {full_race}",
+                id="feat_species_heritage",
+                name=f"Herencia de {race}",
                 source=full_race,
                 description=f"Velocidad {speed_str}. Sentidos: {senses_str}.",
             ),
@@ -1361,12 +1071,12 @@ class DesktopBridge:
         self,
         forced_class: Optional[str] = None,
         forced_species: Optional[str] = None,
-        forced_level: int = 1,
+        forced_level: int = 1
     ) -> Dict[str, Any]:
-        """Genera una previsualización completa con tiradas 4d6 drop lowest usando core/random_generator.py."""
+        """Genera una previsualización procedural aleatoria completa lista para la Forja."""
         rnd = RandomCharacterGenerator.generate_random_character(
-            forced_class=forced_class or None,
-            forced_species=forced_species or None,
+            forced_class=forced_class,
+            forced_species=forced_species,
             forced_level=int(forced_level or 1),
         )
         scores_map = rnd.get("final_abilities") or rnd.get("final_scores") or rnd.get("raw_scores", {})
@@ -1422,41 +1132,37 @@ class DesktopBridge:
         ]
 
     def save_character_journal(self, char_id: int, journal_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Añade o actualiza una sesión en el diario del personaje."""
+        """Guarda o actualiza una crónica de sesión en la ficha del héroe."""
         char = self._db.get_character_by_id(char_id)
         if not char:
             return {"success": False, "error": "Personaje no encontrado"}
 
-        sess_id = str(journal_data.get("id", len(char.sessions) + 1))
-        existing = next((s for s in char.sessions if str(s.id) == sess_id), None)
-        active_session_id = str(journal_data.get("session_id") or getattr(self._session_server, "current_session_id", "") or "")
-
+        j_id = str(journal_data.get("id", ""))
+        existing = next((s for s in char.sessions if str(s.id) == j_id), None)
         if existing:
             existing.date = journal_data.get("date", existing.date)
             existing.title = journal_data.get("title", existing.title)
             existing.summary = journal_data.get("summary", existing.summary)
             existing.loot = journal_data.get("loot", existing.loot)
             existing.xp_gained = int(journal_data.get("xp_gained", existing.xp_gained))
-            if "session_id" in journal_data or active_session_id:
-                existing.session_id = str(journal_data.get("session_id", getattr(existing, "session_id", active_session_id)))
+            existing.session_id = journal_data.get("session_id", existing.session_id)
         else:
-            char.sessions.append(
-                SessionLog(
-                    id=sess_id,
-                    date=journal_data.get("date", datetime.now().strftime("%Y-%m-%d")),
-                    title=journal_data.get("title", "Nueva Crónica"),
-                    summary=journal_data.get("summary", ""),
-                    loot=journal_data.get("loot", ""),
-                    xp_gained=int(journal_data.get("xp_gained", 0)),
-                    session_id=str(journal_data.get("session_id", active_session_id)),
-                )
+            new_sess = SessionLog(
+                id=j_id or str(len(char.sessions) + 1),
+                date=journal_data.get("date", datetime.now().strftime("%d/%m/%Y")),
+                title=journal_data.get("title", "Nueva Crónica"),
+                summary=journal_data.get("summary", ""),
+                loot=journal_data.get("loot", ""),
+                xp_gained=int(journal_data.get("xp_gained", 0)),
+                session_id=journal_data.get("session_id", "")
             )
+            char.sessions.append(new_sess)
 
         self._db.save_character(char, set_active=self._is_active_character_id(char_id))
         return {"success": True, "sessions": self.get_character_journals(char_id)}
 
     def delete_character_journal(self, char_id: int, session_id: int) -> Dict[str, Any]:
-        """Elimina una sesión del diario del personaje."""
+        """Elimina una crónica de sesión por su ID."""
         char = self._db.get_character_by_id(char_id)
         if not char:
             return {"success": False, "error": "Personaje no encontrado"}
@@ -1466,42 +1172,23 @@ class DesktopBridge:
         return {"success": True, "sessions": self.get_character_journals(char_id)}
 
     def get_character_network(self, char_id: int) -> Dict[str, Any]:
-        """Retorna nodos y vínculos de la red social/campaña del personaje."""
+        """Obtiene el grafo de vínculos sociales y lealtades del personaje."""
         char = self._db.get_character_by_id(char_id)
         if not char:
             return {"nodes": [], "edges": []}
         return {
-            "nodes": [
-                {
-                    "id": n.id,
-                    "name": n.name,
-                    "role": n.role,
-                    "description": n.description,
-                    "avatar_base64": n.avatar_base64,
-                    "x": n.x,
-                    "y": n.y,
-                }
-                for n in char.network_nodes
-            ],
-            "edges": [
-                {
-                    "source_id": e.source_id,
-                    "target_id": e.target_id,
-                    "relation": e.relation,
-                }
-                for e in char.network_edges
-            ],
+            "nodes": [n.to_dict() if hasattr(n, "to_dict") else dict(n) for n in char.network_nodes],
+            "edges": [e.to_dict() if hasattr(e, "to_dict") else dict(e) for e in char.network_edges],
         }
 
     def save_network_node(self, char_id: int, node_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Guarda o actualiza un nodo (PNJ/Aliado) en la red."""
+        """Guarda o actualiza un nodo en el mapa de relaciones."""
         char = self._db.get_character_by_id(char_id)
         if not char:
             return {"success": False, "error": "Personaje no encontrado"}
 
-        raw_id = node_data.get("id")
-        node_id = str(raw_id) if raw_id else f"node_{char_id}_{int(datetime.now().timestamp() * 1000)}"
-        existing = next((n for n in char.network_nodes if n.id == node_id), None)
+        nid = str(node_data.get("id", ""))
+        existing = next((n for n in char.network_nodes if n.id == nid), None)
         if existing:
             existing.name = node_data.get("name", existing.name)
             existing.role = node_data.get("role", existing.role)
@@ -1509,23 +1196,13 @@ class DesktopBridge:
             existing.x = float(node_data.get("x", existing.x))
             existing.y = float(node_data.get("y", existing.y))
         else:
-            char.network_nodes.append(
-                NetworkNode(
-                    id=node_id,
-                    name=node_data.get("name", "PNJ"),
-                    role=node_data.get("role", "Neutral"),
-                    description=node_data.get("description", ""),
-                    avatar_base64=node_data.get("avatar_base64", ""),
-                    x=float(node_data.get("x", 0.0)),
-                    y=float(node_data.get("y", 0.0)),
-                )
-            )
+            char.network_nodes.append(NetworkNode.from_dict(node_data))
 
         self._db.save_character(char, set_active=self._is_active_character_id(char_id))
         return {"success": True, "network": self.get_character_network(char_id)}
 
     def delete_network_node(self, char_id: int, node_id: str) -> Dict[str, Any]:
-        """Elimina un nodo y sus aristas asociadas."""
+        """Elimina un nodo y todas las aristas conectadas."""
         char = self._db.get_character_by_id(char_id)
         if not char:
             return {"success": False, "error": "Personaje no encontrado"}
@@ -1536,47 +1213,39 @@ class DesktopBridge:
         return {"success": True, "network": self.get_character_network(char_id)}
 
     def save_network_edge(self, char_id: int, edge_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Crea un vínculo relacional entre dos personajes."""
+        """Guarda o actualiza una relación entre dos personajes."""
         char = self._db.get_character_by_id(char_id)
         if not char:
             return {"success": False, "error": "Personaje no encontrado"}
 
-        src = edge_data.get("source_id")
-        tgt = edge_data.get("target_id")
-        rel = edge_data.get("relation", "Aliado")
-
-        if src == tgt:
-            return {"success": False, "error": "No puedes vincular un personaje consigo mismo."}
-
-        char.network_edges = [
-            e for e in char.network_edges
-            if not ((e.source_id == src and e.target_id == tgt) or (e.source_id == tgt and e.target_id == src))
-        ]
-        char.network_edges.append(NetworkEdge(source_id=src, target_id=tgt, relation=rel))
+        src = str(edge_data.get("source_id", ""))
+        tgt = str(edge_data.get("target_id", ""))
+        existing = next((e for e in char.network_edges if e.source_id == src and e.target_id == tgt), None)
+        if existing:
+            existing.relation = edge_data.get("relation", existing.relation)
+        else:
+            char.network_edges.append(NetworkEdge.from_dict(edge_data))
 
         self._db.save_character(char, set_active=self._is_active_character_id(char_id))
         return {"success": True, "network": self.get_character_network(char_id)}
 
     def delete_network_edge(self, char_id: int, edge_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Elimina un vínculo relacional."""
+        """Elimina una relación entre dos personajes."""
         char = self._db.get_character_by_id(char_id)
         if not char:
             return {"success": False, "error": "Personaje no encontrado"}
 
-        src = edge_data.get("source_id")
-        tgt = edge_data.get("target_id")
-        char.network_edges = [
-            e for e in char.network_edges
-            if not ((e.source_id == src and e.target_id == tgt) or (e.source_id == tgt and e.target_id == src))
-        ]
+        src = str(edge_data.get("source_id", ""))
+        tgt = str(edge_data.get("target_id", ""))
+        char.network_edges = [e for e in char.network_edges if not (e.source_id == src and e.target_id == tgt)]
         self._db.save_character(char, set_active=self._is_active_character_id(char_id))
         return {"success": True, "network": self.get_character_network(char_id)}
 
     # =========================================================================
-    # MOTOR Y VISOR DE PDFS (PyMuPDF)
+    # VISOR DE MANUALES & HOJAS PDF
     # =========================================================================
 
-    def list_pdf_documents(self) -> List[Dict[str, str]]:
+    def list_pdf_documents(self) -> List[Dict[str, Any]]:
         """Busca manuales y fichas PDF en el proyecto, detectando idioma (es/en)."""
         results = []
         search_dirs = [
@@ -1652,58 +1321,22 @@ class DesktopBridge:
         if not char:
             return {"success": False, "error": "Personaje no encontrado"}
 
-        template_pdf = os.path.join(self._base_dir, "data", "characters", "Artanis LVL 4.pdf")
-        if not os.path.exists(template_pdf):
-            template_pdf = os.path.join(self._base_dir, "Artanis LVL 4.pdf")
-
-        clean_name = "".join(c for c in char.name if c.isalnum() or c in (" ", "_", "-")).strip().replace(" ", "_")
-        default_filename = f"{clean_name}_Sheet.pdf"
-
-        if not target_path and self._window:
-            try:
-                res = self._window.create_file_dialog(
-                    webview.SAVE_DIALOG,
-                    directory=os.path.join(self._base_dir, "data", "characters"),
-                    save_filename=default_filename,
-                    file_types=("Archivos PDF (*.pdf)", "Todos los Archivos (*.*)"),
-                )
-                if res:
-                    target_path = res[0] if isinstance(res, (list, tuple)) else str(res)
-                elif res is not None:
-                    # Usuario canceló explícitamente el cuadro de diálogo
-                    return {"success": False, "cancelled": True}
-            except Exception:
-                pass
-
         if not target_path:
-            target_path = os.path.join(self._base_dir, "data", "characters", default_filename)
-
-        os.makedirs(os.path.dirname(os.path.abspath(target_path)), exist_ok=True)
-        try:
-            out_file = UniversalAcroFormHandler.export_character_to_pdf(
-                char=char,
-                template_pdf_path=template_pdf,
-                output_path=target_path,
-            )
-            return {"success": True, "path": out_file}
-        except Exception as e:
-            return {"success": False, "error": str(e)}
-
-    def import_character_pdf(self, file_path: Optional[str] = None) -> Dict[str, Any]:
-        """Importa una hoja de personaje desde un PDF AcroForm editable."""
-        if not file_path:
-            file_path = self.open_pdf_dialog()
-            if not file_path:
+            if not self._window:
+                return {"success": False, "error": "Ventana no disponible para diálogo de guardado."}
+            file_types = ("Hojas de Personaje PDF (*.pdf)", "Todos los Archivos (*.*)")
+            save_name = f"{char.name.replace(' ', '_')}_Sheet.pdf"
+            res = self._window.create_file_dialog(webview.SAVE_DIALOG, save_filename=save_name, file_types=file_types)
+            if not res:
                 return {"success": False, "cancelled": True}
-
-        if not os.path.exists(file_path):
-            return {"success": False, "error": f"Archivo PDF no encontrado: {file_path}"}
+            target_path = res if isinstance(res, str) else res[0]
 
         try:
-            char = UniversalAcroFormHandler.load_character_from_pdf(file_path)
-            char_id = self._db.save_character(char, set_active=True)
-            saved = self._db.get_character_by_id(char_id)
-            return {"success": True, "id": char_id, "character": self._serialize_character(saved)}
+            template_path = os.path.join(self._base_dir, "data", "characters", "Artanis LVL 4.pdf")
+            if not os.path.exists(template_path):
+                template_path = None
+            out_file = UniversalAcroFormHandler.fill_official_sheet(char, template_path=template_path, output_path=target_path)
+            return {"success": True, "path": out_file}
         except Exception as e:
             return {"success": False, "error": str(e)}
 
@@ -1799,102 +1432,53 @@ class DesktopBridge:
             ),
             None
         )
-        if not matched:
-            results = self._okf.search_entities(query=query_id, lang=target_lang, limit=1)
-            if results:
-                matched = results[0]
 
         if not matched:
-            # Fallback a cualquier idioma si no se encontró en el target
             matched = next(
-                (item for item in self._okf._index if item.get("id") == query_id or item.get("nombre", "").lower() == clean),
+                (
+                    item for item in self._okf._index
+                    if item.get("id", "").lower() in (clean_slug, clean_en, clean_base)
+                    or item.get("nombre", "").lower() == clean
+                ),
                 None
             )
 
-        if not matched:
-            return None
+        if matched:
+            rel_path = matched.get("path", "")
+            full_path = os.path.join(self._base_dir, rel_path)
+            if os.path.exists(full_path):
+                try:
+                    with open(full_path, "r", encoding="utf-8") as f:
+                        content = f.read()
+                    return {
+                        "name": matched.get("nombre", entry_name),
+                        "category": matched.get("tipo", category),
+                        "content": content,
+                        "metadata": matched,
+                    }
+                except Exception as e:
+                    return {"name": entry_name, "category": category, "content": f"Error leyendo archivo: {e}"}
 
-        rel_path = matched.get("path")
-        content = ""
-        full_meta = dict(matched)
-        if rel_path:
-            full_data = self._okf.read_entity_file(rel_path)
-            if full_data:
-                full_meta.update(full_data)
-                content = full_data.get("body_markdown") or full_data.get("descripcion", "")
+        fallback_entry = self._okf.get_entity_detail(query_id)
+        if fallback_entry:
+            return fallback_entry
 
-        if not content:
-            content = matched.get("descripcion", "")
+        return None
 
-        return {
-            "id": matched.get("id", ""),
-            "name": matched.get("nombre", entry_name),
-            "category": matched.get("tipo", category),
-            "content": content,
-            "metadata": full_meta,
-        }
-
-    # =========================================================================
-    # REGLAS 5E & DESCANSO
-    # =========================================================================
-
-    def validate_point_buy(self, scores: Dict[str, int]) -> Dict[str, Any]:
-        """Valida si los atributos respetan el presupuesto de 27 puntos de 5e."""
-        clean_scores = {k: int(v) for k, v in scores.items()}
-        spent = PointBuyCalculator.calculate_used_points(clean_scores)
-        remaining = PointBuyCalculator.get_remaining_points(clean_scores)
-        valid = remaining >= 0 and all(MIN_SCORE <= v <= MAX_SCORE for v in clean_scores.values())
-        error = None
-        if remaining < 0:
-            error = f"Presupuesto excedido por {abs(remaining)} puntos."
-        elif any(v < MIN_SCORE or v > MAX_SCORE for v in clean_scores.values()):
-            error = f"Atributos fuera del rango legal ({MIN_SCORE}-{MAX_SCORE})."
-
-        can_inc = {k: PointBuyCalculator.can_increment(clean_scores, k) for k in clean_scores}
-        can_dec = {k: PointBuyCalculator.can_decrement(clean_scores, k) for k in clean_scores}
-
-        return {
-            "valid": valid,
-            "points_spent": spent,
-            "points_remaining": remaining,
-            "can_increment": can_inc,
-            "can_decrement": can_dec,
-            "error": error,
-            "standard_array": STANDARD_ARRAY,
-            "min_score": MIN_SCORE,
-            "max_score": MAX_SCORE,
-        }
-
-    def get_quick_build_options(self) -> Dict[str, Any]:
-        """Retorna las listas de clases, especies y presets de creación rápida."""
-        return {
-            "classes": CLASSES_LIST,
-            "species": SPECIES_LIST,
-            "alignments": ALIGNMENTS_LIST,
-            "presets": CLASS_QUICK_PRESETS,
-        }
-
-    def generate_quick_character(self, char_class: str, species: str, name: str) -> Dict[str, Any]:
-        """Genera un personaje en 60 segundos usando los presets y Standard Array de Quick Build."""
-        char_name = name.strip() or f"Héroe {char_class}"
-        raw_scores, final_scores, bg, plus2, plus1 = QuickBuildEngine.generate_quick_stats(char_class, species)
-        preset = QuickBuildEngine.get_preset_for_class(char_class)
+    def create_character_quick(self, char_class: str, species: str, background: str) -> Dict[str, Any]:
+        """Crea un personaje en 60 segundos con valores óptimos por defecto."""
+        preset = CLASS_QUICK_PRESETS.get(char_class, CLASS_QUICK_PRESETS.get("Guerrero", {}))
+        hd_face = CLASS_HIT_DICE.get(char_class, 8)
+        abilities_scores = preset.get("abilities", {"FUE": 15, "CON": 14, "DES": 13, "INT": 12, "SAB": 10, "CAR": 8})
 
         calc_mod = lambda score: (score - 10) // 2
-        con_mod = calc_mod(final_scores.get("CON", 10))
-        des_mod = calc_mod(final_scores.get("DES", 10))
-
-        hd_map = {
-            "Bárbaro": 12, "Guerrero": 10, "Paladín": 10, "Explorador": 10,
-            "Bardo": 8, "Clérigo": 8, "Druida": 8, "Monje": 8, "Pícaro": 8, "Brujo": 8,
-            "Hechicero": 6, "Mago": 6
-        }
-        hd_face = hd_map.get(char_class, 8)
-        hp = max(1, hd_face + con_mod)
+        con_mod = calc_mod(abilities_scores.get("CON", 10))
+        des_mod = calc_mod(abilities_scores.get("DES", 10))
+        hp = hd_face + con_mod
 
         abilities: Dict[str, Any] = {}
         for stat in ["FUE", "DES", "CON", "INT", "SAB", "CAR"]:
-            base = final_scores.get(stat, 10)
+            base = abilities_scores.get(stat, 10)
             mod = calc_mod(base)
             abilities[stat] = {
                 "base": base,
@@ -1910,7 +1494,7 @@ class DesktopBridge:
                 "name": w_name,
                 "type": "Cuerpo a cuerpo" if "Arco" not in w_name and "Ballesta" not in w_name else "A distancia",
                 "range_val": "5 pies" if "Arco" not in w_name and "Ballesta" not in w_name else "80/320",
-                "hit_dc": f"+{2 + max(calc_mod(final_scores['FUE']), calc_mod(final_scores['DES']))}",
+                "hit_dc": f"+{2 + max(calc_mod(abilities_scores['FUE']), calc_mod(abilities_scores['DES']))}",
                 "damage_dice": w_dmg.split(" ")[0],
                 "damage_type": w_dmg.split(" ")[1] if len(w_dmg.split(" ")) > 1 else "cortante",
                 "notes": w_notes,
@@ -1918,33 +1502,13 @@ class DesktopBridge:
             })
 
         spells = []
-        for c_name in preset.get("cantrips", []):
-            spells.append({
-                "name": c_name,
-                "level": 0,
-                "school": "Evocación",
-                "cast_time": "1 acción",
-                "range_area": "60 pies",
-                "components": "V, S",
-                "duration": "Instantáneo",
-                "prepared": True,
-                "notes": "Truco sugerido por Quick Build.",
-            })
-        for s_name in preset.get("spells_known", []):
-            spells.append({
-                "name": s_name,
-                "level": 1,
-                "school": "Abjuración",
-                "cast_time": "1 acción",
-                "range_area": "30 pies",
-                "components": "V, S",
-                "duration": "1 minuto",
-                "prepared": True,
-                "notes": "Conjuro de Nivel 1 asignado por Quick Build.",
-            })
+        for sp_name in preset.get("cantrips", []):
+            spells.append({"name": sp_name, "level": 0, "school": "Evocación", "prepared": True})
+        for sp_name in preset.get("spells_known", []):
+            spells.append({"name": sp_name, "level": 1, "school": "Evocación", "prepared": True})
 
         return {
-            "name": char_name,
+            "name": f"Héroe {char_class}",
             "char_class": char_class,
             "subclass": "",
             "level": 1,
@@ -2166,21 +1730,21 @@ class DesktopBridge:
     # MÉTODOS DE SESIÓN ONLINE DEL DM Y CLOUDFLARE TUNNELS
     # =========================================================================
 
-    def start_dm_session(self, name: str = "Sesión de Campaña", campaign_name: str = "Campaña Principal", session_id: Optional[str] = None) -> Dict[str, Any]:
+    def start_dm_session(self, name: str = "Sesión de Campaña", campaignName: str = "Campaña Principal", sessionId: Optional[str] = None) -> Dict[str, Any]:
         """Inicia el servidor local WebSocket y levanta el túnel Cloudflare seguro."""
         import uuid
-        sid = session_id or f"sess_{uuid.uuid4().hex[:8]}"
+        sid = sessionId or f"sess_{uuid.uuid4().hex[:8]}"
 
         existing = self._db.get_dm_session(sid)
         if existing:
             name = existing.get("name") or name
-            campaign_name = existing.get("campaign_name") or campaign_name
+            campaignName = existing.get("campaign_name") or campaignName
 
         # 1. Iniciar servidor FastAPI embebido
-        port = self._session_server.start(sid, name, campaign_name)
+        port = self._session_server.start(sid, name, campaignName)
 
         # 2. Registrar o reactivar en SQLite
-        self._db.create_dm_session(sid, name, campaign_name)
+        self._db.create_dm_session(sid, name, campaignName)
 
         # 3. Iniciar Cloudflare Quick Tunnel en hilo secundario sin congelar el hilo de renderizado
         def on_url_ready(url: str):
@@ -2301,4 +1865,3 @@ class DesktopBridge:
         if session_info and session_info.get("notes"):
             return str(session_info["notes"])
         return ""
-

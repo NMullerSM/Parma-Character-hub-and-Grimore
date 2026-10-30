@@ -58,41 +58,34 @@ export interface SpellItemData {
   snippet?: string;
 }
 
+export interface SpellStatsData {
+  casting_ability: string;
+  spell_save_dc: number;
+  spell_attack_bonus: number;
+  ability_mod: number;
+}
+
 export interface FeatureItemData {
   id?: string;
   name: string;
+  name_en?: string;
   source: string;
+  source_en?: string;
   description: string;
+  description_en?: string;
   uses_max?: number;
   uses_current?: number;
   recharge?: string;
-}
-
-export interface SpellStatsData {
-  ability: string;
-  dc: number;
-  attack_bonus: number;
-  is_caster?: boolean;
-}
-
-export interface ClassProgressionLimits {
-  is_caster: boolean;
-  edition: string;
-  cantrips_limit: number;
-  spells_limit: number;
-  max_spell_level: number;
-  spell_slots: Record<string, number>;
-  weapon_mastery_slots: number;
-  casting_ability: string;
+  origin?: "class" | "subclass" | "species" | "background" | "feat" | "custom";
 }
 
 export interface SessionLogData {
-  id: number;
+  id?: number;
   date: string;
   title: string;
   summary: string;
-  loot: string;
-  xp_gained: number;
+  loot?: string;
+  xp_gained?: number;
   session_id?: string;
 }
 
@@ -169,6 +162,9 @@ export interface TaleSpireStatus {
   is_running: boolean;
   is_connected: boolean;
   state_label: string;
+  symbiote_connected?: boolean;
+  symbiote_folder_installed?: boolean;
+  symbiote_install_path?: string | null;
 }
 
 export type RollMode = "normal" | "advantage" | "disadvantage";
@@ -386,4 +382,3 @@ export interface DmSessionEventLog {
   target_name?: string;
   details: Record<string, any>;
 }
-

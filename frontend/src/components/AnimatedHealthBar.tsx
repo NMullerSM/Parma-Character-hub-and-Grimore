@@ -32,8 +32,8 @@ export const AnimatedHealthBar: React.FC<AnimatedHealthBarProps> = ({
   const [ghostPct, setGhostPct] = useState(currentPct);
   const [isHealing, setIsHealing] = useState(false);
   const prevHpRef = useRef(currentHp);
-  const ghostTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const healTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const ghostTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const healTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const prevHp = prevHpRef.current;
