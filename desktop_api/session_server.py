@@ -24,6 +24,8 @@ class ConnectionManager:
         self.active_players: Dict[str, WebSocket] = {}
         # Conexiones de consolas DM activas
         self.dm_sockets: List[WebSocket] = []
+        # Conexión dedicada del TaleSpire Symbiote
+        self.symbiote_socket: Optional[WebSocket] = None
 
     async def connect_player(self, player_token: str, websocket: WebSocket):
         await websocket.accept()
@@ -33,6 +35,10 @@ class ConnectionManager:
         await websocket.accept()
         self.dm_sockets.append(websocket)
 
+    async def connect_symbiote(self, websocket: WebSocket):
+        await websocket.accept()
+        self.symbiote_socket = websocket
+
     def disconnect_player(self, player_token: str):
         if player_token in self.active_players:
             del self.active_players[player_token]
@@ -40,6 +46,22 @@ class ConnectionManager:
     def disconnect_dm(self, websocket: WebSocket):
         if websocket in self.dm_sockets:
             self.dm_sockets.remove(websocket)
+
+    def disconnect_symbiote(self):
+        self.symbiote_socket = None
+
+    def is_symbiote_connected(self) -> bool:
+        return self.symbiote_socket is not None
+
+    async def send_to_symbiote(self, message: Dict[str, Any]) -> bool:
+        if not self.symbiote_socket:
+            return False
+        try:
+            await self.symbiote_socket.send_text(json.dumps(message, ensure_ascii=False))
+            return True
+        except Exception:
+            self.symbiote_socket = None
+            return False
 
     async def broadcast_to_all(self, message: Dict[str, Any]):
         text = json.dumps(message, ensure_ascii=False)
@@ -195,6 +217,25 @@ class DmSessionServer:
                         "player_token": player_token,
                     })
 
+        @app.websocket("/ws/talespire")
+        async def talespire_websocket_endpoint(websocket: WebSocket):
+            await self.manager.connect_symbiote(websocket)
+            await self.manager.send_to_dm({
+                "type": "TALESPIRE_SYMBIOTE_STATUS",
+                "connected": True,
+            })
+            try:
+                while True:
+                    msg_text = await websocket.receive_text()
+                    msg = json.loads(msg_text)
+                    await self._handle_symbiote_ws_message(msg)
+            except WebSocketDisconnect:
+                self.manager.disconnect_symbiote()
+                await self.manager.send_to_dm({
+                    "type": "TALESPIRE_SYMBIOTE_STATUS",
+                    "connected": False,
+                })
+
         # Servir build estática de frontend para los jugadores que entran por el túnel
         dist_dir = os.path.join(self.base_dir, "frontend", "dist")
         if os.path.isdir(dist_dir):
@@ -260,7 +301,63 @@ class DmSessionServer:
         # Mensajes originados por el DM hacia jugadores
         pass
 
-    def start(self, session_id: str, session_name: str, campaign_name: str = "Campaña Principal") -> int:
+    async def _handle_symbiote_ws_message(self, msg: Dict[str, Any]):
+        """Procesa eventos entrantes desde el TaleSpire Symbiote."""
+        msg_type = msg.get("type")
+        if msg_type == "SYMBIOTE_HELLO":
+            await self.manager.send_to_symbiote({
+                "type": "SYMBIOTE_ACK",
+                "session_id": self.current_session_id,
+            })
+        elif msg_type == "DICE_ROLL_RESOLVED":
+            total = int(msg.get("total", 0))
+            groups = msg.get("groups", [])
+            detail_parts = []
+            for g in groups:
+                name = g.get("name") or "Tirada"
+                tot = g.get("total", 0)
+                detail_parts.append(f"{name}: {tot}")
+            detail_str = " | ".join(detail_parts) if detail_parts else f"🎲 Resultado 3D: {total}"
+
+            # Registrar en el SessionRollLedger
+            try:
+                from core.session_ledger import SessionRollLedger
+                SessionRollLedger.get_current().record_roll(
+                    character_name="TaleSpire 3D",
+                    reason="Tirada en Mesa 3D",
+                    formula="Física 3D",
+                    detail=detail_str,
+                    total=total,
+                    is_crit=False,
+                    is_fumble=False,
+                    channel="TaleSpire Symbiote",
+                )
+            except Exception as e:
+                print(f"[DmSessionServer] Error registrando en Ledger: {e}")
+
+            if self.current_session_id:
+                self.db.log_session_event(
+                    session_id=self.current_session_id,
+                    event_type="ROLL_TALESPIRE_3D",
+                    actor_name="TaleSpire 3D",
+                    details={"total": total, "detail": detail_str, "groups": groups},
+                )
+
+            # Notificar a la consola DM y jugadores conectados
+            await self.manager.broadcast_to_all({
+                "type": "DICE_ROLL_SHARED",
+                "player_token": "talespire_3d",
+                "actor_name": "TaleSpire 3D",
+                "roll": {
+                    "total": total,
+                    "detail": detail_str,
+                    "formula": "Física 3D",
+                    "label": "Tirada en Mesa TaleSpire",
+                    "channel": "TaleSpire Symbiote",
+                },
+            })
+
+    def start(self, session_id: Optional[str] = None, session_name: str = "Partida D&D 5e", campaign_name: str = "Campaña Principal") -> int:
         """Inicia el servidor en un hilo secundario daemon."""
         self.current_session_id = session_id
         self.session_name = session_name
@@ -288,8 +385,36 @@ class DmSessionServer:
         self.thread.start()
         return self.port
 
+    def ensure_running(self) -> int:
+        """Garantiza que el servidor local de WebSockets esté activo en segundo plano para el Symbiote y la API."""
+        if self.thread and self.thread.is_alive():
+            return self.port
+        return self.start(session_id=self.current_session_id, session_name=self.session_name, campaign_name=self.campaign_name)
+
+    def is_symbiote_connected(self) -> bool:
+        """Indica si el Symbiote de TaleSpire está conectado en vivo vía WebSocket."""
+        return self.manager.is_symbiote_connected()
+
+    def dispatch_dice_to_symbiote(self, formula: str, label: str = "Tirada", mode: str = "normal", actor_name: str = "Parma") -> bool:
+        """Despacha una fórmula de dados al Symbiote para que use TS.dice.putDiceInTray."""
+        if not self.is_symbiote_connected():
+            return False
+        coro = self.manager.send_to_symbiote({
+            "type": "DICE_ROLL_DISPATCH",
+            "formula": formula,
+            "label": label,
+            "mode": mode,
+            "actor_name": actor_name,
+        })
+        self.execute_async(coro)
+        return True
+
+    def stop_session(self):
+        """Detiene la sesión online activa pero mantiene el servidor WebSocket corriendo para TaleSpire y la API local."""
+        self.current_session_id = None
+
     def stop(self):
-        """Detiene el servidor."""
+        """Detiene completamente el servidor Uvicorn."""
         if self.server:
             self.server.should_exit = True
         self.current_session_id = None

@@ -5,9 +5,10 @@ sesión persistente sin desconexiones falsas y formateo de pools combinados.
 """
 import sys
 import os
+import shutil
 import subprocess
 from enum import Enum
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Tuple
 
 PIPE_NAME = r'\\.\pipe\com.bouncyrock.talespire.lcm_pipe'
 URI_SCHEME = "talespire://dice/"
@@ -25,7 +26,8 @@ class TaleSpireState(Enum):
 class TaleSpireBridge:
     """
     Controlador del canal IPC con TaleSpire.
-    Implementa máquina de estados estables para partidas de larga duración (3-5 hrs).
+    Implementa detección automática de instalación, auto-despliegue del Symbiote,
+    y máquina de estados estables para partidas de larga duración (3-5 hrs).
     """
 
     def __init__(self, timeout_ms: int = 50, cache_ttl: float = 3.0):
@@ -33,13 +35,153 @@ class TaleSpireBridge:
         self.cache_ttl = cache_ttl
         self.state: TaleSpireState = TaleSpireState.NOT_INSTALLED
         self.is_installed: bool = False
+        self.symbiote_install_path: Optional[str] = None
+        self.symbiote_folder_installed: bool = False
         self._check_installation()
 
+    def find_symbiotes_directory(self) -> Optional[str]:
+        """
+        Localiza la carpeta oficial de Symbiotes de TaleSpire en Windows o Linux (Steam/Proton).
+        Si la carpeta de datos del juego existe pero 'Symbiotes' aún no ha sido creada, la crea.
+        """
+        # 1. Variable de entorno personalizada si el usuario la definió
+        custom_env = os.environ.get("TALESPIRE_SYMBIOTES_DIR")
+        if custom_env and os.path.isdir(custom_env):
+            return custom_env
+
+        # 2. Rutas estándar en Windows
+        if sys.platform == "win32":
+            user_profile = os.environ.get("USERPROFILE", os.path.expanduser("~"))
+            app_data = os.environ.get("APPDATA", "")
+            local_app_data = os.environ.get("LOCALAPPDATA", "")
+
+            candidate_roots = [
+                os.path.join(user_profile, "AppData", "LocalLow", "BouncyRock Entertainment", "TaleSpire"),
+                os.path.join(user_profile, "AppData", "LocalLow", "Bouncyrock Entertainment", "TaleSpire"),
+            ]
+            if app_data:
+                candidate_roots.extend([
+                    os.path.abspath(os.path.join(app_data, "..", "LocalLow", "BouncyRock Entertainment", "TaleSpire")),
+                    os.path.abspath(os.path.join(app_data, "..", "LocalLow", "Bouncyrock Entertainment", "TaleSpire")),
+                ])
+            if local_app_data:
+                candidate_roots.extend([
+                    os.path.abspath(os.path.join(local_app_data, "..", "LocalLow", "BouncyRock Entertainment", "TaleSpire")),
+                    os.path.abspath(os.path.join(local_app_data, "..", "LocalLow", "Bouncyrock Entertainment", "TaleSpire")),
+                ])
+
+            for root in candidate_roots:
+                if os.path.isdir(root):
+                    sym_path = os.path.join(root, "Symbiotes")
+                    try:
+                        os.makedirs(sym_path, exist_ok=True)
+                        return sym_path
+                    except Exception:
+                        if os.path.exists(sym_path):
+                            return sym_path
+
+        # 3. Rutas en Linux (Steam Proton / Wine)
+        else:
+            home = os.path.expanduser("~")
+            steam_roots = [
+                os.path.join(home, ".steam", "steam"),
+                os.path.join(home, ".local", "share", "Steam"),
+                os.path.join(home, ".var", "app", "com.valvesoftware.Steam", ".local", "share", "Steam"),
+                os.path.join(home, ".var", "app", "com.valvesoftware.Steam", ".steam", "steam"),
+            ]
+
+            # Bibliotecas adicionales configuradas en libraryfolders.vdf
+            extra_libs = []
+            for s_root in steam_roots:
+                vdf_path = os.path.join(s_root, "steamapps", "libraryfolders.vdf")
+                if os.path.isfile(vdf_path):
+                    try:
+                        with open(vdf_path, "r", encoding="utf-8", errors="ignore") as f:
+                            for line in f:
+                                if '"path"' in line:
+                                    parts = line.split('"path"')
+                                    if len(parts) > 1:
+                                        raw_path = parts[1].strip().strip('"').replace('\\\\', '/')
+                                        if os.path.isdir(raw_path) and raw_path not in extra_libs:
+                                            extra_libs.append(raw_path)
+                    except Exception:
+                        pass
+
+            all_search_roots = steam_roots + extra_libs
+            app_ids = ["720620", "2881860"]
+            bouncy_variants = ["BouncyRock Entertainment", "Bouncyrock Entertainment"]
+
+            for root in all_search_roots:
+                for app_id in app_ids:
+                    pfx_users = os.path.join(root, "steamapps", "compatdata", app_id, "pfx", "drive_c", "users")
+                    if os.path.isdir(pfx_users):
+                        try:
+                            user_dirs = [d for d in os.listdir(pfx_users) if os.path.isdir(os.path.join(pfx_users, d))]
+                        except Exception:
+                            user_dirs = ["steamuser"]
+
+                        for u_name in user_dirs:
+                            for b_var in bouncy_variants:
+                                target_ts = os.path.join(pfx_users, u_name, "AppData", "LocalLow", b_var, "TaleSpire")
+                                if os.path.isdir(target_ts):
+                                    sym_path = os.path.join(target_ts, "Symbiotes")
+                                    try:
+                                        os.makedirs(sym_path, exist_ok=True)
+                                        return sym_path
+                                    except Exception:
+                                        if os.path.exists(sym_path):
+                                            return sym_path
+
+        return None
+
+    def install_or_update_symbiote(self, source_dir: str) -> Tuple[bool, str, Optional[str]]:
+        """
+        Instala o actualiza automáticamente los archivos del Symbiote dentro del
+        directorio oficial de Symbiotes de TaleSpire.
+        """
+        if not source_dir or not os.path.isdir(source_dir):
+            return False, f"Directorio fuente del Symbiote no encontrado: {source_dir}", None
+
+        manifest_source = os.path.join(source_dir, "manifest.json")
+        if not os.path.isfile(manifest_source):
+            return False, f"El directorio {source_dir} no contiene manifest.json", None
+
+        symbiotes_dir = self.find_symbiotes_directory()
+        if not symbiotes_dir:
+            return False, "No se detectó el directorio de Symbiotes de TaleSpire en el equipo", None
+
+        target_dir = os.path.join(symbiotes_dir, "ParmaDiceBridge")
+        try:
+            os.makedirs(target_dir, exist_ok=True)
+            copied_files = []
+            for item in os.listdir(source_dir):
+                s_item = os.path.join(source_dir, item)
+                d_item = os.path.join(target_dir, item)
+                if os.path.isfile(s_item):
+                    shutil.copy2(s_item, d_item)
+                    copied_files.append(item)
+                elif os.path.isdir(s_item):
+                    shutil.copytree(s_item, d_item, dirs_exist_ok=True)
+                    copied_files.append(f"{item}/")
+
+            self.symbiote_install_path = target_dir
+            self.symbiote_folder_installed = True
+            return True, f"Symbiote instalado/actualizado correctamente ({len(copied_files)} archivos)", target_dir
+        except Exception as e:
+            return False, f"Error al copiar archivos del Symbiote: {str(e)}", None
 
     def _check_installation(self) -> bool:
-        """Verifica si TaleSpire está instalado mediante el registro de Windows o Steam."""
+        """Verifica si TaleSpire está instalado mediante registro, carpetas de datos o ejecutables de Steam."""
+        # 1. Comprobación mediante carpeta oficial de Symbiotes / AppData
+        sym_dir = self.find_symbiotes_directory()
+        if sym_dir:
+            self.symbiote_install_path = os.path.join(sym_dir, "ParmaDiceBridge")
+            self.symbiote_folder_installed = os.path.isdir(self.symbiote_install_path)
+            self.is_installed = True
+            self.state = TaleSpireState.INSTALLED_CLOSED
+            return True
+
         if sys.platform != "win32":
-            # Soporte experimental para Wine/Proton en Linux
             proton_found = self._check_proton_installation()
             self.is_installed = proton_found
             self.state = TaleSpireState.INSTALLED_CLOSED if proton_found else TaleSpireState.NOT_INSTALLED
@@ -77,25 +219,31 @@ class TaleSpireBridge:
         potential_paths = [
             os.path.join(home, ".steam/steam/steamapps/common/TaleSpire/TaleSpire.exe"),
             os.path.join(home, ".local/share/Steam/steamapps/common/TaleSpire/TaleSpire.exe"),
+            os.path.join(home, ".steam/steam/steamapps/compatdata/720620"),
+            os.path.join(home, ".local/share/Steam/steamapps/compatdata/720620"),
         ]
         return any(os.path.exists(p) for p in potential_paths)
 
     def is_process_running(self) -> bool:
-        """Comprueba de forma ligera si el proceso TaleSpire.exe está en memoria."""
-        if sys.platform != "win32":
-            return False
-
-        try:
-            creation_flags = subprocess.CREATE_NO_WINDOW if hasattr(subprocess, "CREATE_NO_WINDOW") else 0
-            output = subprocess.check_output(
-                'tasklist /FI "IMAGENAME eq TaleSpire.exe" /NH',
-                shell=True,
-                text=True,
-                creationflags=creation_flags
-            )
-            return "TaleSpire.exe" in output
-        except Exception:
-            return False
+        """Comprueba de forma ligera si el proceso TaleSpire.exe está en memoria (Windows o Linux/Proton)."""
+        if sys.platform == "win32":
+            try:
+                creation_flags = subprocess.CREATE_NO_WINDOW if hasattr(subprocess, "CREATE_NO_WINDOW") else 0
+                output = subprocess.check_output(
+                    'tasklist /FI "IMAGENAME eq TaleSpire.exe" /NH',
+                    shell=True,
+                    text=True,
+                    creationflags=creation_flags
+                )
+                return "TaleSpire.exe" in output
+            except Exception:
+                return False
+        else:
+            try:
+                out = subprocess.check_output(["pgrep", "-f", "-i", "TaleSpire"], text=True)
+                return bool(out.strip())
+            except Exception:
+                return False
 
     def connect(self) -> tuple[bool, str]:
         """
@@ -220,108 +368,10 @@ class TaleSpireBridge:
 
     def execute_throw_gesture(self, ts_mode: str = "dm") -> bool:
         """
-        Simula el gesto físico de lanzamiento en TaleSpire con micro-impulso instantáneo.
-        Calibra la altura según ts_mode y medidas de píxeles reales:
-          - 'dm': ~17.5% de altura desde el borde inferior (modo GM / Build Mode: centrado en la bandeja
-                  de dados d4..d20 a 180-190px del fondo, seguro por encima de la barra 'Open Library').
-          - 'player': ~15.5% de altura desde el borde inferior (modo jugador / mesa limpia).
-        Garantiza sincronización con el bucle de fotogramas de Unity (60 FPS) restaurando el cursor en ~25ms.
+        [DESACTIVADO A FAVOR DEL SYMBIOTE OFICIAL]:
+        La emulación de arrastre del cursor del sistema operativo ha sido reemplazada
+        por el TaleSpire Symbiote oficial (talespire.dice.putDiceInTray), evitando
+        movimientos invasivos de ratón en pantalla y permitiendo resolver las físicas
+        de forma limpia directamente en el juego.
         """
-        if sys.platform != "win32":
-            return False
-
-        import threading
-
-        def _run_gesture():
-            try:
-                import ctypes
-                from ctypes import wintypes
-                import time
-
-                user32 = ctypes.windll.user32
-
-                # 0. Habilitar consciencia de DPI para coordenadas físicas reales precisas
-                try:
-                    ctypes.windll.shcore.SetProcessDpiAwareness(2)  # Per-monitor DPI aware
-                except Exception:
-                    try:
-                        user32.SetProcessDPIAware()
-                    except Exception:
-                        pass
-
-                MOUSEEVENTF_LEFTDOWN = 0x0002
-                MOUSEEVENTF_LEFTUP = 0x0004
-
-                orig_pos = wintypes.POINT()
-                user32.GetCursorPos(ctypes.byref(orig_pos))
-                prev_hwnd = user32.GetForegroundWindow()
-
-                # Ratio vertical calibrado con la caja real de dados preparados [1 D20] / Staged Tray:
-                # - Modo GM / Build Mode: La caja [1 D20] está exactamente al 30.0% de altura desde el fondo (Y = 756px en 1080p).
-                # - Modo Jugador: Al desaparecer la barra 'Open Library' (~6% de altura / 65px), la bandeja baja esa misma
-                #   distancia proporcional, situándose al 24.0% de altura desde el fondo (Y = 821px en 1080p).
-                ratio = 0.300 if ts_mode == "dm" else 0.240
-
-                # 1. Localizar ventana de TaleSpire y calcular coordenadas relativas dinámicas
-                hwnd = user32.FindWindowW(None, "TaleSpire")
-                if not hwnd:
-                    hwnd = user32.FindWindowW("UnityWndClass", "TaleSpire")
-
-                if hwnd and user32.IsWindow(hwnd):
-                    rect = wintypes.RECT()
-                    user32.GetWindowRect(hwnd, ctypes.byref(rect))
-                    w = rect.right - rect.left
-                    h = rect.bottom - rect.top
-                    tray_x = rect.left + w // 2
-                    tray_y = rect.bottom - int(h * ratio)
-                    if prev_hwnd != hwnd:
-                        user32.SetForegroundWindow(hwnd)
-                else:
-                    sw = user32.GetSystemMetrics(0)
-                    sh = user32.GetSystemMetrics(1)
-                    tray_x = sw // 2
-                    tray_y = sh - int(sh * ratio)
-
-                # 1. Espera de animación de despliegue del cajón (TweenForward en TaleSpire dura ~200ms)
-                # Al recibir la URL por el Pipe, TaleSpire anima la bandeja hacia arriba desde el fondo.
-                # Esta pausa garantiza que la bandeja esté 100% desplegada en Y=756px y TaleSpire tenga el foco activo.
-                time.sleep(0.220)
-
-                # 2. Posicionamiento instantáneo en la caja de dados preparados [1 D20]
-                user32.SetCursorPos(tray_x, tray_y)
-                time.sleep(0.015)
-
-                # 3. Agarre firme del paquete de dados (LEFTDOWN)
-                user32.mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
-                # 25ms para asegurar que Unity InputSystem (60Hz) registre el estado Down en UIDiceTray
-                time.sleep(0.025)
-
-                # 4. Arrastre vertical multi-cuadro interpolado (6 pasos progresivos hacia la mesa 3D)
-                # En Unity, DiceBoardTool requiere registrar _velocity y _velocityOneFrameBack en fotogramas sucesivos
-                flick_distance = 320
-                steps = 6
-                step_dist = flick_distance // steps
-                step_delay = 0.016  # 16ms = exactamente 1 cuadro a 60 FPS
-
-                curr_y = tray_y
-                for _ in range(steps):
-                    curr_y -= step_dist
-                    user32.SetCursorPos(tray_x, curr_y)
-                    user32.mouse_event(0x0001, 0, 0, 0, 0)  # MOUSEEVENTF_MOVE
-                    time.sleep(step_delay)
-
-                # 5. Soltar dados en pleno vuelo hacia la mesa 3D (LEFTUP)
-                user32.mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
-                # 30ms para que DiceBoardTool.End() calcule el impulso y despache ThrowDice()
-                time.sleep(0.030)
-
-                # 6. Restaurar cursor original y foco de forma inmediata
-                user32.SetCursorPos(orig_pos.x, orig_pos.y)
-                if prev_hwnd and prev_hwnd != hwnd:
-                    user32.SetForegroundWindow(prev_hwnd)
-            except Exception:
-                pass
-
-        threading.Thread(target=_run_gesture, daemon=True).start()
         return True
-
