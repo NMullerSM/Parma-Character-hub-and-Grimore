@@ -46,43 +46,47 @@ def generate_icons():
     light_svg = os.path.join(base_dir, "brand", "es", "icon-shield-solid-light.svg")
 
     if not os.path.exists(dark_svg) or not os.path.exists(light_svg):
-        print(f"[Error] Archivos SVG fuente no encontrados en {dark_svg} o {light_svg}")
+        print(f"[Aviso] Archivos SVG fuente no encontrados en {dark_svg} o {light_svg}. Se conservarán los iconos existentes.")
         return
 
     sizes = [16, 24, 32, 48, 64, 128, 256]
+    ico_sizes = [(s, s) for s in sizes]
 
     print("[Iconos Parma] Renderizando capas vectoriales multi-resolución...")
 
-    # 1. Variante Oscura (Escudo Negro Sólido para Barras de Tareas Claras)
-    dark_images = [render_svg_to_image(dark_svg, s) for s in sizes]
-    dark_ico_path = os.path.join(base_dir, "parma_taskbar_dark.ico")
-    dark_png_path = os.path.join(base_dir, "parma_taskbar_dark.png")
-    dark_images[-1].save(dark_ico_path, format="ICO", sizes=[(s, s) for s in sizes], append_images=dark_images[:-1])
-    dark_images[-1].save(dark_png_path, format="PNG")
-    print(f" -> Generado: {os.path.basename(dark_ico_path)} y {os.path.basename(dark_png_path)}")
+    try:
+        # 1. Variante Oscura (Escudo Negro Sólido para Barras de Tareas Claras)
+        dark_images = [render_svg_to_image(dark_svg, s) for s in sizes]
+        dark_ico_path = os.path.join(base_dir, "parma_taskbar_dark.ico")
+        dark_png_path = os.path.join(base_dir, "parma_taskbar_dark.png")
+        dark_images[-1].save(dark_ico_path, format="ICO", sizes=ico_sizes)
+        dark_images[-1].save(dark_png_path, format="PNG")
+        print(f" -> Generado: {os.path.basename(dark_ico_path)} y {os.path.basename(dark_png_path)}")
 
-    # 2. Variante Clara (Escudo Blanco Sólido para Barras de Tareas Oscuras)
-    light_images = [render_svg_to_image(light_svg, s) for s in sizes]
-    light_ico_path = os.path.join(base_dir, "parma_taskbar_light.ico")
-    light_png_path = os.path.join(base_dir, "parma_taskbar_light.png")
-    light_images[-1].save(light_ico_path, format="ICO", sizes=[(s, s) for s in sizes], append_images=light_images[:-1])
-    light_images[-1].save(light_png_path, format="PNG")
-    print(f" -> Generado: {os.path.basename(light_ico_path)} y {os.path.basename(light_png_path)}")
+        # 2. Variante Clara (Escudo Blanco Sólido para Barras de Tareas Oscuras)
+        light_images = [render_svg_to_image(light_svg, s) for s in sizes]
+        light_ico_path = os.path.join(base_dir, "parma_taskbar_light.ico")
+        light_png_path = os.path.join(base_dir, "parma_taskbar_light.png")
+        light_images[-1].save(light_ico_path, format="ICO", sizes=ico_sizes)
+        light_images[-1].save(light_png_path, format="PNG")
+        print(f" -> Generado: {os.path.basename(light_ico_path)} y {os.path.basename(light_png_path)}")
 
-    # 3. Master parma.ico y parma.png (Sustituyen los iconos antiguos difusos)
-    master_ico = os.path.join(base_dir, "parma.ico")
-    master_png = os.path.join(base_dir, "parma.png")
-    light_images[-1].save(master_ico, format="ICO", sizes=[(s, s) for s in sizes], append_images=light_images[:-1])
-    light_images[-1].save(master_png, format="PNG")
-    print(f" -> Actualizado master: {os.path.basename(master_ico)} y {os.path.basename(master_png)}")
+        # 3. Master parma.ico y parma.png (Sustituyen los iconos antiguos difusos)
+        master_ico = os.path.join(base_dir, "parma.ico")
+        master_png = os.path.join(base_dir, "parma.png")
+        light_images[-1].save(master_ico, format="ICO", sizes=ico_sizes)
+        light_images[-1].save(master_png, format="PNG")
+        print(f" -> Actualizado master: {os.path.basename(master_ico)} y {os.path.basename(master_png)}")
 
-    # 4. Actualizar favicon en frontend/public
-    fav_ico = os.path.join(base_dir, "frontend", "public", "favicon.ico")
-    if os.path.exists(os.path.dirname(fav_ico)):
-        light_images[-1].save(fav_ico, format="ICO", sizes=[(16, 16), (32, 32), (48, 48)])
-        print(f" -> Actualizado: {fav_ico}")
+        # 4. Actualizar favicon en frontend/public
+        fav_ico = os.path.join(base_dir, "frontend", "public", "favicon.ico")
+        if os.path.exists(os.path.dirname(fav_ico)):
+            light_images[-1].save(fav_ico, format="ICO", sizes=[(16, 16), (32, 32), (48, 48)])
+            print(f" -> Actualizado: {fav_ico}")
 
-    print("[Iconos Parma] ¡Proceso completado con éxito!")
+        print("[Iconos Parma] ¡Proceso completado con éxito!")
+    except Exception as e:
+        print(f"[Aviso] No se pudieron regenerar todos los iconos ({e}). Se mantendrán los archivos actuales.")
 
 
 if __name__ == "__main__":

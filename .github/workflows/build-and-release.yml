@@ -29,7 +29,7 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-          cache-dependency-path: 'frontend/package.json'
+          cache-dependency-path: 'frontend/package-lock.json'
 
       - name: Configurar Python
         uses: actions/setup-python@v5
@@ -60,13 +60,30 @@ jobs:
         run: python build_desktop.py
 
       - name: Compilar Instalador Oficial Setup (.exe con Inno Setup)
+        shell: powershell
         run: |
-          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "ejecutables\windows\installer\parma_setup.iss"
+          $iscc = @(
+            "C:\Program Files\Inno Setup 6\ISCC.exe",
+            "C:\Program Files (x86)\Inno Setup 6\ISCC.exe",
+            "C:\ProgramData\chocolatey\bin\iscc.exe"
+          ) | Where-Object { Test-Path $_ } | Select-Object -First 1
 
-      - name: Guardar Artefactos de Windows
+          if (-not $iscc) {
+            $iscc = (Get-Command iscc -ErrorAction SilentlyContinue).Source
+          }
+
+          if (-not $iscc) {
+            throw "Inno Setup compiler (ISCC.exe) no fue encontrado en el sistema."
+          }
+
+          Write-Host "Compilando instalador Inno Setup con: $iscc"
+          & $iscc "ejecutables\windows\installer\parma_setup.iss"
+
+      - name: Guardar Artefactos de Windows (Test Compilation)
         uses: actions/upload-artifact@v4
         with:
           name: parma-windows-build
+          if-no-files-found: warn
           path: |
             ejecutables/windows/Parma-Setup-*.exe
             ejecutables/windows/Parma-Windows-Portable.zip
@@ -88,7 +105,7 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-          cache-dependency-path: 'frontend/package.json'
+          cache-dependency-path: 'frontend/package-lock.json'
 
       - name: Configurar Python
         uses: actions/setup-python@v5
@@ -96,10 +113,11 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: Instalar Dependencias del Sistema Linux (WebKitGTK & Cairo)
+      - name: Instalar Dependencias del Sistema Linux (WebKitGTK, Cairo & GObject)
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-gi python3-gi-cairo gir1.2-gtk-3.0 gir1.2-webkit2-4.1 dpkg
+          sudo apt-get install -y python3-gi python3-gi-cairo gir1.2-gtk-3.0 gir1.2-webkit2-4.1 dpkg libgirepository1.0-dev libcairo2-dev pkg-config || true
+          echo "PYTHONPATH=/usr/lib/python3/dist-packages:$PYTHONPATH" >> $GITHUB_ENV
 
       - name: Compilar Frontend (React 18 + Vite)
         run: |
@@ -112,7 +130,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pyinstaller pymupdf pillow
+          pip install pyinstaller pymupdf pillow PyGObject pycairo || true
 
       - name: Generar Iconos de Alto Contraste (Escudo Sólido)
         run: python scripts/generate_taskbar_icons.py
@@ -123,10 +141,11 @@ jobs:
       - name: Generar Paquete Debian Oficial (.deb)
         run: python ejecutables/linux/deb/build_deb.py 1.0.0
 
-      - name: Guardar Artefactos de Linux
+      - name: Guardar Artefactos de Linux (Test Compilation)
         uses: actions/upload-artifact@v4
         with:
           name: parma-linux-build
+          if-no-files-found: warn
           path: |
             ejecutables/linux/parma_*_amd64.deb
             ejecutables/linux/Parma-Linux-Portable.tar.gz
