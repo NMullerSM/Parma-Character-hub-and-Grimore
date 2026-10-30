@@ -1,0 +1,16 @@
+{
+  "manifestVersion": 1,
+  "name": "Parma Dice Bridge",
+  "version": "1.0.0",
+  "author": "Parma D&D",
+  "description": "Puente bidireccional nativo de dados físicos 3D entre Parma D&D y TaleSpire.",
+  "entryPoint": "/index.html",
+  "capabilities": [
+    "runInBackground"
+  ],
+  "subscriptions": {
+    "dice": {
+      "onRollResults": "handleRollResults"
+    }
+  }
+}
