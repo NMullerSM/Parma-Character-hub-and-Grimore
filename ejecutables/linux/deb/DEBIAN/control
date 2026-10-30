@@ -1,0 +1,12 @@
+Package: parma
+Version: 1.0.0
+Section: games
+Priority: optional
+Architecture: amd64
+Maintainer: Nathaniel David Muller San Martin <nmullersm@gmail.com>
+Depends: libc6, gir1.2-gtk-3.0, gir1.2-webkit2-4.1, python3-gi
+Homepage: https://github.com/NMullerSM/Dnd_Player_Dashboard
+Description: Parma — Character Hub & Grimoire for D&D 5e / 5.5e
+ Gestor avanzado de hojas de personaje, forja procedural, grimorio
+ hipertextual OKF y puente de dados 3D bidireccional con TaleSpire.
+ Compatible con Pop!_OS, Ubuntu, Debian y derivadas.

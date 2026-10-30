@@ -1,0 +1,195 @@
+name: Parma CI/CD — Multi-Platform Build & Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+      - main
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  # ============================================================================
+  # 1. Compilación para Windows (Instalador Inno Setup + ZIP Portable)
+  # ============================================================================
+  build-windows:
+    name: Build Windows (Installer & Portable)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout del Repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js (Vite + React)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package.json'
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Instalar Inno Setup Compiler (ISCC)
+        run: choco install innosetup --no-progress
+
+      - name: Compilar Frontend (React 18 + Vite)
+        run: |
+          cd frontend
+          npm ci
+          npm run build
+          cd ..
+
+      - name: Instalar Dependencias de Python
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller pymupdf pillow
+
+      - name: Generar Iconos de Alto Contraste (Escudo Sólido)
+        run: python scripts/generate_taskbar_icons.py
+
+      - name: Compilar Binario PyInstaller (Windows Onedir)
+        run: python build_desktop.py
+
+      - name: Compilar Instalador Oficial Setup (.exe con Inno Setup)
+        run: |
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "ejecutables\windows\installer\parma_setup.iss"
+
+      - name: Guardar Artefactos de Windows
+        uses: actions/upload-artifact@v4
+        with:
+          name: parma-windows-build
+          path: |
+            ejecutables/windows/Parma-Setup-*.exe
+            ejecutables/windows/Parma-Windows-Portable.zip
+          retention-days: 14
+
+  # ============================================================================
+  # 2. Compilación para Linux (Paquete .deb para Pop!_OS/Ubuntu + Tarball)
+  # ============================================================================
+  build-linux:
+    name: Build Linux (.deb & Portable Tarball)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del Repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js (Vite + React)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package.json'
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Instalar Dependencias del Sistema Linux (WebKitGTK & Cairo)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-gi python3-gi-cairo gir1.2-gtk-3.0 gir1.2-webkit2-4.1 dpkg
+
+      - name: Compilar Frontend (React 18 + Vite)
+        run: |
+          cd frontend
+          npm ci
+          npm run build
+          cd ..
+
+      - name: Instalar Dependencias de Python
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller pymupdf pillow
+
+      - name: Generar Iconos de Alto Contraste (Escudo Sólido)
+        run: python scripts/generate_taskbar_icons.py
+
+      - name: Compilar Binario PyInstaller (Linux Onedir)
+        run: python build_desktop.py
+
+      - name: Generar Paquete Debian Oficial (.deb)
+        run: python ejecutables/linux/deb/build_deb.py 1.0.0
+
+      - name: Guardar Artefactos de Linux
+        uses: actions/upload-artifact@v4
+        with:
+          name: parma-linux-build
+          path: |
+            ejecutables/linux/parma_*_amd64.deb
+            ejecutables/linux/Parma-Linux-Portable.tar.gz
+          retention-days: 14
+
+  # ============================================================================
+  # 3. Publicación Oficial en el Perfil Público (EXCLUSIVO para rama 'main')
+  # ============================================================================
+  # En la rama 'develop', este paso se OMITE automáticamente.
+  # Las compilaciones de develop quedan resguardadas como artefactos de prueba internos.
+  # Al hacer merge a 'main', este paso publica la Release visible para todo el mundo.
+  publish-release:
+    name: Publicar Release Oficial en GitHub
+    needs: [build-windows, build-linux]
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar Artefactos de Windows
+        uses: actions/download-artifact@v4
+        with:
+          name: parma-windows-build
+          path: dist_release/windows
+
+      - name: Descargar Artefactos de Linux
+        uses: actions/download-artifact@v4
+        with:
+          name: parma-linux-build
+          path: dist_release/linux
+
+      - name: Determinar Versión de la Release
+        id: release_version
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          else
+            echo "TAG_NAME=v1.0.0-build.${{ github.run_number }}" >> $GITHUB_ENV
+          fi
+
+      - name: Publicar Release Oficial en el Perfil Público
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+          name: "Parma Desktop ${{ env.TAG_NAME }}"
+          body: |
+            ## ⚔️ Parma — Character Hub & Grimoire (${{ env.TAG_NAME }})
+
+            Compilación oficial multiplataforma generada automáticamente desde `main`.
+
+            ### 📦 Descargables Disponibles:
+            - **Windows**:
+              - 💾 `Parma-Setup-*.exe` — Instalador guiado con accesos directos y desinstalador.
+              - 📁 `Parma-Windows-Portable.zip` — Versión portable sin instalación.
+            - **Linux**:
+              - 🐧 `parma_*_amd64.deb` — Paquete oficial para Pop!_OS, Ubuntu, Linux Mint y Debian.
+              - 📦 `Parma-Linux-Portable.tar.gz` — Paquete comprimido portable para cualquier distro Linux.
+
+            ---
+            *Compilado con PyWebView, WebKitGTK/WebView2, React 18 y puente 3D para TaleSpire.*
+          draft: false
+          prerelease: false
+          files: |
+            dist_release/windows/*
+            dist_release/linux/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -45,21 +45,59 @@ def is_windows_taskbar_light() -> bool:
         return False
 
 
+def is_linux_system_light() -> bool:
+    """Detecta si el entorno de escritorio Linux (GNOME/Pop!_OS/KDE/XFCE) está en tema claro."""
+    if not sys.platform.startswith("linux"):
+        return False
+    try:
+        import subprocess
+        out = subprocess.check_output(
+            ["gsettings", "get", "org.gnome.desktop.interface", "color-scheme"],
+            text=True, stderr=subprocess.DEVNULL
+        ).strip().lower()
+        if "prefer-dark" in out:
+            return False
+        if "default" in out or "prefer-light" in out:
+            return True
+    except Exception:
+        pass
+
+    gtk_theme = os.environ.get("GTK_THEME", "").lower()
+    if "dark" in gtk_theme:
+        return False
+
+    # Pop!_OS y distros orientadas a gaming usan tema oscuro por defecto
+    return False
+
+
 def get_taskbar_icon_path(base_dir: str) -> str:
     """
     Selecciona el icono de la ventana adaptándose al sistema operativo y tema:
-    - En Linux (WebKitGTK): GDK pixbuf no soporta archivos .ico comprimidos.
-      Se utiliza siempre un archivo PNG nativo (parma.png).
-    - En Windows: Iconos .ico adaptados a la barra de tareas (clara/oscura).
+    - En Linux (WebKitGTK): Utiliza PNGs nativos con escudo sólido:
+      * Tema Claro: Escudo Negro Sólido (parma_taskbar_dark.png)
+      * Tema Oscuro: Escudo Blanco Sólido (parma_taskbar_light.png)
+    - En Windows: Iconos .ico multi-resolución con escudo sólido:
+      * Barra Clara: Escudo Negro Sólido (parma_taskbar_dark.ico)
+      * Barra Oscura: Escudo Blanco Sólido (parma_taskbar_light.ico)
     """
     if sys.platform != "win32":
+        is_light = is_linux_system_light()
+        chosen_name = "parma_taskbar_dark.png" if is_light else "parma_taskbar_light.png"
+        theme_str = "Claro" if is_light else "Oscuro"
+
+        candidate = os.path.join(base_dir, chosen_name)
+        if os.path.exists(candidate):
+            print(f"[Parma Linux] Tema del sistema detectado: {theme_str}. Usando icono de alto contraste: {chosen_name}")
+            return candidate
+
+        # Fallbacks si no se han generado los específicos
         for png_candidate in [
             os.path.join(base_dir, "parma.png"),
+            os.path.join(base_dir, "brand", "es", "icon-shield-solid-light.svg"),
             os.path.join(base_dir, "brand", "es", "icon-256.png"),
-            os.path.join(base_dir, "brand", "es", "icon-512.png"),
         ]:
             if os.path.exists(png_candidate):
-                print(f"[Parma Linux] Usando icono PNG nativo para GTK: {os.path.basename(png_candidate)}")
+                print(f"[Parma Linux] Usando icono de fallback para GTK: {os.path.basename(png_candidate)}")
                 return png_candidate
         return None
 
@@ -67,7 +105,7 @@ def get_taskbar_icon_path(base_dir: str) -> str:
     chosen_name = "parma_taskbar_dark.ico" if is_light else "parma_taskbar_light.ico"
     candidate = os.path.join(base_dir, chosen_name)
     if os.path.exists(candidate):
-        print(f"[Parma] Tema de barra detectado: {'Claro' if is_light else 'Oscuro'}. Usando icono: {chosen_name}")
+        print(f"[Parma Windows] Barra de tareas detectada: {'Clara' if is_light else 'Oscura'}. Usando icono de alto contraste: {chosen_name}")
         return candidate
 
     # Fallbacks si no se encuentra el específico

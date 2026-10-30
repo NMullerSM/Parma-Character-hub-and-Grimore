@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=Parma
+GenericName=D&D Character Hub & Grimoire
+GenericName[es]=Gestor de Personajes y Grimorio D&D
+Comment=Desktop hub for D&D 5e / 5.5e with TaleSpire 3D dice integration
+Comment[es]=Plataforma de escritorio para D&D con puente 3D TaleSpire
+Exec=/usr/bin/parma %U
+Icon=parma
+Terminal=false
+Type=Application
+Categories=Game;RolePlaying;Utility;
+StartupNotify=true
+StartupWMClass=Parma
+Keywords=dnd;dungeons;dragons;rpg;talespire;grimoire;dice;

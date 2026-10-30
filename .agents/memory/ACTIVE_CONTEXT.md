@@ -1,49 +1,43 @@
 # Active Context — D&D Sanctum / Parma
 
 ## 📅 Última Sesión
-- **Fecha**: 2026-10-30 00:20 (UTC-3)
+- **Fecha**: 2026-10-30 13:50 (UTC-3)
 - **Dispositivo**: Notebook Pop!_OS (Linux x86_64)
 - **Rama Git**: `develop`
-- **Último Commit en `develop`**: `22539469780447be0f2d5f500a39d8020f5327fe`
+- **Último Commit en `develop`**: `b36c5e5a86e78e88bf580247c434ad920778a785`
 
 ---
 
-## 🚀 Cambios de Código y Funcionalidades Implementadas (Commits Pushed a `develop`)
+## 🚀 Cambios de Código y Funcionalidades Implementadas
 
-1. **TaleSpire Symbiote Headless (`talespire_symbiote/`)**
-   - Creado Symbiote oficial nativo con `manifest.json`, `index.html` y `bridge.js`.
-   - **Fin del macro de arrastre con cursor de ratón:** Los dados se envían de forma nativa e invisible a la bandeja 3D oficial con `talespire.dice.putDiceInTray()`.
-   - Conexión por WebSocket bidireccional (`ws://localhost:8765/ws/talespire`) con reconexión automática en background.
-   - Captura de eventos físicos de caída de dados (`onRollResults`) y retransmisión a Parma para registrar el resultado en el historial (`SessionRollLedger`).
+1. **Pipeline Multiplataforma CI/CD (`.github/workflows/build-and-release.yml`)**
+   - **En `develop` (Test Compilation):**
+     - Compila en paralelo para Windows (`windows-latest`) y Linux (`ubuntu-latest`).
+     - Genera instalador Inno Setup (`.exe`), paquete portable (`.zip`), paquete Debian (`.deb`) y tarball portable (`.tar.gz`).
+     - **Resguardo interno / Oculto:** Las compilaciones se guardan como artefactos de GitHub Actions (retención 14 días), sin crear releases públicos en la portada del repositorio.
+   - **En `main` (Public Release):**
+     - Al hacer merge a `main`, ejecuta el mismo pipeline y publica automáticamente una **Release oficial en el perfil público de GitHub** con los 4 ejecutables adjuntos y changelog de versión.
 
-2. **Auto-Instalador y Servidor Local (`core/talespire_bridge.py` & `desktop_api/session_server.py`)**
-   - Detección automática de instalación de TaleSpire tanto en Windows como en Linux (Steam Proton / Wine / Flatpak).
-   - Función `install_or_update_symbiote()` que copia automáticamente la carpeta del Symbiote al directorio oficial de TaleSpire (`.../LocalLow/BouncyRock Entertainment/TaleSpire/Symbiotes/ParmaDiceBridge`).
-   - Endpoint WebSocket `/ws/talespire` en `session_server.py` para sincronización en tiempo real.
+2. **Subcarpeta de Instaladores Windows (`ejecutables/windows/installer/`)**
+   - `parma_setup.iss`: Script de Inno Setup con compresión LZMA2, instalador por usuario sin UAC invasivo (`privileges=lowest`), iconos y soporte multiidioma (ES/EN).
+   - `build_installer.bat`: Script ejecutor local para Windows.
 
-3. **UX Minimalista por Colores en Header (`frontend/src/components/Header.tsx` & `SettingsView.tsx`)**
-   - Botón *"TaleSpire"* simplificado con indicador circular LED:
-     - ⚪ **Gris:** Desconectado (TaleSpire cerrado o no instalado).
-     - 🟡 **Ámbar:** Juego abierto en memoria, esperando conexión del Symbiote.
-     - 🟢 **Verde Esmeralda:** Conectado y sincronizado; tiradas y lecturas 3D en vivo.
-   - Panel en Configuración con leyenda explicativa de colores y botones de auto-instalación manual y apertura de carpetas.
+3. **Subcarpeta de Paquete Linux Debian (`ejecutables/linux/deb/`)**
+   - `build_deb.py`: Empaquetador nativo que estructura `/opt/parma`, `/usr/bin/parma`, `/usr/share/applications/` y llama a `dpkg-deb`.
+   - `parma.desktop`: Metadatos de integración con el escritorio Linux.
+   - `parma-launcher.sh`: Wrapper de ejecución que inyecta `WEBKIT_DISABLE_DMABUF_RENDERER=1` para evitar pantallas negras en Pop!_OS / Ubuntu con NVIDIA.
+   - `DEBIAN/control` y `DEBIAN/postinst`: Control de versión, dependencias y regeneración de caché de iconos.
 
-4. **Barra de Vida Táctica "Ghost HP Bar" (`frontend/src/components/AnimatedHealthBar.tsx`)**
-   - **Al recibir daño (-HP):** La barra principal desciende instantáneamente; la barra espectral gris de fondo espera 350ms y luego se drena suavemente con transición de 500ms (`ease-out`).
-   - **Al recibir curación (+HP):** La barra asciende fluidamente con un resplandor verde esmeralda (`#10b981`).
-   - Soporte para puntos de golpe temporales (dorado).
-   - Integrada en `SheetView.tsx` y `CombatView.tsx`.
+4. **Iconos de Alta Visibilidad para Barra de Tareas (Escudos Sólidos)**
+   - `brand/es/icon-shield-solid-dark.svg`: Escudo Negro Sólido (`#12181c`) con glifo 'P' y arco en blanco nítido para temas claros.
+   - `brand/es/icon-shield-solid-light.svg`: Escudo Blanco Sólido (`#ffffff`) con glifo 'P' y arco en negro nítido para temas oscuros.
+   - `scripts/generate_taskbar_icons.py`: Generador automático de iconos `.ico` multi-resolución (16x16 a 256x256) y PNGs de alto contraste.
+   - `desktop_app.py`: Detección dinámica de tema tanto en Windows (`winreg`) como en Linux (`gsettings / GTK_THEME`) para asignar el escudo correspondiente.
 
 ---
 
-## 🎯 Tareas Pendientes Prioritarias para Desktop (Windows 11)
+## 🎯 Tareas Pendientes Prioritarias
 
-- [ ] **GitHub Desktop en Windows 11:**
-  - Cambiar a la rama `develop` y ejecutar `Pull origin` para recibir los 5 commits.
-- [ ] **Verificación de TaleSpire Symbiote en Windows:**
-  - Abrir Parma en Windows y comprobar que detecta la carpeta `.../AppData/LocalLow/BouncyRock Entertainment/TaleSpire/Symbiotes`.
-  - Abrir TaleSpire y verificar que el Symbiote *"Parma Dice Bridge"* aparezca en el menú de Symbiotes y cambie el LED a verde esmeralda.
-- [ ] **Fase 7 - Guardrails Canónicos de Conjuros:**
-  - Implementar la validación canónica estricta en el modal de grimorio (`SpellBookManagerModal.tsx`) para impedir que un personaje elija conjuros ajenos a su clase/arquetipo, salvo excepciones de dotes (*Fey Touched*, *Shadow Touched*, *Magic Initiate*) o autorización del DM.
-- [ ] **Pruebas de Empaquetado:**
-  - Comenzar a formular el empaquetado del ejecutable de Windows en la rama correspondiente.
+- [ ] Probar la acción en GitHub Actions desde la pestaña *Actions* en la rama `develop` usando el botón *Run workflow*.
+- [ ] Verificar la descarga del instalador Windows (`Parma-Setup-v1.0.0.exe`) y paquete Linux (`parma_1.0.0_amd64.deb`) desde los artefactos de la compilación de prueba.
+- [ ] Merge a `main` cuando la compilación de prueba esté validada para publicar la primera Release pública en el perfil.

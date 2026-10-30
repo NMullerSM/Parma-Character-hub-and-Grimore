@@ -53,7 +53,14 @@ def build():
     if os.path.exists(themes_dir):
         add_data_args.append(f"--add-data={themes_dir}{sep}themes")
 
-    for asset_file in ["parma.png", "parma.ico", "parma_taskbar_dark.ico", "parma_taskbar_light.ico"]:
+    for asset_file in [
+        "parma.png",
+        "parma.ico",
+        "parma_taskbar_dark.ico",
+        "parma_taskbar_light.ico",
+        "parma_taskbar_dark.png",
+        "parma_taskbar_light.png"
+    ]:
         asset_path = os.path.join(base_dir, asset_file)
         if os.path.exists(asset_path):
             add_data_args.append(f"--add-data={asset_path}{sep}.")

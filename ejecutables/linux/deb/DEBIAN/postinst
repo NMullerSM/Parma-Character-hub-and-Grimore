@@ -1,0 +1,18 @@
+#!/bin/sh
+set -e
+
+# Asegurar permisos de ejecución en el binario y el launcher
+chmod 755 /opt/parma/Parma 2>/dev/null || true
+chmod 755 /opt/parma/parma-launcher.sh 2>/dev/null || true
+chmod 755 /usr/bin/parma 2>/dev/null || true
+
+# Actualizar bases de datos de accesos directos y cachés de iconos
+if which update-desktop-database >/dev/null 2>&1; then
+    update-desktop-database /usr/share/applications || true
+fi
+
+if which gtk-update-icon-cache >/dev/null 2>&1; then
+    gtk-update-icon-cache -f -t /usr/share/icons/hicolor 2>/dev/null || true
+fi
+
+exit 0
