@@ -5,6 +5,7 @@ import { Download, Upload, Sparkles, Wand2, User, X, Trash2 } from "lucide-react
 import { api } from "../api/client";
 import { FeatureDetailModal } from "../components/FeatureDetailModal";
 import { AiPortraitModal } from "../components/AiPortraitModal";
+import { AnimatedHealthBar } from "../components/AnimatedHealthBar";
 import type { FeatureItemData } from "../api/types";
 import { formatRangeWithTiles } from "../utils/formatters";
 
@@ -336,12 +337,12 @@ export const SheetView: React.FC = () => {
               +
             </button>
           </div>
-          <div className="w-full bg-surface h-1.5 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-crimson transition-all duration-300"
-              style={{ width: `${Math.min(100, Math.max(0, (hp_current / Math.max(1, hp_max)) * 100))}%` }}
-            />
-          </div>
+          <AnimatedHealthBar
+            currentHp={hp_current}
+            maxHp={hp_max}
+            tempHp={hp_temp}
+            heightClass="h-2"
+          />
         </div>
 
         {/* Clase de Armadura */}

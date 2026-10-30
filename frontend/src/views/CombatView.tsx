@@ -5,6 +5,7 @@ import type { SpellItemData, FeatureItemData } from "../api/types";
 import { FeatureDetailModal } from "../components/FeatureDetailModal";
 import { SpellDetailModal } from "../components/SpellDetailModal";
 import { SpellBookManagerModal } from "../components/SpellBookManagerModal";
+import { AnimatedHealthBar } from "../components/AnimatedHealthBar";
 import { BookOpen } from "lucide-react";
 import { formatRangeWithTiles } from "../utils/formatters";
 
@@ -210,6 +211,17 @@ export const CombatView: React.FC = () => {
                 )}
               </div>
             </div>
+          </div>
+
+          {/* Barra de Salud Dinámica con Ghost Bar y Pulso */}
+          <div className="py-1">
+            <AnimatedHealthBar
+              currentHp={hp_current}
+              maxHp={hp_max}
+              tempHp={hp_temp}
+              heightClass="h-3.5"
+              showText={true}
+            />
           </div>
 
           {/* Botones de Control de Daño y Curación Rápida */}
