@@ -4,7 +4,7 @@ import { useCharacter } from "../context/CharacterContext";
 import { useTranslation } from "../i18n";
 import { api } from "../api/client";
 import type { AppSettings } from "../api/types";
-import { X, Upload, Palette, Sun, Moon } from "lucide-react";
+import { X, Upload, Palette, Sun, Moon, FolderOpen, RefreshCw, CheckCircle2 } from "lucide-react";
 
 export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const {
@@ -19,6 +19,7 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
     setUserRole,
     talespireStatus,
     connectTaleSpire,
+    refreshTaleSpire,
     showToast,
     characters,
     reloadCharacters,
@@ -72,6 +73,32 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
       showToast(t("settings.gestureSuccess"), "success");
     } else {
       showToast(t("settings.gestureFailed"), "warn");
+    }
+  };
+
+  const handleReinstallSymbiote = async () => {
+    try {
+      showToast("Comprobando e instalando Symbiote en TaleSpire...", "info");
+      const res = await api.reinstallTaleSpireSymbiote();
+      await refreshTaleSpire();
+      if (res.success) {
+        showToast(res.message || "Symbiote cargado correctamente en TaleSpire", "success");
+      } else {
+        showToast(res.error || res.message || "TaleSpire no detectado en el equipo", "warn");
+      }
+    } catch (e) {
+      showToast("Error al sincronizar Symbiote", "warn");
+    }
+  };
+
+  const handleOpenSymbiotesFolder = async () => {
+    try {
+      const res = await api.openTaleSpireSymbiotesFolder();
+      if (!res.success) {
+        showToast(res.error || "No se pudo abrir la carpeta", "warn");
+      }
+    } catch (e) {
+      showToast("Error al abrir carpeta de Symbiotes", "warn");
     }
   };
 
@@ -248,9 +275,15 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
               <div className="flex items-center justify-between">
                 <div>
                   <div className="text-sm font-semibold text-main">{t("settings.ipcStatus")}</div>
-                  <div className="text-xs text-muted mt-0.5">
-                    {t("settings.ipcStateLabel")}{" "}
-                    <span className="font-semibold text-gold">{talespireStatus.state_label}</span>
+                  <div className="text-xs text-muted mt-0.5 flex items-center gap-2">
+                    <span>{t("settings.ipcStateLabel")}</span>
+                    <span className="font-semibold text-gold capitalize">{talespireStatus.state_label.replace("_", " ")}</span>
+                    {talespireStatus.symbiote_connected && (
+                      <span className="inline-flex items-center gap-1 text-[10px] text-emerald-400 font-bold bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-500/40">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        Symbiote Live
+                      </span>
+                    )}
                   </div>
                 </div>
                 <button
@@ -259,6 +292,77 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
                 >
                   {t("settings.connectRefresh")}
                 </button>
+              </div>
+
+              {/* Leyenda Visual de Estados LED */}
+              <div className="pt-2 border-t border-border-iron/40 space-y-2">
+                <div className="text-xs font-semibold text-main">{t("settings.talespireLegendTitle")}</div>
+                <div className="grid grid-cols-1 gap-1.5 text-[11px] text-muted">
+                  <div className="flex items-start gap-2 bg-surface/40 p-2 rounded border border-border-iron/50">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.7)] shrink-0 mt-0.5" />
+                    <span>{t("settings.talespireLegendGreen")}</span>
+                  </div>
+                  <div className="flex items-start gap-2 bg-surface/40 p-2 rounded border border-border-iron/50">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shrink-0 mt-0.5" />
+                    <span>{t("settings.talespireLegendAmber")}</span>
+                  </div>
+                  <div className="flex items-start gap-2 bg-surface/40 p-2 rounded border border-border-iron/50">
+                    <span className="w-2.5 h-2.5 rounded-full bg-slate-500 shrink-0 mt-0.5" />
+                    <span>{t("settings.talespireLegendGray")}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Explicación de Funcionamiento del Symbiote */}
+              <div className="p-3 rounded-lg bg-surface/60 border border-border-iron text-xs text-muted flex items-center gap-2.5">
+                <div className="p-2 rounded-lg bg-gold/10 text-gold shrink-0">🎲</div>
+                <div>{t("settings.talespireSymbioteHint")}</div>
+              </div>
+
+              {/* Carga y Detección Automática del Symbiote */}
+              <div className="pt-2 border-t border-border-iron/40 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="text-xs font-semibold text-main flex items-center gap-1.5">
+                    <CheckCircle2 className={`w-3.5 h-3.5 ${talespireStatus.symbiote_folder_installed ? "text-emerald-400" : "text-muted"}`} />
+                    <span>{t("settings.talespireAutoInstallTitle")}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={handleReinstallSymbiote}
+                      className="px-2 py-1 rounded bg-surface hover:bg-card border border-border-iron hover:border-gold text-[11px] font-medium text-main flex items-center gap-1 transition-colors"
+                      title="Sincronizar y forzar actualización del Symbiote en TaleSpire"
+                    >
+                      <RefreshCw className="w-3 h-3 text-gold" />
+                      <span>{t("settings.talespireBtnReinstall")}</span>
+                    </button>
+                    {talespireStatus.symbiote_install_path && (
+                      <button
+                        onClick={handleOpenSymbiotesFolder}
+                        className="px-2 py-1 rounded bg-surface hover:bg-card border border-border-iron hover:border-gold text-[11px] font-medium text-main flex items-center gap-1 transition-colors"
+                        title="Abrir la carpeta oficial de Symbiotes en el explorador de archivos"
+                      >
+                        <FolderOpen className="w-3 h-3 text-sky-400" />
+                        <span>{t("settings.talespireBtnOpenFolder")}</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {talespireStatus.symbiote_folder_installed ? (
+                  <div className="bg-surface/40 p-2.5 rounded border border-border-iron/60 text-[11px] space-y-1">
+                    <div className="text-emerald-400 font-semibold flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                      <span>{t("settings.talespireAutoInstalled")}</span>
+                    </div>
+                    <div className="text-muted font-stat text-[10px] break-all bg-card/60 p-1.5 rounded border border-border-iron/40 select-all">
+                      {talespireStatus.symbiote_install_path}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-surface/30 p-2.5 rounded border border-border-iron/40 text-[11px] text-muted">
+                    {t("settings.talespireNotDetectedHint")}
+                  </div>
+                )}
               </div>
 
               {/* Modo de Altura del Cursor */}

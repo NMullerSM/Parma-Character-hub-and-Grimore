@@ -281,30 +281,32 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
             </button>
           )}
 
-          {/* Estado TaleSpire */}
+          {/* Estado TaleSpire con LED Tricolor Minimalista */}
           <button
             onClick={connectTaleSpire}
             title={
-              talespireStatus.is_connected
+              talespireStatus.symbiote_connected
+                ? t("header.talespireSymbioteLive")
+                : talespireStatus.is_connected
                 ? t("header.talespireConnected")
                 : talespireStatus.is_running
-                ? t("header.talespireRunning")
+                ? t("header.talespireWaitingSymbiote")
                 : talespireStatus.is_installed
                 ? t("header.talespireInstalled")
                 : t("header.talespireNotFound")
             }
-            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded border border-border-iron hover:border-gold/60 bg-card transition-colors"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded border border-border-iron hover:border-gold/60 bg-card transition-colors select-none"
           >
             <span
-              className={`w-2 h-2 rounded-full ${
-                talespireStatus.is_connected
+              className={`w-2 h-2 rounded-full transition-all ${
+                talespireStatus.symbiote_connected || talespireStatus.is_connected
                   ? "bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.7)]"
                   : talespireStatus.is_running
                   ? "bg-amber-400 animate-pulse"
                   : "bg-slate-500"
               }`}
             />
-            <span className="hidden xl:inline text-muted font-stat text-[11px]">TaleSpire</span>
+            <span className="text-muted font-stat text-[11px] font-semibold tracking-wide">TaleSpire</span>
           </button>
 
           {/* Botón Lanzador de Dados */}
