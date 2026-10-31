@@ -73,15 +73,17 @@ export interface FeatureItemData {
 }
 
 export interface SpellStatsData {
-  ability?: string;
-  casting_ability?: string;
-  dc?: number;
+  // Campos que el backend de Python (desktop_api/bridge.py) siempre envia.
+  ability: string;
+  dc: number;
+  attack_bonus: number;
+  // Alias y extras opcionales por compatibilidad.
   save_dc?: number;
+  is_caster?: boolean;
+  casting_ability?: string;
   spell_save_dc?: number;
-  attack_bonus?: number;
   spell_attack_bonus?: number;
   ability_mod?: number;
-  is_caster?: boolean;
 }
 
 export interface ClassProgressionLimits {
