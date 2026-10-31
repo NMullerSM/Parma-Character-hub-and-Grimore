@@ -57,12 +57,12 @@ export const JournalView: React.FC = () => {
   };
 
   const selectSession = (sess: SessionLogData) => {
-    setSelectedId(sess.id);
+    setSelectedId(sess.id ?? null);
     setTitle(sess.title);
     setDate(sess.date);
     setSummary(sess.summary);
-    setLoot(sess.loot);
-    setXpGained(sess.xp_gained);
+    setLoot(sess.loot ?? "");
+    setXpGained(sess.xp_gained ?? 0);
     setSessionId(sess.session_id || "");
   };
 
@@ -168,9 +168,9 @@ export const JournalView: React.FC = () => {
 
           <div className="flex-1 overflow-y-auto divide-y divide-border-iron/50">
             {displayedSessions.length > 0 ? (
-              displayedSessions.map((sess) => (
+              displayedSessions.map((sess, idx) => (
                 <div
-                  key={sess.id}
+                  key={sess.id ?? idx}
                   onClick={() => selectSession(sess)}
                   className={`p-3.5 cursor-pointer transition-colors ${
                     selectedId === sess.id ? "bg-surface border-l-2 border-gold" : "hover:bg-surface/50"
@@ -181,7 +181,7 @@ export const JournalView: React.FC = () => {
                     <span className="font-stat text-[10px] text-gold">{sess.date}</span>
                   </div>
                   <div className="flex items-center justify-between text-[11px] text-muted">
-                    <span>+{sess.xp_gained} XP</span>
+                    <span>+{sess.xp_gained ?? 0} XP</span>
                     {sess.loot && <span className="truncate max-w-[120px] text-main/80 font-stat">💎 {sess.loot}</span>}
                   </div>
                   {sess.session_id && (
