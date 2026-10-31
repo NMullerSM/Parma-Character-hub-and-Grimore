@@ -92,8 +92,7 @@ def build_deb(version: str = "1.0.0"):
     control_dst = os.path.join(debian_dir, "control")
     with open(control_src, "r", encoding="utf-8") as f:
         content = f.read().replace("Version: 1.0.0", f"Version: {version}")
-    if not content.endswith("\n"):
-        content += "\n"
+    content = content.strip() + "\n"
     with open(control_dst, "w", encoding="utf-8", newline="\n") as f:
         f.write(content)
     os.chmod(control_dst, 0o644)
@@ -103,10 +102,15 @@ def build_deb(version: str = "1.0.0"):
     shutil.copy2(postinst_src, postinst_dst)
     os.chmod(postinst_dst, 0o755)
 
-    # Asegurar permisos Debian Policy en toda la jerarquía
+    # Asegurar permisos de ejecución en binarios de /opt/parma
+    parma_bin = os.path.join(opt_parma, "Parma")
+    if os.path.exists(parma_bin):
+        os.chmod(parma_bin, 0o755)
+
+    # Forzar recursivamente permisos 0o755 en TODOS los directorios del árbol Debian (Debian Policy)
     os.chmod(staging_dir, 0o755)
-    os.chmod(debian_dir, 0o755)
     for root, dirs, _ in os.walk(staging_dir):
+        os.chmod(root, 0o755)
         for d in dirs:
             os.chmod(os.path.join(root, d), 0o755)
 

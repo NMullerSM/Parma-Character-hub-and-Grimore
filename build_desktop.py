@@ -123,6 +123,36 @@ def build():
         if not args.onefile:
             archive_dir = os.path.join(dist_dir, "Parma")
             if os.path.exists(archive_dir):
+                if not is_windows:
+                    # Incluir script de ejecución portable parma.sh con permisos de ejecución
+                    parma_sh_target = os.path.join(archive_dir, "parma.sh")
+                    parma_sh_src = os.path.join(dist_dir, "parma.sh")
+                    if os.path.exists(parma_sh_src):
+                        shutil.copy2(parma_sh_src, parma_sh_target)
+                    else:
+                        with open(parma_sh_target, "w", encoding="utf-8", newline="\n") as f:
+                            f.write(
+                                "#!/bin/bash\n"
+                                "# ==============================================================================\n"
+                                "# Parma — Wrapper de Lanzamiento Portable para Linux\n"
+                                "# ==============================================================================\n"
+                                "\n"
+                                "# Desactiva el renderizador DMABUF de WebKitGTK para evitar fallos de pantalla negra\n"
+                                "# en GPUs NVIDIA o sesiones Wayland.\n"
+                                "export WEBKIT_DISABLE_DMABUF_RENDERER=1\n"
+                                "\n"
+                                "SCRIPT_DIR=\"$(cd \"$(dirname \"${BASH_SOURCE[0]}\")\" && pwd)\"\n"
+                                "cd \"$SCRIPT_DIR\" || exit 1\n"
+                                "\n"
+                                "exec \"$SCRIPT_DIR/Parma\" \"$@\"\n"
+                            )
+                    os.chmod(parma_sh_target, 0o755)
+
+                    # Asegurar permisos de ejecución en el binario Parma
+                    parma_bin = os.path.join(archive_dir, "Parma")
+                    if os.path.exists(parma_bin):
+                        os.chmod(parma_bin, 0o755)
+
                 zip_name = "Parma-Windows-Portable" if is_windows else "Parma-Linux-Portable"
                 archive_format = "zip" if is_windows else "gztar"
                 ext = ".zip" if is_windows else ".tar.gz"
