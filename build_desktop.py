@@ -28,6 +28,7 @@ def build():
     okf_dir = os.path.join(base_dir, "okf_dnd5e")
     data_dir = os.path.join(base_dir, "data")
     themes_dir = os.path.join(base_dir, "themes")
+    symbiote_dir = os.path.join(base_dir, "talespire_symbiote")
 
     # 1. Verificar existencia del build del frontend
     if not os.path.exists(os.path.join(frontend_dist, "index.html")):
@@ -52,6 +53,9 @@ def build():
 
     if os.path.exists(themes_dir):
         add_data_args.append(f"--add-data={themes_dir}{sep}themes")
+
+    if os.path.exists(symbiote_dir):
+        add_data_args.append(f"--add-data={symbiote_dir}{sep}talespire_symbiote")
 
     for asset_file in [
         "parma.png",
@@ -92,6 +96,15 @@ def build():
         "--hidden-import=bottle",
         "--hidden-import=desktop_api",
         "--hidden-import=core",
+        "--hidden-import=fastapi",
+        "--hidden-import=uvicorn",
+        "--hidden-import=uvicorn.logging",
+        "--hidden-import=uvicorn.loops",
+        "--hidden-import=uvicorn.protocols",
+        "--hidden-import=uvicorn.lifespan",
+        "--hidden-import=websockets",
+        "--hidden-import=starlette",
+        "--hidden-import=qrcode",
         entry_point,
     ]
 

@@ -19,17 +19,18 @@ jobs:
   build-windows:
     name: Build Windows (Installer & Portable)
     runs-on: windows-latest
+    env:
+      PYTHONUTF8: '1'
+      PYTHONIOENCODING: 'utf-8'
 
     steps:
       - name: Checkout del Repositorio
         uses: actions/checkout@v4
 
-      - name: Configurar Node.js (Vite + React)
+      - name: Configurar Node.js 22 (Vite + React)
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'npm'
-          cache-dependency-path: 'frontend/package-lock.json'
+          node-version: '22'
 
       - name: Configurar Python
         uses: actions/setup-python@v5
@@ -38,12 +39,24 @@ jobs:
           cache: 'pip'
 
       - name: Instalar Inno Setup Compiler (ISCC)
-        run: choco install innosetup --no-progress
+        shell: powershell
+        run: |
+          $standardPaths = @(
+            "C:\Program Files\Inno Setup 6\ISCC.exe",
+            "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+          )
+          $found = $standardPaths | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $found) {
+            Write-Host "Inno Setup no detectado en rutas estándar. Instalando vía Chocolatey..."
+            choco install innosetup --no-progress -y
+          } else {
+            Write-Host "Inno Setup ya disponible en: $found"
+          }
 
       - name: Compilar Frontend (React 18 + Vite)
         run: |
           cd frontend
-          npm ci
+          npm install --include=optional --no-audit
           npm run build
           cd ..
 
@@ -51,7 +64,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pyinstaller pymupdf pillow
 
       - name: Generar Iconos de Alto Contraste (Escudo Sólido)
         run: python scripts/generate_taskbar_icons.py
@@ -100,29 +112,29 @@ jobs:
       - name: Checkout del Repositorio
         uses: actions/checkout@v4
 
-      - name: Configurar Node.js (Vite + React)
+      - name: Configurar Node.js 22 (Vite + React)
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'npm'
-          cache-dependency-path: 'frontend/package-lock.json'
+          node-version: '22'
 
-      - name: Configurar Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-
-      - name: Instalar Dependencias del Sistema Linux (WebKitGTK, Cairo & GObject)
+      - name: Instalar Dependencias del Sistema Linux (WebKitGTK, Cairo, GObject & Build Tools)
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-gi python3-gi-cairo gir1.2-gtk-3.0 gir1.2-webkit2-4.1 dpkg libgirepository1.0-dev libcairo2-dev pkg-config || true
-          echo "PYTHONPATH=/usr/lib/python3/dist-packages:$PYTHONPATH" >> $GITHUB_ENV
+          sudo apt-get install -y --no-install-recommends \
+            build-essential python3-dev pkg-config meson ninja-build \
+            libcairo2-dev libgirepository1.0-dev gir1.2-gtk-3.0 gir1.2-webkit2-4.1 \
+            python3-gi dpkg
+
+      - name: Configurar Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
 
       - name: Compilar Frontend (React 18 + Vite)
         run: |
           cd frontend
-          npm ci
+          npm install --include=optional --no-audit
           npm run build
           cd ..
 
@@ -130,7 +142,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pyinstaller pymupdf pillow PyGObject pycairo || true
+          pip install PyGObject pycairo
 
       - name: Generar Iconos de Alto Contraste (Escudo Sólido)
         run: python scripts/generate_taskbar_icons.py
