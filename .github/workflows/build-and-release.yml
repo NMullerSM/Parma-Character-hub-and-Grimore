@@ -53,12 +53,20 @@ jobs:
             Write-Host "Inno Setup ya disponible en: $found"
           }
 
-      - name: Compilar Frontend (React 18 + Vite)
+      - name: Instalar Dependencias del Frontend
         run: |
           cd frontend
           npm install --include=optional --no-audit
+
+      - name: Verificar Tipos del Frontend (tsc)
+        run: |
+          cd frontend
+          npx tsc -b
+
+      - name: Compilar Frontend (React 18 + Vite)
+        run: |
+          cd frontend
           npm run build
-          cd ..
 
       - name: Instalar Dependencias de Python
         run: |
@@ -132,12 +140,20 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
 
-      - name: Compilar Frontend (React 18 + Vite)
+      - name: Instalar Dependencias del Frontend
         run: |
           cd frontend
           npm install --include=optional --no-audit
+
+      - name: Verificar Tipos del Frontend (tsc)
+        run: |
+          cd frontend
+          npx tsc -b
+
+      - name: Compilar Frontend (React 18 + Vite)
+        run: |
+          cd frontend
           npm run build
-          cd ..
 
       - name: Instalar Dependencias de Python
         run: |
