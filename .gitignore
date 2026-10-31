@@ -45,6 +45,20 @@ data/*.db-shm
 data/characters/portraits/
 data/bin/
 
+# Hojas concurrentes y datos de personajes del usuario
+data/characters/*.pdf
+!data/characters/Artanis LVL 4.pdf
+data/characters/*.json
+data/characters/*.png
+data/characters/*.jpg
+data/characters/*.jpeg
+data/characters/exports/
+data/characters/user_sheets/
+*.character.json
+character_export_*.json
+character_export_*.pdf
+
 # Frontend Node / Vite
 frontend/node_modules/
 frontend/.vite/
+frontend/dist/

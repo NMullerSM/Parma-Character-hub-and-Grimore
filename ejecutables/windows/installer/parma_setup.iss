@@ -18,11 +18,13 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\Parma
 DefaultGroupName=Parma
-DisableProgramGroupPage=yes
+DisableProgramGroupPage=no
 OutputBaseFilename=Parma-Setup-v{#MyAppVersion}
 OutputDir=..\
 SetupIconFile=..\..\..\parma.ico
+UninstallDisplayName={#MyAppName}
 UninstallDisplayIcon={app}\parma.ico
+CreateUninstallRegKey=yes
 Compression=lzma2/max
 SolidCompression=yes
 WizardStyle=modern
@@ -41,10 +43,13 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 ; Empaquetar todo el directorio compilado por PyInstaller (onedir)
 Source: "..\Parma\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+; Asegurar icono de alta resolución en la raíz para desinstalador y accesos directos
+Source: "..\..\..\parma.ico"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
-Name: "{autoprograms}\Parma"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\parma.ico"
-Name: "{autodesktop}\Parma"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\parma.ico"; Tasks: desktopicon
+Name: "{group}\Parma"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\{#MyAppExeName}"
+Name: "{group}\Desinstalar Parma"; Filename: "{uninstallexe}"; IconFilename: "{app}\parma.ico"
+Name: "{autodesktop}\Parma"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,Parma}"; Flags: nowait postinstall skipifsilent

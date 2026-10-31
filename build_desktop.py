@@ -89,6 +89,8 @@ def build():
         "--noconfirm",
     ] + add_data_args + [
         "--collect-all=pywebview",
+        "--collect-all=pymupdf",
+        "--hidden-import=fitz",
         "--hidden-import=pymupdf",
         "--hidden-import=pypdf",
         "--hidden-import=yaml",
