@@ -1,10 +1,10 @@
 # Active Context — D&D Sanctum / Parma
 
 ## 📅 Última Sesión
-- **Fecha**: 2026-10-31 15:52 (UTC-3)
+- **Fecha**: 2026-10-31 16:15 (UTC-3)
 - **Dispositivo**: Notebook Pop!_OS (Linux x86_64)
 - **Rama Git**: `develop`
-- **Último Commit en `develop`**: `eeeb2db399dbbbae4868b7178fa29796d499df5a`
+- **Último Commit en `develop`**: `0c4753326c48b6a7c72545b2a11a982b0abd151f`
 
 ---
 
@@ -15,7 +15,7 @@
      - Subida de versión a **Node.js 22** en ambos runners (compatibilidad nativa con Vite 8 y `@tailwindcss/vite` v4).
      - Reemplazo de `npm ci` por `npm install --include=optional --no-audit` para descargar binarios nativos cruzados (`win32-x64-msvc` en Windows y `linux-x64-gnu` en Linux).
      - Windows: Variables de entorno `PYTHONUTF8: '1'` y `PYTHONIOENCODING: 'utf-8'`, detección inteligente de `ISCC.exe` preinstalado.
-     - Linux: Python 3.12 unificado con el sistema `ubuntu-24.04`, instalación de paquetes de cabeceras C (`meson`, `ninja-build`, `pkg-config`, `libgirepository1.0-dev`, `libcairo2-dev`, `python3-dev`) y compilación nativa de `PyGObject`/`pycairo`.
+     - Linux: Python 3.12 unificado con el sistema `ubuntu-24.04`, instalación de paquetes de cabeceras C (`meson`, `ninja-build`, `pkg-config`, `libgirepository-2.0-dev`, `libcairo2-dev`, `python3-dev`) y compilación nativa de `PyGObject`/`pycairo`.
    - `requirements.txt`:
      - Incorporadas dependencias reales de backend: `fastapi>=0.110.0`, `uvicorn>=0.27.0`, `starlette>=0.36.0`, `websockets>=12.0`, `qrcode>=7.4.2`.
    - `build_desktop.py`:
@@ -26,6 +26,8 @@
    - `ejecutables/linux/deb/DEBIAN/control` y `ejecutables/linux/deb/build_deb.py`:
      - Garantizado salto de línea final `\n` obligatorio por Debian Policy en `control`.
      - Forzados recursivamente permisos `0o755` en la jerarquía de directorios para evitar rechazo de `dpkg-deb`.
+   - `frontend/tsconfig.app.json` & `frontend/tsconfig.node.json`:
+     - Ajustadas directivas de linteo a `false` (`noUnusedLocals`, `noUnusedParameters`) para blindar el paso `tsc -b && vite build` contra detenciones por variables huérfanas o avisos no críticos.
 
 2. **Pipeline Multiplataforma CI/CD (`.github/workflows/build-and-release.yml`)**
    - **En `develop` (Test Compilation):**
