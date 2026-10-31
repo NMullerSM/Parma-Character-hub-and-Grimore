@@ -1,106 +1,130 @@
-# Visualizador & Editor D&D 5e (Flet Desktop Edition)
+# ⚔️ Parma — Character Hub & Grimoire
 
-Una aplicación nativa de escritorio moderna, reactiva, elegante y **100% offline** construida en **Python y Flet (Flutter engine)** para **visualizar, editar interactivamente y gestionar** hojas de personaje de D&D 5e basadas en PDFs editables (AcroForm), acompañada de una base de conocimiento atómica **OKF (Open Knowledge Format)** extraída íntegramente del **Manual del Jugador 2024**, **Guía de Xanathar para Todo** y **El Caldero de Tasha para Todo**.
+<div align="center">
+
+![CI/CD Workflow](https://img.shields.io/github/actions/workflow/status/NMullerSM/Parma-Character-hub-and-Grimore/build-and-release.yml?branch=develop&label=CI%2FCD%20develop&style=for-the-badge)
+![Platforms](https://img.shields.io/badge/Plataformas-Windows%20%7C%20Linux-blue?style=for-the-badge&logo=linux&logoColor=white)
+![Frontend](https://img.shields.io/badge/Frontend-React%2018%20%2B%20Vite%208-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Styles](https://img.shields.io/badge/Estilos-Tailwind%20CSS%20v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Backend](https://img.shields.io/badge/Backend-Python%203.12%20%2B%20PyWebView-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Database](https://img.shields.io/badge/Base%20de%20Datos-SQLite%20ACID-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+![TaleSpire](https://img.shields.io/badge/Integraci%C3%B3n-TaleSpire%203D%20Symbiote-8A2BE2?style=for-the-badge)
+
+**La suite definitiva de escritorio para jugadores y Directores de Juego de Dungeons & Dragons (5ª Edición y Reglas 2024 / 5.5e).**  
+*100% Offline-First, ultraligera, con motor web nativo del sistema, sincronización tridimensional con TaleSpire y compendio atómico OKF.*
+
+</div>
 
 ---
 
-## 🚀 Inicio Rápido Multiplataforma
+## ✨ Características Principales
 
-### En Linux 🐧
+### 1. ⚔️ Consola de Combate y Estado Dinámico
+* **Salud Reactiva:** Barra de PG animada con gradientes reactivos, soporte de daño, curación y PG temporal.
+* **Efectos Visuales Cinematográficos:** Destellos de viñeta en pantalla ante impactos de daño (carmesí) o curaciones (esmeralda).
+* **Filtro Táctico de Acciones:** Clasificación en 1 clic de armas y conjuros por **Acción**, **Acción Adicional** y **Reacción**.
+* **Gestor de Ranuras Mágicas:** Consumo automático de ranuras al lanzar conjuros y restauración en descansos.
+* **Salvaciones contra la Muerte:** Registro interactivo de éxitos y fallos con detección de 20 natural y 1 de pifia.
+
+### 2. 📜 Ficha Clásica Oficial y Asistente Legal
+* Cálculo automático de modificadores de característica, competencia por nivel y tiradas de salvación.
+* Las 18 habilidades oficiales con soporte para **Competencia** y **Pericia** (`expertise`).
+* **Asistente de Creación:** Creador de personajes paso a paso 100% legal con soporte de **Point Buy (27 pts)** y **Standard Array**.
+
+### 3. ✨ Grimorio Mágico y Compendio OKF (570+ Entidades)
+* **Base de Conocimiento Atómica OKF (Open Knowledge Format):** Tarjetas en Markdown con YAML frontmatter extraídas del **PHB 2024**, **Guía de Xanathar** y **Caldero de Tasha**.
+* Búsqueda difusa y filtros por nivel (Trucos a Nivel 9), clases permitidas, componentes (V, S, M), concentración y ritual.
+* Modal de inspección detallada con fórmulas de tirada automáticas.
+
+### 4. 🎲 Integración 3D con TaleSpire (Symbiote Oficial)
+* Comunicación bidireccional mediante WebSockets locales.
+* **Symbiote Auto-instalable:** Detecta automáticamente las rutas de Steam de TaleSpire en Windows y Linux e instala el symbiote oficial.
+* Envío de tiradas de ataque, daño y conjuros con 1 clic directo a la mesa tridimensional de TaleSpire.
+
+### 5. 🌐 Sesiones Online para DM y Cloudflare Tunnels
+* Servidor local asíncrono **FastAPI + Uvicorn** integrado en la aplicación.
+* Conexión para jugadores remotos desde cualquier navegador móvil o de escritorio mediante **Cloudflare Tunnels** temporales sin abrir puertos en el router.
+* Generador de códigos QR para que los jugadores escaneen y se unan al instante.
+
+### 6. 📘 Visor de Manuales PDF y Mapeo AcroForm
+* Renderizado de manuales pesados en alta resolución mediante **PyMuPDF (`fitz`)** con control estricto de memoria y caché LRU de páginas.
+* Importación y exportación de fichas oficiales editables en formato **AcroForm PDF** (bilingüe español/inglés).
+
+### 7. 📖 Diario de Campaña y 🕸️ Red de Personajes
+* Crónicas cronológicas de sesión, botín y experiencia (XP).
+* Grafo visual interactivo de relaciones, aliados, PNJs y facciones de la campaña.
+
+---
+
+## 📦 Descarga e Instalación
+
+Los ejecutables se compilan automáticamente para Windows y Linux mediante **GitHub Actions**:
+
+### 🪟 Windows (10 / 11 de 64 bits)
+* **Instalador Oficial (`Parma-Setup-*.exe`):** Asistente guiado de instalación con accesos directos y desinstalador limpio (Inno Setup 6).
+* **Versión Portable (`Parma-Windows-Portable.zip`):** Descomprimir y ejecutar directamente `Parma.exe` sin necesidad de instalación.
+
+### 🐧 Linux (Pop!_OS, Ubuntu, Debian, Linux Mint, Fedora, Arch)
+* **Paquete Debian (`parma_*_amd64.deb`):** Paquete nativo Debian Policy compliant:
+  ```bash
+  sudo dpkg -i parma_*_amd64.deb
+  # O abrir directamente con el instalador Eddy / GDebi
+  ```
+* **Tarball Portable (`Parma-Linux-Portable.tar.gz`):** Ejecutable en cualquier distro sin alterar el sistema:
+  ```bash
+  tar -xzf Parma-Linux-Portable.tar.gz
+  cd Parma
+  ./parma.sh
+  ```
+
+> [!TIP]
+> **¿Dónde descargar las compilaciones de prueba?**  
+> Ve a la pestaña **[Actions](https://github.com/NMullerSM/Parma-Character-hub-and-Grimore/actions)**, entra en la última ejecución de la rama `develop` y descarga el artefacto correspondiente (`parma-windows-build` o `parma-linux-build`). Al fusionar en `main`, los descargables se publican automáticamente en la sección **Releases**.
+
+---
+
+## 🛠️ Desarrollo Local
+
+### Requisitos Previos
+* **Python 3.11 o 3.12**
+* **Node.js 22+** y **npm**
+* *En Linux:* Cabeceras de WebKitGTK y Cairo:
+  ```bash
+  sudo apt-get install -y libgirepository-2.0-dev libcairo2-dev gir1.2-webkit2-4.1 python3-gi
+  ```
+
+### Puesta en Marcha en 3 Pasos
 ```bash
-./iniciar.sh
-# O directamente:
-.venv/bin/python run_app.py
+# 1. Clonar el repositorio
+git clone https://github.com/NMullerSM/Parma-Character-hub-and-Grimore.git
+cd Parma-Character-hub-and-Grimore
+
+# 2. Instalar y compilar el frontend
+cd frontend
+npm install
+npm run build
+cd ..
+
+# 3. Iniciar la aplicación de escritorio
+python -m venv .venv
+source .venv/bin/activate  # En Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+python desktop_app.py
 ```
 
-### En Windows 🪟
-1. **Doble clic en `iniciar_desktop.bat`** (o `iniciar.bat`)
-2. O desde PowerShell / CMD:
-   ```powershell
-   .\iniciar_desktop.bat
-   ```
+---
+
+## 📚 Documentación Técnica Detallada
+
+Para consultar las decisiones de diseño, contratos de datos y especificaciones técnicas completas:
+
+* 🏛️ **[docs/BACKEND.md](docs/BACKEND.md)** — Arquitectura Python, SQLite, compendio OKF, puente TaleSpire y servidor de sesiones.
+* 🎨 **[docs/FRONTEND.md](docs/FRONTEND.md)** — Arquitectura React 18, Vite 8, Tailwind v4, Contexto y contratos de tipado estricto.
+* 🚀 **[docs/CICD.md](docs/CICD.md)** — Flujo GitHub Actions, empaquetado Inno Setup / Debian y catálogo de problemas resueltos.
 
 ---
 
-## 📁 Jerarquía de Datos y PDFs
-- `data/manuals/`: Libros de reglas oficiales en PDF (`Manual del Jugador 2024.pdf`, `Guía de Xanathar`, `Caldero de Tasha`).
-- `data/characters/`: Fichas de personaje en PDF (`Artanis LVL 4.pdf`), exportaciones de hojas y avatares.
-- `okf_dnd5e/`: Compendio atómico de 495 entidades (conjuros, dotes, especies, clases, reglas).
+## ⚖️ Licencia
 
----
-
-## ✨ Módulos y Características de la Suite de Escritorio
-
-### 1. ⚔️ Combate & Estado
-- **Salud y Puntos de Golpe (PG)**: Barra de salud en tiempo real con selector de daño, curación y PG temporal.
-- **Salvaciones Contra la Muerte**: Casillas de éxitos y fallos con botón interactivo de tirada d20 (reconoce 20 natural y 1 crítico).
-- **Armas y Ataques**: Lista interactiva de armas con botones para tirar ataque y daño, además de diálogo para añadir nuevas armas y botón para eliminarlas.
-
-### 2. 📄 Hoja Clásica de Personaje
-- Cálculo automático de modificadores de característica (-5 a +10).
-- Bonificador por competencia automático según el nivel.
-- Tiradas de salvación con botón directo `Tirar Salvación`.
-- Las 18 habilidades oficiales con soporte para pericia (`expertise`) y competencia (`proficient`).
-- Sentidos pasivos (Percepción pasiva), idiomas y competencias de equipo.
-
-### 3. ✨ Conjuros & Magia
-- **Tarjetas de Conjuros Oficiales**: Visualización rica de cada conjuro con tiempo de lanzamiento, alcance, duración, concentración, ritual, componentes (`Comp: V, S, M`) y **badges dorados de las clases permitidas**.
-- **Botón `🎲 Lanzar`**: Si es un truco (nivel 0), se lanza sin coste. Si es de nivel 1 a 9, descuenta automáticamente 1 espacio de conjuro en el rastreador interactivo (`SlotTracker`).
-- **Selector Rápido OKF**: Modal de búsqueda rápida entre los 378 conjuros clasificados por clase y nivel.
-
-### 4. 🌟 Rasgos & Poderes
-- Seguimiento interactivo de usos de habilidades por descanso (Dados de inspiración, puntos de suerte, etc.).
-- **`+ Añadir Dote (OKF)`**: Modal interactivo para explorar y agregar cualquiera de las 74 dotes oficiales del Manual 2024 a la ficha.
-
-### 5. 🌳 Árbol OKF (Compendio Completo 495 Entidades)
-- Navegador visual del árbol de conocimiento atómico en Markdown con YAML frontmatter:
-  - 📁 **Conjuros (378)**: Filtrado por nivel (0 a 9) y clase (Bardo, Mago, Clérigo, etc.).
-  - 📁 **Dotes (74)**: Origen, Generales, Estilo de combate y Dones épicos.
-  - 📁 **Especies y Linajes (11)**.
-  - 📁 **Trasfondos (17)**.
-  - 📁 **Clases y Subclases (13)**.
-  - 📁 **Reglas y Mecánicas**.
-- Cada entidad se despliega como una tarjeta visual completa con descripción íntegra y botón `+ Añadir a mi Ficha`.
-
-### 6. 📘 Visor de Manuales PDF (PyMuPDF)
-- Renderizado de PDFs en alta resolución con control estricto de memoria (caché LRU de 4 páginas y liberación inmediata de pixmaps nativos).
-- **Selector de Documentos**: `Manual del Jugador 2024.pdf`, `Guía de Xanathar para Todo.pdf`, `Caldero de Tasha para Todo.pdf` y `Artanis LVL 4.pdf`.
-- **Índice Interactivo (TOC / Bookmarks)**: Despliega el índice del manual para saltar a cualquier capítulo en 1 clic.
-- **Navegación y Zoom**: Paginación directa, zoom del 100% al 200% y ajuste de página.
-
-### 7. 📖 Diario de Campaña & 🌐 Red de Personajes
-- Registro cronológico de sesiones, botín y experiencia.
-- Directorio de aliados, PNJs, facciones y rivales de la campaña.
-
-### 8. 💾 Gestión de Fichas (PDF & JSON)
-- **`Abrir PDF`**: Carga e interpreta hojas oficiales editables AcroForm (bilingüe español/inglés).
-- **`💾 Guardar JSON`**: Exporta y respalda todo el estado de la partida a un archivo `.json`.
-- **`📂 Cargar JSON`**: Restaura cualquier ficha previamente guardada.
-- **`📖 Reglas`**: Modal de referencia rápida para combate, descansos y condiciones.
-
----
-
-## 📦 Compilación a Ejecutables Nativos
-
-### En Linux (Binario Nativo ELF) 🐧
-```bash
-./compilar.sh
-```
-El ejecutable se compilará en `dist/linux/Visualizador_Dnd_5e/Visualizador_Dnd_5e`.
-
-### En Windows (Ejecutable `.EXE`) 🪟
-Doble clic en `compilar_exe.bat` o desde la terminal:
-```powershell
-.\compilar_exe.bat
-```
-El ejecutable se compilará en `dist\windows\Visualizador_Dnd_5e\Visualizador_Dnd_5e.exe`.
-
----
-
-## 🛡️ Convenciones de Desarrollo (Linux & Windows)
-1. **Multiplataforma por diseño**: Toda nueva característica o librería debe funcionar de forma idéntica en Linux y Windows.
-2. **Dependencias limpias**: Los paquetes deben ser agnósticos o usar marcadores de plataforma PEP 508.
-3. **Paridad de UI y lógica**: La experiencia visual en Flet y la lógica de juego son 100% compartidas.
-
-Para consultar la especificación técnica completa y la hoja de ruta del proyecto, revisa [docs/PROJECT_CONVENTIONS_SDD.md](docs/PROJECT_CONVENTIONS_SDD.md).
-
+Distribuido bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.  
+*Dungeons & Dragons, D&D y sus contenidos asociados son marcas comerciales de Wizards of the Coast LLC.*
