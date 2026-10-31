@@ -61,6 +61,7 @@ declare global {
         get_compendium_categories: (lang?: string) => Promise<CompendiumCategory[]>;
         search_compendium: (query: string, category?: string, lang?: string) => Promise<CompendiumSearchResult[]>;
         get_compendium_entry: (category: string, entryName: string, lang?: string) => Promise<any>;
+        get_class_spells: (className: string, maxLevel?: number, lang?: string) => Promise<SpellItemData[]>;
         get_available_spells: (
           className: string | null,
           maxLevel: number | null,
@@ -95,12 +96,14 @@ declare global {
         dm_get_session_logs: (sessionId?: string) => Promise<DmSessionEventLog[]>;
         dm_save_session_notes: (notes: string, sessionId?: string) => Promise<boolean>;
         dm_get_session_notes: (sessionId?: string) => Promise<string>;
+        [key: string]: any;
       };
     };
   }
 }
 
-let mockCharacters: CharacterSummary[] = [
+// Datos Mock para previsualización directa en navegador (npm run dev)
+const mockCharacters: CharacterSummary[] = [
   {
     id: 1,
     name: "Artanis de Caelum",
@@ -111,8 +114,7 @@ let mockCharacters: CharacterSummary[] = [
     hp_current: 36,
     hp_max: 36,
     is_active: 1,
-    session_id: "sess_mock",
-    updated_at: new Date().toISOString(),
+    updated_at: "2026-10-31 12:00:00",
   },
 ];
 
@@ -171,7 +173,7 @@ let mockActiveCharacter: CharacterSheetData = {
   },
   spells: [
     {
-      name: "Castigo Abrasador",
+      name: "Castigo Destructor",
       level: 1,
       school: "Evocación",
       cast_time: "1 Acción Adicional",
@@ -179,7 +181,7 @@ let mockActiveCharacter: CharacterSheetData = {
       components: "V",
       duration: "Concentración, hasta 1 minuto",
       prepared: true,
-      notes: "+1d6 fuego en golpe cuerpo a cuerpo.",
+      notes: "+2d6 daño trueno y derriba al objetivo si falla salvación de FUE.",
     },
     {
       name: "Curar Heridas",
@@ -207,10 +209,14 @@ let mockActiveCharacter: CharacterSheetData = {
   spell_slots_total: { "1": 3 },
   spell_slots_used: { "1": 1 },
   spell_stats: {
+    ability: "CAR",
     casting_ability: "CAR",
+    dc: 13,
     spell_save_dc: 13,
+    attack_bonus: 5,
     spell_attack_bonus: 5,
     ability_mod: 3,
+    is_caster: true,
   },
   weapon_actions: [
     {
@@ -665,6 +671,8 @@ export const api = {
         { name: "Guerrero", hit_die: 10, primary_ability: "FUE", saves: ["FUE", "CON"], skill_choices_count: 2, skill_options: ["Acrobacias", "Atletismo", "Historia", "Intimidación", "Percepción", "Perspicacia", "Supervivencia"], subclasses: ["Campeón", "Maestro de Batalla", "Caballero Arcano"], subclass_unlock_level: 3, is_caster: false },
         { name: "Mago", hit_die: 6, primary_ability: "INT", saves: ["INT", "SAB"], skill_choices_count: 2, skill_options: ["Conocimiento Arcano", "Historia", "Investigación", "Medicina", "Perspicacia", "Religión"], subclasses: ["Escuela de Evocación", "Escuela de Abjuración", "Escuela de Adivinación"], subclass_unlock_level: 3, is_caster: true },
         { name: "Clérigo", hit_die: 8, primary_ability: "SAB", saves: ["SAB", "CAR"], skill_choices_count: 2, skill_options: ["Historia", "Medicina", "Perspicacia", "Persuasión", "Religión"], subclasses: ["Dominio de la Vida", "Dominio de la Luz", "Dominio de la Guerra"], subclass_unlock_level: edition === "5.5e" ? 3 : 1, is_caster: true },
+        { name: "Pícaro", hit_die: 8, primary_ability: "DES", saves: ["DES", "INT"], skill_choices_count: 4, skill_options: ["Acrobacias", "Atletismo", "Engaño", "Intimidación", "Investigación", "Juego de Manos", "Percepción", "Perspicacia", "Persuasión", "Sigilo"], subclasses: ["Ladrón", "Asesino", "Bribón Arcano"], subclass_unlock_level: 3, is_caster: false },
+        { name: "Paladín", hit_die: 10, primary_ability: "FUE", saves: ["SAB", "CAR"], skill_choices_count: 2, skill_options: ["Atletismo", "Intimidación", "Medicina", "Perspicacia", "Persuasión", "Religión"], subclasses: ["Juramento de Devoción", "Juramento de Venganza", "Juramento de los Antiguos"], subclass_unlock_level: 3, is_caster: true },
       ],
       backgrounds: [
         { name: "Soldado", skills: ["Atletismo", "Intimidación"], feature_name: "Rango Militar", feature_desc: "Reconocimiento y alojamiento en campamentos afines." },
@@ -677,6 +685,11 @@ export const api = {
         "Sigilo", "Supervivencia", "Trato con Animales"
       ],
     };
+  },
+
+  async getClassSpells(className: string, maxLevel: number = 1, lang: string = "es"): Promise<SpellItemData[]> {
+    if (this.isNative()) return await window.pywebview!.api.get_class_spells(className, maxLevel, lang);
+    return mockActiveCharacter.spells.filter((s) => s.level <= maxLevel);
   },
 
   async getAvailableSpells(options: {

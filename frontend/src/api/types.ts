@@ -58,13 +58,6 @@ export interface SpellItemData {
   snippet?: string;
 }
 
-export interface SpellStatsData {
-  casting_ability: string;
-  spell_save_dc: number;
-  spell_attack_bonus: number;
-  ability_mod: number;
-}
-
 export interface FeatureItemData {
   id?: string;
   name: string;
@@ -77,6 +70,29 @@ export interface FeatureItemData {
   uses_current?: number;
   recharge?: string;
   origin?: "class" | "subclass" | "species" | "background" | "feat" | "custom";
+}
+
+export interface SpellStatsData {
+  ability?: string;
+  casting_ability?: string;
+  dc?: number;
+  save_dc?: number;
+  spell_save_dc?: number;
+  attack_bonus?: number;
+  spell_attack_bonus?: number;
+  ability_mod?: number;
+  is_caster?: boolean;
+}
+
+export interface ClassProgressionLimits {
+  is_caster: boolean;
+  edition: string;
+  cantrips_limit: number;
+  spells_limit: number;
+  max_spell_level: number;
+  spell_slots: Record<string, number>;
+  weapon_mastery_slots: number;
+  casting_ability: string;
 }
 
 export interface SessionLogData {
