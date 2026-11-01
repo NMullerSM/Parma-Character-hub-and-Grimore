@@ -291,6 +291,23 @@ export interface AppSettings {
   talespire_enabled: boolean;
   okf_path: string;
   custom_themes_dir: string;
+  last_seen_version?: string;
+  has_completed_onboarding?: boolean;
+}
+
+export interface GitHubReleaseAsset {
+  name: string;
+  browser_download_url: string;
+  size: number;
+}
+
+export interface GitHubReleaseInfo {
+  tag_name: string;
+  name: string;
+  body: string;
+  html_url: string;
+  published_at: string;
+  assets: GitHubReleaseAsset[];
 }
 
 export interface ThemeOption {
