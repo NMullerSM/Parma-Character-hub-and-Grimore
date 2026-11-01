@@ -2,7 +2,8 @@
 
 <div align="center">
 
-![CI/CD Workflow](https://img.shields.io/github/actions/workflow/status/NMullerSM/Parma-Character-hub-and-Grimore/build-and-release.yml?branch=develop&label=CI%2FCD%20develop&style=for-the-badge)
+![CI/CD Main](https://img.shields.io/github/actions/workflow/status/NMullerSM/Parma-Character-hub-and-Grimore/build-and-release.yml?branch=main&label=CI%2FCD%20main&style=for-the-badge)
+![CI/CD Develop](https://img.shields.io/github/actions/workflow/status/NMullerSM/Parma-Character-hub-and-Grimore/build-and-release.yml?branch=develop&label=CI%2FCD%20develop&style=for-the-badge)
 ![Platforms](https://img.shields.io/badge/Plataformas-Windows%20%7C%20Linux-blue?style=for-the-badge&logo=linux&logoColor=white)
 ![Frontend](https://img.shields.io/badge/Frontend-React%2018%20%2B%20Vite%208-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![Styles](https://img.shields.io/badge/Estilos-Tailwind%20CSS%20v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)

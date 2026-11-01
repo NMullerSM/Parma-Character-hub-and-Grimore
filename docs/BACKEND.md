@@ -105,3 +105,13 @@ Expone métodos asíncronos serializados en JSON directamente a la ventana de Re
 * **Problema:** PyInstaller no detectaba las dependencias dinámicas del servidor FastAPI ni los protocolos de WebSocket durante el análisis estático.
 * **Solución:** Inclusión explícita de hidden imports en `build_desktop.py`:
   `--hidden-import=fastapi`, `uvicorn`, `uvicorn.logging`, `uvicorn.loops`, `uvicorn.protocols`, `websockets`, `starlette`, `qrcode`.
+
+### 4. Gestión Centralizada de Rutas y Resiliencia ante UAC (`core/paths.py`)
+* **Problema:** Al instalar la aplicación en directorios protegidos de Windows (`C:\Program Files\Parma`), las escrituras en la base de datos SQLite y la descarga de binarios fallaban con `PermissionError: [WinError 5]` o `sqlite3.OperationalError: attempt to write a readonly database`.
+* **Solución:** Creación del módulo `core.paths` con dos conceptos clave:
+  * **Bundle Dir (Solo Lectura):** Directorio empaquetado por PyInstaller (`sys._MEIPASS` o carpeta del ejecutable) donde residen los recursos estáticos (manuales PDF oficiales, interfaz React compilada y compendio OKF).
+  * **User Data Dir (Lectura y Escritura):** Almacenamiento persistente en `%LOCALAPPDATA%\Parma\data` (Windows) y `~/.local/share/parma/data` (Linux) para bases de datos SQLite, retratos subidos, exportaciones y binarios de Cloudflare Tunnels.
+
+### 5. Normalización de Rutas en Compendio OKF (`core/okf_engine.py`)
+* **Problema:** En sistemas Windows, los separadores de ruta tipo Unix (`/`) impedían resolver la lectura de archivos atómicos Markdown en el panel de detalle del compendio.
+* **Solución:** Normalización con `os.path.normpath` y búsqueda en candidatos de fallback en el directorio del proyecto y el bundle.

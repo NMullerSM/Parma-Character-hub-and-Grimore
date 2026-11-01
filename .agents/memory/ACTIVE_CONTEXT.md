@@ -1,7 +1,7 @@
 # Active Context — D&D Sanctum / Parma
 
 ## 📅 Última Sesión
-- **Fecha**: 2026-11-01 15:30 (UTC-3)
+- **Fecha**: 2026-11-01 16:30 (UTC-3)
 - **Dispositivo**: Notebook Pop!_OS (Linux x86_64)
 - **Rama Git**: `develop`
 - **Objetivo**: Estabilización Integral para Versión 1.0 (Forja limpia, PDFs, Compendio y Resiliencia de Permisos UAC)
@@ -34,11 +34,21 @@
 6. **Mejora de UX en Estado Vacío de Personajes (`frontend/src/views/SheetView.tsx`)**
    - Cuando no hay personajes registrados en la base de datos, la vista principal de la ficha ofrece un botón directo y claro hacia la **Forja de Héroes** para guiar al usuario a crear su primer personaje.
 
+7. **Documentación Técnica y README**
+   - Actualizados `README.md` y `docs/BACKEND.md` documentando la arquitectura de rutas (`core/paths.py`), resiliencia UAC y badges de estado para las ramas `main` y `develop`.
+
+---
+
+## 📌 Observaciones Técnicas para Sesión Posterior
+- **Conectividad Sesión Online (Host Linux -> Invitado Windows)**:
+  - El usuario reporta que al ejecutar el juego en Windows como anfitrión, la conexión como jugador funciona adecuadamente. Sin embargo, al iniciar la sesión online como host desde Linux, los clientes invitados en Windows no logran establecer la conexión.
+  - *Instrucción explícita del usuario*: No tocar este subsistema por ahora. Dejar el merge y pipeline en `main` listos para pruebas preliminares y abordar esta investigación en una sesión posterior.
+
 ---
 
 ## 🎯 Tareas Pendientes Prioritarias
 
 - [x] Sincronizar todos los cambios locales hacia la rama `develop` mediante GitHub.
-- [ ] Monitorear la ejecución de los pipelines en GitHub Actions para Windows (.exe con Inno Setup) y Linux (.deb / portable).
-- [ ] Validar la instalación limpia en Windows: creación de personajes en Forja, apertura de manuales PDF y navegación de entradas en el compendio.
-- [ ] Preparar el merge a `main` y la Release pública v1.0.0.
+- [x] Realizar merge completo de `develop` hacia `main` mediante Pull Request.
+- [ ] Verificar la ejecución automática de la pipeline de GitHub Actions en `main` (Windows Installer/Portable + Linux DEB/Portable + Release).
+- [ ] Investigar conectividad de Cloudflare Tunnel / WebSockets cuando Linux actúa como anfitrión (DM) en la siguiente sesión.
