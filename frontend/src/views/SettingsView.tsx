@@ -4,9 +4,12 @@ import { useCharacter } from "../context/CharacterContext";
 import { useTranslation } from "../i18n";
 import { api } from "../api/client";
 import type { AppSettings } from "../api/types";
-import { X, Upload, Palette, Sun, Moon, FolderOpen, RefreshCw, CheckCircle2 } from "lucide-react";
+import { X, Upload, Palette, Sun, Moon, FolderOpen, RefreshCw, CheckCircle2, BookOpen } from "lucide-react";
 
-export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+export const SettingsView: React.FC<{ onClose: () => void; onReplayTour?: () => void }> = ({
+  onClose,
+  onReplayTour,
+}) => {
   const {
     theme,
     isDark,
@@ -420,6 +423,32 @@ export const SettingsView: React.FC<{ onClose: () => void }> = ({ onClose }) => 
               </div>
             </div>
           </section>
+
+          {/* Guía y Tutorial Interactivo */}
+          {onReplayTour && (
+            <section className="space-y-3 pt-3 border-t border-border-iron">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted flex items-center gap-2">
+                <BookOpen className="w-3.5 h-3.5 text-gold" />
+                <span>{t("onboarding.replayTour")}</span>
+              </h3>
+              <div className="p-4 rounded-xl border border-border-iron bg-card flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="text-xs text-muted max-w-sm">
+                  {t("onboarding.subtitleWelcome")}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onReplayTour();
+                  }}
+                  className="px-3 py-1.5 rounded-lg bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-semibold text-main flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+                >
+                  <BookOpen className="w-3.5 h-3.5 text-gold" />
+                  <span>{t("onboarding.replayTour")}</span>
+                </button>
+              </div>
+            </section>
+          )}
 
           {/* 4. Gestión e Importación de Personajes */}
           <section className="space-y-3 pt-3 border-t border-border-iron">

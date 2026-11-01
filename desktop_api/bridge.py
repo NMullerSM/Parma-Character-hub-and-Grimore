@@ -2164,6 +2164,8 @@ class DesktopBridge:
             "talespire_enabled": self._db.get_setting("talespire_enabled", "true") == "true",
             "okf_path": self._db.get_setting("okf_path", os.path.join(self._base_dir, "okf_dnd5e")),
             "custom_themes_dir": os.path.join(self._base_dir, "themes"),
+            "last_seen_version": self._db.get_setting("last_seen_version", ""),
+            "has_completed_onboarding": self._db.get_setting("has_completed_onboarding", "false").lower() == "true",
         }
 
     def set_setting(self, key: str, value: Any) -> bool:

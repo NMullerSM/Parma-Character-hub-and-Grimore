@@ -132,5 +132,14 @@ def build_deb(version: str = "1.0.0"):
 
 
 if __name__ == "__main__":
-    ver = sys.argv[1] if len(sys.argv) > 1 else "1.0.0"
+    if len(sys.argv) > 1:
+        ver = sys.argv[1]
+    else:
+        try:
+            import re
+            v_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "core", "version.py")
+            m = re.search(r'__version__\s*=\s*["\']([^"\']+)["\']', open(v_file, encoding="utf-8").read())
+            ver = m.group(1) if m else "1.0.1"
+        except Exception:
+            ver = "1.0.1"
     build_deb(ver)
