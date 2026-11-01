@@ -201,6 +201,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout del Repositorio
+        uses: actions/checkout@v4
+
       - name: Descargar Artefactos de Windows
         uses: actions/download-artifact@v4
         with:
@@ -225,9 +228,17 @@ jobs:
         run: |
           if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
             echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-          else
+          elif [ -f "core/version.py" ]; then
             VER=$(python3 -c "import re; m = re.search(r'__version__\s*=\s*[\"\'\']([^\"\'\']+)[\"\'\']', open('core/version.py').read()); print('v' + m.group(1)) if m else 'v1.0.1'")
             echo "TAG_NAME=${VER}" >> $GITHUB_ENV
+          else
+            DEB_FILE=$(ls release_assets/parma_*_amd64.deb 2>/dev/null | head -n 1)
+            if [ -n "$DEB_FILE" ]; then
+              VER="v$(basename "$DEB_FILE" | sed -E 's/parma_([0-9\.]+)_amd64\.deb/\1/')"
+              echo "TAG_NAME=${VER}" >> $GITHUB_ENV
+            else
+              echo "TAG_NAME=v1.0.1" >> $GITHUB_ENV
+            fi
           fi
 
       - name: Publicar Release Oficial en el Perfil Público
