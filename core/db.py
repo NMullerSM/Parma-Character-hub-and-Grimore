@@ -10,22 +10,7 @@ import shutil
 from pathlib import Path
 from typing import Optional, List, Dict, Any
 from .models import CharacterSheet, SessionLog, NetworkNode, NetworkEdge
-
-
-def get_default_db_path() -> str:
-    """Retorna la ruta absoluta hacia dnd_database.db garantizando directorio de datos escribible."""
-    if getattr(sys, "frozen", False):
-        base_dir = os.path.dirname(sys.executable)
-    else:
-        # Detectar raíz del repo buscando hacia arriba
-        current = os.path.abspath(__file__)
-        base_dir = os.path.dirname(os.path.dirname(current))
-        if not os.path.exists(os.path.join(base_dir, "okf_dnd5e")):
-            base_dir = os.path.dirname(base_dir)
-    
-    data_dir = os.path.join(base_dir, "data")
-    os.makedirs(data_dir, exist_ok=True)
-    return os.path.join(data_dir, "dnd_database.db")
+from .paths import get_default_db_path, get_user_data_dir, get_bundle_dir
 
 
 class DatabaseManager:
@@ -626,4 +611,3 @@ class DatabaseManager:
             cursor.execute("DELETE FROM dm_homebrew_items WHERE id = ?;", (item_id,))
             conn.commit()
             return True
-
