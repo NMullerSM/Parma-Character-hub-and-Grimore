@@ -9,7 +9,11 @@ import { AnimatedHealthBar } from "../components/AnimatedHealthBar";
 import type { FeatureItemData } from "../api/types";
 import { formatRangeWithTiles } from "../utils/formatters";
 
-export const SheetView: React.FC = () => {
+export interface SheetViewProps {
+  onNavigateForge?: () => void;
+}
+
+export const SheetView: React.FC<SheetViewProps> = ({ onNavigateForge }) => {
   const {
     activeCharacter,
     updateActiveCharacter,
@@ -60,9 +64,21 @@ export const SheetView: React.FC = () => {
   if (!activeCharacter) {
     return (
       <div className="h-full flex items-center justify-center p-8 text-center text-muted">
-        <div>
-          <p className="font-display text-2xl text-gold mb-2">{t("sheet.noCharacter")}</p>
-          <p className="text-sm">{t("sheet.noCharacterHint")}</p>
+        <div className="max-w-md bg-card border border-border-iron rounded-2xl p-8 shadow-xl">
+          <div className="w-16 h-16 rounded-full bg-gold/10 border border-gold/30 mx-auto mb-4 flex items-center justify-center text-gold">
+            <User className="w-8 h-8" />
+          </div>
+          <h2 className="font-display text-2xl text-gold mb-2 font-bold">{t("sheet.noCharacter")}</h2>
+          <p className="text-sm text-zinc-400 mb-6">{t("sheet.noCharacterHint")}</p>
+          {onNavigateForge && (
+            <button
+              onClick={onNavigateForge}
+              className="px-5 py-2.5 bg-gold hover:bg-gold-hover text-canvas font-bold text-sm rounded-lg shadow-md transition-all flex items-center gap-2 mx-auto active:scale-95"
+            >
+              <Wand2 className="w-4 h-4" />
+              <span>{language === "en" ? "Go to Hero Forge" : "Ir a la Forja de Héroes"}</span>
+            </button>
+          )}
         </div>
       </div>
     );

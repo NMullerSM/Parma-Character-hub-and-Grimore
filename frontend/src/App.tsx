@@ -41,7 +41,7 @@ export const AppContent: React.FC = () => {
 
       {/* 2. Área Principal de Contenido */}
       <main className="flex-1 overflow-hidden relative">
-        {activeTab === "sheet" && <SheetView />}
+        {activeTab === "sheet" && <SheetView onNavigateForge={() => setActiveTab("forge")} />}
         {activeTab === "combat" && <CombatView />}
         {activeTab === "spells" && <SpellsView />}
         {activeTab === "dm" && <DMConsoleView />}
