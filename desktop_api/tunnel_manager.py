@@ -16,6 +16,8 @@ import io
 import base64
 from typing import Optional, Callable, Dict, Any
 
+from core.paths import get_bundle_dir, get_user_data_dir
+
 try:
     import qrcode
 except ImportError:
@@ -31,9 +33,10 @@ class CloudflareTunnelManager:
         "Darwin": "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-darwin-amd64",
     }
 
-    def __init__(self, base_dir: str):
-        self.base_dir = base_dir
-        self.bin_dir = os.path.join(base_dir, "data", "bin")
+    def __init__(self, base_dir: Optional[str] = None):
+        self.base_dir = base_dir or get_bundle_dir()
+        self.user_data_dir = get_user_data_dir()
+        self.bin_dir = os.path.join(self.user_data_dir, "bin")
         os.makedirs(self.bin_dir, exist_ok=True)
         self.os_type = platform.system()
         self.process: Optional[subprocess.Popen] = None
@@ -44,12 +47,17 @@ class CloudflareTunnelManager:
     def get_binary_path(self) -> str:
         """Retorna la ruta hacia el ejecutable de cloudflared."""
         exe_name = "cloudflared.exe" if self.os_type == "Windows" else "cloudflared"
-        # 1. Verificar si existe en data/bin
+        # 1. Verificar si existe en user_data_dir/bin
         local_bin = os.path.join(self.bin_dir, exe_name)
         if os.path.isfile(local_bin) and os.access(local_bin, os.X_OK if self.os_type != "Windows" else os.R_OK):
             return local_bin
 
-        # 2. Verificar si está en el PATH del sistema
+        # 2. Verificar si existe en bundle_dir/data/bin
+        bundle_bin = os.path.join(self.base_dir, "data", "bin", exe_name)
+        if os.path.isfile(bundle_bin) and os.access(bundle_bin, os.X_OK if self.os_type != "Windows" else os.R_OK):
+            return bundle_bin
+
+        # 3. Verificar si está en el PATH del sistema
         which_path = shutil.which("cloudflared")
         if which_path:
             return which_path
