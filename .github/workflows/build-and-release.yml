@@ -98,7 +98,8 @@ jobs:
           }
 
           Write-Host "Compilando instalador Inno Setup con: $iscc"
-          & $iscc "ejecutables\windows\installer\parma_setup.iss"
+          $ver = python -c "import re; m = re.search(r'__version__\s*=\s*[\"\'\']([^\"\'\']+)[\"\'\']', open('core/version.py').read()); print(m.group(1)) if m else '1.0.1'"
+          & $iscc "/DMyAppVersion=$ver" "ejecutables\windows\installer\parma_setup.iss"
 
       - name: Guardar Artefactos de Windows (Test Compilation)
         uses: actions/upload-artifact@v4
@@ -178,7 +179,7 @@ jobs:
           cd ../..
 
       - name: Generar Paquete Debian Oficial (.deb)
-        run: python ejecutables/linux/deb/build_deb.py 1.0.0
+        run: python ejecutables/linux/deb/build_deb.py
 
       - name: Guardar Artefactos de Linux (Test Compilation)
         uses: actions/upload-artifact@v4
@@ -225,7 +226,8 @@ jobs:
           if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
             echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
           else
-            echo "TAG_NAME=v1.0.0" >> $GITHUB_ENV
+            VER=$(python3 -c "import re; m = re.search(r'__version__\s*=\s*[\"\'\']([^\"\'\']+)[\"\'\']', open('core/version.py').read()); print('v' + m.group(1)) if m else 'v1.0.1'")
+            echo "TAG_NAME=${VER}" >> $GITHUB_ENV
           fi
 
       - name: Publicar Release Oficial en el Perfil Público
