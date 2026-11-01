@@ -1,35 +1,44 @@
 # Active Context — D&D Sanctum / Parma
 
 ## 📅 Última Sesión
-- **Fecha**: 2026-10-31 20:48 (UTC-3)
+- **Fecha**: 2026-11-01 15:30 (UTC-3)
 - **Dispositivo**: Notebook Pop!_OS (Linux x86_64)
 - **Rama Git**: `develop`
-- **Último Commit en `develop`**: `7295e15bd8782667786b76b3b62f8d807842e408`
+- **Objetivo**: Estabilización Integral para Versión 1.0 (Forja limpia, PDFs, Compendio y Resiliencia de Permisos UAC)
 
 ---
 
 ## 🚀 Cambios de Código y Funcionalidades Implementadas
 
-1. **Corrección de Runtime Crash en Windows (PyMuPDF FileNotFoundError)**
-   - `core/pdf_engine.py`: Revertida la prioridad de importación a `import fitz as pymupdf`. El enlace en C directo `fitz` no dispara la carga de los modelos neuronales ONNX (`pymupdf.layout`), acelerando el arranque y evitando la búsqueda de `layout_rf2.4.1+imf1.yaml`.
-   - `build_desktop.py`: Sustituido `--hidden-import=pymupdf` por `--collect-all=pymupdf` y `--hidden-import=fitz` para que PyInstaller empaquete todos los metadatos y librerías C de PyMuPDF dentro de `_internal/`.
+1. **Restauración de Archivos Truncados en Git (`bridge.py` y `pdf_engine.py`)**
+   - En commits anteriores de CI, `desktop_api/bridge.py` (1.868 líneas en remoto vs 2.336 reales) y `core/pdf_engine.py` (331 líneas en remoto vs 605 reales) se habían subido truncados, provocando que la Forja fallara al crear personajes y que el visor de PDFs no tuviera métodos de renderizado ni tabla de contenidos (`get_toc`, `render_page_base64`, `is_open`).
+   - Se restauraron ambos archivos con sus implementaciones completas.
 
-2. **Arreglo del Icono de Escritorio y Acceso al Desinstalador en Inno Setup**
-   - `ejecutables/windows/installer/parma_setup.iss`:
-     - Copia explícita de `parma.ico` en la raíz de instalación `{app}`.
-     - Los accesos directos de escritorio y menú inicio ahora apuntan directamente a `{app}\{#MyAppExeName}` para extraer el icono multi-resolución embebido en `Parma.exe`, eliminando el icono de hoja blanca.
-     - Añadido acceso directo `{group}\Desinstalar Parma` (`{uninstallexe}`) en el menú inicio y registrado `UninstallDisplayName` y `CreateUninstallRegKey=yes` para desinstalación directa desde Configuración de Windows.
+2. **Gestor Centralizado de Rutas (`core/paths.py`) y Resiliencia ante UAC en Windows**
+   - Creado `core/paths.py` distinguiendo:
+     * **Bundle Dir (Solo lectura)**: Recursos empaquetados por PyInstaller (`sys._MEIPASS` o carpeta del ejecutable).
+     * **User Data Dir (Lectura y Escritura)**: Garantiza permisos de escritura en `%LOCALAPPDATA%\Parma\data` (Windows) y `~/.local/share/parma/data` (Linux), evitando errores de base de datos de solo lectura (`sqlite3.OperationalError` / `WinError 5`) cuando Parma se instala en `C:\Program Files\Parma`.
+   - `core/db.py`, `desktop_api/bridge.py`, `desktop_api/tunnel_manager.py` y `core/pdf_engine.py` adaptados para utilizar `core.paths`.
 
-3. **Protección de Hojas de Personajes en `.gitignore`**
-   - `.gitignore`: Ignoradas todas las fichas y exportaciones concurrentes generadas por el usuario (`data/characters/*.pdf`, `*.json`, `*.png`, `*.jpg`, carpetas `exports/`, `user_sheets/`), preservando intacta únicamente la ficha oficial de prueba `Artanis LVL 4.pdf`.
+3. **Carga y Visualización de Manuales PDF (`desktop_api/bridge.py`)**
+   - `list_pdf_documents()` y `open_pdf_document()` ahora exploran recursivamente el directorio de instalación empaquetado (`data/manuals/es`, `data/manuals/en`, `data/manuals`) y el directorio de datos del usuario.
+   - Los manuales oficiales (*Manual del Jugador 2024*, *Caldero de Tasha para Todo*, *Guía de Xanathar Para Todo*) se localizan y abren inmediatamente.
 
-4. **Integridad de Tipos de Frontend Preservada**
-   - La interfaz `SpellStatsData` en `frontend/src/api/types.ts` y el paso de verificación `npx tsc -b` se mantuvieron 100% intactos para asegurar que ambos pipelines de CI/CD continúen pasando en verde.
+4. **Visualizador de Markdown en Compendio OKF (`core/okf_engine.py`)**
+   - `read_entity_file()` normaliza separadores de ruta en Windows (`os.path.normpath`) y busca en rutas candidatas para cargar el contenido de los archivos atómicos `.md` y mostrarlos en el panel derecho del compendio sin pantallas vacías.
+
+5. **Política de Privacidad de Personajes y Repositorio Limpio (.gitignore)**
+   - Eliminadas del historial de Git las hojas personales de prueba de Artanis (`Artanis LVL 4.pdf` y `Artanis_Sheet.pdf`).
+   - `.gitignore` actualizado para ignorar todo el contenido de `data/characters/*`, preservando únicamente `.gitkeep` para que la aplicación inicie con una base de datos limpia y lista para que el usuario cree nuevos héroes desde cero en la Forja.
+
+6. **Mejora de UX en Estado Vacío de Personajes (`frontend/src/views/SheetView.tsx`)**
+   - Cuando no hay personajes registrados en la base de datos, la vista principal de la ficha ofrece un botón directo y claro hacia la **Forja de Héroes** para guiar al usuario a crear su primer personaje.
 
 ---
 
 ## 🎯 Tareas Pendientes Prioritarias
 
-- [ ] Monitorear la compilación del commit `7295e15` en GitHub Actions.
-- [ ] Descargar los nuevos artefactos de Windows y validar el arranque sin crash de PyMuPDF, el icono correcto y el desinstalador.
-- [ ] Merge de `develop` a `main` para publicar la Release oficial en el perfil público.
+- [x] Sincronizar todos los cambios locales hacia la rama `develop` mediante GitHub.
+- [ ] Monitorear la ejecución de los pipelines en GitHub Actions para Windows (.exe con Inno Setup) y Linux (.deb / portable).
+- [ ] Validar la instalación limpia en Windows: creación de personajes en Forja, apertura de manuales PDF y navegación de entradas en el compendio.
+- [ ] Preparar el merge a `main` y la Release pública v1.0.0.
