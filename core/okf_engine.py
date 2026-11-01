@@ -169,8 +169,15 @@ class OkfEngine:
     @lru_cache(maxsize=128)
     def read_entity_file(self, rel_path: str) -> Optional[Dict[str, Any]]:
         """Lee y parsea bajo demanda un archivo atómico Markdown con frontmatter YAML."""
-        full_path = os.path.join(self.okf_dir, rel_path)
-        if not os.path.exists(full_path):
+        normalized_rel = os.path.normpath(rel_path)
+        candidates = [
+            os.path.join(self.okf_dir, normalized_rel),
+            os.path.join(self.okf_dir, rel_path),
+            os.path.join(os.path.dirname(self.okf_dir), "okf_dnd5e", normalized_rel),
+            os.path.join(os.path.dirname(self.okf_dir), normalized_rel),
+        ]
+        full_path = next((p for p in candidates if os.path.exists(p)), None)
+        if not full_path:
             return None
 
         try:
@@ -854,4 +861,3 @@ class OkfEngine:
 
         results.sort(key=lambda s: (s["level"], s["name"]))
         return results
-
