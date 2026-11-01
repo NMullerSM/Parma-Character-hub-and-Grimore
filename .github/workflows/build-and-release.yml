@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: write
+  packages: write
 
 jobs:
   # ============================================================================
@@ -190,15 +191,12 @@ jobs:
           retention-days: 14
 
   # ============================================================================
-  # 3. Publicación Oficial en el Perfil Público (EXCLUSIVO para rama 'main')
+  # 3. Publicación Oficial en el Perfil Público (Rama 'main', Tags o Dispatch)
   # ============================================================================
-  # En la rama 'develop', este paso se OMITE automáticamente.
-  # Las compilaciones de develop quedan resguardadas como artefactos de prueba internos.
-  # Al hacer merge a 'main', este paso publica la Release visible para todo el mundo.
   publish-release:
     name: Publicar Release Oficial en GitHub
     needs: [build-windows, build-linux]
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 
     steps:
@@ -214,39 +212,45 @@ jobs:
           name: parma-linux-build
           path: dist_release/linux
 
+      - name: Organizar Artefactos para Publicación
+        run: |
+          mkdir -p release_assets
+          find dist_release -type f \( -name "*.exe" -o -name "*.zip" -o -name "*.deb" -o -name "*.tar.gz" \) -exec cp -v {} release_assets/ \;
+          echo "=== Archivos recolectados para la release ==="
+          ls -la release_assets/
+
       - name: Determinar Versión de la Release
         id: release_version
         run: |
           if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
             echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
           else
-            echo "TAG_NAME=v1.0.0-build.${{ github.run_number }}" >> $GITHUB_ENV
+            echo "TAG_NAME=v1.0.0" >> $GITHUB_ENV
           fi
 
       - name: Publicar Release Oficial en el Perfil Público
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.TAG_NAME }}
-          name: "Parma Desktop ${{ env.TAG_NAME }}"
+          name: "Parma Desktop ${{ env.TAG_NAME }} — Release Oficial"
           body: |
             ## ⚔️ Parma — Character Hub & Grimoire (${{ env.TAG_NAME }})
 
-            Compilación oficial multiplataforma generada automáticamente desde `main`.
+            Compilación oficial multiplataforma generada automáticamente para Windows y Linux.
 
             ### 📦 Descargables Disponibles:
             - **Windows**:
-              - 💾 `Parma-Setup-*.exe` — Instalador guiado con accesos directos y desinstalador.
-              - 📁 `Parma-Windows-Portable.zip` — Versión portable sin instalación.
+              - 💾 `Parma-Setup-*.exe` — Instalador guiado con accesos directos y desinstalador (Inno Setup).
+              - 📁 `Parma-Windows-Portable.zip` — Versión portable lista para ejecutar.
             - **Linux**:
               - 🐧 `parma_*_amd64.deb` — Paquete oficial para Pop!_OS, Ubuntu, Linux Mint y Debian.
               - 📦 `Parma-Linux-Portable.tar.gz` — Paquete comprimido portable para cualquier distro Linux.
 
             ---
-            *Compilado con PyWebView, WebKitGTK/WebView2, React 18 y puente 3D para TaleSpire.*
+            *Compilado con PyWebView, WebKitGTK / WebView2, React 18 y sincronización 3D con TaleSpire.*
           draft: false
           prerelease: false
-          files: |
-            dist_release/windows/*
-            dist_release/linux/*
+          make_latest: true
+          files: release_assets/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

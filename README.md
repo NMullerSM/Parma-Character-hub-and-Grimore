@@ -5,14 +5,27 @@
 ![CI/CD Main](https://img.shields.io/github/actions/workflow/status/NMullerSM/Parma-Character-hub-and-Grimore/build-and-release.yml?branch=main&label=CI%2FCD%20main&style=for-the-badge)
 ![CI/CD Develop](https://img.shields.io/github/actions/workflow/status/NMullerSM/Parma-Character-hub-and-Grimore/build-and-release.yml?branch=develop&label=CI%2FCD%20develop&style=for-the-badge)
 ![Platforms](https://img.shields.io/badge/Plataformas-Windows%20%7C%20Linux-blue?style=for-the-badge&logo=linux&logoColor=white)
+[![GitHub release](https://img.shields.io/github/v/release/NMullerSM/Parma-Character-hub-and-Grimore?style=for-the-badge&color=gold&label=%C3%9Altima%20Versi%C3%B3n)](https://github.com/NMullerSM/Parma-Character-hub-and-Grimore/releases/latest)
 ![Frontend](https://img.shields.io/badge/Frontend-React%2018%20%2B%20Vite%208-61DAFB?style=for-the-badge&logo=react&logoColor=black)
-![Styles](https://img.shields.io/badge/Estilos-Tailwind%20CSS%20v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![Backend](https://img.shields.io/badge/Backend-Python%203.12%20%2B%20PyWebView-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Database](https://img.shields.io/badge/Base%20de%20Datos-SQLite%20ACID-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
 ![TaleSpire](https://img.shields.io/badge/Integraci%C3%B3n-TaleSpire%203D%20Symbiote-8A2BE2?style=for-the-badge)
 
 **La suite definitiva de escritorio para jugadores y Directores de Juego de Dungeons & Dragons (5ª Edición y Reglas 2024 / 5.5e).**  
 *100% Offline-First, ultraligera, con motor web nativo del sistema, sincronización tridimensional con TaleSpire y compendio atómico OKF.*
+
+---
+
+### 📥 Descarga Directa de Ejecutables (Release Oficial)
+
+| Plataforma | Tipo de Paquete | Enlace de Descarga |
+| :--- | :--- | :--- |
+| **🪟 Windows (10 / 11 de 64 bits)** | **Instalador Oficial Guiado (.exe)** | [💾 **Descargar Parma-Setup.exe**](https://github.com/NMullerSM/Parma-Character-hub-and-Grimore/releases/latest) |
+| **🪟 Windows (10 / 11 de 64 bits)** | **Versión Portable (.zip)** | [📁 **Descargar Parma-Windows-Portable.zip**](https://github.com/NMullerSM/Parma-Character-hub-and-Grimore/releases/latest) |
+| **🐧 Linux (Pop!_OS, Ubuntu, Debian, Mint)** | **Paquete Nativo (.deb)** | [🐧 **Descargar parma_amd64.deb**](https://github.com/NMullerSM/Parma-Character-hub-and-Grimore/releases/latest) |
+| **🐧 Linux (Todas las Distribuciones)** | **Tarball Portable (.tar.gz)** | [📦 **Descargar Parma-Linux-Portable.tar.gz**](https://github.com/NMullerSM/Parma-Character-hub-and-Grimore/releases/latest) |
+
+*Todos los paquetes se generan y publican automáticamente mediante GitHub Actions en la sección **[Releases](https://github.com/NMullerSM/Parma-Character-hub-and-Grimore/releases/latest)**.*
 
 </div>
 
@@ -57,7 +70,7 @@
 
 ---
 
-## 📦 Descarga e Instalación
+## 📦 Descarga e Instalación Detallada
 
 Los ejecutables se compilan automáticamente para Windows y Linux mediante **GitHub Actions**:
 
@@ -77,10 +90,6 @@ Los ejecutables se compilan automáticamente para Windows y Linux mediante **Git
   cd Parma
   ./parma.sh
   ```
-
-> [!TIP]
-> **¿Dónde descargar las compilaciones de prueba?**  
-> Ve a la pestaña **[Actions](https://github.com/NMullerSM/Parma-Character-hub-and-Grimore/actions)**, entra en la última ejecución de la rama `develop` y descarga el artefacto correspondiente (`parma-windows-build` o `parma-linux-build`). Al fusionar en `main`, los descargables se publican automáticamente en la sección **Releases**.
 
 ---
 
