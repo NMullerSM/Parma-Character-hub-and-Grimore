@@ -599,11 +599,17 @@ class DesktopBridge:
 
             elif p in ("pollinations", "free"):
                 # Generador gratuito y sin clave vía Pollinations.ai (FLUX / SD)
+                # enhance=false evita que el LLM de Pollinations reescriba el prompt inventando personajes femeninos
                 import urllib.parse
-                clean_prompt = prompt[:350].strip()
+                import random
+                clean_prompt = prompt.strip()[:1800]
                 encoded_prompt = urllib.parse.quote(clean_prompt)
-                seed = int(datetime.now().timestamp())
-                poll_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=512&height=512&nologo=true&seed={seed}"
+                seed = random.randint(1, 99999999)
+                poll_model = model.strip() if model and model.strip() in ("flux", "turbo", "flux-real", "flux-anime") else "flux"
+                poll_url = (
+                    f"https://image.pollinations.ai/prompt/{encoded_prompt}"
+                    f"?width=512&height=512&model={poll_model}&enhance=false&nologo=true&seed={seed}"
+                )
                 poll_req = urllib.request.Request(
                     poll_url,
                     headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) DndSanctum/1.0"}
