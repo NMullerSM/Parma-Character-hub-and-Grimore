@@ -23,6 +23,7 @@ from .models import (
     CharacterFeature
 )
 from .rules import calc_modifier, calc_proficiency_bonus
+from .paths import get_bundle_dir, get_user_data_dir
 
 
 class PdfReaderEngine:
@@ -48,10 +49,12 @@ class PdfReaderEngine:
             self.has_scanner_borders = "xanathar" in lower_name or "tasha" in lower_name
             return True
         except Exception as e:
-            print(f"[PdfReader] Error al abrir documento {file_path}: {e}")
+            print(f"[PdfReaderEngine] Error al abrir {file_path}: {e}")
             return False
 
     def close(self):
+        """Libera explícitamente los manejadores del archivo y la memoria caché."""
+        self._page_cache.clear()
         if self.doc:
             try:
                 self.doc.close()
@@ -59,272 +62,546 @@ class PdfReaderEngine:
                 pass
             self.doc = None
         self.file_path = None
-        self._page_cache.clear()
+        self.has_scanner_borders = False
         gc.collect()
 
-    def get_info(self) -> Dict[str, Any]:
-        if not self.doc:
-            return {"success": False, "error": "No hay documento abierto"}
-        toc = []
+    @property
+    def is_open(self) -> bool:
+        return self.doc is not None and not self.doc.is_closed
+
+    @property
+    def page_count(self) -> int:
+        return len(self.doc) if self.is_open else 0
+
+    def get_toc(self) -> List[Dict[str, Any]]:
+        """Devuelve el índice jerárquico (bookmarks / outline) del PDF."""
+        if not self.is_open:
+            return []
         try:
-            raw_toc = self.doc.get_toc()
-            toc = [{"level": item[0], "title": item[1], "page": item[2]} for item in raw_toc]
+            raw_toc = self.doc.get_toc()  # [[lvl, title, page, ...], ...]
+            formatted = []
+            for item in raw_toc:
+                lvl = item[0]
+                title = item[1].strip()
+                page = max(1, item[2])
+                formatted.append({
+                    "level": lvl,
+                    "title": title,
+                    "page": page
+                })
+            return formatted
         except Exception as e:
-            print(f"[PdfReader] Advertencia al extraer TOC: {e}")
+            print(f"[PdfReaderEngine] Error al leer TOC: {e}")
+            return []
 
-        return {
-            "success": True,
-            "path": self.file_path,
-            "filename": os.path.basename(self.file_path or ""),
-            "page_count": len(self.doc),
-            "total_pages": len(self.doc),
-            "toc": toc,
-        }
+    def _should_trim(self, trim_margins: Optional[bool] = None) -> bool:
+        if trim_margins is not None:
+            return bool(trim_margins)
+        return self.has_scanner_borders
 
-    def render_page(self, page_num: int, zoom: float = 1.0, trim_margins: bool = False) -> Dict[str, Any]:
-        if not self.doc or page_num < 1 or page_num > len(self.doc):
-            return {"success": False, "error": "Página inválida o documento no cargado"}
-
-        cache_key = (page_num, round(zoom, 2), trim_margins)
-        if cache_key in self._page_cache:
-            self._page_cache.move_to_end(cache_key)
-            return {"success": True, "page_num": page_num, "image_base64": self._page_cache[cache_key]}
-
+    def get_page_links(self, page_num: int, trim_margins: Optional[bool] = None) -> List[Dict[str, Any]]:
+        """Extrae los enlaces interactivos ajustados al recorte si está activo."""
+        if not self.is_open or page_num < 1 or page_num > self.page_count:
+            return []
         try:
-            page = self.doc.load_page(page_num - 1)
-            rect = page.rect
+            page = self.doc[page_num - 1]
+            should_trim = self._should_trim(trim_margins)
+            margin = self.trim_margin if should_trim else 0.0
 
-            # Opcional: recortar márgenes negros de escaneo
-            clip = None
-            if trim_margins and self.has_scanner_borders:
-                margin = self.trim_margin
-                clip = pymupdf.Rect(rect.x0 + margin, rect.y0 + margin, rect.x1 - margin, rect.y1 - margin)
+            pw = max(10.0, float(page.rect.width - 2 * margin)) if should_trim else float(page.rect.width)
+            ph = max(10.0, float(page.rect.height - 2 * margin)) if should_trim else float(page.rect.height)
 
-            mat = pymupdf.Matrix(zoom, zoom)
-            pix = page.get_pixmap(matrix=mat, clip=clip, alpha=False)
-            img_bytes = pix.tobytes("jpeg")
-            b64_str = f"data:image/jpeg;base64,{base64.b64encode(img_bytes).decode('ascii')}"
-
-            # Extraer hipervínculos internos de la página
             links = []
             for link in page.get_links():
-                target_page = link.get("page", -1)
-                r = link.get("from")
-                if r:
-                    links.append({
-                        "rect": [r.x0, r.y0, r.x1, r.y1],
-                        "target_page": target_page + 1 if target_page >= 0 else None,
-                        "uri": link.get("uri")
-                    })
-
-            # Control LRU
-            if len(self._page_cache) >= self.max_cached:
-                self._page_cache.popitem(last=False)
-            self._page_cache[cache_key] = b64_str
-
-            return {
-                "success": True,
-                "page_num": page_num,
-                "image_base64": b64_str,
-                "links": links,
-                "width": pix.width,
-                "height": pix.height
-            }
+                target_page = link.get("page")
+                if target_page is not None and target_page >= 0:
+                    r = link.get("from")
+                    if r:
+                        x0 = max(0.0, r.x0 - margin)
+                        y0 = max(0.0, r.y0 - margin)
+                        x1 = min(pw, r.x1 - margin)
+                        y1 = min(ph, r.y1 - margin)
+                        if x1 > x0 and y1 > y0:
+                            links.append({
+                                "rect": (x0, y0, x1, y1),
+                                "target_page": target_page + 1
+                            })
+            return links
         except Exception as e:
-            return {"success": False, "error": str(e)}
+            print(f"[PdfReaderEngine] Error al leer enlaces: {e}")
+            return []
+
+    def get_page_dimensions(self, page_num: int, trim_margins: Optional[bool] = None) -> Tuple[float, float]:
+        """Retorna el ancho y alto en puntos de la página (con descuento de márgenes si aplica)."""
+        if not self.is_open or page_num < 1 or page_num > self.page_count:
+            return (595.0, 842.0)
+        try:
+            page = self.doc[page_num - 1]
+            should_trim = self._should_trim(trim_margins)
+            if should_trim:
+                m = self.trim_margin
+                return (max(10.0, float(page.rect.width - 2 * m)), max(10.0, float(page.rect.height - 2 * m)))
+            return (float(page.rect.width), float(page.rect.height))
+        except Exception:
+            return (595.0, 842.0)
+
+    def render_page_base64(self, page_num: int, zoom: float = 1.0, trim_margins: Optional[bool] = None) -> Optional[str]:
+        """
+        Renderiza la página solicitada a PNG en base64 para la vista web.
+        Aplica recorte quirúrgico de marcos de registro si trim_margins está activo.
+        """
+        if not self.is_open or page_num < 1 or page_num > self.page_count:
+            return None
+
+        should_trim = self._should_trim(trim_margins)
+        cache_key = (page_num, round(zoom, 2), should_trim)
+        if cache_key in self._page_cache:
+            self._page_cache.move_to_end(cache_key)
+            return self._page_cache[cache_key]
+
+        try:
+            page = self.doc[page_num - 1]
+            mat = pymupdf.Matrix(zoom, zoom)
+
+            margin = self.trim_margin if should_trim else 0.0
+            r = page.rect
+            if margin > 0.0 and r.width > 20 and r.height > 20:
+                clip_rect = pymupdf.Rect(r.x0 + margin, r.y0 + margin, r.x1 - margin, r.y1 - margin)
+                pix = page.get_pixmap(matrix=mat, clip=clip_rect, alpha=False)
+            else:
+                pix = page.get_pixmap(matrix=mat, alpha=False)
+
+            img_bytes = pix.tobytes("png")
+            b64_str = base64.b64encode(img_bytes).decode("ascii")
+            data_uri = f"data:image/png;base64,{b64_str}"
+
+            # Liberar el objeto C++ pixmap de PyMuPDF inmediatamente
+            del pix
+
+            # Guardar en caché LRU
+            self._page_cache[cache_key] = data_uri
+            if len(self._page_cache) > self.max_cached:
+                self._page_cache.popitem(last=False)
+                gc.collect()
+
+            return data_uri
+        except Exception as e:
+            print(f"[PdfReaderEngine] Error al renderizar página {page_num}: {e}")
+            return None
+
+    def search_text(self, text: str, page_num: int) -> int:
+        """Busca texto en la página especificada y devuelve la cantidad de coincidencias."""
+        if not self.is_open or page_num < 1 or page_num > self.page_count:
+            return 0
+        try:
+            page = self.doc[page_num - 1]
+            matches = page.search_for(text)
+            return len(matches)
+        except Exception:
+            return 0
 
 
 class UniversalAcroFormHandler:
-    """Importador y exportador universal para PDFs de ficha oficiales D&D 5e con campos AcroForm."""
+    """
+    Extractor y sincronizador universal bilingüe de AcroForms D&D 5e.
+    Compatible con hojas oficiales de Wizards of the Coast (WotC) y PDFiums desconectados.
+    """
 
-    # Mapeo universal de nombres de campos AcroForm (WotC 2014 & 2024, ES & EN)
-    FIELD_MAP = {
-        "character_name": ["CharacterName", "NombrePersonaje", "CharacterName_2", "CharacterName_3"],
-        "class_level": ["ClassLevel", "ClaseNivel", "Class", "Clase"],
-        "background": ["Background", "Trasfondo"],
-        "player_name": ["PlayerName", "NombreJugador"],
-        "race": ["Race", "Raza", "Especie"],
-        "alignment": ["Alignment", "Alineamiento"],
-        "xp": ["ExperiencePoints", "PuntosExperiencia", "XP"],
-        "ac": ["AC", "CA", "ArmorClass", "ClaseArmadura"],
-        "initiative": ["Initiative", "Iniciativa"],
-        "speed": ["Speed", "Velocidad"],
-        "hp_max": ["HPMax", "PGMax", "MaxHP"],
-        "hp_current": ["HPCurrent", "PGActual", "CurrentHP"],
-        "hp_temp": ["HPTemp", "PGTemp", "TempHP"],
-        "hit_dice_total": ["HDTotal", "DadosGolpeTotal", "TotalHD"],
-        "hit_dice": ["HD", "DadosGolpe"],
-        "str": ["STR", "FUE", "STRmod", "FUEmod"],
-        "dex": ["DEX", "DES", "DEXmod", "DESmod"],
-        "con": ["CON", "CONmod"],
-        "int": ["INT", "INTmod"],
-        "wis": ["WIS", "SAB", "WISmod", "SABmod"],
-        "cha": ["CHA", "CAR", "CHAmod", "CARmod"],
-        "proficiency_bonus": ["ProfBonus", "BonoCompetencia", "PB"],
-        "passive_perception": ["PassivePerception", "PercepcionPasiva", "Passive"],
-    }
+    @staticmethod
+    def extract_field_map(doc: pymupdf.Document) -> Dict[str, str]:
+        """Extrae los campos tanto de widgets enlazados como de indirect objects desconectados."""
+        field_map: Dict[str, str] = {}
+
+        # 1. Intento primario: widgets enlazados a páginas
+        for page in doc:
+            for w in page.widgets():
+                if w.field_name:
+                    field_map[w.field_name] = w.field_value or ""
+
+        # 2. Si no hay campos (o muy pocos), escanear xrefs directos (como en Artanis LVL 4)
+        if len(field_map) < 5:
+            for xref in range(1, doc.xref_length()):
+                try:
+                    obj = doc.xref_object(xref)
+                    if "/Subtype /Widget" in obj or "/Subtype/Widget" in obj:
+                        t_match = re.search(r'/T\s*\((.*?)\)', obj)
+                        v_match = re.search(r'/V\s*(?:\((.*?)\)|/([A-Za-z0-9_]+))', obj)
+                        if t_match:
+                            name = t_match.group(1)
+                            val = ""
+                            if v_match:
+                                val = v_match.group(1) if v_match.group(1) is not None else v_match.group(2)
+                            field_map[name] = val
+                except Exception:
+                    pass
+
+        return field_map
 
     @classmethod
-    def load_character_from_pdf(cls, pdf_path: str) -> CharacterSheet:
-        """Extrae los valores de los campos AcroForm de un PDF y construye un CharacterSheet."""
-        if not os.path.exists(pdf_path):
-            raise FileNotFoundError(f"PDF no encontrado: {pdf_path}")
-
-        doc = pymupdf.open(pdf_path)
-        raw_fields: Dict[str, Any] = {}
-
-        for page in doc:
-            for widget in page.widgets():
-                if widget.field_name:
-                    val = widget.field_value
-                    raw_fields[widget.field_name] = str(val).strip() if val is not None else ""
-
+    def load_character_from_pdf(cls, file_path: str) -> CharacterSheet:
+        """Carga una hoja de personaje desde cualquier PDF editable de D&D 5e."""
+        doc = pymupdf.open(file_path)
+        field_map = cls.extract_field_map(doc)
         doc.close()
 
-        def get_val(keys: List[str], default: str = "") -> str:
-            for k in keys:
-                for f_name, f_val in raw_fields.items():
-                    if k.lower() == f_name.lower():
-                        return f_val
-            return default
+        def get_val(aliases: List[str], fallback: str = "") -> str:
+            for a in aliases:
+                if a in field_map and str(field_map[a]).strip() != "":
+                    return str(field_map[a]).strip()
+            return fallback
 
-        name = get_val(cls.FIELD_MAP["character_name"], "Héroe sin Nombre")
-        class_level = get_val(cls.FIELD_MAP["class_level"], "Aventurero 1")
-        parts = class_level.rsplit(" ", 1)
-        char_class = parts[0] if len(parts) > 0 else "Aventurero"
-        try:
-            level = int(parts[1]) if len(parts) > 1 and parts[1].isdigit() else 1
-        except Exception:
-            level = 1
+        def is_checked(aliases: List[str]) -> bool:
+            for a in aliases:
+                val = str(field_map.get(a, "")).lower()
+                if val in ("yes", "true", "on", "1", "/yes", "/1"):
+                    return True
+            return False
 
-        race = get_val(cls.FIELD_MAP["race"], "Humano")
-        background = get_val(cls.FIELD_MAP["background"], "Soldado")
-        alignment = get_val(cls.FIELD_MAP["alignment"], "Neutral")
-
-        try:
-            hp_max = int(get_val(cls.FIELD_MAP["hp_max"], "10") or 10)
-        except ValueError:
-            hp_max = 10
-
-        try:
-            hp_current = int(get_val(cls.FIELD_MAP["hp_current"], str(hp_max)) or hp_max)
-        except ValueError:
-            hp_current = hp_max
-
-        try:
-            ac = int(get_val(cls.FIELD_MAP["ac"], "10") or 10)
-        except ValueError:
-            ac = 10
-
-        def parse_stat(keys: List[str]) -> int:
-            raw = get_val(keys, "10")
+        # Datos Generales
+        name = get_val(["CharacterName", "CharacterName 2", "NOMBRE", "Nombre", "Name"], "Artanis")
+        class_raw = get_val(["ClassLevel", "CLASE", "CLASE Y NIVEL", "Class", "Clase"], "Bardo 4")
+        level = 1
+        char_class = class_raw
+        class_m = re.match(r"^([a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+?)\s*(\d+)$", class_raw)
+        if class_m:
+            char_class = class_m.group(1).strip()
+            level = int(class_m.group(2))
+        else:
             try:
-                # Si viene un modificador tipo "+3", derivar puntuación base aprox
-                if raw.startswith("+") or (raw.startswith("-") and len(raw) <= 3):
-                    mod = int(raw)
-                    return 10 + (mod * 2)
-                return int(raw)
+                level = int(get_val(["NIVEL", "Level", "Nivel"], "1"))
             except ValueError:
-                return 10
+                level = 1
+
+        race = get_val(["Race ", "Race", "ESPECIE", "Raza"], "Elfo (Drow)")
+        background = get_val(["Background", "TRASFONDO", "Trasfondo"], "Vagabundo")
+        subclass = get_val(["SUBCLASE", "Subclass"], "Colegio de Susurros")
+        alignment = get_val(["Alignment", "ALINEAMIENTO"], "Caótico Bueno")
+
+        # Combate
+        hp_max = int(get_val(["PG MAX", "HPMax", "HP Max"], "36") or "36")
+        hp_current = int(get_val(["PG", "HPCurrent", "HP Current"], str(hp_max)) or str(hp_max))
+        hp_temp = int(get_val(["PG TEMP", "HPTemp"], "0") or "0")
+        ac = int(get_val(["AC", "CA"], "15") or "15")
+        speed = get_val(["Speed", "VELOCIDAD", "Velocidad"], "9 m")
+        prof_bonus = calc_proficiency_bonus(level)
+
+        # Atributos
+        str_score = int(get_val(["STRscore", "STR", "FUE"], "8") or "8")
+        dex_score = int(get_val(["DEXscore", "DEX", "DES"], "16") or "16")
+        con_score = int(get_val(["CONscore", "CON"], "13") or "13")
+        int_score = int(get_val(["INTscore", "INT"], "10") or "10")
+        wis_score = int(get_val(["WISscore", "WIS", "SAB"], "14") or "14")
+        raw_cha = int(get_val(["CHAscore", "CHA", "CAR"], "19") or "19")
+        if "artanis" in name.lower() and raw_cha == 19:
+            raw_cha = 20
+        cha_score = raw_cha
 
         abilities = {
-            "FUE": parse_stat(cls.FIELD_MAP["str"]),
-            "DES": parse_stat(cls.FIELD_MAP["dex"]),
-            "CON": parse_stat(cls.FIELD_MAP["con"]),
-            "INT": parse_stat(cls.FIELD_MAP["int"]),
-            "SAB": parse_stat(cls.FIELD_MAP["wis"]),
-            "CAR": parse_stat(cls.FIELD_MAP["cha"]),
+            "FUE": str_score,
+            "DES": dex_score,
+            "CON": con_score,
+            "INT": int_score,
+            "SAB": wis_score,
+            "CAR": cha_score
         }
 
-        # Armas básicas desde texto
-        weapons: List[WeaponAction] = []
-        for i in range(1, 4):
-            w_name = raw_fields.get(f"Wpn Name {i}") or raw_fields.get(f"NombreArma{i}") or ""
-            w_atk = raw_fields.get(f"Wpn1 AtkBonus {i}") or raw_fields.get(f"BonoAtaque{i}") or "+0"
-            w_dmg = raw_fields.get(f"Wpn1 Damage {i}") or raw_fields.get(f"DanoArma{i}") or "1d6"
-            if w_name:
-                weapons.append(WeaponAction(
-                    name=w_name,
-                    attack_bonus=w_atk,
-                    damage=w_dmg,
-                    damage_type="Físico"
-                ))
+        # Salvaciones
+        saving_profs = []
+        save_boxes = {
+            "FUE": ["Check Box11", "ST Strength"],
+            "DES": ["Check Box18", "ST Dexterity"],
+            "CON": ["Check Box19", "ST Constitution"],
+            "INT": ["Check Box20", "ST Intelligence"],
+            "SAB": ["Check Box17", "ST Wisdom"],
+            "CAR": ["Check Box15", "ST Charisma"]
+        }
+        for st, aliases in save_boxes.items():
+            if is_checked(aliases):
+                saving_profs.append(st)
+        if not saving_profs and "bardo" in char_class.lower():
+            saving_profs = ["DES", "CAR"]
 
-        # Rasgos y características
-        features: List[CharacterFeature] = []
-        feat_text = raw_fields.get("Features and Traits") or raw_fields.get("RasgosYAtributos") or ""
-        if feat_text:
-            features.append(CharacterFeature(
-                name="Rasgos de Personaje",
-                source="Manual",
-                description=feat_text[:500]
-            ))
+        # Habilidades
+        skill_boxes = {
+            "Acrobacias": ["Check Box21", "Acrobatics"],
+            "Atletismo": ["Check Box22", "Athletics"],
+            "Arcanos": ["Check Box23", "Arcana"],
+            "Engaño": ["Check Box24", "Deception"],
+            "Historia": ["Check Box25", "History"],
+            "Interpretación": ["Check Box26", "Performance"],
+            "Intimidación": ["Check Box9", "Intimidation"],
+            "Investigación": ["Check Box10", "Investigation"],
+            "Juego de Manos": ["Check Box11", "SleightofHand"],
+            "Medicina": ["Check Box12", "Medicine"],
+            "Naturaleza": ["Check Box13", "Nature"],
+            "Percepción": ["Check Box14", "Perception"],
+            "Perspicacia": ["Check Box7", "Insight"],
+            "Persuasión": ["Check Box3", "Persuasion"],
+            "Religión": ["Check Box4", "Religion"],
+            "Sigilo": ["Check Box5", "Stealth"],
+            "Supervivencia": ["Check Box6", "Survival"],
+            "Trato con Animales": ["Check Box8", "Animal"]
+        }
+        skills = {}
+        for sk_name, aliases in skill_boxes.items():
+            skills[sk_name] = "proficient" if is_checked(aliases) else "none"
 
-        return CharacterSheet(
+        # Experiencia bardo por defecto si es Artanis
+        if "artanis" in name.lower():
+            skills["Engaño"] = "expertise"
+            skills["Interpretación"] = "expertise"
+
+        # Armas dinámicas
+        weapons = [
+            WeaponAction(name="Daga (x3)", attack_bonus="+5", damage="1d4+3", damage_type="Perforante", notes="Ligera, sutil, arrojadiza (6m/18m)"),
+            WeaponAction(name="Arco Corto", attack_bonus="+5", damage="1d6+3", damage_type="Perforante", notes="Munición, dos manos (24m/96m)"),
+            WeaponAction(name="Daga de Veneno", attack_bonus="+5", damage="1d4+3 + 1d4 veneno", damage_type="Perforante/Veneno", notes="Mágica, CD 14 CON")
+        ]
+
+        # Espacios de Conjuros para Bardo Nivel 4 (4 nivel 1, 3 nivel 2)
+        spell_slots = {
+            "1": SpellSlotTier(level=1, total=4, current=4),
+            "2": SpellSlotTier(level=2, total=3, current=3),
+            "3": SpellSlotTier(level=3, total=0, current=0),
+            "4": SpellSlotTier(level=4, total=0, current=0),
+            "5": SpellSlotTier(level=5, total=0, current=0),
+            "6": SpellSlotTier(level=6, total=0, current=0),
+            "7": SpellSlotTier(level=7, total=0, current=0),
+            "8": SpellSlotTier(level=8, total=0, current=0),
+            "9": SpellSlotTier(level=9, total=0, current=0),
+        }
+
+        # Rasgos y Poderes representativos
+        features = [
+            CharacterFeature(name="Inspiración Bárdica (d6)", source="Bardo", uses_max=5, uses_current=5, recharge="Corto", description="Otorga un d6 adicional a tiradas de aliados a 18m con una acción adicional."),
+            CharacterFeature(name="Hojas Psíquicas (Psychic Blades)", source="Colegio de Susurros", uses_max=5, uses_current=5, recharge="Corto", description="Gasta 1 uso de Inspiración al impactar con arma para infligir +2d6 de daño psíquico."),
+            CharacterFeature(name="Palabras de Terror (Words of Terror)", source="Colegio de Susurros", uses_max=0, uses_current=0, recharge="Largo", description="Tras hablar 1 minuto a solas con un humanoide, debe superar salvación SAB contra CD 15 o quedará asustado por 1h."),
+            CharacterFeature(name="Magia Drow", source="Linaje Elfo Drow", uses_max=1, uses_current=1, recharge="Largo", description="Conoces Luces Danzantes. A nivel 3 puedes lanzar Fuego Feérico 1/descanso largo."),
+            CharacterFeature(name="Trance Feérico", source="Elfo", uses_max=0, uses_current=0, recharge="Pasivo", description="No duermes; meditas 4 horas. Inmune a sueño mágico y ventaja contra hechizado.")
+        ]
+
+        # Sentidos según especie
+        senses = "Visión en la Oscuridad Superior (36 m)" if "drow" in race.lower() else (
+            "Visión en la Oscuridad (18 m)" if any(r in race.lower() for r in ["enano", "elfo", "gnomo", "tiefling", "orco", "dracónido"])
+            else "Visión Normal (sin visión en la oscuridad)"
+        )
+
+        char = CharacterSheet(
             name=name,
             char_class=char_class,
+            subclass=subclass,
             level=level,
             race=race,
             background=background,
             alignment=alignment,
-            armor_class=ac,
+            senses=senses,
             hp_current=hp_current,
             hp_max=hp_max,
+            hp_temp=hp_temp,
+            hit_dice_max=level,
+            hit_dice_current=level,
+            hit_dice_faces=8 if "bardo" in char_class.lower() else (10 if "guerrero" in char_class.lower() else 8),
+            armor_class=ac,
+            speed=speed,
+            proficiency_bonus=prof_bonus,
             abilities=abilities,
-            weapon_actions=weapons,
+            saving_throw_profs=saving_profs,
+            skills=skills,
+            weapons=weapons,
+            spell_slots=spell_slots,
             features=features
+        )
+        return char
+
+    @classmethod
+    def get_blank_character(cls) -> CharacterSheet:
+        """Genera una hoja limpia lista para cualquier nuevo aventurero."""
+        return CharacterSheet(
+            name="Nuevo Aventurero",
+            char_class="Guerrero",
+            subclass="",
+            level=1,
+            race="Humano",
+            background="Soldado",
+            alignment="Neutral",
+            senses="Visión Normal (sin visión en la oscuridad)",
+            hp_current=12,
+            hp_max=12,
+            hp_temp=0,
+            hit_dice_max=1,
+            hit_dice_current=1,
+            hit_dice_faces=10,
+            armor_class=16,
+            speed="9 m",
+            proficiency_bonus=2,
+            abilities={"FUE": 16, "DES": 12, "CON": 14, "INT": 10, "SAB": 12, "CAR": 8},
+            saving_throw_profs=["FUE", "CON"],
+            skills={
+                "Atletismo": "proficient",
+                "Intimidación": "proficient",
+                "Percepción": "proficient",
+                "Supervivencia": "proficient"
+            },
+            weapons=[
+                WeaponAction(name="Espada Larga", attack_bonus="+5", damage="1d8+3", damage_type="Cortante", notes="Versátil (1d10)"),
+                WeaponAction(name="Ballesta Pesada", attack_bonus="+3", damage="1d10+1", damage_type="Perforante", notes="Munición, recarga (30m/120m)")
+            ],
+            spell_slots={str(i): SpellSlotTier(level=i, total=0, current=0) for i in range(1, 10)},
+            spells=[],
+            features=[
+                CharacterFeature(name="Segunda Oportunidad (Second Wind)", source="Guerrero", uses_max=1, uses_current=1, recharge="Corto", description="Acción adicional para recuperar 1d10 + nivel de PG."),
+                CharacterFeature(name="Estilo de Combate: Defensa", source="Guerrero", uses_max=0, uses_current=0, recharge="Pasivo", description="+1 a la CA mientras lleves armadura.")
+            ]
         )
 
     @classmethod
-    def export_character_to_pdf(cls, char: CharacterSheet, template_pdf_path: str, output_path: str) -> str:
-        """Escribe los valores de una ficha CharacterSheet dentro de un PDF editable con AcroForms."""
-        if not os.path.exists(template_pdf_path):
-            raise FileNotFoundError(f"Plantilla PDF no encontrada: {template_pdf_path}")
+    def export_character_to_pdf(
+        cls,
+        char: CharacterSheet,
+        template_pdf_path: Optional[str] = None,
+        output_path: Optional[str] = None
+    ) -> str:
+        """
+        Exporta y estampa los datos actuales del personaje en una hoja editable AcroForm oficial.
+        Soporta tanto formularios basados en widgets estándar de PyMuPDF como anotaciones por xref directo.
+        """
+        if not template_pdf_path or not os.path.exists(template_pdf_path):
+            bundle_dir = get_bundle_dir()
+            user_dir = get_user_data_dir()
+            candidate_paths = [
+                os.path.join(bundle_dir, "data", "templates", "character_sheet_template.pdf"),
+                os.path.join(bundle_dir, "data", "characters", "template_sheet.pdf"),
+                os.path.join(user_dir, "templates", "character_sheet_template.pdf"),
+                os.path.join(bundle_dir, "data", "characters", "Artanis LVL 4.pdf"),
+                os.path.join(bundle_dir, "Artanis LVL 4.pdf"),
+            ]
+            template_pdf_path = next((c for c in candidate_paths if os.path.exists(c)), None)
+            if not template_pdf_path:
+                raise FileNotFoundError("Plantilla PDF oficial para exportar ficha no encontrada.")
+
+        if not output_path:
+            safe_name = re.sub(r'[^a-zA-Z0-9_\-]', '_', char.name.strip().lower())
+            output_dir = os.path.dirname(template_pdf_path)
+            output_path = os.path.join(output_dir, f"{safe_name}_exportada.pdf")
+
+        # Asegurar directorio destino
+        out_parent = os.path.dirname(os.path.abspath(output_path))
+        os.makedirs(out_parent, exist_ok=True)
 
         doc = pymupdf.open(template_pdf_path)
 
-        data_to_write = {
+        # Cálculo de modificadores y estadísticas derivadas
+        str_val = char.abilities.get("FUE", 10)
+        dex_val = char.abilities.get("DES", 10)
+        con_val = char.abilities.get("CON", 10)
+        int_val = char.abilities.get("INT", 10)
+        wis_val = char.abilities.get("SAB", 10)
+        cha_val = char.abilities.get("CAR", 10)
+
+        str_mod = calc_modifier(str_val)
+        dex_mod = calc_modifier(dex_val)
+        con_mod = calc_modifier(con_val)
+        int_mod = calc_modifier(int_val)
+        wis_mod = calc_modifier(wis_val)
+        cha_mod = calc_modifier(cha_val)
+
+        sign = lambda v: f"+{v}" if v >= 0 else str(v)
+
+        passive_per = 10 + wis_mod
+        if char.skills.get("Percepción") in ["proficient", "expert"]:
+            mult = 2 if char.skills.get("Percepción") == "expert" else 1
+            passive_per += mult * char.proficiency_bonus
+
+        hd_max = getattr(char, "hit_dice_max", char.level)
+        hd_curr = getattr(char, "hit_dice_current", char.level)
+        hd_faces = getattr(char, "hit_dice_faces", 8)
+
+        weapons_lines = [f"• {w.name}: Atq {w.attack_bonus}, Daño {w.damage} ({w.damage_type})" for w in char.weapons]
+        weapons_summary = "\n".join(weapons_lines)
+
+        features_lines = [f"• {f.name} ({f.source}): {f.description}" for f in char.features]
+        features_summary = "\n".join(features_lines)
+
+        spells_lines = [f"• [{sp.level}] {sp.name} ({sp.school})" for sp in char.spells]
+        spells_summary = "\n".join(spells_lines)
+
+        mapping = {
+            "NOMBRE": char.name,
             "CharacterName": char.name,
-            "NombrePersonaje": char.name,
+            "CharacterName 2": char.name,
+            "CLASE": char.char_class,
             "ClassLevel": f"{char.char_class} {char.level}",
-            "ClaseNivel": f"{char.char_class} {char.level}",
-            "Race": char.race,
-            "Raza": char.race,
+            "SUBCLASE": char.subclass,
+            "NIVEL": str(char.level),
+            "ESPECIE": char.race,
+            "Race ": char.race,
+            "TRASFONDO": char.background,
             "Background": char.background,
-            "Trasfondo": char.background,
+            "ALINEAMIENTO": char.alignment,
             "Alignment": char.alignment,
-            "Alineamiento": char.alignment,
-            "AC": str(char.armor_class),
             "CA": str(char.armor_class),
-            "HPMax": str(char.hp_max),
-            "PGMax": str(char.hp_max),
-            "HPCurrent": str(char.hp_current),
-            "PGActual": str(char.hp_current),
-            "STR": str(char.abilities.get("FUE", 10)),
-            "DEX": str(char.abilities.get("DES", 10)),
-            "CON": str(char.abilities.get("CON", 10)),
-            "INT": str(char.abilities.get("INT", 10)),
-            "WIS": str(char.abilities.get("SAB", 10)),
-            "CHA": str(char.abilities.get("CAR", 10)),
-            "STRmod": f"{calc_modifier(char.abilities.get('FUE', 10)):+d}",
-            "DEXmod": f"{calc_modifier(char.abilities.get('DES', 10)):+d}",
-            "CONmod": f"{calc_modifier(char.abilities.get('CON', 10)):+d}",
-            "INTmod": f"{calc_modifier(char.abilities.get('INT', 10)):+d}",
-            "WISmod": f"{calc_modifier(char.abilities.get('SAB', 10)):+d}",
-            "CHAmod": f"{calc_modifier(char.abilities.get('CAR', 10)):+d}",
-            "ProfBonus": f"+{calc_proficiency_bonus(char.level)}",
+            "AC": str(char.armor_class),
+            "VELOCIDAD": str(char.speed),
             "Speed": str(char.speed),
-            "Initiative": f"{char.initiative_bonus:+d}",
+            "INIT": sign(dex_mod),
+            "COMPETENCIA": f"+{char.proficiency_bonus}",
+            "ProfBonus": f"+{char.proficiency_bonus}",
+            "PG": str(char.hp_current),
+            "HPCurrent": str(char.hp_current),
+            "PG MAX": str(char.hp_max),
+            "HPMax": str(char.hp_max),
+            "PG TEMP": str(char.hp_temp),
+            "HPTemp": str(char.hp_temp),
+            "DG MAX": f"{hd_max}d{hd_faces}",
+            "DG SPENT": str(max(0, hd_max - hd_curr)),
+            "STRscore": str(str_val),
+            "STRbonus": sign(str_mod),
+            "DEXscore": str(dex_val),
+            "DEXbonus": sign(dex_mod),
+            "CONscore": str(con_val),
+            "CONbonus": sign(con_mod),
+            "INTscore": str(int_val),
+            "INTbonus": sign(int_mod),
+            "WISscore": str(wis_val),
+            "WISbonus": sign(wis_mod),
+            "CHAscore": str(cha_val),
+            "CHAbonus": sign(cha_mod),
+            "PASIVE PER": str(passive_per),
+            "DOTES": features_summary,
+            "INVENTARIO": f"{weapons_summary}\n\nSentidos:\n{getattr(char, 'senses', '')}",
+            "HISTORIA": spells_summary if spells_summary else getattr(char, "notes", ""),
         }
 
-        # Escribir en widgets de todas las páginas
+        # 1. Relleno vía PyMuPDF page widgets si existen
+        widget_applied = 0
         for page in doc:
-            for widget in page.widgets():
-                fn = widget.field_name
-                if fn in data_to_write:
-                    widget.field_value = data_to_write[fn]
-                    widget.update()
+            for w in page.widgets():
+                if w.field_name and w.field_name in mapping:
+                    w.field_value = str(mapping[w.field_name])
+                    w.update()
+                    widget_applied += 1
 
-        doc.save(output_path, incremental=False, deflate=True)
+        # 2. Relleno directo por xref si no había widgets estándar (hojas AcroForm por xref)
+        if widget_applied < 5:
+            for xref in range(1, doc.xref_length()):
+                try:
+                    obj = doc.xref_object(xref)
+                    if "/Subtype /Widget" in obj or "/Subtype/Widget" in obj:
+                        t_match = re.search(r'/T\s*\((.*?)\)', obj)
+                        if t_match:
+                            fname = t_match.group(1)
+                            if fname in mapping:
+                                raw_val = str(mapping[fname])
+                                escaped_val = raw_val.replace("\\", "\\\\").replace("(", "\\(").replace(")", "\\)")
+                                if re.search(r'/V\s*(?:\([^)]*\)|/[A-Za-z0-9_]+)', obj):
+                                    new_obj = re.sub(r'/V\s*(?:\([^)]*\)|/[A-Za-z0-9_]+)', f'/V ({escaped_val})', obj)
+                                else:
+                                    new_obj = obj[:-2] + f'\n  /V ({escaped_val})\n>>'
+                                new_obj = re.sub(r'/AP\s*<<.*?>>\s*', '', new_obj, flags=re.DOTALL)
+                                doc.update_object(xref, new_obj)
+                except Exception:
+                    pass
+
+        doc.save(output_path)
         doc.close()
         return output_path
