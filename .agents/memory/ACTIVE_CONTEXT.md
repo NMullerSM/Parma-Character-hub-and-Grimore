@@ -83,12 +83,14 @@
 ## 🔀 Integración y Estado de Ramas
 - `feature/onboarding-spotlight-fix`: Mergeada en `develop` vía PR #8 (`fca495684aec2ad4b1e9b64e9ad95558ec9bd3d4`).
 - `feature/auto-updater-protocol`: Mergeada en `develop` vía PR #9 (`2aea5ec4f312400720f6c57ea5c61768147262fb`).
-- Rama actual de trabajo consolidada: **`develop`** (Versión 1.0.3 establecida en `core/version.py`, `frontend/src/version.ts` y `frontend/package.json`).
+- Rama actual de trabajo consolidada: **`develop`** (Versión 1.0.3 establecida en `core/version.py`, `frontend/src/version.ts`, `frontend/package.json` y `parma_setup.iss`).
 - Documentación y ADRs exhaustivos formalizados en `README.md`, `docs/BACKEND.md`, `docs/FRONTEND.md`, `docs/CICD.md` y `docs/ADR.md`.
+- Corrección de pipeline Inno Setup en Windows: ruta de origen corregida a `..\Parma\*` y protección de macro `#ifndef MyAppVersion`.
+- Sincronización final: Despliegue de la versión 1.0.3 a la rama `main` para activar el workflow de publicación oficial en GitHub Actions.
 
 ---
 
 ## 📋 Tareas Pendientes / Siguiente Paso (Fase 5)
-1. **Commit y Push a `develop`**: Subir `README.md`, `docs/ADR.md`, `docs/FRONTEND.md`, `docs/CICD.md`, `core/version.py`, `frontend/src/version.ts`, `frontend/package.json` y `ACTIVE_CONTEXT.md`.
-2. **Merge de `develop` a `main`**: Crear PR y fusionar para activar el pipeline de release oficial `v1.0.3`.
-3. **Limpieza**: Eliminar las ramas remotas `feature/onboarding-spotlight-fix` y `feature/auto-updater-protocol`.
+1. **Publicación Oficial (Merge a `main`)**: Desplegar los 32 archivos consolidados y verificados a `main` para activar el pipeline de release `v1.0.3`.
+2. **Cierre de PR #10**: Cerrar el PR #10 con nota de release limpia.
+3. **Limpieza de Ramas**: Eliminar las ramas remotas obsoletas `feature/onboarding-spotlight-fix` y `feature/auto-updater-protocol`.

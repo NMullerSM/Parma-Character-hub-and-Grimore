@@ -142,6 +142,7 @@ def build():
                                 "# Desactiva el renderizador DMABUF de WebKitGTK para evitar fallos de pantalla negra\n"
                                 "# en GPUs NVIDIA o sesiones Wayland.\n"
                                 "export WEBKIT_DISABLE_DMABUF_RENDERER=1\n"
+                                "export WEBKIT_DISABLE_COMPOSITING_MODE=1\n"
                                 "\n"
                                 "SCRIPT_DIR=\"$(cd \"$(dirname \"${BASH_SOURCE[0]}\")\" && pwd)\"\n"
                                 "cd \"$SCRIPT_DIR\" || exit 1\n"
