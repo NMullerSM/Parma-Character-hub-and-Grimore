@@ -57,6 +57,7 @@ from core.session_ledger import SessionRollLedger
 from core.srd_importer import SrdImporter
 from .tunnel_manager import CloudflareTunnelManager
 from .session_server import DmSessionServer
+from .auto_updater import AutoUpdateManager
 
 
 
@@ -126,6 +127,7 @@ class DesktopBridge:
         self._pdf_reader = PdfReaderEngine()
         self._tunnel_mgr = CloudflareTunnelManager(self._user_data_dir)
         self._session_server = DmSessionServer(self._db, self._user_data_dir)
+        self._updater = AutoUpdateManager(self._base_dir, self._user_data_dir)
         self._window = None
 
         # Migrar autosave_character.json si la base de datos está vacía
@@ -138,6 +140,7 @@ class DesktopBridge:
 
     def set_window(self, window):
         self._window = window
+        self._updater.set_window(window)
 
     def _is_active_character_id(self, char_id: int) -> bool:
         active = self._db.get_active_character()
@@ -2369,3 +2372,18 @@ class DesktopBridge:
         if session_info and session_info.get("notes"):
             return str(session_info["notes"])
         return ""
+
+    # -------------------------------------------------------------------------
+    # Auto-Updater Protocol (Descargas en segundo plano y reinicio silencioso)
+    # -------------------------------------------------------------------------
+    def start_auto_update(self, download_url: str, version: str) -> Dict[str, Any]:
+        """Inicia la descarga en segundo plano del instalador de la nueva versión."""
+        return self._updater.start_download(download_url, version)
+
+    def get_update_progress(self) -> Dict[str, Any]:
+        """Retorna el progreso porcentual y estado de la descarga."""
+        return self._updater.get_progress()
+
+    def apply_update_and_restart(self) -> Dict[str, Any]:
+        """Aplica la actualización silenciosa (/SILENT /CLOSEAPPLICATIONS) y reinicia."""
+        return self._updater.apply_update_and_restart()
