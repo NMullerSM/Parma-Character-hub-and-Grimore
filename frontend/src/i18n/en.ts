@@ -624,7 +624,7 @@ export const en: Translations = {
       Hechizado: "Charmed",
       Incapacitado: "Incapacitated",
       Invisible: "Invisible",
-      Paralizado: "Paralyzed",
+      Paralizado: "Paralizado",
       Restringido: "Restrained",
     },
     damageTypes: {
@@ -685,24 +685,123 @@ export const en: Translations = {
     onboarding: {
       titleWelcome: "Welcome to Parma!",
       subtitleWelcome: "Your definitive desktop suite for D&D 5e and 2024 Rules players and Dungeon Masters.",
-      step1Title: "100% Offline & Private Suite",
-      step1Desc: "Your characters, campaign journals, and notes are saved locally in SQLite. No mandatory subscriptions, no required internet connection, and your data stays yours.",
-      step2Title: "The Hero Forge",
-      step2Desc: "Build characters step-by-step with the Official Wizard, generate ready-to-play archetypes in 60 seconds, or roll 4d6 randomly. You can also import official PDF sheets and generate AI portraits.",
-      step3Title: "Interactive Sheet & Combat",
-      step3Desc: "Track dynamic hit points with cinematic edge vignettes, compute automatic modifiers, manage spell slots, and roll 3D dice in real time.",
-      step4Title: "The Great Grimoire & Compendium",
-      step4Desc: "Instantly search classes, lineages, feats, mechanics, and read official PDF manuals with interactive TOC and high-speed atomic lookups.",
-      step5Title: "TaleSpire & Virtual Tabletop",
-      step5Desc: "Connect as a 3D Symbiote to roll dice directly onto the TaleSpire board, and use the DM Console to run local or networked sessions.",
+      stepLabel: "Step",
+      sectionGuide: "Section Guide",
       btnSkip: "Skip tour",
+      btnSkipAll: "Skip entire onboarding",
+      btnSkipSection: "Skip this section",
       btnNext: "Next",
       btnPrev: "Previous",
       btnStart: "Start adventure!",
+      replayTour: "Replay welcome tour",
+      resetSectionTours: "Reset section guides",
+      sectionToursResetSuccess: "Section guides have been reset",
+      demoRollBtn: "Test d20 roll!",
+      demoRollLabel: "Tour Demo Roll",
       whatsNewTitle: "What's New in",
       whatsNewSubtitle: "Discover the latest enhancements and features integrated into this version of Parma Desktop.",
       btnUnderstand: "Got it, let's play!",
-      replayTour: "Replay welcome tour",
+
+      // Aliases for snake_case and nested keys
+      button_next: "Next",
+      button_prev: "Previous",
+      button_skip_section: "Skip section",
+      skip_section: "Skip section",
+      skip_button_all: "Skip entire onboarding",
+      step_batch: "Step",
+      global: {
+        step_batch: "Step",
+        step_one_batch: "Welcome",
+        step_one_title: "Welcome to Parma!",
+        step_one_desc: "Your 100% offline tactical desktop suite for D&D 2024 and 5e players and DMs. All your data stays private and local on your machine.",
+        step_two_batch: "Official Rules",
+        step_two_title: "D&D 2024 & 5e Rulesets",
+        step_two_desc: "Seamlessly toggle between 2024 revised rules (5.5e) and classic 5e. Feats, spells, and species update in real time.",
+        step_three_batch: "Hero Management",
+        step_three_title: "Your Heroes & The Forge",
+        step_three_desc: "Select your active hero or jump into the Hero Forge to create adventurers step-by-step, in 60 seconds, or with random rolls.",
+        step_four_batch: "Sections",
+        step_four_title: "Tactical Navigation",
+        step_four_desc: "Instantly switch between your Sheet, Live Combat, Grimoire, Campaign Journal, Network, PDF manual reader, and OKF Compendium.",
+        step_five_batch: "Dice Rolling",
+        step_five_title: "Tactical Dice Roller",
+        step_five_desc: "Roll cinematic 2D & 3D dice with advantage, disadvantage, automated modifiers, and roll history. Click below to try a roll!",
+        step_six_batch: "Virtual Tabletop",
+        step_six_title: "TaleSpire 3D & DM Mode",
+        step_six_desc: "Sync rolls with 3D boards via Symbiote and activate DM Mode to host multiplayer sessions over a secure tunnel.",
+        step_seven_batch: "Personalization",
+        step_seven_title: "Themes & Settings",
+        step_seven_desc: "Customize palettes (Obsidian, Parchment, Amethyst, Mithril), sound effects, language, and replay this tour from Settings.",
+      },
+
+      // Global Tour Steps
+      globalStep1Title: "Welcome to Parma!",
+      globalStep1Desc: "Your 100% offline tactical desktop suite for D&D 2024 and 5e players and DMs. All your data stays private and local on your machine.",
+      globalStep1Badge: "Welcome",
+
+      globalStep2Title: "D&D 2024 & 5e Rules",
+      globalStep2Desc: "Seamlessly toggle between 2024 revised rules (5.5e) and classic 5e. Feats, spells, and species update in real time.",
+      globalStep2Badge: "Official Rules",
+
+      globalStep3Title: "Your Heroes & The Forge",
+      globalStep3Desc: "Select your active hero or jump into the Hero Forge to create adventurers step-by-step, in 60 seconds, or with random rolls.",
+      globalStep3Badge: "Hero Management",
+
+      globalStep4Title: "Tactical Navigation",
+      globalStep4Desc: "Instantly switch between your Sheet, Live Combat, Grimoire, Campaign Journal, Network, PDF manual reader, and OKF Compendium.",
+      globalStep4Badge: "Sections",
+
+      globalStep5Title: "Tactical Dice Roller",
+      globalStep5Desc: "Roll cinematic 2D & 3D dice with advantage, disadvantage, automated modifiers, and roll history. Click below to try a roll!",
+      globalStep5Badge: "Dice Rolling",
+
+      globalStep6Title: "TaleSpire 3D & DM Mode",
+      globalStep6Desc: "Synchronize your rolls in 3D boards via Symbiote, or toggle DM Mode to host live multiplayer campaigns with secure tunneling.",
+      globalStep6Badge: "Virtual Tabletop",
+
+      globalStep7Title: "Themes & Settings",
+      globalStep7Desc: "Customize color palettes (Obsidian, Parchment, Amethyst, Mithril), audio effects, language, and replay this tour anytime from Settings.",
+      globalStep7Badge: "Personalization",
+
+      // Grimoire (Spells) Tour Steps
+      spellsStep1Title: "Spell Level Filters",
+      spellsStep1Desc: "Quickly filter your spells from Cantrips up to Level 9 so you never waste time searching during your combat turn.",
+      spellsStep1Badge: "Filters",
+
+      spellsStep2Title: "Consumable Spell Slots",
+      spellsStep2Desc: "Click gold gems to mark used magic slots. Slots are restored automatically when taking a long rest.",
+      spellsStep2Badge: "Magic Slots",
+
+      spellsStep3Title: "Arcane Manager & Compendium",
+      spellsStep3Desc: "Add official spells from the compendium or register custom homebrew spells for your character.",
+      spellsStep3Badge: "Arcane Manager",
+
+      // Character Sheet (Sheet) Tour Steps
+      sheetStep1Title: "Hit Points & Vitals",
+      sheetStep1Desc: "Adjust your HP instantly with +/- buttons. Cinematic screen edge vignettes react whenever you take damage or heal.",
+      sheetStep1Badge: "Health & Vitals",
+
+      sheetStep2Title: "Scores & Saving Throws",
+      sheetStep2Desc: "Click any ability score or saving throw modifier to roll dice automatically with calculated bonuses.",
+      sheetStep2Badge: "Abilities",
+
+      sheetStep3Title: "Weapon Actions & Attacks",
+      sheetStep3Desc: "Compute attack rolls and damage with a single touch. Check reach in grid tiles for accurate battlefield positioning.",
+      sheetStep3Badge: "Tactical Combat",
+
+      // Compendium Tour Steps
+      compendiumStep1Title: "Universal Atomic Search",
+      compendiumStep1Desc: "Type any keyword (monster, feat, condition, or mechanic) to instantly lookup its official entry offline.",
+      compendiumStep1Badge: "Universal Search",
+
+      compendiumStep2Title: "Category Index",
+      compendiumStep2Desc: "Filter by lineages, classes, equipment, or backgrounds to explore the Open Knowledge Fantasy rules compendium.",
+      compendiumStep2Badge: "Rules Index",
+
+      // Hero Forge Tour Steps
+      forgeStep1Title: "Choose Your Creation Method",
+      forgeStep1Desc: "Official step-by-step wizard, 60-second quick optimized generator, or classic 4d6 random rolling.",
+      forgeStep1Badge: "Hero Forge",
     },
     updates: {
       newVersionAvailable: "New version!",
@@ -718,6 +817,13 @@ export const en: Translations = {
       upToDate: "You have the latest version",
       checkUpdates: "Check for updates",
       checking: "Checking...",
+      downloadingTitle: "Downloading Update...",
+      downloadingDesc: "Downloading in background. You can keep playing with your character.",
+      readyToRestartTitle: "Update Ready to Install!",
+      readyToRestartDesc: "The installer has finished downloading. Please save your changes before restarting.",
+      btnRestartToUpdate: "Restart to update",
+      ignoreVersion: "Do not notify about this version again",
+      downloadProgress: "{percent}% ({downloaded} MB of {total} MB)",
     },
   },
 };
