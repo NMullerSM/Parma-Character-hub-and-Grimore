@@ -35,7 +35,11 @@ if [ "$NEEDS_BUILD" = true ]; then
         echo "[Parma] Compilando frontend automáticamente..."
         (cd "$SCRIPT_DIR/frontend" && npm run build)
         if [ $? -ne 0 ]; then
-            echo "[Aviso] Falló la compilación de npm. Intentando ejecutar con la versión existente..."
+            echo "======================================================================="
+            echo " [Error] Falló la compilación de TypeScript / Vite (npm run build)."
+            echo " Revisa los errores de sintaxis o tipos indicados arriba."
+            echo "======================================================================="
+            exit 1
         else
             echo "[Parma] Frontend compilado exitosamente."
         fi
