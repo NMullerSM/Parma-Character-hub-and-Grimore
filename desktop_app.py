@@ -13,6 +13,7 @@ import sys
 # ==============================================================================
 if sys.platform.startswith("linux"):
     os.environ.setdefault("WEBKIT_DISABLE_DMABUF_RENDERER", "1")
+    os.environ.setdefault("WEBKIT_DISABLE_COMPOSITING_MODE", "1")
 
 import argparse
 import webview
@@ -216,10 +217,42 @@ def check_linux_gui_backend():
         print("=" * 68 + "\n")
 
 
+def configure_linux_webkit_storage(window):
+    """Asegura que WebKitGTK tenga habilitado HTML5 Local Storage y base de datos."""
+    if not sys.platform.startswith("linux"):
+        return
+    try:
+        form = getattr(window, "native", None)
+        if not form:
+            return
+
+        def scan_and_enable(widget):
+            cls_name = widget.__class__.__name__
+            if "WebView" in cls_name and hasattr(widget, "get_settings"):
+                s = widget.get_settings()
+                if hasattr(s, "set_enable_html5_local_storage"):
+                    s.set_enable_html5_local_storage(True)
+                if hasattr(s, "set_enable_html5_database"):
+                    s.set_enable_html5_database(True)
+                if hasattr(s, "set_enable_javascript"):
+                    s.set_enable_javascript(True)
+                return True
+            if hasattr(widget, "get_children"):
+                for child in widget.get_children():
+                    if scan_and_enable(child):
+                        return True
+            return False
+
+        scan_and_enable(form)
+    except Exception:
+        pass
+
+
 def start_app():
     parser = argparse.ArgumentParser(description="Parma Desktop")
     parser.add_argument("--dev", action="store_true", help="Usa servidor de desarrollo Vite (localhost:5173)")
     parser.add_argument("--port", type=int, default=5173, help="Puerto del servidor de desarrollo")
+    parser.add_argument("--debug", action="store_true", help="Habilita herramientas de desarrollo (F12) e inspección de consola")
     args = parser.parse_args()
 
     # 1. Comprobar entorno gráfico en Linux y configurar identidad en Windows
@@ -261,12 +294,14 @@ def start_app():
 
     def on_app_started():
         apply_win32_icon(window, icon_path)
+        configure_linux_webkit_storage(window)
 
     # Iniciar el bucle de eventos del WebView nativo
     # http_server=True activa el servidor Bottle interno para servir ES Modules de Vite sin bloqueos CORS en Linux
+    debug_mode = bool(args.dev or args.debug or os.environ.get("PARMA_DEBUG", "0") == "1")
     start_kwargs = {
         "func": on_app_started,
-        "debug": args.dev,
+        "debug": debug_mode,
         "http_server": True,
     }
     if icon_path:
