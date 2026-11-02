@@ -10,6 +10,37 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Polyfill de resguardo para localStorage en WebKitGTK / WebViews de Linux -->
+    <script>
+      (function() {
+        try {
+          if (typeof window.localStorage !== 'undefined' && window.localStorage) {
+            window.localStorage.setItem('__probe__', '1');
+            window.localStorage.removeItem('__probe__');
+            return;
+          }
+        } catch (e) {}
+        var mem = {};
+        var mock = {
+          getItem: function(k) { return mem.hasOwnProperty(k) ? mem[k] : null; },
+          setItem: function(k, v) { mem[k] = String(v); },
+          removeItem: function(k) { delete mem[k]; },
+          clear: function() { mem = {}; },
+          key: function(i) { return Object.keys(mem)[i] || null; },
+          get length() { return Object.keys(mem).length; }
+        };
+        try {
+          Object.defineProperty(window, 'localStorage', { value: mock, writable: true, configurable: true });
+        } catch (err) {
+          window.localStorage = mock;
+        }
+        try {
+          if (typeof globalThis !== 'undefined') {
+            globalThis.localStorage = mock;
+          }
+        } catch (err) {}
+      })();
+    </script>
   </head>
   <body class="bg-canvas text-main font-body antialiased select-none overflow-hidden h-screen w-screen">
     <div id="root" class="h-full w-full"></div>

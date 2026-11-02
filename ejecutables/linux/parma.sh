@@ -3,9 +3,10 @@
 # Parma — Wrapper de Lanzamiento Portable para Linux
 # ==============================================================================
 
-# Desactiva el renderizador DMABUF de WebKitGTK para evitar fallos de pantalla negra
+# Desactiva el renderizador DMABUF y modo de composición de WebKitGTK para evitar fallos de pantalla negra
 # en GPUs NVIDIA o sesiones Wayland.
 export WEBKIT_DISABLE_DMABUF_RENDERER=1
+export WEBKIT_DISABLE_COMPOSITING_MODE=1
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR" || exit 1

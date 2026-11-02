@@ -81,20 +81,27 @@ Expone métodos asíncronos serializados en JSON directamente a la ventana de Re
 * Soporte de tiradas tridimensionales y comandos de chat interactivos (`!Hechizo:1d20+5`).
 
 ### F. Motor de Lectura e Interpretación PDF (`core/pdf_engine.py`)
-* Basado en **PyMuPDF (`fitz`)**.
+* Basado en la versión moderna de **PyMuPDF (`import pymupdf`)**, eliminando advertencias de obsolescencia de la API legacy `fitz`.
 * `PdfReaderEngine`: Renderizado en memoria con liberación de memoria de pixmaps nativos y caché LRU de páginas para no saturar memoria al leer manuales pesados (300+ páginas).
 * `UniversalAcroFormHandler`: Mapeo bidireccional de campos AcroForm oficiales (español e inglés), permitiendo rellenar hojas de personaje oficiales de Wizards of the Coast.
+
+### G. Gestor de Actualización Automática In-App (`desktop_api/auto_updater.py`)
+* Descarga asíncrona de ejecutables e instaladores en segundo plano por trozos (chunks) de 64KB en un hilo independiente (`threading.Thread`).
+* Expone telemetría en tiempo real: porcentaje de progreso (`percent`), megabytes descargados (`downloaded_mb`), total (`total_mb`) y estado (`downloading`, `ready_to_restart`, `error`).
+* Almacena las actualizaciones en `{user_data_dir}/updates/` evitando problemas de permisos UAC.
+* Ejecución silenciosa y no bloqueante del instalador Inno Setup en Windows mediante `subprocess.Popen([installer, "/SILENT", "/CLOSEAPPLICATIONS", "/RESTARTAPPLICATIONS"])`, cerrando limpiamente PyWebView para permitir que el instalador actualice los binarios en `{autopf}\Parma`.
 
 ---
 
 ## 3. Decisiones de Diseño y Problemas Resueltos
 
-### 1. Incompatibilidad Gráfica en Linux (Pantallas Negras / DMABUF)
-* **Problema:** En distribuciones Linux modernas (Pop!_OS, Ubuntu 24.04) con Wayland o tarjetas gráficas NVIDIA, WebKitGTK fallaba en la negociación de buffers de video causando cuelgues o pantallas en negro.
-* **Solución:** Inyección mandatoria en `desktop_app.py` y `parma.sh`:
+### 1. Incompatibilidad Gráfica en Linux (Pantallas Negras / DMABUF y Modo de Composición)
+* **Problema:** En distribuciones Linux modernas (Pop!_OS, Ubuntu 22.04/24.04) con Wayland o tarjetas NVIDIA, WebKitGTK 2.40+ fallaba silenciosamente en la negociación de swapbuffers cuando se desactivaba únicamente DMABUF, pintando la ventana completamente en negro.
+* **Solución:** Definición mandatoria de ambas variables de entorno en `desktop_app.py`, `iniciar.sh` y `parma.sh`:
   ```python
   if sys.platform.startswith("linux"):
       os.environ.setdefault("WEBKIT_DISABLE_DMABUF_RENDERER", "1")
+      os.environ.setdefault("WEBKIT_DISABLE_COMPOSITING_MODE", "1")
   ```
 
 ### 2. Detección Inteligente de Tema en Barra de Tareas (Windows y Linux)
@@ -115,3 +122,12 @@ Expone métodos asíncronos serializados en JSON directamente a la ventana de Re
 ### 5. Normalización de Rutas en Compendio OKF (`core/okf_engine.py`)
 * **Problema:** En sistemas Windows, los separadores de ruta tipo Unix (`/`) impedían resolver la lectura de archivos atómicos Markdown en el panel de detalle del compendio.
 * **Solución:** Normalización con `os.path.normpath` y búsqueda en candidatos de fallback en el directorio del proyecto y el bundle.
+
+### 6. Configuración de Almacenamiento WebKitGTK (`desktop_app.py`)
+* **Problema:** En Linux, WebKitGTK restringía el uso de HTML5 `localStorage` al servir ES Modules de Vite mediante el servidor HTTP interno en localhost, lanzando un `ReferenceError` fatal al iniciar la app.
+* **Solución:** Introspección nativa de widgets GTK al arrancar la ventana (`configure_linux_webkit_storage`) activando explícitamente `set_enable_html5_local_storage(True)` y `set_enable_html5_database(True)`.
+
+### 7. Garantía de Cero Pérdida de Datos en Actualizaciones In-App
+* Los datos de usuario (base de datos SQLite `characters.db`, tiradas guardadas, notas y fichas) residen permanentemente en `user_data_dir` (`%LOCALAPPDATA%/Parma/data` en Windows y `~/.local/share/parma/data` en Linux).
+* El instalador de Inno Setup instala exclusivamente en `C:\Program Files\Parma` (`{autopf}\Parma`).
+* Al ejecutarse la actualización silenciosa `/SILENT /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS`, los binarios ejecutables se reemplazan limpiamente sin tocar jamás la carpeta de datos de usuario.

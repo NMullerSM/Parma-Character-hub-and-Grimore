@@ -3,9 +3,11 @@
 ; ==============================================================================
 
 #define MyAppName "Parma — Character Hub & Grimoire"
-#define MyAppVersion "1.0.2"
+#ifndef MyAppVersion
+#define MyAppVersion "1.0.3"
+#endif
 #define MyAppPublisher "NMullerSM"
-#define MyAppURL "https://github.com/NMullerSM/Dnd_Player_Dashboard"
+#define MyAppURL "https://github.com/NMullerSM/Parma-Character-hub-and-Grimore"
 #define MyAppExeName "Parma.exe"
 
 [Setup]

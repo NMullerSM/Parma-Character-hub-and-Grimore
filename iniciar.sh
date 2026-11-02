@@ -7,8 +7,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 cd "$SCRIPT_DIR"
 
 # 0. Compatibilidad Gráfica en Linux (Pop!_OS / Ubuntu / NVIDIA / Wayland / GStreamer)
-# Evita la pantalla negra por fallo del renderizador DMABUF en WebKitGTK
+# Evita la pantalla negra por fallo del renderizador DMABUF o del modo de composición acelerada en WebKitGTK
 export WEBKIT_DISABLE_DMABUF_RENDERER=1
+export WEBKIT_DISABLE_COMPOSITING_MODE=1
 
 echo "==================================================="
 echo " Parma — Character Hub & Grimoire (Linux)"
@@ -34,7 +35,11 @@ if [ "$NEEDS_BUILD" = true ]; then
         echo "[Parma] Compilando frontend automáticamente..."
         (cd "$SCRIPT_DIR/frontend" && npm run build)
         if [ $? -ne 0 ]; then
-            echo "[Aviso] Falló la compilación de npm. Intentando ejecutar con la versión existente..."
+            echo "======================================================================="
+            echo " [Error] Falló la compilación de TypeScript / Vite (npm run build)."
+            echo " Revisa los errores de sintaxis o tipos indicados arriba."
+            echo "======================================================================="
+            exit 1
         else
             echo "[Parma] Frontend compilado exitosamente."
         fi

@@ -1,60 +1,96 @@
 # Active Context — Parma (D&D Character Hub & Grimoire)
 
 ## 📅 Última Sesión
-- **Fecha**: 2026-11-01
+- **Fecha**: 2026-11-01 / 2026-11-02
 - **Dispositivo**: Notebook Pop!_OS Linux
-- **Estado General**: Reemplazo total del sistema de onboarding anterior por un **motor cinemático de foco visual (Spotlight Tour & Telón Borroso)**, guías contextuales progresivas por sección, demostración interactiva de tirada de dados d20 en vivo y control absoluto de omisión (Heurística de Nielsen & Ley de Hick). Versión promovida a **`1.0.2`**.
+- **Estado General**: Fases 1 a 4 completamente implementadas mediante estrategia de worktrees departamentalizados y fusionadas con éxito en la rama **`develop`** (PRs #8 y #9).
+  - **Fases 1 y 2 (Onboarding & i18n)**: Saneamiento de textos con claves dinámicas (`translate()`), despeje de colisiones visuales entre botones, contención responsiva de tarjetas y reubicación del botón `Saltar todo` para no obstruir los botones de acción del header.
+  - **Fases 3 y 4 (Auto-Updater Protocol)**: Descargas nativas en segundo plano por trozos de 64KB, telemetría RPC con barra de progreso en vivo, modal no bloqueante, insignia de cero pérdida de datos (`%LOCALAPPDATA%/Parma/data`) y botón `Reiniciar para actualizar` con instalación silenciosa (`/SILENT /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS`).
+  - **Fix de Pantalla Negra en Linux (WebKitGTK)**:
+    - Agregado `WEBKIT_DISABLE_COMPOSITING_MODE=1` junto a `WEBKIT_DISABLE_DMABUF_RENDERER=1` en `iniciar.sh` y `desktop_app.py`.
+    - Eliminado conflicto de `backdrop-blur-xs` sobre `<rect>` SVG enmascarado en `frontend/src/components/SpotlightTour.tsx`.
+    - Agregado componente de resguardo `ErrorBoundary.tsx` envolviendo `<App />` en `frontend/src/main.tsx`.
+    - Corregida la advertencia de obsolescencia de PyMuPDF en `core/pdf_engine.py` (priorizar `import pymupdf`).
+    - Agregada bandera `--debug` y soporte para `PARMA_DEBUG=1` en `desktop_app.py`.
+  - **Tipado TypeScript Estricto y Pipelines CI**:
+    - Sincronizado `SettingsView.tsx` en `develop` para incluir `onResetSectionTours?: () => void` resolviendo TS2322.
+    - Adaptado `ErrorBoundary.tsx` a `verbatimModuleSyntax: true` (`import type { ErrorInfo, ReactNode } from "react"`) resolviendo TS1484.
+    - Perfeccionado `iniciar.sh` para abortar limpiamente ante cualquier error de compilación de npm.
+  - **Blindaje Universal de Almacenamiento (Fix: Can't find variable: localStorage)**:
+    - Creado módulo `frontend/src/utils/storage.ts` con abstracción `safeStorage` y fallback en memoria.
+    - Polyfill síncrono inyectado en `frontend/index.html` asegurando que `window.localStorage` exista en WebKitGTK antes de cargar bundles.
+    - Reemplazadas todas las llamadas desprotegidas a `localStorage` en `App.tsx`, `CharacterContext.tsx`, `UpdateModal.tsx` y `ErrorBoundary.tsx`.
+    - Configurado WebKitGTK nativo en `desktop_app.py` para habilitar HTML5 Local Storage y base de datos.
 
 ---
 
 ## 🛠️ Decisiones Técnicas y Cambios Recientes
 
-### 1. Sistema de Onboarding Visual por Foco (Spotlight Tour) — v1.0.2
-- **Componente [`SpotlightTour.tsx`](file:///home/nathanielwrk/Documentos/Proyects/Dnd_Player_Dashboard/frontend/src/components/SpotlightTour.tsx)**:
-  - Telón de fondo con desenfoque cinematográfico (`backdrop-blur-xs` y `rgba(5, 7, 10, 0.78)`).
-  - Máscara SVG dinámica con recorte redondeado (`rx="14"`) que ilumina con precisión quirúrgica el elemento real activo en la interfaz.
-  - Halo y borde pulsante dorado (`ring-4 ring-gold/20 shadow-[0_0_24px_rgba(201,164,92,0.6)]`) que se desplaza fluidamente entre secciones con transiciones CSS bezier.
-  - Tarjeta táctica auto-posicionable arriba/abajo con flecha, contador de pasos, barra de puntos interactiva y soporte completo de teclado (`Escape` para salir, `←` y `→` para navegar).
-  - **Tirada de prueba interactiva en vivo**: El paso de dados incluye un botón `¡Probar tirada d20!` que acciona la animación 3D de dados en el centro de la pantalla.
-  - **Heurística de Nielsen (Libertad del Usuario)**: Botón omnipresente en la esquina superior derecha `[ Saltar todo el onboarding ]` y botón secundario `Saltar sección`.
+### 1. Saneamiento i18n y Layout Anti-Colisión (Fases 1 y 2) — Branch `feature/onboarding-spotlight-fix`
+- **Componente [`frontend/src/i18n/index.ts`](file:///home/nathanielwrk/Documentos/Proyects/Dnd_Player_Dashboard/frontend/src/i18n/index.ts)**:
+  - `translate(path, defaultText)` retorna `""` cuando una clave no existe en lugar de devolver el nombre crudo de la ruta. Esto permite que expresiones `{t("key") || "Texto"}` evalúen limpiamente sus fallbacks en español e inglés sin filtrar nombres como `onboarding.global.step_batch`.
+  - Agregadas todas las claves canónicas y alias planos/anidados en `es.ts` y `en.ts` (`button_next`, `btnNext`, `button_prev`, `btnPrev`, `button_skip_section`, `btnSkipSection`, `button_skip_all`, `btnSkipAll`, etc.).
+- **Componente [`frontend/src/components/SpotlightTour.tsx`](file:///home/nathanielwrk/Documentos/Proyects/Dnd_Player_Dashboard/frontend/src/components/SpotlightTour.tsx)**:
+  - Botón `Saltar todo el onboarding` reubicado a `fixed bottom-4 right-4 z-40`, despejando totalmente el sector superior derecho del header (`#tour-dice`, `#tour-talespire`, `#tour-settings`).
+  - Tarjeta de coach marks forzada a colocarse abajo (`placement: "bottom"`) siempre que el objetivo esté en la barra superior (`y < 140`), evitando que quede fuera de pantalla.
+  - Dimensionamiento elástico `w-[min(380px,calc(100vw-32px))]` y `max-h-[calc(100vh-32px)] overflow-y-auto`.
+  - Contenedor de botones reestructurado con `flex-wrap gap-2 items-center justify-between` y `whitespace-nowrap flex-shrink-0 ml-auto` para erradicar cualquier desborde o solapamiento entre `Anterior`, `Siguiente` y `Saltar sección`.
+  - Removido `backdrop-blur-xs` del `<rect>` SVG para compatibilidad plena con WebKitGTK 2.40+ en Linux.
 
-### 2. Guías Contextuales Progresivas por Sección
-- Al navegar entre pestañas, si el usuario no ha completado la guía de esa sección y no ha saltado todo el onboarding, se activa un mini-tour especializado:
-  - **Grimorio (`spells`)**: Filtros por nivel de conjuro, ranuras mágicas gastables y gestor de compendio/homebrew.
-  - **Ficha de Personaje (`sheet`)**: Barra de vida animada, matriz de atributos/salvaciones con tirada automática y acciones de ataque.
-  - **Compendio (`compendium`)**: Búsqueda atómica instantánea e índice de categorías oficiales OKF.
-  - **Forja de Héroes (`forge`)**: Selector de los 3 métodos de creación (Paso a paso, 60s rápido o 4d6 al azar).
-- Botón de reinicio en `SettingsView.tsx`: "Reiniciar guías de secciones" para poder revisarlas a demanda.
+### 2. Protocolo de Actualización Automática In-App (Fases 3 y 4) — Branch `feature/auto-updater-protocol`
+- **Módulo [`desktop_api/auto_updater.py`](file:///home/nathanielwrk/Documentos/Proyects/Dnd_Player_Dashboard/desktop_api/auto_updater.py)**:
+  - `AutoUpdateManager` descarga el binario en trozos de 64KB en un hilo secundario (`threading.Thread`) hacia `{user_data_dir}/updates/`.
+  - Mide y expone `percent`, `downloaded_mb` y `total_mb` en tiempo real.
+  - Ejecuta el reinicio silencioso en Windows invocando el instalador con `subprocess.Popen([installer_path, "/SILENT", "/CLOSEAPPLICATIONS", "/RESTARTAPPLICATIONS"])`, cerrando de inmediato la ventana de PyWebView para dar paso al instalador oficial de Inno Setup.
+  - En Linux maneja paquetes deb / ejecutables portables o modo git en desarrollo.
+  - **Cero pérdida de datos garantizada**: La base de datos SQLite y los personajes residen en `user_data_dir` (`%LOCALAPPDATA%/Parma/data` en Windows y `~/.local/share/parma/data` en Linux). Inno Setup instala exclusivamente en `{autopf}\Parma` (`C:\Program Files\Parma`) sin tocar los datos de usuario.
+- **RPC PyWebView y Frontend Bridge**:
+  - `desktop_api/bridge.py` expone `start_auto_update`, `get_update_progress` y `apply_update_and_restart`.
+  - `frontend/src/api/client.ts` y `frontend/src/api/types.ts` incorporan los contratos `UpdateProgress` y llamadas asíncronas tipadas.
+  - `frontend/src/App.tsx` realiza sondeo reactivo a intervalos de 450ms únicamente mientras haya una descarga en curso.
+- **Componente [`frontend/src/components/UpdateModal.tsx`](file:///home/nathanielwrk/Documentos/Proyects/Dnd_Player_Dashboard/frontend/src/components/UpdateModal.tsx)**:
+  - Reemplaza el enlace a la web de GitHub por el flujo directo in-app:
+    - Barra de progreso animada con visualización de `%` y `MB / Total MB`.
+    - Botón `"Descargar en segundo plano"` para cerrar el modal y seguir jugando mientras se descarga.
+    - Botón verde pulsante `"Reiniciar para actualizar"` tras finalizar la descarga.
+    - Botón `"Ignorar esta versión"`.
+- **Componente [`frontend/src/components/UpdateNotificationPill.tsx`](file:///home/nathanielwrk/Documentos/Proyects/Dnd_Player_Dashboard/frontend/src/components/UpdateNotificationPill.tsx)**:
+  - Si la descarga está activa en segundo plano, la píldora muestra el spinner y el porcentaje actual.
+  - Si la descarga está completa, la píldora se torna verde esmeralda y ofrece un botón directo `"Reiniciar"`.
 
-### 3. Versionado SemVer v1.0.2 y Automatización CI/CD
-- Bump de versión a `1.0.2` en:
-  - `core/version.py`: `__version__ = "1.0.2"`
-  - `frontend/src/version.ts`: `export const APP_VERSION = "1.0.2"`
-  - `ejecutables/windows/installer/parma_setup.iss`: `#define MyAppVersion "1.0.2"`
-  - `scripts/get_version.py`: utilizado para resolución multiplataforma agnóstica.
+### 3. Diagnóstico y Corrección de Pantalla Negra en Linux
+- **Causa Raíz**: En WebKitGTK 2.40+, deshabilitar solo DMABUF (`WEBKIT_DISABLE_DMABUF_RENDERER=1`) genera un fallo en el pipeline EGL al intentar componer por hardware sin buffer DMA. Adicionalmente, el SVG `<rect>` con máscara en `SpotlightTour.tsx` tenía asignado `backdrop-blur-xs`, lo cual bloqueaba la canalización de renderizado en WebKitGTK.
+- **Solución Aplicada**:
+  - `iniciar.sh` y `desktop_app.py` declaran ambos: `WEBKIT_DISABLE_DMABUF_RENDERER=1` y `WEBKIT_DISABLE_COMPOSITING_MODE=1`.
+  - `SpotlightTour.tsx` elimina el filtro de desenfoque del SVG enmascarado.
+  - `frontend/src/components/ErrorBoundary.tsx` protege el montaje de React contra fallos no capturados.
+  - `desktop_app.py` incluye soporte para depuración vía `--debug` o `PARMA_DEBUG=1`.
+  - `core/pdf_engine.py` actualiza la importación de PyMuPDF para evitar warnings de fitz.
 
-### 2. Notificador y Modal de Actualizaciones GitHub
-- **Píldora Flotante `UpdateNotificationPill.tsx`**:
-  - Ubicación: `fixed bottom-4 left-4 z-40`.
-  - Texto exacto: `¡Nueva versión!` junto con la insignia de versión `vX.Y.Z`.
-  - Botón directo `"Actualizar"` y botón descartar `✕`.
-  - Sin iconos invasivos de estrella; emplea `ArrowUpCircle`.
-- **Modal de Descargas `UpdateModal.tsx`**:
-  - Muestra las notas del parche (`body`) obtenidas desde GitHub Releases API (`/releases/latest`).
-  - Detección nativa del sistema operativo:
-    - En Windows: Acceso prioritario al instalador Inno Setup (`.exe`) y versión portable (`.zip`).
-    - En Linux: Acceso prioritario al paquete Debian (`.deb`) y tarball portable (`.tar.gz`).
-  - Enlace directo a GitHub Releases.
+### 4. Tipado TypeScript Estricto y Sincronización CI
+- `ErrorBoundary.tsx`: importación explícita de tipos `import type { ErrorInfo, ReactNode } from "react"` cumpliendo con `verbatimModuleSyntax: true`.
+- `SettingsView.tsx`: declaración de `onResetSectionTours?: () => void` en las props del componente, alineando el contrato exigido por `App.tsx`.
 
-### 3. Persistencia de Versión y Ajustes
-- **Tipado estricto**: `AppSettings` en `frontend/src/api/types.ts` extendido con `last_seen_version?: string` y `has_completed_onboarding?: boolean`. Nuevos tipos `GitHubReleaseInfo` y `GitHubReleaseAsset`.
-- **Backend SQLite**: `desktop_api/bridge.py` (`get_settings`) expone `last_seen_version` y `has_completed_onboarding`. Al cerrar el onboarding se invoca `api.setSetting` garantizando persistencia en SQLite y fallback en `localStorage`.
-- **Control de Versiones SemVer**: `core/version.py` y `frontend/src/version.ts` fijados en `1.0.1`.
-- **CI/CD Dinámico**: `.github/workflows/build-and-release.yml` actualizado para extraer la versión dinámicamente desde `core/version.py` (`TAG_NAME=v1.0.1`).
+### 5. Blindaje contra 'Can\'t find variable: localStorage'
+- **Causa**: En WebKitGTK bajo PyWebView, `window.localStorage` puede no estar definido o estar en modo restringido antes de inicializar el contexto web, lo que hacía que llamadas no protegidas como `localStorage.getItem()` lanzaran un `ReferenceError` fatal al iniciar la app.
+- **Solución**:
+  - Módulo `safeStorage` (`frontend/src/utils/storage.ts`) con fallback en memoria.
+  - Polyfill síncrono en `frontend/index.html` ejecutado antes de cualquier script.
+  - Configuración nativa `settings.set_enable_html5_local_storage(True)` en `desktop_app.py`.
 
 ---
 
-## 📋 Tareas Pendientes / Siguiente Equipo
-1. Subir los cambios a `develop` y sincronizar/mergear con `main`.
-2. Verificar el workflow de GitHub Actions en `main` para la publicación de la release `v1.0.1` con los instaladores `.exe`, `.deb`, `.zip` y `.tar.gz`.
-3. Disfrutar de la nueva funcionalidad de onboarding y notificaciones en las próximas ejecuciones de Parma.
+## 🔀 Integración y Estado de Ramas
+- `feature/onboarding-spotlight-fix`: Mergeada en `develop` vía PR #8 (`fca495684aec2ad4b1e9b64e9ad95558ec9bd3d4`).
+- `feature/auto-updater-protocol`: Mergeada en `develop` vía PR #9 (`2aea5ec4f312400720f6c57ea5c61768147262fb`).
+- Rama actual de trabajo consolidada: **`develop`** (Versión 1.0.3 establecida en `core/version.py`, `frontend/src/version.ts`, `frontend/package.json` y `parma_setup.iss`).
+- Documentación y ADRs exhaustivos formalizados en `README.md`, `docs/BACKEND.md`, `docs/FRONTEND.md`, `docs/CICD.md` y `docs/ADR.md`.
+- Corrección de pipeline Inno Setup en Windows: ruta de origen corregida a `..\Parma\*` y protección de macro `#ifndef MyAppVersion`.
+- Sincronización final: Despliegue de la versión 1.0.3 a la rama `main` para activar el workflow de publicación oficial en GitHub Actions.
+
+---
+
+## 📋 Tareas Pendientes / Siguiente Paso (Fase 5)
+1. **Publicación Oficial (Merge a `main`)**: Desplegar los 32 archivos consolidados y verificados a `main` para activar el pipeline de release `v1.0.3`.
+2. **Cierre de PR #10**: Cerrar el PR #10 con nota de release limpia.
+3. **Limpieza de Ramas**: Eliminar las ramas remotas obsoletas `feature/onboarding-spotlight-fix` y `feature/auto-updater-protocol`.
