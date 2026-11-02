@@ -20,6 +20,7 @@ import type {
   DmSessionEventLog,
   UpdateProgress,
 } from "./types";
+import { safeStorage } from "../utils/storage";
 
 declare global {
   interface Window {
@@ -281,7 +282,6 @@ let mockActiveCharacter: CharacterSheetData = {
   network_edges: [{ source_id: "node_1", target_id: "node_2", relation: "Enemigo" }],
   senses: "Visión en la Oscuridad 60 pies",
   languages: "Común, Élfico, Celestial",
-  portrait_base64: "",
 };
 
 let mockHistory: RollHistoryEntry[] = [];
@@ -831,7 +831,7 @@ export const api = {
     return {
       theme: "dark-obsidian",
       dnd_edition: "5.5e",
-      language: ((localStorage.getItem("dnd_sanctum_lang") as "es" | "en") || "es"),
+      language: ((safeStorage.getItem("dnd_sanctum_lang") as "es" | "en") || "es"),
       talespire_mode: "dm",
       talespire_enabled: true,
       okf_path: "okf_dnd5e",
