@@ -310,6 +310,17 @@ export interface GitHubReleaseInfo {
   assets: GitHubReleaseAsset[];
 }
 
+export type UpdateStatus = "idle" | "downloading" | "ready_to_restart" | "error";
+
+export interface UpdateProgress {
+  status: UpdateStatus;
+  percent: number;
+  downloaded_mb: number;
+  total_mb: number;
+  error?: string | null;
+  version?: string | null;
+}
+
 export interface ThemeOption {
   id: string;
   name: string;
