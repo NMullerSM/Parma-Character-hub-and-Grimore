@@ -330,7 +330,7 @@ export const SheetView: React.FC<SheetViewProps> = ({ onNavigateForge }) => {
       {/* 2. Grid de Vitales y Estadísticas de Combate Táctico */}
       <section className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
         {/* Puntos de Golpe */}
-        <div className="col-span-2 bg-card border border-border-iron rounded-lg p-3 flex flex-col justify-between">
+        <div id="tour-sheet-hp" className="col-span-2 bg-card border border-border-iron rounded-lg p-3 flex flex-col justify-between">
           <div className="flex items-center justify-between text-xs text-muted font-semibold uppercase tracking-wider">
             <span>{t("sheet.hp")}</span>
             <span>{hp_max} {t("sheet.hpMax")}</span>
@@ -408,7 +408,7 @@ export const SheetView: React.FC<SheetViewProps> = ({ onNavigateForge }) => {
       </section>
 
       {/* 3. Matriz de Atributos Principales (6 Características) */}
-      <section className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+      <section id="tour-sheet-stats" className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
         {Object.entries(abilities || {}).map(([key, data]) => {
           const modStr = data.bonus >= 0 ? `+${data.bonus}` : `${data.bonus}`;
           const displayKey = translateAbilityShort(key);
@@ -449,7 +449,7 @@ export const SheetView: React.FC<SheetViewProps> = ({ onNavigateForge }) => {
       {/* 4. Columnas de Acciones de Combate y Habilidades */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Columna Izquierda: Acciones de Arma */}
-        <div className="md:col-span-2 space-y-3">
+        <div id="tour-sheet-actions" className="md:col-span-2 space-y-3">
           <h2 className="font-display font-semibold text-lg text-gold flex items-center justify-between">
             <span>{t("sheet.combatActionsTitle")}</span>
             <span className="text-xs text-muted font-sans font-normal">

@@ -127,40 +127,40 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
             </div>
           </div>
 
-          {/* Highlights */}
+          {/* Highlights v1.0.2 */}
           <div className="p-6 space-y-4">
             <div className="flex items-start gap-3 p-3.5 rounded-xl border border-iron/60 bg-card/50">
               <div className="p-2 rounded-lg bg-accent/15 border border-accent/30 text-accent shrink-0 mt-0.5">
-                <BellRing className="w-4 h-4" />
+                <Layers className="w-4 h-4" />
               </div>
               <div className="space-y-0.5 text-xs">
-                <div className="font-bold text-main">Notificador de Actualizaciones en GitHub</div>
+                <div className="font-bold text-main">Nuevo Onboarding Visual por Foco (Spotlight)</div>
                 <div className="text-muted leading-relaxed">
-                  Aviso discreto en la esquina inferior izquierda cuando se publique una nueva versión, con descarga directa para Windows y Linux.
+                  Telón desenfocado con recorte nítido y halo animado que te guía directamente sobre los botones y secciones reales de la interfaz.
                 </div>
               </div>
             </div>
 
             <div className="flex items-start gap-3 p-3.5 rounded-xl border border-iron/60 bg-card/50">
               <div className="p-2 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-500 shrink-0 mt-0.5">
-                <Layers className="w-4 h-4" />
+                <BookOpen className="w-4 h-4" />
               </div>
               <div className="space-y-0.5 text-xs">
-                <div className="font-bold text-main">Onboarding Inteligente por Versión</div>
+                <div className="font-bold text-main">Guías Contextuales Progresivas por Sección</div>
                 <div className="text-muted leading-relaxed">
-                  Tutorial guiado interactivo para jugadores nuevos y resumen selectivo de novedades tras cada actualización.
+                  Tutoría contextual al ingresar a tu Ficha, Grimorio, Forja o Compendio, con opción para omitir todo o solo la sección actual.
                 </div>
               </div>
             </div>
 
             <div className="flex items-start gap-3 p-3.5 rounded-xl border border-iron/60 bg-card/50">
-              <div className="p-2 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-500 shrink-0 mt-0.5">
-                <Flame className="w-4 h-4" />
+              <div className="p-2 rounded-lg bg-crimson/15 border border-crimson/30 text-crimson shrink-0 mt-0.5">
+                <Dice5 className="w-4 h-4" />
               </div>
               <div className="space-y-0.5 text-xs">
-                <div className="font-bold text-main">Estabilidad Multiplataforma</div>
+                <div className="font-bold text-main">Tirada de Prueba Interactiva & Dados 3D</div>
                 <div className="text-muted leading-relaxed">
-                  Soporte Inno Setup oficial para Windows (.exe), paquetes nativos Debian (.deb) y portables con persistencia SQLite asegurada.
+                  Prueba tiradas d20 en vivo directamente desde el tour de bienvenida con física realista y animaciones cinemáticas.
                 </div>
               </div>
             </div>

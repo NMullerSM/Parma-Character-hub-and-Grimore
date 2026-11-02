@@ -683,24 +683,91 @@ export const es = {
     onboarding: {
       titleWelcome: "¡Bienvenido a Parma!",
       subtitleWelcome: "Tu suite definitiva de escritorio para jugadores y Directores de Juego de D&D 5e y Reglas 2024.",
-      step1Title: "Suite 100% Offline y Privada",
-      step1Desc: "Tus personajes, diarios de campaña y notas se guardan localmente en SQLite. Sin suscripciones forzadas, sin conexión obligatoria y con tus datos bajo tu control.",
-      step2Title: "La Forja de Héroes",
-      step2Desc: "Crea personajes paso a paso con el Asistente Oficial, genera arquetipos listos en 60 segundos o tira 4d6 al azar. También puedes importar fichas oficiales en PDF y generar retratos con IA.",
-      step3Title: "Ficha Interactiva y Combate",
-      step3Desc: "Monitorea puntos de vida dinámicos con viñetas cinemáticas, calcula modificadores automáticos, gestiona ranuras de conjuros y lanza dados 3D en tiempo real.",
-      step4Title: "El Gran Grimorio y Compendio",
-      step4Desc: "Consulta al instante clases, linajes, dotes, reglas y manuales oficiales en PDF con tabla de contenidos interactiva y búsqueda atómica de alta velocidad.",
-      step5Title: "TaleSpire y Mesa Virtual",
-      step5Desc: "Conéctate como Symbiote tridimensional para lanzar dados directo en el tablero 3D y utiliza la Consola del DM para liderar sesiones presenciales o en red local.",
+      stepLabel: "Paso",
+      sectionGuide: "Guía de Sección",
       btnSkip: "Saltar tutorial",
+      btnSkipAll: "Saltar todo el onboarding",
+      btnSkipSection: "Saltar esta sección",
       btnNext: "Siguiente",
       btnPrev: "Anterior",
       btnStart: "¡Comenzar aventura!",
+      replayTour: "Repetir tour guiado de bienvenida",
+      resetSectionTours: "Reiniciar tutoriales de secciones",
+      sectionToursResetSuccess: "Tutoriales de secciones reiniciados",
+      demoRollBtn: "¡Probar tirada d20!",
+      demoRollLabel: "Tirada de prueba del Tour",
       whatsNewTitle: "Novedades de la versión",
       whatsNewSubtitle: "Descubre las mejoras y adiciones integradas en esta versión de Parma Desktop.",
       btnUnderstand: "¡Entendido, a jugar!",
-      replayTour: "Repetir tutorial de bienvenida",
+
+      // Pasos del Tour Global
+      globalStep1Title: "¡Bienvenido a Parma!",
+      globalStep1Desc: "Tu suite táctica de escritorio 100% offline para jugadores y DMs de D&D 2024 y 5e. Todo se guarda de forma local y privada en tu máquina.",
+      globalStep1Badge: "Bienvenida",
+
+      globalStep2Title: "Reglas D&D 2024 y 5e",
+      globalStep2Desc: "Alterna al instante entre las nuevas reglas oficiales 2024 (5.5e) y las clásicas de 5e. Las dotes, conjuros y razas se adaptan en tiempo real.",
+      globalStep2Badge: "Reglas Oficiales",
+
+      globalStep3Title: "Tus Héroes y la Forja",
+      globalStep3Desc: "Selecciona a tu aventurero activo o accede a la Forja de Héroes para crear personajes paso a paso, en 60 segundos o con tiradas aleatorias.",
+      globalStep3Badge: "Gestión de Héroes",
+
+      globalStep4Title: "Navegación Táctica",
+      globalStep4Desc: "Accede con un clic a tu Hoja, Combate en vivo, Grimorio, Diario de campaña, Conexión en red, Visor de manuales PDF y Compendio OKF.",
+      globalStep4Badge: "Secciones",
+
+      globalStep5Title: "Lanzador de Dados Táctico",
+      globalStep5Desc: "Tira dados 2D y 3D cinemáticos con ventaja, desventaja, modificadores automáticos e historial. ¡Haz clic abajo para probar una tirada!",
+      globalStep5Badge: "Tiradas de Dados",
+
+      globalStep6Title: "TaleSpire 3D y Modo DM",
+      globalStep6Desc: "Sincroniza tus tiradas en tableros 3D mediante Symbiote y activa el Modo DM para liderar sesiones multijugador con túnel seguro.",
+      globalStep6Badge: "Mesa Virtual",
+
+      globalStep7Title: "Temas y Configuración",
+      globalStep7Desc: "Personaliza la paleta (Obsidian, Parchment, Amethyst, Mithril), efectos de sonido, idioma y repite este tour cuando quieras desde Ajustes.",
+      globalStep7Badge: "Personalización",
+
+      // Pasos del Tour de Grimorio (Spells)
+      spellsStep1Title: "Filtro por Nivel de Conjuro",
+      spellsStep1Desc: "Organiza rápidamente tus hechizos desde Trucos hasta Nivel 9 para no perder tiempo buscando en mitad del turno de combate.",
+      spellsStep1Badge: "Filtros",
+
+      spellsStep2Title: "Ranuras de Conjuro Gastables",
+      spellsStep2Desc: "Haz clic en las gemas doradas para marcar tus espacios mágicos usados. Se recuperan automáticamente tras un descanso largo.",
+      spellsStep2Badge: "Ranuras Mágicas",
+
+      spellsStep3Title: "Gestor Arcano y Compendio",
+      spellsStep3Desc: "Añade conjuros oficiales desde el compendio o registra conjuros caseros personalizados (homebrew) para tu personaje.",
+      spellsStep3Badge: "Gestor Arcano",
+
+      // Pasos del Tour de Hoja de Personaje (Sheet)
+      sheetStep1Title: "Puntos de Vida y Vitales",
+      sheetStep1Desc: "Ajusta tus PG al instante con los botones +/-. Las viñetas de pantalla reaccionarán visualmente cuando sufras daño o te cures.",
+      sheetStep1Badge: "Salud y Vitales",
+
+      sheetStep2Title: "Puntuaciones y Salvaciones",
+      sheetStep2Desc: "Haz clic sobre cualquier característica o tirada de salvación para lanzar los dados automáticamente con los bonificadores calculados.",
+      sheetStep2Badge: "Características",
+
+      sheetStep3Title: "Acciones de Ataque y Armas",
+      sheetStep3Desc: "Calcula impacto y daño con un solo toque. Consulta el alcance en casillas para moverte con precisión en el mapa táctico.",
+      sheetStep3Badge: "Combate Táctico",
+
+      // Pasos del Tour de Compendio (Compendium)
+      compendiumStep1Title: "Búsqueda Atómica Universal",
+      compendiumStep1Desc: "Escribe cualquier término (monstruo, dote, condición o regla) para consultar de inmediato su ficha oficial sin conexión.",
+      compendiumStep1Badge: "Buscador Universal",
+
+      compendiumStep2Title: "Índice de Categorías",
+      compendiumStep2Desc: "Filtra por linajes, clases, equipo o trasfondos para explorar el compendio de reglas Open Knowledge Fantasy.",
+      compendiumStep2Badge: "Índice de Reglas",
+
+      // Pasos del Tour de Forja (Forge)
+      forgeStep1Title: "Elige tu Método de Creación",
+      forgeStep1Desc: "Asistente guiado paso a paso, generador rápido optimizado en 60 segundos, o tirada aleatoria clásica con 4d6 descartando el menor.",
+      forgeStep1Badge: "Forja de Héroes",
     },
     updates: {
       newVersionAvailable: "¡Nueva versión!",

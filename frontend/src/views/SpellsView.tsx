@@ -141,15 +141,16 @@ export const SpellsView: React.FC = () => {
 
           <div className="flex items-center gap-2 shrink-0 sm:border-l sm:border-border-iron sm:pl-2.5">
             <button
+              id="tour-spell-manager"
               onClick={() => setIsSpellManagerOpen(true)}
-              className="px-3 py-2 rounded-lg bg-gold/15 hover:bg-gold hover:text-canvas border border-gold/40 text-gold text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs whitespace-nowrap"
+              className="px-3 py-2 rounded-lg bg-gold/15 hover:bg-gold hover:text-canvas border border-gold/40 text-gold text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs whitespace-nowrap cursor-pointer"
             >
               <BookOpen className="w-4 h-4 shrink-0" />
               <span>{t("spells.openManager")}</span>
             </button>
             <button
               onClick={() => setIsAddingSpell(!isAddingSpell)}
-              className="px-3 py-2 rounded-lg bg-surface hover:bg-card border border-border-iron text-xs font-semibold text-main transition-colors whitespace-nowrap"
+              className="px-3 py-2 rounded-lg bg-surface hover:bg-card border border-border-iron text-xs font-semibold text-main transition-colors whitespace-nowrap cursor-pointer"
             >
               {isAddingSpell ? t("common.cancel") : t("spells.addCustomSpell")}
             </button>
@@ -257,7 +258,7 @@ export const SpellsView: React.FC = () => {
 
       {/* 2. Rastreador de Ranuras de Conjuro (Spell Slots) */}
       {hasSlots && (
-        <section className="bg-card border border-border-iron rounded-xl p-4">
+        <section id="tour-spell-slots" className="bg-card border border-border-iron rounded-xl p-4">
           <h3 className="text-xs font-semibold uppercase tracking-wider text-muted mb-3">
             {t("spells.slotsTitle")}
           </h3>
@@ -296,7 +297,7 @@ export const SpellsView: React.FC = () => {
       )}
 
       {/* Filtro rápido por nivel */}
-      <div className="flex items-center gap-1 overflow-x-auto pb-1">
+      <div id="tour-spell-filters" className="flex items-center gap-1 overflow-x-auto pb-1">
         <button
           onClick={() => setSelectedLevel("all")}
           className={`px-2.5 py-1 rounded text-xs font-semibold transition-colors ${

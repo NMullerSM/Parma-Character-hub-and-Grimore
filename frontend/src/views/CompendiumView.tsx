@@ -68,7 +68,7 @@ export const CompendiumView: React.FC = () => {
         </div>
 
         {/* Input de Búsqueda */}
-        <div className="relative w-full md:w-80">
+        <div id="tour-compendium-search" className="relative w-full md:w-80">
           <Search className="w-4 h-4 absolute left-3 top-2.5 text-muted pointer-events-none" />
           <input
             type="text"
@@ -81,7 +81,7 @@ export const CompendiumView: React.FC = () => {
       </div>
 
       {/* 2. Categorías (Tabs Horizontales) */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 shrink-0">
+      <div id="tour-compendium-categories" className="flex items-center gap-1.5 overflow-x-auto pb-1 shrink-0">
         <button
           onClick={() => setSelectedCat("")}
           className={`px-3 py-1 rounded text-xs font-semibold whitespace-nowrap transition-colors ${

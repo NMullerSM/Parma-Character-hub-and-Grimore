@@ -3,21 +3,35 @@
 ## 📅 Última Sesión
 - **Fecha**: 2026-11-01
 - **Dispositivo**: Notebook Pop!_OS Linux
-- **Estado General**: Implementación completa del sistema de Onboarding interactivo inteligente (5 pasos y What's New post-update) y Notificador de Actualizaciones desde GitHub Releases para Parma Desktop (versión `1.0.1`).
+- **Estado General**: Reemplazo total del sistema de onboarding anterior por un **motor cinemático de foco visual (Spotlight Tour & Telón Borroso)**, guías contextuales progresivas por sección, demostración interactiva de tirada de dados d20 en vivo y control absoluto de omisión (Heurística de Nielsen & Ley de Hick). Versión promovida a **`1.0.2`**.
 
 ---
 
 ## 🛠️ Decisiones Técnicas y Cambios Recientes
 
-### 1. Sistema de Onboarding Interactivo Multilingüe
-- **Componente `OnboardingModal.tsx`**:
-  - Modal accesible con soporte de teclado (Escape para cerrar, flechas izquierda/derecha para navegar).
-  - Dos modos de ejecución:
-    - `mode: "initial"`: Tutorial guiado de 5 pasos para nuevos usuarios (Offline-First, Forja de Héroes, Combate y Estadísticas, Compendio OKF y TaleSpire 3D). Con barra de progreso por puntos y botón de saltar.
-    - `mode: "whats_new"`: Tarjeta condensada con los cambios principales de la nueva versión cuando el usuario actualiza desde una versión anterior.
-  - Adaptabilidad total de temas: diseñado con tokens semánticos de Tailwind (`bg-surface`, `bg-card`, `border-iron`, `border-accent`, `text-main`, `text-muted`, `text-accent`) asegurando alto contraste en Obsidian, Parchment, Amethyst y Mithril (variantes claras y oscuras).
-  - Replayable desde `SettingsView.tsx`: botón "Repetir tutorial de bienvenida" en sección dedicada con icono `BookOpen`.
-  - Traducciones completas y sincronizadas en `frontend/src/i18n/es.ts` y `frontend/src/i18n/en.ts`.
+### 1. Sistema de Onboarding Visual por Foco (Spotlight Tour) — v1.0.2
+- **Componente [`SpotlightTour.tsx`](file:///home/nathanielwrk/Documentos/Proyects/Dnd_Player_Dashboard/frontend/src/components/SpotlightTour.tsx)**:
+  - Telón de fondo con desenfoque cinematográfico (`backdrop-blur-xs` y `rgba(5, 7, 10, 0.78)`).
+  - Máscara SVG dinámica con recorte redondeado (`rx="14"`) que ilumina con precisión quirúrgica el elemento real activo en la interfaz.
+  - Halo y borde pulsante dorado (`ring-4 ring-gold/20 shadow-[0_0_24px_rgba(201,164,92,0.6)]`) que se desplaza fluidamente entre secciones con transiciones CSS bezier.
+  - Tarjeta táctica auto-posicionable arriba/abajo con flecha, contador de pasos, barra de puntos interactiva y soporte completo de teclado (`Escape` para salir, `←` y `→` para navegar).
+  - **Tirada de prueba interactiva en vivo**: El paso de dados incluye un botón `¡Probar tirada d20!` que acciona la animación 3D de dados en el centro de la pantalla.
+  - **Heurística de Nielsen (Libertad del Usuario)**: Botón omnipresente en la esquina superior derecha `[ Saltar todo el onboarding ]` y botón secundario `Saltar sección`.
+
+### 2. Guías Contextuales Progresivas por Sección
+- Al navegar entre pestañas, si el usuario no ha completado la guía de esa sección y no ha saltado todo el onboarding, se activa un mini-tour especializado:
+  - **Grimorio (`spells`)**: Filtros por nivel de conjuro, ranuras mágicas gastables y gestor de compendio/homebrew.
+  - **Ficha de Personaje (`sheet`)**: Barra de vida animada, matriz de atributos/salvaciones con tirada automática y acciones de ataque.
+  - **Compendio (`compendium`)**: Búsqueda atómica instantánea e índice de categorías oficiales OKF.
+  - **Forja de Héroes (`forge`)**: Selector de los 3 métodos de creación (Paso a paso, 60s rápido o 4d6 al azar).
+- Botón de reinicio en `SettingsView.tsx`: "Reiniciar guías de secciones" para poder revisarlas a demanda.
+
+### 3. Versionado SemVer v1.0.2 y Automatización CI/CD
+- Bump de versión a `1.0.2` en:
+  - `core/version.py`: `__version__ = "1.0.2"`
+  - `frontend/src/version.ts`: `export const APP_VERSION = "1.0.2"`
+  - `ejecutables/windows/installer/parma_setup.iss`: `#define MyAppVersion "1.0.2"`
+  - `scripts/get_version.py`: utilizado para resolución multiplataforma agnóstica.
 
 ### 2. Notificador y Modal de Actualizaciones GitHub
 - **Píldora Flotante `UpdateNotificationPill.tsx`**:

@@ -475,7 +475,7 @@ export const CharacterWizard: React.FC<{ onComplete: () => void }> = ({ onComple
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div id="tour-forge-modes" className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {/* Tarjeta Modo 1: Paso a Paso */}
             <div
               onClick={() => {
