@@ -84,6 +84,7 @@
 - `feature/onboarding-spotlight-fix`: Mergeada en `develop` vía PR #8 (`fca495684aec2ad4b1e9b64e9ad95558ec9bd3d4`).
 - `feature/auto-updater-protocol`: Mergeada en `develop` vía PR #9 (`2aea5ec4f312400720f6c57ea5c61768147262fb`).
 - `feature/settings-streamline-dice-bridge`: Mergeada en `develop` vía PR #12 (`5cac9934489c662c6a68c2d9970aa0dbca37ef40`).
+- **Fix de Sintaxis en Linux (develop)**: Commit `1655c60e` corrigió caracteres de escape literales (`\n` y `\"`) en `frontend/src/views/SettingsView.tsx` (líneas 216 y 419) que provocaban fallo en `npm run build` al ejecutar `./iniciar.sh`.
 - Rama actual de trabajo consolidada: **`develop`** (v1.0.3).
   - **Dual Throw Modes**: Alternancia entre lanzamiento físico automatizado (micro-gesto calibrado) y manual en bandeja oficial de TaleSpire (`talespire_auto_throw`).
   - **Settings Streamlined**: Conmutador compacto Sol/Luna de temas, segmented control de idioma, acordeón técnico para estados de puente IPC y calibración de gestos, modal de Guía Rápida de Parma (`[ 📖 Ver Guía de Parma ]`), y aislamiento al pie de OKF y SQLite.
