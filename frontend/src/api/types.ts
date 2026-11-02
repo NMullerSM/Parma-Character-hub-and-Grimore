@@ -289,6 +289,7 @@ export interface AppSettings {
   language?: "es" | "en";
   talespire_mode: "dm" | "player";
   talespire_enabled: boolean;
+  talespire_auto_throw?: boolean;
   okf_path: string;
   custom_themes_dir: string;
   last_seen_version?: string;
