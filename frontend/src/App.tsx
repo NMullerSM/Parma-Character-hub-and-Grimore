@@ -28,8 +28,9 @@ import type { TourStep } from "./components/SpotlightTour";
 import { UpdateNotificationPill } from "./components/UpdateNotificationPill";
 import { UpdateModal } from "./components/UpdateModal";
 import { api } from "./api/client";
-import type { GitHubReleaseInfo } from "./api/types";
+import type { GitHubReleaseInfo, UpdateProgress } from "./api/types";
 import { Dice5 } from "lucide-react";
+import { safeStorage } from "./utils/storage";
 
 function parseSemVer(v: string): [number, number, number] {
   const clean = v.replace(/^v/, "").trim();
@@ -62,24 +63,44 @@ export const AppContent: React.FC = () => {
   const [isWhatsNewOpen, setIsWhatsNewOpen] = useState<boolean>(false);
 
   const [hasCompletedInitial, setHasCompletedInitial] = useState<boolean>(() => {
-    return localStorage.getItem("parma_has_completed_onboarding") === "true";
+    return safeStorage.getItem("parma_has_completed_onboarding") === "true";
   });
   const [isGlobalSkipped, setIsGlobalSkipped] = useState<boolean>(() => {
-    return localStorage.getItem("parma_tour_skipped_all") === "true";
+    return safeStorage.getItem("parma_tour_skipped_all") === "true";
   });
   const [completedSectionTours, setCompletedSectionTours] = useState<string[]>(() => {
     try {
-      const cached = localStorage.getItem("parma_completed_section_tours");
+      const cached = safeStorage.getItem("parma_completed_section_tours");
       return cached ? JSON.parse(cached) : [];
     } catch {
       return [];
     }
   });
 
-  // Estados de Actualizaciones GitHub
+  // Estados de Actualizaciones GitHub y Auto-Updater Protocol
   const [availableRelease, setAvailableRelease] = useState<GitHubReleaseInfo | null>(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
   const [isUpdateDismissed, setIsUpdateDismissed] = useState<boolean>(false);
+  const [updateProgress, setUpdateProgress] = useState<UpdateProgress>({
+    status: "idle",
+    percent: 0,
+    downloaded_mb: 0,
+    total_mb: 0,
+  });
+
+  // Sondeo en segundo plano del auto-updater cuando hay descarga activa
+  useEffect(() => {
+    if (updateProgress.status !== "downloading") return;
+    const interval = setInterval(async () => {
+      try {
+        const prog = await api.getUpdateProgress();
+        setUpdateProgress(prog);
+      } catch (e) {
+        console.warn("Error consultando progreso:", e);
+      }
+    }, 450);
+    return () => clearInterval(interval);
+  }, [updateProgress.status]);
 
   // Tirada de prueba física interactiva desde el tour de bienvenida
   const handleDemoRoll = useCallback(async () => {
@@ -309,7 +330,8 @@ export const AppContent: React.FC = () => {
         if (res.ok) {
           const release: GitHubReleaseInfo = await res.json();
           if (isMounted && release && release.tag_name) {
-            if (isNewerVersion(release.tag_name, APP_VERSION)) {
+            const ignoredVersion = safeStorage.getItem("parma_ignored_update_version");
+            if (isNewerVersion(release.tag_name, APP_VERSION) && ignoredVersion !== release.tag_name) {
               setAvailableRelease(release);
             }
           }
@@ -368,7 +390,7 @@ export const AppContent: React.FC = () => {
       try {
         await api.setSetting("last_seen_version", APP_VERSION);
         await api.setSetting("has_completed_onboarding", true);
-        localStorage.setItem("parma_has_completed_onboarding", "true");
+        safeStorage.setItem("parma_has_completed_onboarding", "true");
       } catch (err) {
         console.error("Error al persistir estado de onboarding:", err);
       }
@@ -377,7 +399,7 @@ export const AppContent: React.FC = () => {
       setCompletedSectionTours(updated);
       setActiveTour(null);
       setCurrentTourStep(0);
-      localStorage.setItem("parma_completed_section_tours", JSON.stringify(updated));
+      safeStorage.setItem("parma_completed_section_tours", JSON.stringify(updated));
     }
   };
 
@@ -392,9 +414,9 @@ export const AppContent: React.FC = () => {
     try {
       await api.setSetting("last_seen_version", APP_VERSION);
       await api.setSetting("has_completed_onboarding", true);
-      localStorage.setItem("parma_has_completed_onboarding", "true");
-      localStorage.setItem("parma_tour_skipped_all", "true");
-      localStorage.setItem("parma_completed_section_tours", JSON.stringify(allSections));
+      safeStorage.setItem("parma_has_completed_onboarding", "true");
+      safeStorage.setItem("parma_tour_skipped_all", "true");
+      safeStorage.setItem("parma_completed_section_tours", JSON.stringify(allSections));
       showToast(t("onboarding.btnSkipAll") || "Onboarding completado", "info");
     } catch (err) {
       console.error("Error al persistir skip all:", err);
@@ -410,7 +432,7 @@ export const AppContent: React.FC = () => {
       setCompletedSectionTours(updated);
       setActiveTour(null);
       setCurrentTourStep(0);
-      localStorage.setItem("parma_completed_section_tours", JSON.stringify(updated));
+      safeStorage.setItem("parma_completed_section_tours", JSON.stringify(updated));
     }
   };
 
@@ -424,8 +446,8 @@ export const AppContent: React.FC = () => {
   const handleResetSectionTours = () => {
     setCompletedSectionTours([]);
     setIsGlobalSkipped(false);
-    localStorage.removeItem("parma_completed_section_tours");
-    localStorage.removeItem("parma_tour_skipped_all");
+    safeStorage.removeItem("parma_completed_section_tours");
+    safeStorage.removeItem("parma_tour_skipped_all");
   };
 
   const handleCloseWhatsNew = async () => {
@@ -509,16 +531,28 @@ export const AppContent: React.FC = () => {
       {availableRelease && !isUpdateDismissed && (
         <UpdateNotificationPill
           release={availableRelease}
+          progress={updateProgress}
           onOpenModal={() => setIsUpdateModalOpen(true)}
           onDismiss={() => setIsUpdateDismissed(true)}
         />
       )}
 
-      {/* 10. Modal de Actualización con Enlaces de Descarga y Notas del Parche */}
+      {/* 10. Modal de Actualización con Enlaces de Descarga, Progreso y Reinicio Silencioso */}
       {isUpdateModalOpen && availableRelease && (
         <UpdateModal
           release={availableRelease}
           currentVersion={APP_VERSION}
+          progress={updateProgress}
+          onStartDownload={() => setUpdateProgress((p) => ({ ...p, status: "downloading" }))}
+          onIgnoreVersion={(ver) => {
+            try {
+              safeStorage.setItem("parma_ignored_update_version", ver);
+            } catch (e) {
+              console.warn(e);
+            }
+            setIsUpdateModalOpen(false);
+            setIsUpdateDismissed(true);
+          }}
           onClose={() => setIsUpdateModalOpen(false)}
         />
       )}

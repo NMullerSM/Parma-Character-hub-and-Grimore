@@ -18,7 +18,9 @@ import type {
   DmSessionStatus,
   DmHomebrewItem,
   DmSessionEventLog,
+  UpdateProgress,
 } from "./types";
+import { safeStorage } from "../utils/storage";
 
 declare global {
   interface Window {
@@ -786,7 +788,7 @@ export const api = {
       character: {
         ...mockActiveCharacter,
         id: undefined,
-        name: "Héroe del Destino",
+        name: `${charClass || "Héroe"} del Destino`,
         char_class: charClass || "Guerrero",
         race: species || "Humano",
         level,
@@ -829,7 +831,7 @@ export const api = {
     return {
       theme: "dark-obsidian",
       dnd_edition: "5.5e",
-      language: ((localStorage.getItem("dnd_sanctum_lang") as "es" | "en") || "es"),
+      language: ((safeStorage.getItem("dnd_sanctum_lang") as "es" | "en") || "es"),
       talespire_mode: "dm",
       talespire_enabled: true,
       okf_path: "okf_dnd5e",
@@ -899,8 +901,8 @@ export const api = {
     return true;
   },
 
-  async dmGiftItem(playerToken: string, item: DmHomebrewItem): Promise<boolean> {
-    if (this.isNative()) return await window.pywebview!.api.dm_gift_item(playerToken, item);
+  async dmGiftItem(playerToken: string, itemData: any): Promise<boolean> {
+    if (this.isNative()) return await window.pywebview!.api.dm_gift_item(playerToken, itemData);
     return true;
   },
 
@@ -909,9 +911,9 @@ export const api = {
     return [];
   },
 
-  async dmSaveHomebrewItem(item: DmHomebrewItem): Promise<string> {
-    if (this.isNative()) return await window.pywebview!.api.dm_save_homebrew_item(item);
-    return "hb_mock_1";
+  async dmSaveHomebrewItem(itemData: any): Promise<string> {
+    if (this.isNative()) return await window.pywebview!.api.dm_save_homebrew_item(itemData);
+    return "mock_item_id";
   },
 
   async dmDeleteHomebrewItem(itemId: string): Promise<boolean> {
@@ -932,5 +934,26 @@ export const api = {
   async dmGetSessionNotes(sessionId?: string): Promise<string> {
     if (this.isNative()) return await window.pywebview!.api.dm_get_session_notes(sessionId);
     return "";
+  },
+
+  async startAutoUpdate(downloadUrl: string, version: string): Promise<{ success: boolean; message?: string; error?: string }> {
+    if (this.isNative() && window.pywebview?.api?.start_auto_update) {
+      return await window.pywebview.api.start_auto_update(downloadUrl, version);
+    }
+    return { success: true, message: "Modo simulado / navegador" };
+  },
+
+  async getUpdateProgress(): Promise<UpdateProgress> {
+    if (this.isNative() && window.pywebview?.api?.get_update_progress) {
+      return await window.pywebview.api.get_update_progress();
+    }
+    return { status: "idle", percent: 0, downloaded_mb: 0, total_mb: 0 };
+  },
+
+  async applyUpdateAndRestart(): Promise<{ success: boolean; error?: string }> {
+    if (this.isNative() && window.pywebview?.api?.apply_update_and_restart) {
+      return await window.pywebview.api.apply_update_and_restart();
+    }
+    return { success: true };
   },
 };
