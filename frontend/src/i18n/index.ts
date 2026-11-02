@@ -42,22 +42,42 @@ export function getNestedTranslation(obj: any, path: string): string | undefined
 
 /**
  * Traduce una clave reemplazando placeholders tipo {name}.
+ * Soporta texto de respaldo (defaultText) opcional o diccionario de parámetros.
  */
 export function translate(
   lang: Language,
   path: string,
+  defaultTextOrParams?: string | Record<string, string | number>,
   params?: Record<string, string | number>
 ): string {
+  let defaultText: string | undefined = undefined;
+  let actualParams = params;
+
+  if (typeof defaultTextOrParams === "string") {
+    defaultText = defaultTextOrParams;
+  } else if (defaultTextOrParams) {
+    actualParams = defaultTextOrParams;
+  }
+
   const dict = translations[lang] || translations.es;
   let text = getNestedTranslation(dict, path);
 
   if (!text) {
     // Fallback a español si no existe en el idioma seleccionado
-    text = getNestedTranslation(translations.es, path) || path;
+    text = getNestedTranslation(translations.es, path);
   }
 
-  if (params) {
-    for (const [key, val] of Object.entries(params)) {
+  if (!text) {
+    // Si no existe en el diccionario:
+    // Si se pasó defaultText explícito, lo usamos.
+    // Si NO se pasó defaultText, devolvemos "" (cadena vacía) para que el operador || en:
+    //   t("onboarding.btnNext") || "Siguiente"
+    // evalúe al texto por defecto en lugar de mostrar la clave técnica cruda en pantalla.
+    text = defaultText !== undefined ? defaultText : "";
+  }
+
+  if (actualParams && text) {
+    for (const [key, val] of Object.entries(actualParams)) {
       text = text.replace(new RegExp(`\\{${key}\\}`, "g"), String(val));
     }
   }
@@ -72,8 +92,12 @@ export function useTranslation() {
   const { language, setLanguage } = useCharacter();
 
   const t = useCallback(
-    (path: string, params?: Record<string, string | number>): string => {
-      return translate(language, path, params);
+    (
+      path: string,
+      defaultTextOrParams?: string | Record<string, string | number>,
+      params?: Record<string, string | number>
+    ): string => {
+      return translate(language, path, defaultTextOrParams, params);
     },
     [language]
   );
