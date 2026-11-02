@@ -7,8 +7,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 cd "$SCRIPT_DIR"
 
 # 0. Compatibilidad Gráfica en Linux (Pop!_OS / Ubuntu / NVIDIA / Wayland / GStreamer)
-# Evita la pantalla negra por fallo del renderizador DMABUF en WebKitGTK
+# Evita la pantalla negra por fallo del renderizador DMABUF o del modo de composición acelerada en WebKitGTK
 export WEBKIT_DISABLE_DMABUF_RENDERER=1
+export WEBKIT_DISABLE_COMPOSITING_MODE=1
 
 echo "==================================================="
 echo " Parma — Character Hub & Grimoire (Linux)"
