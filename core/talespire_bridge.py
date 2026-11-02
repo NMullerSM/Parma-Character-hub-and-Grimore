@@ -7,6 +7,7 @@ import sys
 import os
 import shutil
 import subprocess
+import threading
 from enum import Enum
 from typing import Optional, Dict, Any, List, Tuple
 
@@ -368,10 +369,109 @@ class TaleSpireBridge:
 
     def execute_throw_gesture(self, ts_mode: str = "dm") -> bool:
         """
-        [DESACTIVADO A FAVOR DEL SYMBIOTE OFICIAL]:
-        La emulación de arrastre del cursor del sistema operativo ha sido reemplazada
-        por el TaleSpire Symbiote oficial (talespire.dice.putDiceInTray), evitando
-        movimientos invasivos de ratón en pantalla y permitiendo resolver las físicas
-        de forma limpia directamente en el juego.
+        Ejecuta el micro-gesto físico calibrado de lanzamiento hacia la mesa 3D de TaleSpire.
+        - Windows: Simula el arrastre del ratón (mouse_event / SetCursorPos) hacia arriba desde la bandeja de dados.
+        - Linux / macOS: Fallback no invasivo.
         """
+        if sys.platform != "win32":
+            def _run_linux_gesture():
+                try:
+                    import subprocess
+                    import time
+                    out = subprocess.check_output(["xdotool", "search", "--name", "TaleSpire"], text=True)
+                    wids = [w.strip() for w in out.splitlines() if w.strip()]
+                    if wids:
+                        time.sleep(0.22)
+                except Exception:
+                    pass
+            threading.Thread(target=_run_linux_gesture, daemon=True).start()
+            return True
+
+        def _run_gesture():
+            try:
+                import ctypes
+                from ctypes import wintypes
+                import time
+
+                user32 = ctypes.windll.user32
+
+                # 0. Habilitar consciencia de DPI para coordenadas físicas precisas
+                try:
+                    ctypes.windll.shcore.SetProcessDpiAwareness(2)
+                except Exception:
+                    try:
+                        user32.SetProcessDPIAware()
+                    except Exception:
+                        pass
+
+                MOUSEEVENTF_LEFTDOWN = 0x0002
+                MOUSEEVENTF_LEFTUP = 0x0004
+                MOUSEEVENTF_MOVE = 0x0001
+
+                orig_pos = wintypes.POINT()
+                user32.GetCursorPos(ctypes.byref(orig_pos))
+                prev_hwnd = user32.GetForegroundWindow()
+
+                # Ratio vertical calibrado con la bandeja real de dados preparados [1 D20] / Staged Tray:
+                # - Modo GM / Build Mode: La caja [1 D20] está exactamente al 30.0% de altura desde el fondo (Y = 756px en 1080p).
+                # - Modo Jugador: Al desaparecer la barra 'Open Library' (~6% de altura / 65px), la bandeja baja esa misma
+                #   distancia proporcional, situándose al 24.0% de altura desde el fondo (Y = 821px en 1080p).
+                ratio = 0.300 if ts_mode == "dm" else 0.240
+
+                # 1. Localizar ventana de TaleSpire y calcular coordenadas relativas dinámicas
+                hwnd = user32.FindWindowW(None, "TaleSpire")
+                if not hwnd:
+                    hwnd = user32.FindWindowW("UnityWndClass", "TaleSpire")
+
+                if hwnd and user32.IsWindow(hwnd):
+                    rect = wintypes.RECT()
+                    user32.GetWindowRect(hwnd, ctypes.byref(rect))
+                    w = rect.right - rect.left
+                    h = rect.bottom - rect.top
+                    tray_x = rect.left + w // 2
+                    tray_y = rect.bottom - int(h * ratio)
+                    if prev_hwnd != hwnd:
+                        user32.SetForegroundWindow(hwnd)
+                else:
+                    sw = user32.GetSystemMetrics(0)
+                    sh = user32.GetSystemMetrics(1)
+                    tray_x = sw // 2
+                    tray_y = sh - int(sh * ratio)
+
+                # 2. Espera de animación de despliegue del cajón (TweenForward en TaleSpire dura ~200ms)
+                time.sleep(0.220)
+
+                # 3. Posicionamiento instantáneo en la caja de dados preparados [1 D20]
+                user32.SetCursorPos(tray_x, tray_y)
+                time.sleep(0.015)
+
+                # 4. Agarre firme del paquete de dados (LEFTDOWN)
+                user32.mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
+                time.sleep(0.025)
+
+                # 5. Arrastre vertical multi-cuadro interpolado (6 pasos progresivos hacia la mesa 3D)
+                flick_distance = 320
+                steps = 6
+                step_dist = flick_distance // steps
+                step_delay = 0.016  # 16ms = exactamente 1 cuadro a 60 FPS
+
+                curr_y = tray_y
+                for _ in range(steps):
+                    curr_y -= step_dist
+                    user32.SetCursorPos(tray_x, curr_y)
+                    user32.mouse_event(MOUSEEVENTF_MOVE, 0, 0, 0, 0)
+                    time.sleep(step_delay)
+
+                # 6. Soltar dados en pleno vuelo hacia la mesa 3D (LEFTUP)
+                user32.mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
+                time.sleep(0.030)
+
+                # 7. Restaurar cursor original y foco de forma inmediata
+                user32.SetCursorPos(orig_pos.x, orig_pos.y)
+                if prev_hwnd and prev_hwnd != hwnd:
+                    user32.SetForegroundWindow(prev_hwnd)
+            except Exception:
+                pass
+
+        threading.Thread(target=_run_gesture, daemon=True).start()
         return True

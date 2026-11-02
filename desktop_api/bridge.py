@@ -130,6 +130,12 @@ class DesktopBridge:
         self._updater = AutoUpdateManager(self._base_dir, self._user_data_dir)
         self._window = None
 
+        # Auto-iniciar servidor WebSocket en segundo plano para el Symbiote de TaleSpire y la API local
+        try:
+            self._session_server.ensure_running()
+        except Exception as e:
+            print(f"[DesktopBridge] Error iniciando DmSessionServer: {e}")
+
         # Migrar autosave_character.json si la base de datos está vacía
         autosave = os.path.join(self._user_data_dir, "autosave_character.json")
         if not os.path.exists(autosave):
@@ -727,7 +733,7 @@ class DesktopBridge:
             "is_running": self._ts.is_process_running(),
             "is_connected": self._ts.is_session_connected(),
             "state_label": self._ts.state.value,
-            "symbiote_connected": bool(self._session_server and getattr(self._session_server, "is_symbiote_connected", False)),
+            "symbiote_connected": bool(self._session_server and self._session_server.is_symbiote_connected()),
             "symbiote_folder_installed": bool(self._ts.symbiote_folder_installed),
             "symbiote_install_path": self._ts.symbiote_install_path,
         }
@@ -789,19 +795,43 @@ class DesktopBridge:
             ts_pool[20] = 2
 
         ts_sent = False
-        if send_ts and self._ts.is_session_connected():
-            try:
-                tag_suffix = " (Ventaja)" if mode == "advantage" else (" (Desventaja)" if mode == "disadvantage" else "")
-                url = self._ts.build_pool_url(ts_pool, modifier=modifier, label=f"{label}{tag_suffix}")
-                ts_sent = self._ts.send_roll(url)
-                if ts_sent:
-                    ts_mode = self._db.get_setting("talespire_mode", "dm")
-                    self._ts.execute_throw_gesture(ts_mode=ts_mode)
-            except Exception as e:
-                print(f"[DesktopBridge] Error enviando a TaleSpire: {e}")
+        auto_throw = self._db.get_setting("talespire_auto_throw", "true") == "true"
+        ts_mode = self._db.get_setting("talespire_mode", "dm")
 
         active_char = self._db.get_active_character()
         char_name = active_char.name if active_char else "Héroe"
+
+        if send_ts:
+            # 1. Si el Symbiote WebSocket está conectado en vivo, despachar directamente por WebSocket
+            if self._session_server and self._session_server.is_symbiote_connected():
+                try:
+                    dice_repr = " + ".join([f"{c}d{s}" for s, c in sorted(ts_pool.items(), key=lambda x: -x[0])])
+                    mod_repr = f"+{modifier}" if modifier > 0 else (f"{modifier}" if modifier < 0 else "")
+                    formula_str = f"{dice_repr}{mod_repr}"
+                    ts_sent = self._session_server.dispatch_dice_to_symbiote(
+                        formula=formula_str,
+                        label=label,
+                        mode=mode,
+                        actor_name=char_name,
+                    )
+                except Exception as e:
+                    print(f"[DesktopBridge] Error despachando a Symbiote: {e}")
+
+            # 2. Si no fue enviado por Symbiote, usar Named Pipe / URL URI Scheme
+            if not ts_sent and self._ts.is_session_connected():
+                try:
+                    tag_suffix = " (Ventaja)" if mode == "advantage" else (" (Desventaja)" if mode == "disadvantage" else "")
+                    url = self._ts.build_pool_url(ts_pool, modifier=modifier, label=f"{label}{tag_suffix}")
+                    ts_sent = self._ts.send_roll(url)
+                except Exception as e:
+                    print(f"[DesktopBridge] Error enviando a TaleSpire por Pipe/URI: {e}")
+
+            # 3. Si se colocaron los dados en TaleSpire y auto_throw está activado, ejecutar el micro-gesto físico
+            if ts_sent and auto_throw:
+                try:
+                    self._ts.execute_throw_gesture(ts_mode=ts_mode)
+                except Exception as e:
+                    print(f"[DesktopBridge] Error ejecutando gesto de lanzamiento: {e}")
 
         if ts_sent:
             # Cumplimiento estricto de INTEGRACION_TALESPIRE_DICE_BRIDGE.md (Sección 9.2):
@@ -2165,6 +2195,7 @@ class DesktopBridge:
             "language": self._db.get_setting("language", "es"),
             "talespire_mode": self._db.get_setting("talespire_mode", "dm"),
             "talespire_enabled": self._db.get_setting("talespire_enabled", "true") == "true",
+            "talespire_auto_throw": self._db.get_setting("talespire_auto_throw", "true") == "true",
             "okf_path": self._db.get_setting("okf_path", os.path.join(self._base_dir, "okf_dnd5e")),
             "custom_themes_dir": os.path.join(self._base_dir, "themes"),
             "last_seen_version": self._db.get_setting("last_seen_version", ""),
