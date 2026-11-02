@@ -12,6 +12,10 @@
     - Agregado componente de resguardo `ErrorBoundary.tsx` envolviendo `<App />` en `frontend/src/main.tsx`.
     - Corregida la advertencia de obsolescencia de PyMuPDF en `core/pdf_engine.py` (priorizar `import pymupdf`).
     - Agregada bandera `--debug` y soporte para `PARMA_DEBUG=1` en `desktop_app.py`.
+  - **Tipado TypeScript Estricto y Pipelines CI**:
+    - Sincronizado `SettingsView.tsx` en `develop` para incluir `onResetSectionTours?: () => void` resolviendo TS2322.
+    - Adaptado `ErrorBoundary.tsx` a `verbatimModuleSyntax: true` (`import type { ErrorInfo, ReactNode } from "react"`) resolviendo TS1484.
+    - Perfeccionado `iniciar.sh` para abortar limpiamente ante cualquier error de compilación de npm.
 
 ---
 
@@ -58,6 +62,10 @@
   - `desktop_app.py` incluye soporte para depuración vía `--debug` o `PARMA_DEBUG=1`.
   - `core/pdf_engine.py` actualiza la importación de PyMuPDF para evitar warnings de fitz.
 
+### 4. Tipado TypeScript Estricto y Sincronización CI
+- `ErrorBoundary.tsx`: importación explícita de tipos `import type { ErrorInfo, ReactNode } from "react"` cumpliendo con `verbatimModuleSyntax: true`.
+- `SettingsView.tsx`: declaración de `onResetSectionTours?: () => void` en las props del componente, alineando el contrato exigido por `App.tsx`.
+
 ---
 
 ## 🔀 Integración y Estado de Ramas
@@ -68,6 +76,6 @@
 ---
 
 ## 📋 Tareas Pendientes / Siguiente Paso (Fase 5)
-1. **Revisión del usuario**: Validar que la interfaz arranca sin pantalla negra ejecutando `./iniciar.sh` en Pop!_OS.
+1. **Revisión del usuario**: Validar que la compilación de npm y la interfaz arrancan limpiamente ejecutando `./iniciar.sh` en Pop!_OS.
 2. **Merge de `develop` a `main`**: Una vez confirmado por el usuario, fusionar `develop` en `main`.
 3. **Limpieza**: Eliminar las ramas remotas y locales `feature/onboarding-spotlight-fix` y `feature/auto-updater-protocol`.
