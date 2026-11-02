@@ -1,6 +1,7 @@
 import { Component } from "react";
 import type { ErrorInfo, ReactNode } from "react";
 import { AlertTriangle, RefreshCw, RotateCcw, ChevronDown, ChevronUp } from "lucide-react";
+import { safeStorage } from "../utils/storage";
 
 interface Props {
   children: ReactNode;
@@ -36,9 +37,9 @@ export class ErrorBoundary extends Component<Props, State> {
 
   private handleResetOnboarding = () => {
     try {
-      localStorage.removeItem("parma_has_completed_onboarding");
-      localStorage.removeItem("parma_tour_skipped_all");
-      localStorage.removeItem("parma_completed_section_tours");
+      safeStorage.removeItem("parma_has_completed_onboarding");
+      safeStorage.removeItem("parma_tour_skipped_all");
+      safeStorage.removeItem("parma_completed_section_tours");
     } catch (e) {
       console.warn("No se pudo limpiar el almacenamiento local:", e);
     }

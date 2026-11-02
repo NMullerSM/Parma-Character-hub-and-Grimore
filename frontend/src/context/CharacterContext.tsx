@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from "react";
 import { api } from "../api/client";
+import { safeStorage } from "../utils/storage";
 import type {
   CharacterSheetData,
   CharacterSummary,
@@ -76,7 +77,7 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [loading, setLoading] = useState<boolean>(true);
   const [dndEdition, setEditionState] = useState<string>("5.5e");
   const [language, setLanguageState] = useState<"es" | "en">(() => {
-    return (localStorage.getItem("dnd_sanctum_lang") as "es" | "en") || "es";
+    return (safeStorage.getItem("dnd_sanctum_lang") as "es" | "en") || "es";
   });
   const [talespireStatus, setTaleSpireStatus] = useState<TaleSpireStatus>({
     is_installed: false,
@@ -156,7 +157,7 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       if (settings.dnd_edition) setEditionState(settings.dnd_edition);
       if (settings.language && (settings.language === "es" || settings.language === "en")) {
         setLanguageState(settings.language);
-        localStorage.setItem("dnd_sanctum_lang", settings.language);
+        safeStorage.setItem("dnd_sanctum_lang", settings.language);
       }
       if (settings.talespire_mode && (settings.talespire_mode === "dm" || settings.talespire_mode === "player")) {
         setUserRoleState(settings.talespire_mode);
@@ -524,8 +525,8 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         language,
         setLanguage: (lang: "es" | "en") => {
           setLanguageState(lang);
-          localStorage.setItem("dnd_sanctum_lang", lang);
-          localStorage.setItem("parma_lang", lang);
+          safeStorage.setItem("dnd_sanctum_lang", lang);
+          safeStorage.setItem("parma_lang", lang);
           api.setSetting("language", lang).catch(() => {});
           if (activeCharacter?.id) {
             api.syncCharacterFeatures(activeCharacter.id, lang).then((res) => {

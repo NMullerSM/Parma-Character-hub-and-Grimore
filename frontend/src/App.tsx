@@ -30,6 +30,7 @@ import { UpdateModal } from "./components/UpdateModal";
 import { api } from "./api/client";
 import type { GitHubReleaseInfo, UpdateProgress } from "./api/types";
 import { Dice5 } from "lucide-react";
+import { safeStorage } from "./utils/storage";
 
 function parseSemVer(v: string): [number, number, number] {
   const clean = v.replace(/^v/, "").trim();
@@ -62,14 +63,14 @@ export const AppContent: React.FC = () => {
   const [isWhatsNewOpen, setIsWhatsNewOpen] = useState<boolean>(false);
 
   const [hasCompletedInitial, setHasCompletedInitial] = useState<boolean>(() => {
-    return localStorage.getItem("parma_has_completed_onboarding") === "true";
+    return safeStorage.getItem("parma_has_completed_onboarding") === "true";
   });
   const [isGlobalSkipped, setIsGlobalSkipped] = useState<boolean>(() => {
-    return localStorage.getItem("parma_tour_skipped_all") === "true";
+    return safeStorage.getItem("parma_tour_skipped_all") === "true";
   });
   const [completedSectionTours, setCompletedSectionTours] = useState<string[]>(() => {
     try {
-      const cached = localStorage.getItem("parma_completed_section_tours");
+      const cached = safeStorage.getItem("parma_completed_section_tours");
       return cached ? JSON.parse(cached) : [];
     } catch {
       return [];
@@ -329,7 +330,7 @@ export const AppContent: React.FC = () => {
         if (res.ok) {
           const release: GitHubReleaseInfo = await res.json();
           if (isMounted && release && release.tag_name) {
-            const ignoredVersion = localStorage.getItem("parma_ignored_update_version");
+            const ignoredVersion = safeStorage.getItem("parma_ignored_update_version");
             if (isNewerVersion(release.tag_name, APP_VERSION) && ignoredVersion !== release.tag_name) {
               setAvailableRelease(release);
             }
@@ -389,7 +390,7 @@ export const AppContent: React.FC = () => {
       try {
         await api.setSetting("last_seen_version", APP_VERSION);
         await api.setSetting("has_completed_onboarding", true);
-        localStorage.setItem("parma_has_completed_onboarding", "true");
+        safeStorage.setItem("parma_has_completed_onboarding", "true");
       } catch (err) {
         console.error("Error al persistir estado de onboarding:", err);
       }
@@ -398,7 +399,7 @@ export const AppContent: React.FC = () => {
       setCompletedSectionTours(updated);
       setActiveTour(null);
       setCurrentTourStep(0);
-      localStorage.setItem("parma_completed_section_tours", JSON.stringify(updated));
+      safeStorage.setItem("parma_completed_section_tours", JSON.stringify(updated));
     }
   };
 
@@ -413,9 +414,9 @@ export const AppContent: React.FC = () => {
     try {
       await api.setSetting("last_seen_version", APP_VERSION);
       await api.setSetting("has_completed_onboarding", true);
-      localStorage.setItem("parma_has_completed_onboarding", "true");
-      localStorage.setItem("parma_tour_skipped_all", "true");
-      localStorage.setItem("parma_completed_section_tours", JSON.stringify(allSections));
+      safeStorage.setItem("parma_has_completed_onboarding", "true");
+      safeStorage.setItem("parma_tour_skipped_all", "true");
+      safeStorage.setItem("parma_completed_section_tours", JSON.stringify(allSections));
       showToast(t("onboarding.btnSkipAll") || "Onboarding completado", "info");
     } catch (err) {
       console.error("Error al persistir skip all:", err);
@@ -431,7 +432,7 @@ export const AppContent: React.FC = () => {
       setCompletedSectionTours(updated);
       setActiveTour(null);
       setCurrentTourStep(0);
-      localStorage.setItem("parma_completed_section_tours", JSON.stringify(updated));
+      safeStorage.setItem("parma_completed_section_tours", JSON.stringify(updated));
     }
   };
 
@@ -445,8 +446,8 @@ export const AppContent: React.FC = () => {
   const handleResetSectionTours = () => {
     setCompletedSectionTours([]);
     setIsGlobalSkipped(false);
-    localStorage.removeItem("parma_completed_section_tours");
-    localStorage.removeItem("parma_tour_skipped_all");
+    safeStorage.removeItem("parma_completed_section_tours");
+    safeStorage.removeItem("parma_tour_skipped_all");
   };
 
   const handleCloseWhatsNew = async () => {
@@ -545,7 +546,7 @@ export const AppContent: React.FC = () => {
           onStartDownload={() => setUpdateProgress((p) => ({ ...p, status: "downloading" }))}
           onIgnoreVersion={(ver) => {
             try {
-              localStorage.setItem("parma_ignored_update_version", ver);
+              safeStorage.setItem("parma_ignored_update_version", ver);
             } catch (e) {
               console.warn(e);
             }

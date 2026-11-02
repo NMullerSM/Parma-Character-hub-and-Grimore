@@ -217,6 +217,37 @@ def check_linux_gui_backend():
         print("=" * 68 + "\n")
 
 
+def configure_linux_webkit_storage(window):
+    """Asegura que WebKitGTK tenga habilitado HTML5 Local Storage y base de datos."""
+    if not sys.platform.startswith("linux"):
+        return
+    try:
+        form = getattr(window, "native", None)
+        if not form:
+            return
+
+        def scan_and_enable(widget):
+            cls_name = widget.__class__.__name__
+            if "WebView" in cls_name and hasattr(widget, "get_settings"):
+                s = widget.get_settings()
+                if hasattr(s, "set_enable_html5_local_storage"):
+                    s.set_enable_html5_local_storage(True)
+                if hasattr(s, "set_enable_html5_database"):
+                    s.set_enable_html5_database(True)
+                if hasattr(s, "set_enable_javascript"):
+                    s.set_enable_javascript(True)
+                return True
+            if hasattr(widget, "get_children"):
+                for child in widget.get_children():
+                    if scan_and_enable(child):
+                        return True
+            return False
+
+        scan_and_enable(form)
+    except Exception:
+        pass
+
+
 def start_app():
     parser = argparse.ArgumentParser(description="Parma Desktop")
     parser.add_argument("--dev", action="store_true", help="Usa servidor de desarrollo Vite (localhost:5173)")
@@ -263,6 +294,7 @@ def start_app():
 
     def on_app_started():
         apply_win32_icon(window, icon_path)
+        configure_linux_webkit_storage(window)
 
     # Iniciar el bucle de eventos del WebView nativo
     # http_server=True activa el servidor Bottle interno para servir ES Modules de Vite sin bloqueos CORS en Linux

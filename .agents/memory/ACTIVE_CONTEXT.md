@@ -16,6 +16,11 @@
     - Sincronizado `SettingsView.tsx` en `develop` para incluir `onResetSectionTours?: () => void` resolviendo TS2322.
     - Adaptado `ErrorBoundary.tsx` a `verbatimModuleSyntax: true` (`import type { ErrorInfo, ReactNode } from "react"`) resolviendo TS1484.
     - Perfeccionado `iniciar.sh` para abortar limpiamente ante cualquier error de compilación de npm.
+  - **Blindaje Universal de Almacenamiento (Fix: Can't find variable: localStorage)**:
+    - Creado módulo `frontend/src/utils/storage.ts` con abstracción `safeStorage` y fallback en memoria.
+    - Polyfill síncrono inyectado en `frontend/index.html` asegurando que `window.localStorage` exista en WebKitGTK antes de cargar bundles.
+    - Reemplazadas todas las llamadas desprotegidas a `localStorage` en `App.tsx`, `CharacterContext.tsx`, `UpdateModal.tsx` y `ErrorBoundary.tsx`.
+    - Configurado WebKitGTK nativo en `desktop_app.py` para habilitar HTML5 Local Storage y base de datos.
 
 ---
 
@@ -65,6 +70,13 @@
 ### 4. Tipado TypeScript Estricto y Sincronización CI
 - `ErrorBoundary.tsx`: importación explícita de tipos `import type { ErrorInfo, ReactNode } from "react"` cumpliendo con `verbatimModuleSyntax: true`.
 - `SettingsView.tsx`: declaración de `onResetSectionTours?: () => void` en las props del componente, alineando el contrato exigido por `App.tsx`.
+
+### 5. Blindaje contra 'Can\'t find variable: localStorage'
+- **Causa**: En WebKitGTK bajo PyWebView, `window.localStorage` puede no estar definido o estar en modo restringido antes de inicializar el contexto web, lo que hacía que llamadas no protegidas como `localStorage.getItem()` lanzaran un `ReferenceError` fatal al iniciar la app.
+- **Solución**:
+  - Módulo `safeStorage` (`frontend/src/utils/storage.ts`) con fallback en memoria.
+  - Polyfill síncrono en `frontend/index.html` ejecutado antes de cualquier script.
+  - Configuración nativa `settings.set_enable_html5_local_storage(True)` en `desktop_app.py`.
 
 ---
 
