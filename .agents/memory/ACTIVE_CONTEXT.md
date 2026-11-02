@@ -83,14 +83,18 @@
 ## 🔀 Integración y Estado de Ramas
 - `feature/onboarding-spotlight-fix`: Mergeada en `develop` vía PR #8 (`fca495684aec2ad4b1e9b64e9ad95558ec9bd3d4`).
 - `feature/auto-updater-protocol`: Mergeada en `develop` vía PR #9 (`2aea5ec4f312400720f6c57ea5c61768147262fb`).
-- Rama actual de trabajo consolidada: **`develop`** (Versión 1.0.3 establecida en `core/version.py`, `frontend/src/version.ts`, `frontend/package.json` y `parma_setup.iss`).
+- `feature/settings-streamline-dice-bridge`: Mergeada en `develop` vía PR #12 (`5cac9934489c662c6a68c2d9970aa0dbca37ef40`).
+- Rama actual de trabajo consolidada: **`develop`** (v1.0.3).
+  - **Dual Throw Modes**: Alternancia entre lanzamiento físico automatizado (micro-gesto calibrado) y manual en bandeja oficial de TaleSpire (`talespire_auto_throw`).
+  - **Settings Streamlined**: Conmutador compacto Sol/Luna de temas, segmented control de idioma, acordeón técnico para estados de puente IPC y calibración de gestos, modal de Guía Rápida de Parma (`[ 📖 Ver Guía de Parma ]`), y aislamiento al pie de OKF y SQLite.
+  - **Symbiote Reconnection & HUD**: Auto-inicio garantizado del servidor WebSocket (`ensure_running()`), llamada booleana a `is_symbiote_connected()` y botón unificado `[ 🎲 Test (1d20 + 5) ]` en el HUD.
 - Documentación y ADRs exhaustivos formalizados en `README.md`, `docs/BACKEND.md`, `docs/FRONTEND.md`, `docs/CICD.md` y `docs/ADR.md`.
-- Corrección de pipeline Inno Setup en Windows: ruta de origen corregida a `..\Parma\*` y protección de macro `#ifndef MyAppVersion`.
-- Sincronización final: Despliegue de la versión 1.0.3 a la rama `main` para activar el workflow de publicación oficial en GitHub Actions.
 
 ---
 
-## 📋 Tareas Pendientes / Siguiente Paso (Fase 5)
-1. **Publicación Oficial (Merge a `main`)**: Desplegar los 32 archivos consolidados y verificados a `main` para activar el pipeline de release `v1.0.3`.
-2. **Cierre de PR #10**: Cerrar el PR #10 con nota de release limpia.
-3. **Limpieza de Ramas**: Eliminar las ramas remotas obsoletas `feature/onboarding-spotlight-fix` y `feature/auto-updater-protocol`.
+## 📋 Tareas Pendientes / Siguiente Paso
+1. **Pull en PC de Escritorio**: En el entorno Windows/desktop, ejecutar `git pull origin develop` para recibir PR #12.
+2. **Pruebas en TaleSpire**:
+   - Verificar la auto-conexión del Symbiote (debe mostrarse conectado sin reconexiones infinitas).
+   - Probar el modo manual en bandeja vs modo automático con micro-gesto físico.
+3. **Limpieza de Ramas Obsoletas**: Eliminar en GitHub las ramas remotas mergeadas `feature/onboarding-spotlight-fix`, `feature/auto-updater-protocol` y `feature/settings-streamline-dice-bridge`.
