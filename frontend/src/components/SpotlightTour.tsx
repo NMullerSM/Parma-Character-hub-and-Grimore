@@ -201,15 +201,15 @@ export const SpotlightTour: React.FC<SpotlightTourProps> = ({
                 y={targetRect.y}
                 width={targetRect.w}
                 height={targetRect.h}
-                rx={10}
-                ry={10}
+                rx="14"
+                ry="14"
                 fill="black"
+                className="transition-all duration-400 ease-out"
               />
             )}
           </mask>
         </defs>
-
-        {/* Rectángulo de oscurecimiento global conectado a la máscara (sin backdrop-blur-xs para no quebrar WebKitGTK en Linux) */}
+        {/* Capa oscura semitransparente con máscara de recorte */}
         <rect
           x="0"
           y="0"
@@ -217,170 +217,162 @@ export const SpotlightTour: React.FC<SpotlightTourProps> = ({
           height="100%"
           fill="rgba(5, 7, 10, 0.78)"
           mask="url(#spotlight-tour-mask)"
+          className="pointer-events-auto"
         />
       </svg>
 
-      {/* 2. Anillo de Resplandor Dorado alrededor del elemento objetivo */}
+      {/* 2. Halo y Borde Animado Dorado alrededor del elemento destacado */}
       {targetRect && (
         <div
-          className="fixed pointer-events-none z-40 rounded-xl transition-all duration-300 ease-out border-2 border-gold shadow-[0_0_25px_rgba(234,179,8,0.45)] ring-4 ring-gold/20 animate-pulse"
           style={{
-            top: `${targetRect.y}px`,
-            left: `${targetRect.x}px`,
-            width: `${targetRect.w}px`,
-            height: `${targetRect.h}px`,
+            position: "fixed",
+            left: targetRect.x,
+            top: targetRect.y,
+            width: targetRect.w,
+            height: targetRect.h,
           }}
+          className="z-40 pointer-events-none rounded-xl border-2 border-gold shadow-[0_0_24px_rgba(201,164,92,0.6)] ring-4 ring-gold/20 animate-pulse transition-all duration-400 ease-out"
         />
       )}
 
-      {/* 3. Tarjeta de Coach Mark Flotante (Anti-Colisión & Responsiva) */}
+      {/* 3. Botón Flotante Inferior: Saltar Todo el Onboarding (Ubicado en bottom-4 para evitar colisiones con botones de cabecera) */}
+      <div className="fixed bottom-4 right-4 z-40 flex items-center gap-2">
+        <button
+          onClick={onClose}
+          title="Omitir el tutorial completo (Escape)"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface/90 hover:bg-card border border-border-iron text-muted hover:text-main text-xs font-semibold backdrop-blur-md shadow-lg transition-colors cursor-pointer group"
+        >
+          <FastForward className="w-3.5 h-3.5 text-gold group-hover:translate-x-0.5 transition-transform" />
+          <span>{t("onboarding.btnSkipAll", "Saltar todo el tutorial")}</span>
+        </button>
+        <span className="hidden sm:inline-block px-2 py-1 rounded bg-black/40 border border-white/10 text-[10px] text-muted font-mono">
+          Esc
+        </span>
+      </div>
+
+      {/* 4. Tarjeta Flotante de Explicación Táctica (Coach Mark Popover) */}
       <div
         ref={popoverRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="tour-step-title"
-        className="fixed z-50 transition-all duration-300 ease-out w-[min(380px,calc(100vw-32px))] max-h-[calc(100vh-32px)] overflow-y-auto"
         style={{
-          top: `${popoverPos.top}px`,
-          left: `${popoverPos.left}px`,
+          position: "fixed",
+          top: popoverPos.top,
+          left: popoverPos.left,
         }}
+        className="z-50 w-[min(380px,calc(100vw-32px))] max-h-[calc(100vh-32px)] overflow-y-auto box-border bg-surface/95 backdrop-blur-md border border-gold/50 rounded-2xl p-4 sm:p-5 shadow-[0_20px_50px_rgba(0,0,0,0.6)] flex flex-col gap-3 transition-all duration-300 ease-out animate-pop-in"
       >
-        <div className="bg-card border border-gold/60 rounded-2xl p-5 shadow-[0_20px_50px_rgba(0,0,0,0.85)] backdrop-blur-md relative overflow-hidden flex flex-col justify-between">
-          {/* Acento decorativo sutil */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gold to-transparent opacity-80" />
-
-          {/* Cabecera de la tarjeta: Badge + Paso + Botón Cerrar */}
-          <div className="flex items-start justify-between gap-2 mb-3">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-2 py-0.5 rounded text-[11px] font-bold tracking-wider uppercase bg-gold/15 text-gold border border-gold/30">
-                {step.badge || (isContextual ? t("onboarding.sectionGuide") : t("onboarding.stepLabel"))}
+        {/* Cabecera de la Tarjeta */}
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold font-stat tracking-wider bg-gold/15 text-gold border border-gold/30 uppercase truncate">
+              {step.badge || `${t("onboarding.stepLabel", "Paso")} ${currentStepIndex + 1}/${steps.length}`}
+            </span>
+            {isContextual && (
+              <span className="text-[10px] text-muted uppercase tracking-wider font-semibold truncate">
+                {t("onboarding.sectionGuide", "Guía de Sección")}
               </span>
-              <span className="text-xs text-muted font-medium">
-                {currentStepIndex + 1} / {steps.length}
-              </span>
-            </div>
+            )}
+          </div>
+          <button
+            onClick={onSkipSection || onClose}
+            className="p-1 rounded text-muted hover:text-main hover:bg-card transition-colors cursor-pointer flex-shrink-0"
+            title="Cerrar este paso"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
 
+        {/* Título y Descripción Conforme a la Ley de Hick */}
+        <div>
+          <h3 className="font-display font-bold text-lg text-gold leading-snug break-words">
+            {step.title}
+          </h3>
+          <p className="text-xs text-muted leading-relaxed mt-1 break-words">
+            {step.description}
+          </p>
+        </div>
+
+        {/* Botón de Acción Especial / Demostración en Vivo */}
+        {step.actionButton && (
+          <div className="pt-1">
             <button
-              type="button"
-              onClick={onClose}
-              title={`${t("common.close")} (Esc)`}
-              aria-label={t("common.close")}
-              className="p-1 rounded-lg text-muted hover:text-main hover:bg-surface/80 active:scale-95 transition-all cursor-pointer -mr-1 -mt-1"
+              onClick={step.actionButton.onClick}
+              className="w-full py-2 px-3 rounded-lg bg-crimson hover:bg-crimson-hover text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm active:scale-98 cursor-pointer"
             >
-              <X className="w-4 h-4" />
+              {step.actionButton.icon}
+              <span>{step.actionButton.label}</span>
             </button>
           </div>
+        )}
 
-          {/* Título y Descripción concisa (Ley de Hick: máximo 2-3 oraciones clave) */}
-          <div className="mb-4">
-            <h3 id="tour-step-title" className="text-base font-bold text-main tracking-tight font-serif mb-1.5">
-              {step.title}
-            </h3>
-            <p className="text-xs text-muted leading-relaxed select-text">
-              {step.description}
-            </p>
+        {/* Indicadores de Progreso por Puntos */}
+        <div className="flex items-center justify-center gap-1.5 py-1">
+          {steps.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => onStepChange(idx)}
+              className={`h-1.5 rounded-full transition-all cursor-pointer ${
+                idx === currentStepIndex
+                  ? "w-6 bg-gold"
+                  : "w-2 bg-border-iron hover:bg-muted"
+              }`}
+              title={`Ir al paso ${idx + 1}`}
+            />
+          ))}
+        </div>
+
+        {/* Pie de Controles: Navegación Táctica con Prevención de Desbordamiento y Flex-Wrap */}
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-border-iron/80">
+          <div className="flex items-center gap-2 min-w-0">
+            {onSkipSection ? (
+              <button
+                onClick={onSkipSection}
+                className="text-xs text-muted hover:text-main underline decoration-dotted transition-colors cursor-pointer truncate"
+              >
+                {t("onboarding.btnSkipSection", "Saltar sección")}
+              </button>
+            ) : (
+              <span className="text-[11px] text-muted whitespace-nowrap">
+                {currentStepIndex + 1} de {steps.length}
+              </span>
+            )}
           </div>
 
-          {/* Botón de acción interactiva opcional (ej: tirar dado de prueba) */}
-          {step.actionButton && (
-            <div className="mb-4">
+          <div className="flex items-center gap-2 flex-shrink-0 ml-auto">
+            {!isFirst && (
               <button
-                type="button"
-                onClick={step.actionButton.onClick}
-                className="w-full flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-gold/15 border border-gold/40 text-gold hover:bg-gold/25 active:scale-98 transition-all cursor-pointer shadow-xs"
+                onClick={() => onStepChange(currentStepIndex - 1)}
+                className="px-3 py-1.5 rounded-lg bg-card hover:bg-surface border border-border-iron text-xs font-semibold text-main transition-colors flex items-center gap-1 cursor-pointer whitespace-nowrap"
               >
-                {step.actionButton.icon}
-                <span>{step.actionButton.label}</span>
+                <ChevronLeft className="w-3.5 h-3.5" />
+                <span>{t("onboarding.btnPrev", "Anterior")}</span>
               </button>
-            </div>
-          )}
+            )}
 
-          {/* Barra de progreso visual inferior (Puntos indicadores) */}
-          <div className="flex items-center justify-between pt-3 border-t border-border-iron/80">
-            {/* Puntos de navegación */}
-            <div className="flex items-center gap-1.5">
-              {steps.map((_, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => onStepChange(idx)}
-                  className={`h-1.5 rounded-full transition-all cursor-pointer ${
-                    idx === currentStepIndex
-                      ? "w-6 bg-gold"
-                      : idx < currentStepIndex
-                      ? "w-2 bg-gold/40 hover:bg-gold/60"
-                      : "w-2 bg-border-iron hover:bg-muted"
-                  }`}
-                  title={`${t("onboarding.stepLabel")} ${idx + 1}`}
-                  aria-label={`${t("onboarding.stepLabel")} ${idx + 1}`}
-                />
-              ))}
-            </div>
-
-            {/* Contenedor responsivo anti-colisión para botones de control */}
-            <div className="flex flex-wrap gap-2 items-center justify-end ml-auto">
-              {/* Botón Saltar Sección */}
-              {onSkipSection && !isLast && (
-                <button
-                  type="button"
-                  onClick={onSkipSection}
-                  className="px-2 py-1.5 text-xs font-medium text-muted hover:text-main rounded-lg hover:bg-surface active:scale-95 transition-all cursor-pointer whitespace-nowrap"
-                >
-                  {t("onboarding.btnSkipSection")}
-                </button>
+            <button
+              onClick={() => {
+                if (isLast) {
+                  onClose();
+                } else {
+                  onStepChange(currentStepIndex + 1);
+                }
+              }}
+              className="px-4 py-1.5 rounded-lg bg-gold hover:bg-gold-hover text-canvas text-xs font-bold transition-all shadow-sm flex items-center gap-1 cursor-pointer active:scale-95 whitespace-nowrap"
+            >
+              {isLast ? (
+                <>
+                  <Check className="w-3.5 h-3.5" />
+                  <span>{t("onboarding.btnStart", "¡Comenzar!")}</span>
+                </>
+              ) : (
+                <>
+                  <span>{t("onboarding.btnNext", "Siguiente")}</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </>
               )}
-
-              {/* Botón Anterior */}
-              {!isFirst && (
-                <button
-                  type="button"
-                  onClick={() => onStepChange(currentStepIndex - 1)}
-                  className="p-1.5 rounded-lg border border-border-iron hover:border-gold/50 bg-surface/80 hover:bg-surface text-muted hover:text-main active:scale-95 transition-all cursor-pointer flex-shrink-0"
-                  title={t("onboarding.btnPrev")}
-                  aria-label={t("onboarding.btnPrev")}
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
-              )}
-
-              {/* Botón Siguiente o Iniciar Aventura */}
-              <button
-                type="button"
-                onClick={() => {
-                  if (isLast) {
-                    onClose();
-                  } else {
-                    onStepChange(currentStepIndex + 1);
-                  }
-                }}
-                className={`flex items-center gap-1 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer whitespace-nowrap flex-shrink-0 ml-auto ${
-                  isLast
-                    ? "bg-gradient-to-r from-gold to-gold-hover text-canvas shadow-gold/20"
-                    : "bg-gold hover:bg-gold-hover text-canvas"
-                }`}
-              >
-                <span>{isLast ? t("onboarding.btnStart") : t("onboarding.btnNext")}</span>
-                {isLast ? <Check className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
-              </button>
-            </div>
+            </button>
           </div>
         </div>
       </div>
-
-      {/* 4. Botón Global "Saltar Todo el Onboarding" reubicado a la esquina inferior derecha
-          para no colisionar jamás con los botones de Dados, TaleSpire y Ajustes de la cabecera */}
-      {!isContextual && (
-        <div className="fixed bottom-4 right-4 z-40 animate-fade-in pointer-events-auto">
-          <button
-            type="button"
-            onClick={onClose}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-surface/90 hover:bg-surface border border-border-iron/80 hover:border-gold/50 text-muted hover:text-main shadow-lg backdrop-blur-md active:scale-95 transition-all cursor-pointer"
-          >
-            <FastForward className="w-3.5 h-3.5 text-gold/80" />
-            <span>{t("onboarding.btnSkipAll")}</span>
-          </button>
-        </div>
-      )}
     </div>
   );
 };
