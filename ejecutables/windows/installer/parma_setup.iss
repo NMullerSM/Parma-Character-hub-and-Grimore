@@ -3,9 +3,9 @@
 ; ==============================================================================
 
 #define MyAppName "Parma — Character Hub & Grimoire"
-#define MyAppVersion "1.0.1"
+#define MyAppVersion "1.0.3"
 #define MyAppPublisher "NMullerSM"
-#define MyAppURL "https://github.com/NMullerSM/Dnd_Player_Dashboard"
+#define MyAppURL "https://github.com/NMullerSM/Parma-Character-hub-and-Grimore"
 #define MyAppExeName "Parma.exe"
 
 [Setup]
@@ -23,13 +23,10 @@ OutputBaseFilename=Parma-Setup-v{#MyAppVersion}
 OutputDir=..\
 SetupIconFile=..\..\..\parma.ico
 UninstallDisplayName={#MyAppName}
-UninstallDisplayIcon={app}\parma.ico
-CreateUninstallRegKey=yes
-Compression=lzma2/max
+UninstallDisplayIcon={app}\Parma.exe
+Compression=lzma2/ultra64
 SolidCompression=yes
 WizardStyle=modern
-PrivilegesRequired=lowest
-PrivilegesRequiredOverridesAllowed=dialog
 ArchitecturesAllowed=x64
 ArchitecturesInstallIn64BitMode=x64
 
@@ -38,18 +35,16 @@ Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-; Empaquetar todo el directorio compilado por PyInstaller (onedir)
-Source: "..\Parma\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-; Asegurar icono de alta resolución en la raíz para desinstalador y accesos directos
+Source: "..\portable\Parma\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\..\..\parma.ico"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
-Name: "{group}\Parma"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\{#MyAppExeName}"
-Name: "{group}\Desinstalar Parma"; Filename: "{uninstallexe}"; IconFilename: "{app}\parma.ico"
-Name: "{autodesktop}\Parma"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+Name: "{group}\Parma"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\Parma.exe"
+Name: "{group}\Desinstalar Parma"; Filename: "{uninstallexe}"
+Name: "{autodesktop}\Parma"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\Parma.exe"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,Parma}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
