@@ -68,6 +68,12 @@
 * Crónicas cronológicas de sesión, botín y experiencia (XP).
 * Grafo visual interactivo de relaciones, aliados, PNJs y facciones de la campaña.
 
+### 8. 🔄 Protocolo de Actualización In-App y Onboarding Táctico (Novedades v1.0.3)
+* **Actualizador Automático en Segundo Plano:** Detección de versiones GitHub con descarga en segundo plano por trozos de 64KB, barra de progreso reactiva en vivo y botón *"Reiniciar para actualizar"* con instalación silenciosa sin salir a navegadores externos.
+* **Cero Pérdida de Datos Garantizada:** Persistencia aislada en directorio de usuario (`%LOCALAPPDATA%/Parma/data` en Windows y `~/.local/share/parma/data` en Linux). Las actualizaciones jamás tocan tus bases de datos SQLite ni fichas de héroes.
+* **Onboarding Guiado Visual (Spotlight Tour):** Guías interactivas con foco visual cinemático (Ley de Hick), auto-posicionamiento anti-colisión de tarjetas, tirada de prueba d20 interactiva y botón accesible para saltar secciones.
+* **Blindaje Multiplataforma:** Compatibilidad plena con WebKitGTK 2.40+ en Pop!_OS/Ubuntu (resiliencia DMABUF y modo de composición), abstracción `safeStorage` inmune a restricciones de almacenamiento local y componente de resguardo `ErrorBoundary`.
+
 ---
 
 ## 📦 Descarga e Instalación Detallada
@@ -131,6 +137,7 @@ Para consultar las decisiones de diseño, contratos de datos y especificaciones 
 * 🏛️ **[docs/BACKEND.md](docs/BACKEND.md)** — Arquitectura Python, SQLite, compendio OKF, puente TaleSpire y servidor de sesiones.
 * 🎨 **[docs/FRONTEND.md](docs/FRONTEND.md)** — Arquitectura React 18, Vite 8, Tailwind v4, Contexto y contratos de tipado estricto.
 * 🚀 **[docs/CICD.md](docs/CICD.md)** — Flujo GitHub Actions, empaquetado Inno Setup / Debian y catálogo de problemas resueltos.
+* 📋 **[docs/ADR.md](docs/ADR.md)** — Registros de Decisiones de Arquitectura (Architecture Decision Records) de Parma.
 
 ---
 

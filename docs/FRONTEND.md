@@ -28,16 +28,22 @@ frontend/src/
 │   ├── AnimatedHealthBar.tsx  # Barra de vida animada con gradientes reactivos
 │   ├── DiceDrawer.tsx         # Bandeja lateral interactiva para lanzamiento de dados
 │   ├── DicePhysicsModal.tsx   # Animación visual de impacto de dados
+│   ├── ErrorBoundary.tsx      # Resguardo global contra caídas de renderizado en React
 │   ├── FeatureDetailModal.tsx # Inspección detallada de rasgos de clase y dotes
 │   ├── MarkdownViewer.tsx     # Renderizado enriquecido de texto de reglas
 │   ├── SpellBookManagerModal  # Gestor de conjuros preparados vs conocidos
-│   └── SpellDetailModal.tsx   # Tarjeta de conjuro con comandos de tirada para TaleSpire
+│   ├── SpellDetailModal.tsx   # Tarjeta de conjuro con comandos de tirada para TaleSpire
+│   ├── SpotlightTour.tsx      # Sistema de onboarding guiado táctico con foco visual (Ley de Hick)
+│   ├── UpdateModal.tsx        # Modal de actualización in-app con telemetría en tiempo real
+│   └── UpdateNotificationPill # Píldora no intrusiva de actualización en la cabecera
 ├── context/
 │   └── CharacterContext.tsx   # Estado global reactivo y bus de eventos
 ├── i18n/                      # Motor de internacionalización y traducción D&D
 │   ├── dndTranslations.ts     # Diccionario canónico de términos D&D (ES / EN)
 │   ├── en.ts / es.ts          # Diccionarios de interfaz de usuario
-│   └── index.ts               # Hook useTranslation()
+│   └── index.ts               # Hook useTranslation() con saneamiento de claves dinámicas
+├── utils/
+│   └── storage.ts             # Abstracción safeStorage con fallback en memoria resiliente a WebKitGTK
 └── views/
     ├── CharacterWizard.tsx    # Asistente de creación de personaje 100% legal
     ├── CombatView.tsx         # Consola de combate activa, armas, salud y magia
@@ -119,3 +125,53 @@ La interfaz de usuario interactúa con el backend de Python a través de `fronte
   "module": "ESNext",
   "moduleResolution": "Bundler"
   ```
+
+### 4. Soporte Estricto para `verbatimModuleSyntax` en `ErrorBoundary.tsx` (Error TS1484)
+* **Problema:** Al activar el compilador de TypeScript con `"verbatimModuleSyntax": true`, importar tipos junto a valores en una misma instrucción (`import React, { Component, ErrorInfo, ReactNode } from "react"`) provocaba el error TS1484: *"'ErrorInfo' is a type and must be imported using a type-only import"*.
+* **Solución:** Separación explícita de importaciones de tipo:
+  ```typescript
+  import React, { Component } from "react";
+  import type { ErrorInfo, ReactNode } from "react";
+  ```
+
+### 5. Sincronización de Contrato de Propiedades en `SettingsView.tsx` (Error TS2322)
+* **Problema:** En `App.tsx`, el modal de ajustes recibía el prop `onResetSectionTours={() => ...}`, pero la interfaz `SettingsViewProps` en `SettingsView.tsx` no declaraba dicho callback, causando rechazo de compilación TS2322 en los pipelines de GitHub Actions.
+* **Solución:** Declaración explícita del manejador opcional en `SettingsView.tsx`:
+  ```typescript
+  interface SettingsViewProps {
+    onClose: () => void;
+    onReplayTour?: () => void;
+    onResetSectionTours?: () => void;
+  }
+  ```
+
+### 6. Resiliencia contra `Can't find variable: localStorage` en WebKitGTK (`safeStorage`)
+* **Problema:** En entornos WebKitGTK (Linux) bajo PyWebView, al servir la aplicación mediante un servidor local en localhost, el objeto global `window.localStorage` puede estar bloqueado o no instanciado en el ciclo temprano de arranque, provocando un `ReferenceError` letal que dejaba la pantalla en negro al evaluar `localStorage.getItem(...)`.
+* **Solución Defensiva en 4 Capas:**
+  1. **Polyfill Síncrono Pre-Bootstrap:** Inyección en `frontend/index.html` de un script inline previo al bundle de Vite que inicializa un `MemoryStorage` si `window.localStorage` no está accesible o lanza excepción.
+  2. **Módulo Centralizado `frontend/src/utils/storage.ts`:** Expone la API `safeStorage` con implementaciones seguras envueltas en `try / catch` (`getItem`, `setItem`, `removeItem`, `clear`) y persistencia dual en memoria (`fallbackMap`).
+  3. **Reemplazo Universal:** Erradicación de todas las llamadas directas a `localStorage` en `App.tsx`, `CharacterContext.tsx`, `UpdateModal.tsx` y `ErrorBoundary.tsx`.
+  4. **Activación Nativa en GTK:** Introspección nativa en `desktop_app.py` invocando `set_enable_html5_local_storage(True)`.
+
+### 7. Layout Anti-Colisión y Ley de Hick en `SpotlightTour.tsx`
+* **Problema:** Los coach marks del onboarding sufrían colisiones visuales:
+  * El botón *"Saltar todo"* flotaba en la esquina superior derecha tapando los botones de dados, TaleSpire y ajustes.
+  * Si el elemento a resaltar estaba pegado a la cabecera superior (`y < 140`), la tarjeta de explicación se posicionaba hacia arriba, saliendo fuera del viewport.
+  * Nombres largos de claves o traducciones desbordaban la tarjeta y empujaban el botón de avanzar fuera de la vista.
+  * Claves inexistentes como `onboarding.global.step_batch` se imprimían crudas en pantalla.
+* **Solución:**
+  * **Saneamiento i18n:** `translate(path, defaultText)` devuelve `""` en lugar de la clave cruda cuando no existe coincidencia, permitiendo que `t("key") || "Texto"` evalúe correctamente sus fallbacks limpios.
+  * **Despeje de Cabecera:** Botón *"Saltar todo"* reubicado a la esquina inferior derecha (`fixed bottom-4 right-4 z-40`).
+  * **Auto-Posicionamiento Inteligente:** Detección de elementos con `y < 140` forzando `placement: "bottom"`.
+  * **Contención Flexible:** Contenedor de botones con `flex-wrap gap-2 items-center justify-between` y `whitespace-nowrap flex-shrink-0 ml-auto` para garantizar que *Anterior*, *Siguiente* y *Saltar sección* permanezcan legibles y contenidos sin desborde.
+  * **Resiliencia Gráfica:** Eliminación de `backdrop-blur-xs` en el elemento SVG `<rect>` para prevenir cuelgues del compositor EGL en WebKitGTK.
+
+### 8. Flujo Reactivo de Actualización In-App (`UpdateModal.tsx` & `UpdateNotificationPill.tsx`)
+* **Problema:** Los usuarios eran redirigidos a la web de GitHub para descargar instaladores manualmente, lo cual interrumpía la partida y aumentaba el riesgo de pérdidas de datos accidentales.
+* **Solución:**
+  * Flujo completo integrado en la interfaz de usuario:
+    * Modal `UpdateModal.tsx` con detalles de la versión y changelog formateado.
+    * Botón de descarga en segundo plano que permite cerrar el modal y seguir jugando mientras los trozos se descargan vía RPC.
+    * Sondeo adaptativo cada 450ms únicamente mientras el estado sea `"downloading"`.
+    * Píldora no intrusiva `UpdateNotificationPill.tsx` en el header mostrando el porcentaje descargado.
+    * Al finalizar, la píldora se ilumina en color verde esmeralda y el modal ofrece el botón animado *"Reiniciar para actualizar"*, ejecutando la instalación silenciosa sin intervención manual.

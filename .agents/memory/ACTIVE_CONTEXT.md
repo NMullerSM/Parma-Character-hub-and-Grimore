@@ -83,11 +83,12 @@
 ## 🔀 Integración y Estado de Ramas
 - `feature/onboarding-spotlight-fix`: Mergeada en `develop` vía PR #8 (`fca495684aec2ad4b1e9b64e9ad95558ec9bd3d4`).
 - `feature/auto-updater-protocol`: Mergeada en `develop` vía PR #9 (`2aea5ec4f312400720f6c57ea5c61768147262fb`).
-- Rama actual de trabajo consolidada: **`develop`**.
+- Rama actual de trabajo consolidada: **`develop`** (Versión 1.0.3 establecida en `core/version.py`, `frontend/src/version.ts` y `frontend/package.json`).
+- Documentación y ADRs exhaustivos formalizados en `README.md`, `docs/BACKEND.md`, `docs/FRONTEND.md`, `docs/CICD.md` y `docs/ADR.md`.
 
 ---
 
 ## 📋 Tareas Pendientes / Siguiente Paso (Fase 5)
-1. **Revisión del usuario**: Validar que la compilación de npm y la interfaz arrancan limpiamente ejecutando `./iniciar.sh` en Pop!_OS.
-2. **Merge de `develop` a `main`**: Una vez confirmado por el usuario, fusionar `develop` en `main`.
-3. **Limpieza**: Eliminar las ramas remotas y locales `feature/onboarding-spotlight-fix` y `feature/auto-updater-protocol`.
+1. **Commit y Push a `develop`**: Subir `README.md`, `docs/ADR.md`, `docs/FRONTEND.md`, `docs/CICD.md`, `core/version.py`, `frontend/src/version.ts`, `frontend/package.json` y `ACTIVE_CONTEXT.md`.
+2. **Merge de `develop` a `main`**: Crear PR y fusionar para activar el pipeline de release oficial `v1.0.3`.
+3. **Limpieza**: Eliminar las ramas remotas `feature/onboarding-spotlight-fix` y `feature/auto-updater-protocol`.
