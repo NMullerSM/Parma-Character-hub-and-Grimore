@@ -6,9 +6,14 @@ import { api } from "../api/client";
 import type { AppSettings } from "../api/types";
 import { X, Upload, Palette, Sun, Moon, FolderOpen, RefreshCw, CheckCircle2, BookOpen } from "lucide-react";
 
-export const SettingsView: React.FC<{ onClose: () => void; onReplayTour?: () => void }> = ({
+export const SettingsView: React.FC<{
+  onClose: () => void;
+  onReplayTour?: () => void;
+  onResetSectionTours?: () => void;
+}> = ({
   onClose,
   onReplayTour,
+  onResetSectionTours,
 }) => {
   const {
     theme,
@@ -435,17 +440,32 @@ export const SettingsView: React.FC<{ onClose: () => void; onReplayTour?: () => 
                 <div className="text-xs text-muted max-w-sm">
                   {t("onboarding.subtitleWelcome")}
                 </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    onClose();
-                    onReplayTour();
-                  }}
-                  className="px-3 py-1.5 rounded-lg bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-semibold text-main flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
-                >
-                  <BookOpen className="w-3.5 h-3.5 text-gold" />
-                  <span>{t("onboarding.replayTour")}</span>
-                </button>
+                <div className="flex flex-wrap items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      onReplayTour();
+                    }}
+                    className="px-3 py-1.5 rounded-lg bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-semibold text-main flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <BookOpen className="w-3.5 h-3.5 text-gold" />
+                    <span>{t("onboarding.replayTour")}</span>
+                  </button>
+                  {onResetSectionTours && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onResetSectionTours();
+                        showToast(t("onboarding.sectionToursResetSuccess") || "Tutoriales reiniciados", "success");
+                      }}
+                      className="px-3 py-1.5 rounded-lg bg-surface hover:bg-card border border-border-iron hover:border-border-gold/50 text-xs font-semibold text-muted hover:text-main flex items-center gap-1.5 transition-colors cursor-pointer"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5 text-muted" />
+                      <span>{t("onboarding.resetSectionTours") || "Reiniciar guías"}</span>
+                    </button>
+                  )}
+                </div>
               </div>
             </section>
           )}
