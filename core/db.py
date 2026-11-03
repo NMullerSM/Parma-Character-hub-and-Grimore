@@ -7,8 +7,9 @@ import sys
 import json
 import sqlite3
 import shutil
+import contextlib
 from pathlib import Path
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Iterator
 from .models import CharacterSheet, SessionLog, NetworkNode, NetworkEdge
 from .paths import get_default_db_path, get_user_data_dir, get_bundle_dir
 
@@ -18,14 +19,26 @@ class DatabaseManager:
         self.db_path = db_path or get_default_db_path()
         self._init_db()
 
-    def _get_connection(self) -> sqlite3.Connection:
+    @contextlib.contextmanager
+    def _get_connection(self) -> Iterator[sqlite3.Connection]:
+        """
+        Context manager que además CIERRA la conexión al salir.
+        `sqlite3.Connection.__exit__` solo hace commit/rollback de la transacción,
+        nunca cierra el handle del archivo: en Windows eso deja el .db bloqueado
+        (PermissionError [WinError 32]) hasta que el GC recoja la conexión, lo que
+        rompe la limpieza de bases de datos temporales en tests y en migraciones.
+        """
         conn = sqlite3.connect(self.db_path, timeout=10.0)
         conn.row_factory = sqlite3.Row
         # WAL mode para máxima concurrencia y velocidad
         conn.execute("PRAGMA journal_mode=WAL;")
         conn.execute("PRAGMA synchronous=NORMAL;")
         conn.execute("PRAGMA foreign_keys=ON;")
-        return conn
+        try:
+            with conn:
+                yield conn
+        finally:
+            conn.close()
 
     def _init_db(self):
         """Crea y migra las tablas relacionales según PRAGMA user_version."""
