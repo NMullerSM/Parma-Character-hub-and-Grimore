@@ -134,10 +134,11 @@ python desktop_app.py
 
 Para consultar las decisiones de diseño, contratos de datos y especificaciones técnicas completas:
 
+* 🧭 **[docs/PARMA_MASTER_CONTEXT_AND_ARCHITECTURE.md](docs/PARMA_MASTER_CONTEXT_AND_ARCHITECTURE.md)** — **Documento Maestro Integral**: Origen, alcance, arquitectura de código, APIs, conectores, requisitos (RF/RNF), ADRs y hoja de ruta a futuro.
 * 🏛️ **[docs/BACKEND.md](docs/BACKEND.md)** — Arquitectura Python, SQLite, compendio OKF, puente TaleSpire y servidor de sesiones.
 * 🎨 **[docs/FRONTEND.md](docs/FRONTEND.md)** — Arquitectura React 18, Vite 8, Tailwind v4, Contexto y contratos de tipado estricto.
 * 🚀 **[docs/CICD.md](docs/CICD.md)** — Flujo GitHub Actions, empaquetado Inno Setup / Debian y catálogo de problemas resueltos.
-* 📋 **[docs/ADR.md](docs/ADR.md)** — Registros de Decisiones de Arquitectura (Architecture Decision Records) de Parma.
+* 📋 **[docs/ADR.md](docs/ADR.md)** — Registros de Decisiones de Arquitectura (Architecture Decision Records) de Parma (ADR-001 a ADR-012).
 
 ---
 

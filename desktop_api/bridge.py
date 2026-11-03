@@ -496,167 +496,27 @@ class DesktopBridge:
     def generate_ai_portrait(
         self,
         prompt: str,
-        provider: str = "google",
+        provider: str = "pollinations",
         api_key: str = "",
         api_url: str = "",
         model: str = ""
     ) -> Dict[str, Any]:
         """
-        Genera una imagen con IA llamando a Google AI Studio (Imagen 3 / Gemini),
-        OpenAI (DALL-E 3) o SD WebUI desde el backend (sin problemas de CORS en WebView).
+        Genera una imagen con IA usando la cadena resiliente de proveedores:
+        Pollinations -> AI Horde -> SD WebUI -> Google / OpenAI.
         """
-        import urllib.request
-        import urllib.error
-        import json
-
-        clean_key = (api_key or "").strip()
-        clean_url = (api_url or "").strip()
-        p = (provider or "").lower().strip()
-
-        # Detección inteligente por formato de clave o URL
-        if clean_key.startswith("AIzaSy") or "generativelanguage" in clean_url or p == "google":
-            p = "google"
-        elif clean_key.startswith("sk-") or "openai" in clean_url or p == "openai":
-            p = "openai"
-
         try:
-            if p == "google":
-                # Google AI Studio - Imagen 3 oficial (predict)
-                # Modelo recomendado: imagen-3.0-generate-002
-                endpoint = clean_url or "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict"
-                if "?" not in endpoint and clean_key:
-                    endpoint = f"{endpoint}?key={clean_key}"
-
-                payload = {
-                    "instances": [{"prompt": prompt}],
-                    "parameters": {
-                        "sampleCount": 1,
-                        "aspectRatio": "1:1",
-                        "outputOptions": {"mimeType": "image/png"}
-                    }
-                }
-                req = urllib.request.Request(
-                    endpoint,
-                    data=json.dumps(payload).encode("utf-8"),
-                    headers={"Content-Type": "application/json"}
-                )
-                try:
-                    with urllib.request.urlopen(req, timeout=60) as resp:
-                        res_data = json.loads(resp.read().decode("utf-8"))
-                        preds = res_data.get("predictions", [])
-                        if preds and "bytesBase64Encoded" in preds[0]:
-                            b64 = preds[0]["bytesBase64Encoded"]
-                            return {"success": True, "image_base64": f"data:image/png;base64,{b64}"}
-                except urllib.error.HTTPError as he:
-                    err_body = he.read().decode("utf-8", errors="ignore")
-                    # Fallback secundario: endpoint OpenAI-compatible de Google AI Studio
-                    oa_endpoint = "https://generativelanguage.googleapis.com/v1beta/openai/images/generations"
-                    for fb_model in ["imagen-3.0-generate-002", "gemini-2.5-flash-image"]:
-                        try:
-                            oa_payload = {
-                                "model": fb_model,
-                                "prompt": prompt,
-                                "n": 1,
-                                "response_format": "b64_json"
-                            }
-                            oa_req = urllib.request.Request(
-                                oa_endpoint,
-                                data=json.dumps(oa_payload).encode("utf-8"),
-                                headers={
-                                    "Content-Type": "application/json",
-                                    "Authorization": f"Bearer {clean_key}"
-                                }
-                            )
-                            with urllib.request.urlopen(oa_req, timeout=60) as resp2:
-                                res_data2 = json.loads(resp2.read().decode("utf-8"))
-                                if res_data2.get("data") and res_data2["data"][0].get("b64_json"):
-                                    b64 = res_data2["data"][0]["b64_json"]
-                                    return {"success": True, "image_base64": f"data:image/png;base64,{b64}"}
-                        except Exception:
-                            continue
-                    if "PERMISSION_DENIED" in err_body or he.code == 403:
-                        return {
-                            "success": False,
-                            "error": "Google AI Studio (Error 403: PERMISSION_DENIED): Tu proyecto no tiene permisos para Imagen 3. Google requiere una cuenta con facturación activa en Google Cloud para generar imágenes con Imagen 3. Puedes usar el proveedor gratuito (Pollinations) o una clave de OpenAI."
-                        }
-                    return {"success": False, "error": f"Error de Google AI Studio: {err_body[:250]}"}
-
-            elif p == "openai":
-                endpoint = clean_url or "https://api.openai.com/v1/images/generations"
-                payload = {
-                    "model": model or "dall-e-3",
-                    "prompt": prompt,
-                    "n": 1,
-                    "size": "1024x1024",
-                    "response_format": "b64_json"
-                }
-                req = urllib.request.Request(
-                    endpoint,
-                    data=json.dumps(payload).encode("utf-8"),
-                    headers={
-                        "Content-Type": "application/json",
-                        "Authorization": f"Bearer {clean_key}"
-                    }
-                )
-                with urllib.request.urlopen(req, timeout=60) as resp:
-                    res_data = json.loads(resp.read().decode("utf-8"))
-                    if res_data.get("data") and res_data["data"][0].get("b64_json"):
-                        b64 = res_data["data"][0]["b64_json"]
-                        return {"success": True, "image_base64": f"data:image/png;base64,{b64}"}
-                    elif res_data.get("data") and res_data["data"][0].get("url"):
-                        return {"success": True, "image_base64": res_data["data"][0]["url"]}
-
-            elif p in ("pollinations", "free"):
-                # Generador gratuito y sin clave vía Pollinations.ai (FLUX / SD)
-                # enhance=false evita que el LLM de Pollinations reescriba el prompt inventando personajes femeninos
-                import urllib.parse
-                import random
-                clean_prompt = prompt.strip()[:1800]
-                encoded_prompt = urllib.parse.quote(clean_prompt)
-                seed = random.randint(1, 99999999)
-                poll_model = model.strip() if model and model.strip() in ("flux", "turbo", "flux-real", "flux-anime") else "flux"
-                poll_url = (
-                    f"https://image.pollinations.ai/prompt/{encoded_prompt}"
-                    f"?width=512&height=512&model={poll_model}&enhance=false&nologo=true&seed={seed}"
-                )
-                poll_req = urllib.request.Request(
-                    poll_url,
-                    headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) DndSanctum/1.0"}
-                )
-                with urllib.request.urlopen(poll_req, timeout=60) as resp:
-                    img_bytes = resp.read()
-                    b64 = base64.b64encode(img_bytes).decode("ascii")
-                    return {"success": True, "image_base64": f"data:image/jpeg;base64,{b64}"}
-
-            else:
-                # Stable Diffusion / WebUI Local
-                endpoint = clean_url or "http://127.0.0.1:7860/sdapi/v1/txt2img"
-                payload = {
-                    "prompt": prompt,
-                    "steps": 25,
-                    "width": 512,
-                    "height": 512
-                }
-                headers = {"Content-Type": "application/json"}
-                if clean_key:
-                    headers["Authorization"] = f"Bearer {clean_key}"
-                req = urllib.request.Request(
-                    endpoint,
-                    data=json.dumps(payload).encode("utf-8"),
-                    headers=headers
-                )
-                with urllib.request.urlopen(req, timeout=60) as resp:
-                    res_data = json.loads(resp.read().decode("utf-8"))
-                    if res_data.get("images") and len(res_data["images"]) > 0:
-                        b64 = res_data["images"][0]
-                        return {"success": True, "image_base64": f"data:image/png;base64,{b64}"}
-
-            return {"success": False, "error": "No se reconoció el formato de respuesta del proveedor de imagen."}
-        except urllib.error.HTTPError as he:
-            err_msg = he.read().decode("utf-8", errors="ignore")
-            return {"success": False, "error": f"Error HTTP {he.code}: {err_msg[:250]}"}
+            from .image_providers import ImageProviderChain
+            chain = ImageProviderChain()
+            return chain.generate(
+                prompt=prompt,
+                provider=provider,
+                api_key=api_key,
+                api_url=api_url,
+                model=model,
+            )
         except Exception as e:
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": f"Error en la generación de imagen: {e}"}
 
     def export_character_json(self, char_id: int) -> Dict[str, Any]:
         """Exporta un personaje a un archivo JSON en data/characters/ (o mediante diálogo nativo)."""
@@ -2284,13 +2144,45 @@ class DesktopBridge:
         # 2. Registrar o reactivar en SQLite
         self._db.create_dm_session(sid, name, campaign_name)
 
-        # 3. Iniciar Cloudflare Quick Tunnel en hilo secundario sin congelar el hilo de renderizado
+        # 3. Generar token de invitación inicial para jugadores remotos (TOFU)
+        self._session_server.create_invite(expires_seconds=7200)
+
+        # 4. Iniciar Cloudflare Quick Tunnel en hilo secundario sin congelar el hilo de renderizado
         def on_url_ready(url: str):
             self._db.update_dm_session_tunnel(sid, url)
 
         self._tunnel_mgr.start_tunnel(port, on_url=on_url_ready)
 
         return self.get_dm_session_status()
+
+    def dm_create_invitation(self, expires_seconds: int = 7200) -> Dict[str, Any]:
+        """Crea una invitación temporal de un solo uso para unirse a la sesión."""
+        token = self._session_server.create_invite(expires_seconds=expires_seconds)
+        tunnel_url = self._tunnel_mgr.tunnel_url or f"http://127.0.0.1:{self._session_server.port}"
+        invite_url = f"{tunnel_url}?invite={token}"
+        qr = self._tunnel_mgr.generate_qr_base64(invite_url) if self._tunnel_mgr else ""
+        return {
+            "invite_token": token,
+            "invite_url": invite_url,
+            "qr_code": qr,
+            "expires_seconds": expires_seconds,
+        }
+
+    def dm_approve_player(self, token_hash: str) -> bool:
+        """Aprueba manualmente la conexión de un jugador a la sesión activa."""
+        return self._session_server.approve_player(token_hash)
+
+    def dm_revoke_player(self, token_hash: str) -> bool:
+        """Revoca el acceso de un jugador a la sesión."""
+        return self._session_server.revoke_player(token_hash)
+
+    def dm_get_pending_approvals(self) -> List[Dict[str, Any]]:
+        """Obtiene la lista de solicitudes de aprobación de jugadores en espera."""
+        return self._session_server.get_pending_approvals()
+
+    def dm_list_trusted_players(self) -> List[Dict[str, Any]]:
+        """Lista los jugadores de confianza registrados en la base de datos."""
+        return self._db.list_trusted_players()
 
     def dm_list_sessions(self) -> List[Dict[str, Any]]:
         """Lista las sesiones históricas para poder reanudarlas."""
@@ -2312,7 +2204,9 @@ class DesktopBridge:
         session_id = self._session_server.current_session_id
         tunnel_url = self._tunnel_mgr.tunnel_url
         is_running = self._session_server.current_session_id is not None
-        qr_code = self._tunnel_mgr.generate_qr_base64(tunnel_url) if tunnel_url else ""
+        invite_token = self._session_server.current_invite_token
+        invite_url = f"{tunnel_url}?invite={invite_token}" if (tunnel_url and invite_token) else (tunnel_url or "")
+        qr_code = self._tunnel_mgr.generate_qr_base64(invite_url) if invite_url else ""
 
         players = []
         if session_id:
@@ -2329,9 +2223,13 @@ class DesktopBridge:
             "session_name": self._session_server.session_name,
             "campaign_name": self._session_server.campaign_name,
             "tunnel_url": tunnel_url,
+            "invite_token": invite_token,
+            "invite_url": invite_url,
             "qr_code": qr_code,
             "port": self._session_server.port,
             "players": players,
+            "pending_approvals": self._session_server.get_pending_approvals(),
+            "trusted_players": self._db.list_trusted_players(),
             "connected_count": len(self._session_server.manager.active_players),
         }
 

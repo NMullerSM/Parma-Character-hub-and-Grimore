@@ -58,7 +58,7 @@ class SrdImporter:
         """Descarga un fichero JSON desde GitHub de 5e-database."""
         url = f"{RAW_GITHUB_BASE}/{relative_path}"
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": "D&D Sanctum Importer"})
+            req = urllib.request.Request(url, headers={"User-Agent": "Parma SRD Importer/1.0"})
             with urllib.request.urlopen(req, timeout=15) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
                 return data if isinstance(data, list) else data.get("results", [])

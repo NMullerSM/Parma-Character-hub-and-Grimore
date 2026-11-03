@@ -28,9 +28,24 @@ class DatabaseManager:
         return conn
 
     def _init_db(self):
-        """Crea las tablas relacionales si no existen."""
+        """Crea y migra las tablas relacionales según PRAGMA user_version."""
+        db_existed = os.path.exists(self.db_path) and os.path.getsize(self.db_path) > 0
+
         with self._get_connection() as conn:
             cursor = conn.cursor()
+            cursor.execute("PRAGMA user_version;")
+            row_v = cursor.fetchone()
+            current_version = row_v[0] if row_v else 0
+
+            # Si la base de datos existía pero user_version era 0, realizar copia de seguridad antes de migrar
+            if db_existed and current_version == 0:
+                backup_path = f"{self.db_path}.bak_v0"
+                if not os.path.exists(backup_path):
+                    try:
+                        shutil.copy2(self.db_path, backup_path)
+                    except Exception as e:
+                        print(f"[DatabaseManager] Advertencia al respaldar BD v0: {e}")
+
             # 1. Tabla de personajes
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS characters (
@@ -168,6 +183,33 @@ class DatabaseManager:
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
             """)
+
+            # Migración a versión 1: Control de invitaciones y autenticación de jugadores (TOFU)
+            if current_version < 1:
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS trusted_players (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        name TEXT NOT NULL,
+                        token_hash TEXT NOT NULL UNIQUE,
+                        approved_by_dm INTEGER DEFAULT 0,
+                        is_revoked INTEGER DEFAULT 0,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    );
+                """)
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS dm_invitations (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        session_id TEXT NOT NULL,
+                        invite_token TEXT NOT NULL UNIQUE,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        expires_at TIMESTAMP,
+                        is_used INTEGER DEFAULT 0,
+                        used_by_token_hash TEXT
+                    );
+                """)
+                cursor.execute("PRAGMA user_version = 1;")
+
             conn.commit()
 
     def get_active_character(self) -> Optional[CharacterSheet]:
@@ -611,3 +653,109 @@ class DatabaseManager:
             cursor.execute("DELETE FROM dm_homebrew_items WHERE id = ?;", (item_id,))
             conn.commit()
             return True
+
+    # =========================================================================
+    # GESTIÓN DE JUGADORES DE CONFIANZA E INVITACIONES (TOFU & HARDENING)
+    # =========================================================================
+
+    def create_invitation(self, session_id: str, invite_token: str, expires_seconds: int = 3600) -> bool:
+        """Registra un token de invitación temporal de un solo uso para una sesión DM."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            mod_str = f"{expires_seconds:+d} seconds"
+            cursor.execute("""
+                INSERT INTO dm_invitations (session_id, invite_token, expires_at)
+                VALUES (?, ?, datetime('now', ?));
+            """, (session_id, invite_token, mod_str))
+            conn.commit()
+            return True
+
+    def get_invitation(self, invite_token: str) -> Optional[Dict[str, Any]]:
+        """Obtiene la información de una invitación válida y no expirada."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT * FROM dm_invitations
+                WHERE invite_token = ?
+                  AND is_used = 0
+                  AND (expires_at IS NULL OR expires_at > datetime('now'))
+                LIMIT 1;
+            """, (invite_token,))
+            row = cursor.fetchone()
+            return dict(row) if row else None
+
+    def mark_invitation_used(self, invite_token: str, token_hash: str) -> bool:
+        """Marca una invitación como consumida por un token_hash específico."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE dm_invitations
+                SET is_used = 1, used_by_token_hash = ?
+                WHERE invite_token = ?;
+            """, (token_hash, invite_token))
+            conn.commit()
+            return cursor.rowcount > 0
+
+    def register_trusted_player(self, name: str, token_hash: str, approved: bool = False) -> int:
+        """Registra o actualiza un jugador de confianza en la base de datos."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO trusted_players (name, token_hash, approved_by_dm, last_seen)
+                VALUES (?, ?, ?, datetime('now'))
+                ON CONFLICT(token_hash) DO UPDATE SET
+                    name = excluded.name,
+                    last_seen = datetime('now');
+            """, (name, token_hash, 1 if approved else 0))
+            conn.commit()
+            return cursor.lastrowid or 0
+
+    def get_trusted_player_by_hash(self, token_hash: str) -> Optional[Dict[str, Any]]:
+        """Busca un jugador por el hash SHA-256 de su clave secreta."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT * FROM trusted_players WHERE token_hash = ? LIMIT 1;
+            """, (token_hash,))
+            row = cursor.fetchone()
+            return dict(row) if row else None
+
+    def approve_trusted_player(self, token_hash: str) -> bool:
+        """Aprueba manualmente a un jugador para permitir su acceso a la sesión."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE trusted_players
+                SET approved_by_dm = 1, is_revoked = 0, last_seen = datetime('now')
+                WHERE token_hash = ?;
+            """, (token_hash,))
+            conn.commit()
+            return cursor.rowcount > 0
+
+    def revoke_trusted_player(self, token_hash: str) -> bool:
+        """Revoca a un jugador impidiendo su acceso futuro a sesiones remotas."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE trusted_players
+                SET is_revoked = 1, approved_by_dm = 0
+                WHERE token_hash = ?;
+            """, (token_hash,))
+            conn.commit()
+            return cursor.rowcount > 0
+
+    def list_trusted_players(self) -> List[Dict[str, Any]]:
+        """Lista todos los jugadores registrados con su estado de aprobación."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM trusted_players ORDER BY last_seen DESC;")
+            return [dict(r) for r in cursor.fetchall()]
+
+    def update_player_last_seen(self, token_hash: str):
+        """Actualiza la marca temporal de última actividad de un jugador."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE trusted_players SET last_seen = datetime('now') WHERE token_hash = ?;
+            """, (token_hash,))
+            conn.commit()

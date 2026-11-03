@@ -26,12 +26,22 @@ export const OnlinePlayerSync: React.FC = () => {
     // Solo conectar WebSocket si el entorno tiene soporte de ventanas y redes
     if (typeof window === "undefined") return;
 
-    // Obtener token persistente de jugador o generar uno de forma segura
+    // Obtener token persistente de jugador o generar uno criptográficamente seguro (CSPRNG)
     let playerToken = safeStorage.getItem("parma_player_token");
     if (!playerToken) {
-      playerToken = `p_${Math.random().toString(36).substring(2, 10)}`;
+      if (typeof window !== "undefined" && window.crypto?.getRandomValues) {
+        const randomBytes = new Uint8Array(16);
+        window.crypto.getRandomValues(randomBytes);
+        playerToken = `p_${Array.from(randomBytes).map((b) => b.toString(16).padStart(2, "0")).join("")}`;
+      } else {
+        playerToken = `p_${Math.random().toString(36).substring(2, 10)}`;
+      }
       safeStorage.setItem("parma_player_token", playerToken);
     }
+
+    // Extraer token de invitación de la URL si se ingresó mediante enlace/QR
+    const inviteParam = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("invite") : null;
+    const inviteQuery = inviteParam ? `&invite=${encodeURIComponent(inviteParam)}` : "";
 
     // Determinar URL de WebSocket: túnel remoto (App-a-App) vs host web local/túnel directo
     let wsUrl = "";
@@ -39,17 +49,17 @@ export const OnlinePlayerSync: React.FC = () => {
       try {
         const parsed = new URL(remoteTunnelUrl);
         const wsProto = parsed.protocol === "https:" ? "wss:" : "ws:";
-        wsUrl = `${wsProto}//${parsed.host}/ws?token=${playerToken}&role=player`;
+        wsUrl = `${wsProto}//${parsed.host}/ws?token=${playerToken}&role=player${inviteQuery}`;
       } catch {
         const isHttps = window.location.protocol === "https:";
         const wsProto = isHttps ? "wss:" : "ws:";
-        wsUrl = `${wsProto}//${window.location.host}/ws?token=${playerToken}&role=player`;
+        wsUrl = `${wsProto}//${window.location.host}/ws?token=${playerToken}&role=player${inviteQuery}`;
       }
     } else {
       const isHttps = window.location.protocol === "https:";
       const wsProto = isHttps ? "wss:" : "ws:";
       const host = window.location.host;
-      wsUrl = `${wsProto}//${host}/ws?token=${playerToken}&role=player`;
+      wsUrl = `${wsProto}//${host}/ws?token=${playerToken}&role=player${inviteQuery}`;
     }
 
     let ws: WebSocket;
@@ -72,7 +82,21 @@ export const OnlinePlayerSync: React.FC = () => {
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          if (data.type === "DM_APPLY_DAMAGE") {
+          if (data.type === "PENDING_DM_APPROVAL") {
+            showToast(data.message || "Esperando aprobación del Dungeon Master...", "warn");
+          } else if (data.type === "DM_APPROVAL_GRANTED") {
+            showToast(data.message || "¡Aprobado por el Dungeon Master!", "success");
+            if (activeCharacter) {
+              ws.send(
+                JSON.stringify({
+                  type: "SHEET_SYNC",
+                  character: activeCharacter,
+                })
+              );
+            }
+          } else if (data.type === "APPROVAL_TIMEOUT") {
+            showToast(data.message || "Tiempo de espera agotado sin aprobación del DM.", "warn");
+          } else if (data.type === "DM_APPLY_DAMAGE") {
             const delta = Number(data.delta) || 1;
             triggerVignetteFlash("damage");
             if (activeCharacter) {

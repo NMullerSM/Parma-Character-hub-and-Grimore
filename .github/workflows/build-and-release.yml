@@ -6,12 +6,13 @@ on:
     branches:
       - develop
       - main
-    tags:
-      - 'v*'
+  pull_request:
+    branches:
+      - develop
+      - main
 
 permissions:
-  contents: write
-  packages: write
+  contents: read
 
 jobs:
   # ============================================================================
@@ -33,7 +34,8 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Configurar Python
+      # Nota: En Windows se mantiene Python 3.11 para estabilidad de hooks de PyInstaller con WebView2
+      - name: Configurar Python (Windows 3.11)
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -64,7 +66,7 @@ jobs:
           cd frontend
           npx tsc -b
 
-      - name: Compilar Frontend (React 18 + Vite)
+      - name: Compilar Frontend (React 19 + Vite)
         run: |
           cd frontend
           npm run build
@@ -73,6 +75,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
+      - name: Ejecutar Pruebas Automatizadas (pytest)
+        run: pytest tests
 
       - name: Generar Iconos de Alto Contraste (Escudo Sólido)
         run: python scripts/generate_taskbar_icons.py
@@ -152,7 +157,7 @@ jobs:
           cd frontend
           npx tsc -b
 
-      - name: Compilar Frontend (React 18 + Vite)
+      - name: Compilar Frontend (React 19 + Vite)
         run: |
           cd frontend
           npm run build
@@ -161,6 +166,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
+      - name: Ejecutar Pruebas Automatizadas (pytest)
+        run: pytest tests
           pip install PyGObject pycairo
 
       - name: Generar Iconos de Alto Contraste (Escudo Sólido)
@@ -192,17 +200,21 @@ jobs:
           retention-days: 14
 
   # ============================================================================
-  # 3. Publicación Oficial en el Perfil Público (Rama 'main', Tags o Dispatch)
+  # 3. Publicación Oficial en el Perfil Público (Exclusivo Push a 'main')
   # ============================================================================
   publish-release:
     name: Publicar Release Oficial en GitHub
     needs: [build-windows, build-linux]
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
-      - name: Checkout del Repositorio
+      - name: Checkout del Repositorio (Tags & Historial)
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Descargar Artefactos de Windows
         uses: actions/download-artifact@v4
@@ -223,15 +235,25 @@ jobs:
           echo "=== Archivos recolectados para la release ==="
           ls -la release_assets/
 
-      - name: Determinar Versión de la Release
+      - name: Generar Manifiesto de Integridad SHA256SUMS
+        run: |
+          cd release_assets
+          sha256sum * > SHA256SUMS
+          echo "=== Manifiesto SHA256SUMS generado ==="
+          cat SHA256SUMS
+          cd ..
+
+      - name: Determinar Versión y Verificar Colisión de Tags
         id: release_version
         run: |
-          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
-            echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-          else
-            VER=$(python3 scripts/get_version.py 2>/dev/null || echo "1.0.1")
-            echo "TAG_NAME=v${VER}" >> $GITHUB_ENV
+          VER=$(python3 scripts/get_version.py 2>/dev/null || echo "1.0.1")
+          TAG="v${VER}"
+          echo "Comprobando si el tag $TAG ya existe..."
+          if git rev-parse "$TAG" >/dev/null 2>&1 || git ls-remote --tags origin | grep -q "refs/tags/$TAG"; then
+            echo "::error::El tag $TAG ya existe en el repositorio. Incrementa la versión en core/version.py antes de mergear a main para publicar una release."
+            exit 1
           fi
+          echo "TAG_NAME=${TAG}" >> $GITHUB_ENV
 
       - name: Publicar Release Oficial en el Perfil Público
         uses: softprops/action-gh-release@v2
@@ -251,8 +273,11 @@ jobs:
               - 🐧 `parma_*_amd64.deb` — Paquete oficial para Pop!_OS, Ubuntu, Linux Mint y Debian.
               - 📦 `Parma-Linux-Portable.tar.gz` — Paquete comprimido portable para cualquier distro Linux.
 
+            ### 🛡️ Integridad Criptográfica:
+            - `SHA256SUMS` incluido con los hashes criptográficos de cada binario publicado.
+
             ---
-            *Compilado con PyWebView, WebKitGTK / WebView2, React 18 y sincronización 3D con TaleSpire.*
+            *Compilado con PyWebView, WebKitGTK / WebView2, React 19 y sincronización 3D con TaleSpire.*
           draft: false
           prerelease: false
           make_latest: true

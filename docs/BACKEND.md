@@ -2,6 +2,8 @@
 
 Este documento detalla la arquitectura de backend de **Parma (Character Hub & Grimoire)**, sus decisiones de ingeniería, estructura modular, motores de negocio en Python y el historial de problemas técnicos resueltos.
 
+> Para el contexto maestro completo del proyecto, catálogo de APIs, ADRs (001–012), requisitos y hoja de ruta, consulta [**`docs/PARMA_MASTER_CONTEXT_AND_ARCHITECTURE.md`**](file:///home/nathanielwrk/Documentos/Proyects/Dnd_Player_Dashboard/docs/PARMA_MASTER_CONTEXT_AND_ARCHITECTURE.md).
+
 ---
 
 ## 1. Visión General y Filosofía de Diseño
@@ -50,13 +52,13 @@ flowchart TD
 ### A. Capa de Enlace RPC (`desktop_api/bridge.py`)
 Expone métodos asíncronos serializados en JSON directamente a la ventana de React mediante introspección de PyWebView:
 * **Gestión de Fichas:** `list_characters`, `get_active_character`, `save_character`, `delete_character`.
-* **Retratos e IA:** `upload_character_portrait`, `set_character_portrait_base64`, `generate_ai_portrait` (soporte backend para Imagen 3, OpenAI DALL-E y Stable Diffusion sin bloqueos CORS).
+* **Retratos e IA:** `upload_character_portrait`, `set_character_portrait_base64`, `generate_ai_portrait` (soporte backend para Pollinations FLUX gratuito, Imagen 3, OpenAI DALL-E y Stable Diffusion sin bloqueos CORS).
 * **Grimorio y Conjuros:** `get_class_spells`, `get_available_spells`, `add_spell_to_character`, `remove_spell_from_character`.
 * **Descansos y Reglas:** `perform_rest` (corto y largo), `validate_point_buy`, `get_builder_catalog`.
 * **Exportación/Importación:** `export_character_pdf`, `import_character_pdf`, `export_character_json`, `import_character_json`.
 
 ### B. Base de Datos SQLite (`core/db.py` y `core/models.py`)
-* Almacena fichas en `data/characters.db` con esquema relacional y soporte transaccional ACID.
+* Almacena fichas en `data/characters.db` con esquema relacional y soporte transaccional ACID en modo WAL (`PRAGMA journal_mode=WAL`).
 * **Modelos Fuertes (`core/models.py`):**
   * `CharacterSheet`: Hoja completa con atributos, salvaciones, ranuras de conjuros, armas, rasgos y crónicas.
   * `WeaponAction`: Acciones de combate con fórmulas de dados parametrizadas.
@@ -70,15 +72,15 @@ Expone métodos asíncronos serializados en JSON directamente a la ventana de Re
 * `SrdImporter` (`core/srd_importer.py`): Regenerador automático del índice maestro JSON a partir de los archivos de texto.
 
 ### D. Servidor DM Online y Conectividad (`desktop_api/session_server.py`)
-* Servidor asíncrono **FastAPI + Uvicorn** ejecutado en un hilo daemon secundario (`find_free_port(8765)`).
-* `ConnectionManager`: Administra websockets activos entre DM, jugadores conectados desde navegador y el cliente TaleSpire.
+* Servidor asíncrono **FastAPI + Uvicorn** ejecutado en un hilo daemon secundario (`find_free_port(8765)`), auto-iniciado al arrancar Parma (`ensure_running()`).
+* `ConnectionManager`: Administra websockets activos entre DM, jugadores conectados desde navegador/escritorio y el cliente TaleSpire (`/ws/talespire`).
 * `CloudflareTunnelManager`: Levanta túneles seguros temporales sin requerir apertura de puertos en el router del DM (Port Forwarding), generando URLs públicas seguras `https://*.trycloudflare.com` y códigos QR para acceso móvil inmediato.
 
 ### E. Puente TaleSpire 3D (`core/talespire_bridge.py` y `talespire_symbiote/`)
 * Integración bidireccional con el Virtual Tabletop 3D TaleSpire.
 * Detecta directorios oficiales de Steam en Windows y Linux (Proton/Wine).
-* Auto-instalación del plugin Symbiote en la carpeta de TaleSpire.
-* Soporte de tiradas tridimensionales y comandos de chat interactivos (`!Hechizo:1d20+5`).
+* Auto-instalación del plugin Symbiote en la carpeta de TaleSpire (`ParmaDiceBridge`).
+* Soporte de tiradas tridimensionales vía WebSocket (`DICE_ROLL_DISPATCH` / `DICE_ROLL_RESOLVED`), fallback Named Pipe / URI (`talespire://dice/`) y modos duales de lanzamiento (`talespire_auto_throw`).
 
 ### F. Motor de Lectura e Interpretación PDF (`core/pdf_engine.py`)
 * Basado en la versión moderna de **PyMuPDF (`import pymupdf`)**, eliminando advertencias de obsolescencia de la API legacy `fitz`.
@@ -131,3 +133,11 @@ Expone métodos asíncronos serializados en JSON directamente a la ventana de Re
 * Los datos de usuario (base de datos SQLite `characters.db`, tiradas guardadas, notas y fichas) residen permanentemente en `user_data_dir` (`%LOCALAPPDATA%/Parma/data` en Windows y `~/.local/share/parma/data` en Linux).
 * El instalador de Inno Setup instala exclusivamente en `C:\Program Files\Parma` (`{autopf}\Parma`).
 * Al ejecutarse la actualización silenciosa `/SILENT /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS`, los binarios ejecutables se reemplazan limpiamente sin tocar jamás la carpeta de datos de usuario.
+
+### 8. Auto-Inicio del Daemon WebSocket para TaleSpire Symbiote y Modos Duales
+* **Problema:** El Symbiote dentro de TaleSpire quedaba en `"Reconectando..."` durante partidas locales porque `DmSessionServer` solo arrancaba al iniciar una campaña online de DM.
+* **Solución:** `DesktopBridge.__init__` invoca `self._session_server.ensure_running()` en el arranque, manteniendo activo permanentemente el endpoint `ws://127.0.0.1:8765/ws/talespire`. Se incorporó además la preferencia `talespire_auto_throw` para alternar entre lanzamiento físico automático con micro-gesto y preparación manual en bandeja.
+
+### 9. Simetría Bidireccional en Túneles DM (Linux Host $\leftrightarrow$ Windows Host)
+* **Problema:** `DmSessionServer` buscaba `frontend/dist` dentro de `user_data_dir` en lugar de `base_dir`, devolviendo 404 a clientes remotos cuando Linux era host, y `cloudflared` descargado en Linux carecía de permisos de ejecución (`0o755`).
+* **Solución:** Inicialización de `DmSessionServer` y `CloudflareTunnelManager` con `self._base_dir`, resolución multi-ruta (`frontend/dist`, `dist_ui`, `get_bundle_dir()`) y aplicación automática de `os.chmod(..., 0o755)` en plataformas POSIX.
