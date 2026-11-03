@@ -2316,3 +2316,33 @@ class DesktopBridge:
     def apply_update_and_restart(self) -> Dict[str, Any]:
         """Aplica la actualización silenciosa (/SILENT /CLOSEAPPLICATIONS) y reinicia."""
         return self._updater.apply_update_and_restart()
+
+    # -------------------------------------------------------------------------
+    # Modo LAN Local sin Internet (CARD-PARMA-08)
+    # -------------------------------------------------------------------------
+    def get_lan_connection_info(self, expires_seconds: int = 7200) -> Dict[str, Any]:
+        """
+        Genera (o reutiliza) una invitación apuntando a la IP LAN real del host en vez
+        del túnel Cloudflare, para usar cuando no hay internet o el DM elige modo LAN
+        local explícito. No reemplaza el flujo de túnel existente: es aditivo, pensado
+        para que el frontend lo invoque como alternativa cuando corresponda.
+        """
+        if not self._session_server.current_session_id:
+            return {"success": False, "error": "No hay una sesión DM activa."}
+
+        token = self._session_server.current_invite_token or self._session_server.create_invite(
+            expires_seconds=expires_seconds
+        )
+        lan_ip = self._tunnel_mgr.get_lan_ip()
+        lan_url = self._tunnel_mgr.get_lan_url(self._session_server.port)
+        invite_url = f"{lan_url}?invite={token}"
+        qr_code = self._tunnel_mgr.generate_qr_base64(invite_url)
+
+        return {
+            "success": True,
+            "lan_ip": lan_ip,
+            "lan_url": lan_url,
+            "invite_token": token,
+            "invite_url": invite_url,
+            "qr_code": qr_code,
+        }

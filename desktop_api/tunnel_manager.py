@@ -11,6 +11,7 @@ import shutil
 import hashlib
 import hmac
 import platform
+import socket
 import subprocess
 import threading
 import urllib.request
@@ -261,6 +262,37 @@ class CloudflareTunnelManager:
             self.process = None
         self.is_running = False
         self.tunnel_url = None
+
+    def get_lan_ip(self) -> str:
+        """
+        Detecta la IP real de la interfaz de red local activa del host (no 127.0.0.1),
+        para poder exponer el servidor a otros dispositivos de la misma LAN cuando
+        no hay internet o el DM elige modo LAN explícito.
+        """
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+                s.settimeout(0.5)
+                # No se envían datos: solo se usa para que el SO resuelva la interfaz
+                # de salida activa hacia una red externa.
+                s.connect(("8.8.8.8", 80))
+                ip = s.getsockname()[0]
+                if ip and not ip.startswith("127."):
+                    return ip
+        except OSError:
+            pass
+
+        try:
+            ip = socket.gethostbyname(socket.gethostname())
+            if ip and not ip.startswith("127."):
+                return ip
+        except OSError:
+            pass
+
+        return "127.0.0.1"
+
+    def get_lan_url(self, local_port: int) -> str:
+        """Construye la URL http://IP_LAN:puerto para unirse desde la misma red local."""
+        return f"http://{self.get_lan_ip()}:{local_port}"
 
     def generate_qr_base64(self, url: str) -> str:
         """Genera un código QR en base64 para que los jugadores lo escaneen."""
