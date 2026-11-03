@@ -18,8 +18,10 @@ starlette>=0.36.0
 websockets>=12.0
 qrcode>=7.4.2
 
-# Herramientas de Compilación / Empaquetado
+# Herramientas de Compilación, Pruebas y Empaquetado
 pyinstaller>=6.0.0
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
 
 # Dependencias Condicionales para Windows (Ignoradas en Linux/macOS)
 pywin32-ctypes>=0.2.3; sys_platform == 'win32'

@@ -12,6 +12,12 @@ Este documento consolida los **Architecture Decision Records (ADRs)** y las **Co
 4. [ADR-004: Protocolo de Actualización In-App con Descarga Asíncrona por Trozos e Instalación Silenciosa](#adr-004-protocolo-de-actualización-in-app-con-descarga-asíncrona-por-trozos-e-instalación-silenciosa)
 5. [ADR-005: Abstracción de Almacenamiento Seguro (`safeStorage`) y Polyfill Síncrono para WebKitGTK](#adr-005-abstracción-de-almacenamiento-seguro-safestorage-y-polyfill-síncrono-para-webkitgtk)
 6. [ADR-006: Onboarding Táctico Enfocado (Ley de Hick), Diseño Anti-Colisión y Resguardo con `ErrorBoundary`](#adr-006-onboarding-táctico-enfocado-ley-de-hick-diseño-anti-colisión-y-resguardo-con-errorboundary)
+7. [ADR-007: Persistencia Híbrida SQLite en Modo WAL + Documento JSON (`data_json`)](#adr-007-persistencia-híbrida-sqlite-en-modo-wal--documento-json-data_json)
+8. [ADR-008: Compendio Atómico Bilingüe OKF (Open Knowledge Format en Markdown + YAML)](#adr-008-compendio-atómico-bilingüe-okf-open-knowledge-format-en-markdown--yaml)
+9. [ADR-009: Arquitectura Zero-Server para Sesiones DM Online con Cloudflare Quick Tunnels y Enrutamiento Simétrico](#adr-009-arquitectura-zero-server-para-sesiones-dm-online-con-cloudflare-quick-tunnels-y-enrutamiento-simétrico)
+10. [ADR-010: Daemon WebSocket Permanente para TaleSpire Symbiote y Modos Duales de Lanzamiento (`Dual Throw Modes`)](#adr-010-daemon-websocket-permanente-para-talespire-symbiote-y-modos-duales-de-lanzamiento-dual-throw-modes)
+11. [ADR-011: Mitigación de Pantalla Negra en Linux WebKitGTK (`WEBKIT_DISABLE_COMPOSITING_MODE=1`)](#adr-011-mitigación-de-pantalla-negra-en-linux-webkitgtk-webkit_disable_compositing_mode1)
+12. [ADR-012: Conectores Desacoplados Multi-Proveedor para Retratos con IA y Empaquetado Legal OKF](#adr-012-conectores-desacoplados-multi-proveedor-para-retratos-con-ia-y-empaquetado-legal-okf)
 
 ---
 
@@ -156,6 +162,119 @@ El sistema de tutoriales iniciales presentaba problemas de usabilidad:
 ### Consecuencias
 * Experiencia de onboarding visualmente pulida, sin solapamientos en ninguna resolución de pantalla.
 * Prevención de bloqueos completos de pantalla si un componente secundario falla al renderizar.
+
+---
+
+## ADR-007: Persistencia Híbrida SQLite en Modo WAL + Documento JSON (`data_json`)
+
+### Estado
+**Aceptado** (Desde v1.0.0)
+
+### Contexto
+El prototipo original almacenaba un único personaje en un archivo plano `autosave_character.json`, lo cual impedía gestionar múltiples héroes, sufría riesgo de corrupción si la app se cerraba a mitad de escritura y no permitía relacionar diarios de campaña, grafos de PNJs o sesiones de DM. Por otro lado, normalizar en decenas de tablas cada rasgo, ranura de conjuro y modificador de D&D 5e/5.5e haría que cada cambio del SRD requiriera complejas migraciones SQL (`ALTER TABLE`).
+
+### Decisión
+Implementar en `core/db.py` (`DatabaseManager`) un modelo **Híbrido Relacional-Documental** sobre SQLite3 con `PRAGMA journal_mode=WAL;`:
+* Columnas relacionales indexadas en `characters` (`id`, `name`, `char_class`, `subclass`, `level`, `race`, `hp_current`, `hp_max`, `is_active`) para listados rápidos.
+* Columna documental `data_json` que almacena la serialización íntegra de `CharacterSheet`, con deserialización defensiva (`CharacterSheet.from_dict`).
+* Tablas relacionales satélites con `ON DELETE CASCADE` para `campaign_journals`, `network_nodes`, `network_edges`, `dm_sessions`, `dm_session_players`, `dm_session_logs` y `dm_homebrew_items`.
+
+### Consecuencias
+* Concurrencia sin bloqueos (`WAL`) entre el hilo de PyWebView y el servidor asíncrono FastAPI.
+* Evolución flexible de la ficha de personaje sin romper bases de datos de versiones previas.
+
+---
+
+## ADR-008: Compendio Atómico Bilingüe OKF (Open Knowledge Format en Markdown + YAML)
+
+### Estado
+**Aceptado** (Desde v1.0.0)
+
+### Contexto
+Las reglas de D&D 5e/5.5e (Clases, Subclases, Especies, Conjuros, Dotes, Equipo) requieren ser consultadas tanto por humanos con formato editorial rico (tablas, listas, negritas) como por el motor matemático del Creador de Personajes y los optimizadores de IA, además de soportar cambio de idioma instantáneo entre Español e Inglés.
+
+### Decisión
+Almacenar el compendio en `okf_dnd5e/` bajo el estándar **OKF (Open Knowledge Format)**:
+* Más de **570 archivos Markdown atómicos** (`.md` para español y `_en.md` para inglés) encabezados por un bloque **YAML Frontmatter** con metadatos estructurados (`id`, `nombre`, `nivel`, `escuela`, `clases`, `fuente`, `edicion`).
+* Indexación en memoria al arranque mediante `core/okf_engine.py` (`OkfEngine`).
+
+### Consecuencias
+* Funcionamiento 100% offline con latencia de búsqueda sub-milisegundo.
+* Trazabilidad limpia en Git y facilidad para auditar o agregar contenido Homebrew/SRD.
+
+---
+
+## ADR-009: Arquitectura Zero-Server para Sesiones DM Online con Cloudflare Quick Tunnels y Enrutamiento Simétrico
+
+### Estado
+**Aceptado** (Introducido en v1.0.2, Perfeccionado en v1.0.3)
+
+### Contexto
+Permitir que un DM dirija una partida online donde los jugadores sincronicen sus fichas, reciban daño/curación cinemática y objetos Homebrew normalmente requeriría costear un servidor backend central en la nube o exigir al DM abrir puertos (Port Forwarding) en su router doméstico. Adicionalmente, cuando un host Linux abría sesión y un cliente Windows se conectaba App-a-App, el WebSocket intentaba conectarse a `127.0.0.1` en lugar del host remoto.
+
+### Decisión
+1. **Servidor Embebido (`desktop_api/session_server.py`):** La máquina del DM ejecuta un servidor FastAPI + Uvicorn local que sirve tanto el SPA compilado (`frontend/dist`) como la API REST (`/api/session/info`, `/api/player/join`) y el hub WebSocket (`/ws`).
+2. **Túnel Saliente Zero-Config (`desktop_api/tunnel_manager.py`):** Descarga automática del binario oficial `cloudflared` en `user_data_dir/bin` (con `chmod 0o755` automático en Linux/macOS), levantando un túnel seguro `https://<hash>.trycloudflare.com` y generando un código QR en Base64.
+3. **Enrutamiento WebSocket Dinámico (`OnlinePlayerSync.tsx` & `CharacterContext.tsx`):** Al unirse mediante URL de túnel desde otra app de escritorio o navegador, se persiste `remoteTunnelUrl` en `safeStorage` y se enruta el WebSocket explícitamente hacia `wss://<hash>.trycloudflare.com/ws`.
+
+### Consecuencias
+* Costo cero de infraestructura en la nube y cero configuración de red para el DM.
+* Compatibilidad bidireccional simétrica entre hosts y clientes Windows, Linux y navegadores móviles.
+
+---
+
+## ADR-010: Daemon WebSocket Permanente para TaleSpire Symbiote y Modos Duales de Lanzamiento (`Dual Throw Modes`)
+
+### Estado
+**Aceptado** (Introducido en v1.0.3 — PR #12)
+
+### Contexto
+Anteriormente, el servidor FastAPI/WebSocket solo se iniciaba cuando el usuario abría manualmente una sesión online de DM. Por ello, durante partidas locales de un jugador, el Symbiote dentro de TaleSpire (`ws://127.0.0.1:8765/ws/talespire`) sufría *Connection Refused* y quedaba en *"Reconectando..."*. Además, algunos usuarios preferían que Parma arrojara los dados físicamente de forma automática y otros preferían que solo los dejara listos en la bandeja de TaleSpire.
+
+### Decisión
+1. **Auto-Arranque en Segundo Plano:** `DesktopBridge.__init__` invoca `self._session_server.ensure_running()` al iniciar Parma, garantizando que el endpoint `ws://127.0.0.1:8765/ws/talespire` esté siempre activo.
+2. **Estado Real del Symbiote:** `get_talespire_status()` reporta `symbiote_connected` consultando el socket activo real en `ConnectionManager`.
+3. **Modos Duales (`talespire_auto_throw`):** Nueva preferencia persistente que permite alternar entre **Lanzamiento Automático** (ejecuta el micro-gesto físico calibrado `execute_throw_gesture()`) y **Modo Manual en Bandeja** (solo coloca los dados en la bandeja mediante `putDiceInTray` / Named Pipe).
+
+### Consecuencias
+* Conexión instantánea del Symbiote apenas se abre TaleSpire y control total del usuario sobre el comportamiento físico de los dados.
+
+---
+
+## ADR-011: Mitigación de Pantalla Negra en Linux WebKitGTK (`WEBKIT_DISABLE_COMPOSITING_MODE=1`)
+
+### Estado
+**Aceptado** (Introducido en v1.0.3)
+
+### Contexto
+En distribuciones Linux con WebKitGTK 2.40+ (Pop!_OS, Ubuntu 24.04), definir únicamente `WEBKIT_DISABLE_DMABUF_RENDERER=1` hacía que el compositor acelerado de WebKit fallara al inicializar el contexto EGL sin DMABUF, mostrando una ventana negra al iniciar. Asimismo, aplicar `backdrop-blur` sobre un elemento `<rect>` SVG con máscara en `SpotlightTour.tsx` bloqueaba el pipeline de renderizado GTK.
+
+### Decisión
+1. Declarar conjuntamente `WEBKIT_DISABLE_DMABUF_RENDERER=1` y `WEBKIT_DISABLE_COMPOSITING_MODE=1` en `desktop_app.py`, `iniciar.sh` y `ejecutables/linux/parma.sh`.
+2. Eliminar `backdrop-blur-xs` sobre elementos SVG enmascarados.
+
+### Consecuencias
+* Renderizado inmediato y libre de pantallas negras en cualquier GPU (NVIDIA, AMD, Intel) bajo X11 y Wayland en Linux.
+
+---
+
+## ADR-012: Conectores Desacoplados Multi-Proveedor para Retratos con IA y Empaquetado Legal OKF
+
+### Estado
+**Aceptado** (Desde v1.0.1, Consolidado en v1.0.3)
+
+### Contexto
+Los jugadores desean generar retratos personalizados para sus personajes sin estar obligados a pagar suscripciones ni configurar claves de API complejas, pero los usuarios avanzados también quieren poder conectar sus propias cuentas de Google AI Studio, OpenAI o instancias locales de Stable Diffusion.
+
+### Decisión
+Implementar en `DesktopBridge.generate_ai_portrait` una arquitectura multi-conector:
+1. **Proveedor Gratuito por Defecto (`pollinations` / `free`):** Conecta con Pollinations.ai (modelo `flux`) sin requerir API Key y forzando `enhance=false` y `nologo=true` para fidelidad estricta al prompt.
+2. **Google AI Studio (`google` / `gemini`):** Conecta con Imagen 3 (`:predict`) con fallback automático al endpoint OpenAI-compatible de Gemini (`/v1beta/openai/images/generations`).
+3. **OpenAI (`openai`):** Conecta con DALL-E 3 devolviendo `b64_json`.
+4. **Stable Diffusion Local (`local`):** Conecta con `http://127.0.0.1:7860/sdapi/v1/txt2img`.
+
+### Consecuencias
+* Generación de retratos lista para usar desde el primer segundo tras instalar Parma, con extensibilidad total hacia modelos comerciales o locales.
 
 ---
 

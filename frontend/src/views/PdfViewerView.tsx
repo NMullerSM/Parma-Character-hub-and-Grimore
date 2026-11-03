@@ -482,6 +482,11 @@ export const PdfViewerView: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Aviso de Atribución y Uso Personal de Mesa */}
+      <footer className="text-[10px] text-muted/60 text-center py-1 select-none shrink-0 border-t border-border-iron/30">
+        D&D, Dungeons & Dragons y Wizards of the Coast son marcas registradas de Wizards of the Coast LLC. Manuales incluidos exclusivamente para uso personal y privado de mesa.
+      </footer>
     </div>
   );
 };
