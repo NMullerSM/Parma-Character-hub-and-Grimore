@@ -238,6 +238,23 @@ class DmSessionServer:
 
         # Servir build estática de frontend para los jugadores que entran por el túnel
         dist_dir = os.path.join(self.base_dir, "frontend", "dist")
+        if not os.path.isdir(dist_dir):
+            alt_dist = os.path.join(self.base_dir, "dist_ui")
+            if os.path.isdir(alt_dist):
+                dist_dir = alt_dist
+            else:
+                try:
+                    from core.paths import get_bundle_dir
+                    bundle_base = get_bundle_dir()
+                    cand1 = os.path.join(bundle_base, "frontend", "dist")
+                    cand2 = os.path.join(bundle_base, "dist_ui")
+                    if os.path.isdir(cand1):
+                        dist_dir = cand1
+                    elif os.path.isdir(cand2):
+                        dist_dir = cand2
+                except Exception:
+                    pass
+
         if os.path.isdir(dist_dir):
             assets_dir = os.path.join(dist_dir, "assets")
             if os.path.isdir(assets_dir):
@@ -251,6 +268,10 @@ class DmSessionServer:
                     return FileResponse(target)
                 if os.path.isfile(index_path):
                     return FileResponse(index_path)
+                return HTMLResponse("<h1>Parma D&D — Servidor Activo</h1><p>Conectando con el DM...</p>")
+        else:
+            @app.get("/{full_path:path}")
+            async def serve_spa_fallback(full_path: str):
                 return HTMLResponse("<h1>Parma D&D — Servidor Activo</h1><p>Conectando con el DM...</p>")
 
         return app

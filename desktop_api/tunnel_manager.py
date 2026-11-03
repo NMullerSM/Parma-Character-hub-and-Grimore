@@ -49,11 +49,21 @@ class CloudflareTunnelManager:
         exe_name = "cloudflared.exe" if self.os_type == "Windows" else "cloudflared"
         # 1. Verificar si existe en user_data_dir/bin
         local_bin = os.path.join(self.bin_dir, exe_name)
+        if self.os_type != "Windows" and os.path.isfile(local_bin) and not os.access(local_bin, os.X_OK):
+            try:
+                os.chmod(local_bin, 0o755)
+            except Exception:
+                pass
         if os.path.isfile(local_bin) and os.access(local_bin, os.X_OK if self.os_type != "Windows" else os.R_OK):
             return local_bin
 
         # 2. Verificar si existe en bundle_dir/data/bin
         bundle_bin = os.path.join(self.base_dir, "data", "bin", exe_name)
+        if self.os_type != "Windows" and os.path.isfile(bundle_bin) and not os.access(bundle_bin, os.X_OK):
+            try:
+                os.chmod(bundle_bin, 0o755)
+            except Exception:
+                pass
         if os.path.isfile(bundle_bin) and os.access(bundle_bin, os.X_OK if self.os_type != "Windows" else os.R_OK):
             return bundle_bin
 

@@ -125,8 +125,8 @@ class DesktopBridge:
         self._okf = OkfEngine(os.path.join(base_dir, "okf_dnd5e"))
         self._ts = TaleSpireBridge()
         self._pdf_reader = PdfReaderEngine()
-        self._tunnel_mgr = CloudflareTunnelManager(self._user_data_dir)
-        self._session_server = DmSessionServer(self._db, self._user_data_dir)
+        self._tunnel_mgr = CloudflareTunnelManager(self._base_dir)
+        self._session_server = DmSessionServer(self._db, self._base_dir)
         self._updater = AutoUpdateManager(self._base_dir, self._user_data_dir)
         self._window = None
 

@@ -3,6 +3,7 @@ import { useCharacter } from "../context/CharacterContext";
 import { useTheme } from "../context/ThemeContext";
 import { useTranslation } from "../i18n";
 import { api } from "../api/client";
+import { safeStorage } from "../utils/storage";
 import {
   Dice5,
   Settings as SettingsIcon,
@@ -40,6 +41,8 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
     setUserRole,
     activeSessionId,
     setActiveSessionId,
+    remoteTunnelUrl,
+    setRemoteTunnelUrl,
     sessionScopeActive,
     showToast,
   } = useCharacter();
@@ -86,15 +89,18 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
     setIsConnecting(true);
     try {
       let resolvedId = sessionInput.trim();
+      let remoteOrigin: string | null = null;
+
       // Si el usuario pegó una URL completa, extraer el ID si viene como parámetro o usar el host
       if (resolvedId.includes("http://") || resolvedId.includes("https://")) {
         try {
           const parsed = new URL(resolvedId);
+          remoteOrigin = parsed.origin;
           const sessParam = parsed.searchParams.get("session") || parsed.searchParams.get("session_id");
           if (sessParam) {
             resolvedId = sessParam;
           } else {
-            // Intentar consultar sesión al endpoint del túnel
+            // Consultar sesión al endpoint del túnel
             const res = await fetch(`${parsed.origin}/api/session/info`);
             if (res.ok) {
               const data = await res.json();
@@ -102,6 +108,29 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
             }
           }
         } catch (_) {}
+      }
+
+      // Si se conectó mediante un túnel remoto, registrar al jugador con el host
+      if (remoteOrigin) {
+        let playerToken = safeStorage.getItem("parma_player_token");
+        if (!playerToken) {
+          playerToken = `p_${Math.random().toString(36).substring(2, 10)}`;
+          safeStorage.setItem("parma_player_token", playerToken);
+        }
+        try {
+          await fetch(`${remoteOrigin}/api/player/join`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              token: playerToken,
+              character: activeCharacter || undefined,
+              character_name: activeCharacter?.name || "Aventurero",
+            }),
+          });
+        } catch (err) {
+          console.warn("Aviso en registro /api/player/join:", err);
+        }
+        setRemoteTunnelUrl(remoteOrigin);
       }
 
       setActiveSessionId(resolvedId);
@@ -125,6 +154,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
 
   const handleDisconnectSession = () => {
     setActiveSessionId(null);
+    setRemoteTunnelUrl(null);
     showToast("Te has desconectado de la sesión online.", "info");
     setIsJoinModalOpen(false);
   };
@@ -135,6 +165,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
         {/* Título de Marca, Selector de Versión y Selector de Personaje Activo */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <div
+            id="tour-logo"
             className="flex items-center cursor-pointer py-1"
             onClick={() => setActiveTab("sheet")}
             title="Parma — Character Hub & Grimoire"
@@ -147,7 +178,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
           </div>
 
           {/* Selector de Versión D&D (5.5e 2024 vs 5e 2014) */}
-          <div className="flex items-center bg-card border border-border-iron rounded-md p-0.5 text-[11px] font-stat font-semibold">
+          <div id="tour-edition" className="flex items-center bg-card border border-border-iron rounded-md p-0.5 text-[11px] font-stat font-semibold">
             <button
               onClick={() => setDndEdition("5.5e")}
               title={t("header.edition55Tooltip")}
@@ -174,7 +205,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
 
           {/* Selector de personaje activo (respeta el ámbito de sesión cuando está activo) */}
           {characters.length > 0 && (
-            <div className="flex items-center gap-1.5 pl-2 sm:pl-3 border-l border-border-iron">
+            <div id="tour-character-select" className="flex items-center gap-1.5 pl-2 sm:pl-3 border-l border-border-iron">
               {sessionScopeActive && activeSessionId && (
                 <span title="Filtrando por sesión activa" className="text-amber-400 text-xs">
                   🎯
@@ -197,7 +228,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
         </div>
 
         {/* Navegación Táctica Central (Limpia, sin pestaña DM que congestione) */}
-        <nav className="flex items-center gap-1 bg-card/70 border border-border-iron/80 rounded-lg p-1 overflow-x-auto mx-1 sm:mx-3 lg:mx-4 shrink min-w-0">
+        <nav id="tour-nav-tabs" className="flex items-center gap-1 bg-card/70 border border-border-iron/80 rounded-lg p-1 overflow-x-auto mx-1 sm:mx-3 lg:mx-4 shrink min-w-0">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
             return (
@@ -219,7 +250,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
         {/* Acciones de Utilidad Derecha */}
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {/* Selector Rápido de Rol: DM vs Jugador */}
-          <div className="flex items-center bg-card border border-border-iron rounded-md p-0.5 text-[11px] font-stat font-semibold">
+          <div id="tour-role-toggle" className="flex items-center bg-card border border-border-iron rounded-md p-0.5 text-[11px] font-stat font-semibold">
             <button
               onClick={() => setUserRole("dm")}
               title="Modo Dungeon Master"
@@ -283,6 +314,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
 
           {/* Estado TaleSpire con LED Tricolor Minimalista */}
           <button
+            id="tour-talespire"
             onClick={connectTaleSpire}
             title={
               talespireStatus.symbiote_connected
@@ -311,9 +343,10 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
 
           {/* Botón Lanzador de Dados */}
           <button
+            id="tour-dice"
             onClick={() => openDiceDrawer()}
             title={t("header.diceButtonTooltip")}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-crimson hover:bg-crimson-hover text-white rounded text-xs font-bold transition-all shadow-sm active:scale-95"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-crimson hover:bg-crimson-hover text-white rounded text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer"
           >
             <Dice5 className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">{t("header.diceButton")}</span>
@@ -321,18 +354,20 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
 
           {/* Alternar Tema Claro/Oscuro */}
           <button
+            id="tour-theme-toggle"
             onClick={toggleTheme}
             title={isDark ? t("header.themeLightTooltip") : t("header.themeDarkTooltip")}
-            className="p-2 text-muted hover:text-main hover:bg-card border border-transparent hover:border-border-iron rounded transition-colors"
+            className="p-2 text-muted hover:text-main hover:bg-card border border-transparent hover:border-border-iron rounded transition-colors cursor-pointer"
           >
             {isDark ? <Sun className="w-4 h-4 text-amber-200" /> : <Moon className="w-4 h-4 text-slate-700" />}
           </button>
 
           {/* Ajustes */}
           <button
+            id="tour-settings"
             onClick={openSettings}
             title={t("header.settingsTooltip")}
-            className="p-2 text-muted hover:text-main hover:bg-card border border-transparent hover:border-border-iron rounded transition-colors"
+            className="p-2 text-muted hover:text-main hover:bg-card border border-transparent hover:border-border-iron rounded transition-colors cursor-pointer"
           >
             <SettingsIcon className="w-4 h-4" />
           </button>

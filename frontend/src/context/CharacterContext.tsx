@@ -63,6 +63,8 @@ interface CharacterContextType {
   setUserRole: (role: "dm" | "player") => Promise<void>;
   activeSessionId: string | null;
   setActiveSessionId: (id: string | null) => void;
+  remoteTunnelUrl: string | null;
+  setRemoteTunnelUrl: (url: string | null) => void;
   sessionScopeActive: boolean;
   setSessionScopeActive: (active: boolean) => void;
   toggleSessionScope: () => void;
@@ -104,7 +106,19 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Estados de Rol y Sesión Online
   const [userRole, setUserRoleState] = useState<"dm" | "player">("dm");
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
+  const [remoteTunnelUrl, setRemoteTunnelUrlState] = useState<string | null>(() => {
+    return safeStorage.getItem("parma_remote_tunnel_url");
+  });
   const [sessionScopeActive, setSessionScopeActive] = useState<boolean>(false);
+
+  const setRemoteTunnelUrl = useCallback((url: string | null) => {
+    setRemoteTunnelUrlState(url);
+    if (url) {
+      safeStorage.setItem("parma_remote_tunnel_url", url);
+    } else {
+      safeStorage.removeItem("parma_remote_tunnel_url");
+    }
+  }, []);
 
   const triggerVignetteFlash = useCallback((type: "damage" | "heal") => {
     if (vignetteTimerRef.current) {
@@ -545,6 +559,8 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         setUserRole,
         activeSessionId,
         setActiveSessionId,
+        remoteTunnelUrl,
+        setRemoteTunnelUrl,
         sessionScopeActive,
         setSessionScopeActive,
         toggleSessionScope,

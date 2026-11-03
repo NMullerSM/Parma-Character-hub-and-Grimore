@@ -78,6 +78,19 @@
   - Polyfill síncrono en `frontend/index.html` ejecutado antes de cualquier script.
   - Configuración nativa `settings.set_enable_html5_local_storage(True)` en `desktop_app.py`.
 
+### 6. Sincronización Bidireccional de Túneles DM y Enrutamiento Remoto WebSocket (Linux <-> Windows)
+- **Causa Raíz de Asimetría (Linux Host vs Windows Host)**:
+  1. *Ruta `dist` del servidor FastAPI*: `bridge.py` pasaba `self._user_data_dir` (`data/`) a `DmSessionServer`. `session_server.py` intentaba servir `os.path.join(self.base_dir, "frontend", "dist")` resolviendo a `data/frontend/dist` (inexistente). Al conectarse un jugador remoto vía Cloudflare Tunnel a un host Linux, recibía 404/página en blanco y la SPA nunca iniciaba.
+  2. *Enrutamiento de WebSocket en App-a-App*: Cuando un cliente de escritorio (PyWebView en Windows) se conectaba ingresando la URL del túnel remoto en `Header.tsx`, consultaba `/api/session/info` pero descartaba el host remoto. `OnlinePlayerSync.tsx` conectaba por defecto a `window.location.host` (`127.0.0.1:8765`), conectándose a su propio backend local en lugar del host remoto en Linux.
+  3. *Permisos de ejecución de `cloudflared`*: En sistemas Linux/macOS, el binario descargado requiere `0o755` para evitar `PermissionError`.
+- **Solución Aplicada**:
+  - `desktop_api/bridge.py`: Inicializa `CloudflareTunnelManager` y `DmSessionServer` con `self._base_dir`.
+  - `desktop_api/session_server.py`: Detección multi-ruta resiliente de `dist` (`frontend/dist`, `dist_ui`, `bundle_dir`).
+  - `desktop_api/tunnel_manager.py`: Asegura permisos `chmod 0o755` automáticos sobre binarios locales y de bundle en plataformas no-Windows.
+  - `frontend/src/context/CharacterContext.tsx`: Agregado estado `remoteTunnelUrl` y persistencia con `safeStorage`.
+  - `frontend/src/components/Header.tsx`: Notifica al host remoto en `/api/player/join` y almacena `remoteTunnelUrl`.
+  - `frontend/src/components/OnlinePlayerSync.tsx`: Enruta la conexión WebSocket dinámicamente hacia el host del túnel remoto (`wss://.../ws?token=...&role=player`) cuando `remoteTunnelUrl` está presente.
+
 ---
 
 ## 🔀 Integración y Estado de Ramas
@@ -94,8 +107,13 @@
 ---
 
 ## 📋 Tareas Pendientes / Siguiente Paso
-1. **Pull en PC de Escritorio**: En el entorno Windows/desktop, ejecutar `git pull origin develop` para recibir PR #12.
-2. **Pruebas en TaleSpire**:
+1. **Pull en PC de Escritorio**: En el entorno Windows/desktop, ejecutar `git pull origin develop` para recibir los últimos cambios de `develop`.
+2. **Pruebas de Conexión DM (Windows <-> Linux)**:
+   - Iniciar sesión DM en Linux con Quick Tunnel.
+   - En Windows (aplicación de escritorio o navegador web), pegar el enlace de trycloudflare.
+   - Verificar que el jugador aparezca en vivo en la consola DM de Linux y sincronice su ficha y tiradas.
+   - Probar en sentido inverso (Windows Host -> Linux Guest).
+3. **Pruebas en TaleSpire**:
    - Verificar la auto-conexión del Symbiote (debe mostrarse conectado sin reconexiones infinitas).
    - Probar el modo manual en bandeja vs modo automático con micro-gesto físico.
-3. **Limpieza de Ramas Obsoletas**: Eliminar en GitHub las ramas remotas mergeadas `feature/onboarding-spotlight-fix`, `feature/auto-updater-protocol` y `feature/settings-streamline-dice-bridge`.
+4. **Limpieza de Ramas Obsoletas**: Eliminar en GitHub las ramas remotas mergeadas `feature/onboarding-spotlight-fix`, `feature/auto-updater-protocol` y `feature/settings-streamline-dice-bridge`.

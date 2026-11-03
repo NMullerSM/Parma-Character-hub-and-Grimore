@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { useCharacter } from "../context/CharacterContext";
+import { safeStorage } from "../utils/storage";
 
 /**
  * OnlinePlayerSync:
  * Escucha eventos en tiempo real cuando el jugador o el DM están conectados a través del túnel o WebSocket.
+ * - Conecta a túnel remoto si remoteTunnelUrl está configurado (modo App-a-App), o al host del navegador.
  * - Recibe órdenes de Daño del DM -> activa el halo rojo cinemático (.vignette-damage) y descuenta HP.
  * - Recibe órdenes de Curación del DM -> activa el halo verde cinemático (.vignette-heal) y suma HP.
  * - Recibe objetos Homebrew del DM -> los inyecta en el inventario del personaje activo.
@@ -15,28 +17,40 @@ export const OnlinePlayerSync: React.FC = () => {
     updateActiveCharacter,
     triggerVignetteFlash,
     showToast,
+    remoteTunnelUrl,
   } = useCharacter();
 
   const socketRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    // Solo conectar WebSocket si estamos en un navegador web o túnel (no empaquetado local puro de pywebview)
+    // Solo conectar WebSocket si el entorno tiene soporte de ventanas y redes
     if (typeof window === "undefined") return;
 
-    // Obtener token persistente de jugador o generar uno
-    let playerToken = localStorage.getItem("parma_player_token");
+    // Obtener token persistente de jugador o generar uno de forma segura
+    let playerToken = safeStorage.getItem("parma_player_token");
     if (!playerToken) {
       playerToken = `p_${Math.random().toString(36).substring(2, 10)}`;
-      localStorage.setItem("parma_player_token", playerToken);
+      safeStorage.setItem("parma_player_token", playerToken);
     }
 
-    // Determinar URL de WebSocket
-    const isHttps = window.location.protocol === "https:";
-    const wsProto = isHttps ? "wss:" : "ws:";
-    const host = window.location.host;
-
-    // Si estamos en localhost dev puro sin backend WebSocket, omitir error ruidoso
-    const wsUrl = `${wsProto}//${host}/ws?token=${playerToken}&role=player`;
+    // Determinar URL de WebSocket: túnel remoto (App-a-App) vs host web local/túnel directo
+    let wsUrl = "";
+    if (remoteTunnelUrl) {
+      try {
+        const parsed = new URL(remoteTunnelUrl);
+        const wsProto = parsed.protocol === "https:" ? "wss:" : "ws:";
+        wsUrl = `${wsProto}//${parsed.host}/ws?token=${playerToken}&role=player`;
+      } catch {
+        const isHttps = window.location.protocol === "https:";
+        const wsProto = isHttps ? "wss:" : "ws:";
+        wsUrl = `${wsProto}//${window.location.host}/ws?token=${playerToken}&role=player`;
+      }
+    } else {
+      const isHttps = window.location.protocol === "https:";
+      const wsProto = isHttps ? "wss:" : "ws:";
+      const host = window.location.host;
+      wsUrl = `${wsProto}//${host}/ws?token=${playerToken}&role=player`;
+    }
 
     let ws: WebSocket;
     try {
@@ -120,7 +134,7 @@ export const OnlinePlayerSync: React.FC = () => {
         socketRef.current.close();
       }
     };
-  }, [activeCharacter?.id]);
+  }, [activeCharacter?.id, remoteTunnelUrl]);
 
   return null;
 };
