@@ -3,6 +3,7 @@ import { ArrowUpCircle, Download, ExternalLink, X, FileText, CheckCircle2, Alert
 import { useTranslation } from "../i18n";
 import { api } from "../api/client";
 import type { GitHubReleaseInfo, UpdateProgress } from "../api/types";
+import { safeStorage } from "../utils/storage";
 
 export interface UpdateModalProps {
   release: GitHubReleaseInfo;
@@ -101,8 +102,8 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
   };
 
   const handleApplyRestart = async () => {
-    setIsApplyingRestart(true);
     setActionError(null);
+    setIsApplyingRestart(true);
     try {
       const res = await api.applyUpdateAndRestart();
       if (!res.success && res.error) {
@@ -110,212 +111,174 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
         setIsApplyingRestart(false);
       }
     } catch (err: any) {
-      setActionError(err?.message || "Error al reiniciar para actualizar");
+      setActionError(err?.message || "Error al reiniciar");
       setIsApplyingRestart(false);
     }
   };
 
-  const handleIgnore = () => {
-    if (onIgnoreVersion) {
-      onIgnoreVersion(release.tag_name);
-    } else {
-      try {
-        localStorage.setItem("parma_ignored_update_version", release.tag_name);
-      } catch (e) {
-        console.warn(e);
-      }
-      onClose();
-    }
-  };
+  const isDownloading = activeProgress.status === "downloading";
+  const isReadyToRestart = activeProgress.status === "ready_to_restart";
+  const hasError = activeProgress.status === "error" || Boolean(actionError);
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-pop-in select-none"
-      onClick={onClose}
-    >
-      <div
-        className="w-full max-w-2xl bg-surface border border-gold/40 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col max-h-[90vh]"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Cabecera */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border-iron bg-card/70">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-gold/15 border border-gold/30 text-gold">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs select-none">
+      <div className="relative w-full max-w-lg bg-surface border border-gold/40 rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-pop-in">
+        {/* Cabecera del Modal */}
+        <div className="px-6 py-4 border-b border-border-iron flex items-center justify-between bg-card/60">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-gold/15 text-gold border border-gold/30">
               <ArrowUpCircle className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-display font-bold text-main flex items-center gap-2">
-                <span>{t("updates.modalTitle", "Actualización Disponible")}</span>
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-gold text-canvas font-mono font-bold">
-                  {release.tag_name}
-                </span>
+              <h2 className="font-display font-bold text-lg text-main">
+                {t("updates.modalTitle", "Actualización Disponible")}
               </h2>
-              <p className="text-xs text-muted">
-                {t("common.version", "Versión actual")}: <span className="font-mono text-main">{currentVersion}</span>
-              </p>
+              <div className="text-xs text-muted flex items-center gap-2">
+                <span>{currentVersion}</span>
+                <span>→</span>
+                <span className="font-mono font-bold text-gold">{release.tag_name}</span>
+              </div>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            aria-label={t("updates.close", "Cerrar")}
-            className="p-1.5 rounded-lg text-muted hover:text-main hover:bg-surface/80 active:scale-95 transition-all cursor-pointer"
+            className="p-1 rounded-lg text-muted hover:text-main hover:bg-surface transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Cuerpo del Modal */}
-        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
-          {/* 1. Panel de Estado del Auto-Updater */}
-          {activeProgress.status === "downloading" && (
-            <div className="p-4 rounded-xl border border-gold/40 bg-gold/10 space-y-3 animate-fade-in">
+        {/* Contenido */}
+        <div className="p-6 overflow-y-auto space-y-5">
+          {/* Insignia de Cero Pérdida de Datos Garantizada */}
+          <div className="p-3.5 rounded-xl bg-card border border-emerald-500/30 text-xs text-muted flex items-start gap-3">
+            <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+            <div>
+              <div className="font-semibold text-main text-emerald-300">Cero pérdida de datos garantizada</div>
+              <div className="text-[11px] mt-0.5 text-muted leading-relaxed">
+                Tus personajes, fichas y bases de datos residen en tu carpeta de usuario y nunca se sobreescriben al actualizar.
+              </div>
+            </div>
+          </div>
+
+          {/* Estado de Descarga en Progreso (Barra de estado animada) */}
+          {isDownloading && (
+            <div className="p-4 rounded-xl bg-card border border-gold/50 space-y-3">
               <div className="flex items-center justify-between text-xs">
-                <span className="font-bold text-gold flex items-center gap-2">
-                  <RefreshCw className="w-4 h-4 animate-spin text-gold" />
+                <span className="font-semibold text-main flex items-center gap-2">
+                  <RefreshCw className="w-3.5 h-3.5 text-gold animate-spin" />
                   <span>{t("updates.downloadingTitle", "Descargando Actualización...")}</span>
                 </span>
-                <span className="font-mono font-bold text-main">
+                <span className="font-mono font-bold text-gold">
                   {activeProgress.percent}%
                 </span>
               </div>
 
-              {/* Barra de Progreso Fluida */}
-              <div className="w-full h-2.5 rounded-full bg-black/40 overflow-hidden p-0.5 border border-gold/30">
+              {/* Barra de Progreso */}
+              <div className="w-full h-2.5 rounded-full bg-surface overflow-hidden border border-border-iron">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-gold/80 to-gold transition-all duration-300 shadow-[0_0_12px_rgba(201,164,92,0.8)]"
-                  style={{ width: `${Math.max(4, activeProgress.percent)}%` }}
+                  className="h-full bg-gradient-to-r from-gold to-gold-hover transition-all duration-300 ease-out"
+                  style={{ width: `${Math.max(5, activeProgress.percent)}%` }}
                 />
               </div>
 
               <div className="flex items-center justify-between text-[11px] text-muted">
-                <span>{t("updates.downloadingDesc", "Descargando en segundo plano. Puedes continuar jugando con tu personaje.")}</span>
-                {activeProgress.downloaded_mb > 0 && (
-                  <span className="font-mono whitespace-nowrap ml-2">
-                    {activeProgress.downloaded_mb} MB {activeProgress.total_mb > 0 ? `/ ${activeProgress.total_mb} MB` : ""}
+                <span>{t("updates.downloadingDesc", "Descargando en segundo plano...")}</span>
+                {activeProgress.total_mb > 0 && (
+                  <span className="font-mono">
+                    {activeProgress.downloaded_mb} MB / {activeProgress.total_mb} MB
                   </span>
                 )}
               </div>
             </div>
           )}
 
-          {activeProgress.status === "ready_to_restart" && (
-            <div className="p-4 rounded-xl border border-emerald-500/50 bg-emerald-500/10 space-y-3 animate-fade-in">
-              <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-                <div className="space-y-1">
-                  <h4 className="text-sm font-bold text-emerald-300">
-                    {t("updates.readyToRestartTitle", "¡Actualización Lista para Instalar!")}
-                  </h4>
-                  <p className="text-xs text-muted leading-relaxed">
-                    {t("updates.readyToRestartDesc", "El instalador se ha descargado correctamente. Guarda tus cambios antes de reiniciar.")}
-                  </p>
-                </div>
+          {/* Estado Listo para Reiniciar */}
+          {isReadyToRestart && (
+            <div className="p-4 rounded-xl bg-emerald-950/60 border border-emerald-500/50 space-y-3">
+              <div className="flex items-center gap-2.5 text-emerald-300 text-sm font-bold">
+                <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                <span>{t("updates.readyToRestartTitle", "¡Actualización Lista para Instalar!")}</span>
               </div>
-
-              <div className="flex items-center gap-2 text-[11px] text-emerald-400/90 pt-1 border-t border-emerald-500/20">
-                <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
-                <span>Cero pérdida de datos: tus personajes, base de datos SQLite y notas están respaldados en tu carpeta de usuario.</span>
-              </div>
-            </div>
-          )}
-
-          {actionError && (
-            <div className="p-3 rounded-xl border border-crimson/50 bg-crimson/15 text-xs text-red-200 flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
-              <span>{actionError}</span>
-            </div>
-          )}
-
-          {/* 2. Notas del Parche / Changelog */}
-          <div className="space-y-2">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-muted flex items-center gap-1.5">
-              <FileText className="w-3.5 h-3.5 text-gold" />
-              <span>{t("updates.releaseNotes", "Notas del Parche")}</span>
-            </h3>
-            <div className="p-4 rounded-xl border border-border-iron bg-canvas/60 text-sm text-main whitespace-pre-wrap font-body max-h-52 overflow-y-auto leading-relaxed select-text">
-              {release.body?.trim() ? release.body : "Actualización de estabilidad, correcciones tácticas y mejoras de rendimiento."}
-            </div>
-          </div>
-
-          {/* 3. Garantía de Seguridad de Datos */}
-          <div className="p-3 rounded-xl border border-border-iron/80 bg-card/40 flex items-center gap-2.5 text-xs text-muted">
-            <ShieldCheck className="w-4 h-4 text-gold shrink-0" />
-            <span>Actualización no destructiva: La base de datos SQLite y las fichas de héroe en almacenamiento local permanecen intactas.</span>
-          </div>
-        </div>
-
-        {/* Pie de Acciones del Modal */}
-        <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-4 border-t border-border-iron bg-card/50">
-          <div className="flex items-center gap-3">
-            <a
-              href={release.html_url}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-1.5 text-xs text-muted hover:text-gold transition-colors"
-            >
-              <span>{t("updates.viewOnGitHub", "Ver en GitHub Releases")}</span>
-              <ExternalLink className="w-3 h-3" />
-            </a>
-
-            <button
-              type="button"
-              onClick={handleIgnore}
-              className="text-xs text-muted hover:text-main underline decoration-dotted transition-colors cursor-pointer"
-            >
-              {t("updates.ignoreVersion", "No avisar de esta versión")}
-            </button>
-          </div>
-
-          <div className="flex items-center gap-2.5">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold rounded-xl bg-surface border border-border-iron hover:bg-card text-main active:scale-95 transition-all cursor-pointer"
-            >
-              {activeProgress.status === "downloading"
-                ? "Continuar en segundo plano"
-                : t("updates.close", "Cerrar")}
-            </button>
-
-            {activeProgress.status === "ready_to_restart" ? (
+              <p className="text-xs text-slate-300 leading-relaxed">
+                {t(
+                  "updates.readyToRestartDesc",
+                  "El instalador se ha descargado correctamente. Guarda tus cambios antes de reiniciar."
+                )}
+              </p>
               <button
                 type="button"
                 onClick={handleApplyRestart}
                 disabled={isApplyingRestart}
-                className="px-5 py-2 text-xs font-bold rounded-xl bg-emerald-500 hover:bg-emerald-400 text-canvas active:scale-95 transition-all shadow-md flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm transition-all shadow-lg active:scale-98 cursor-pointer disabled:opacity-50"
               >
                 {isApplyingRestart ? (
                   <>
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                    <span>Reiniciando aplicación...</span>
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>Iniciando instalador...</span>
                   </>
                 ) : (
                   <>
-                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <CheckCircle2 className="w-4 h-4" />
                     <span>{t("updates.btnRestartToUpdate", "Reiniciar para actualizar")}</span>
                   </>
                 )}
               </button>
-            ) : activeProgress.status === "downloading" ? (
-              <button
-                type="button"
-                disabled
-                className="px-5 py-2 text-xs font-bold rounded-xl bg-gold/50 text-canvas flex items-center gap-2 cursor-not-allowed"
-              >
-                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                <span>Descargando ({activeProgress.percent}%)...</span>
-              </button>
-            ) : (
+            </div>
+          )}
+
+          {/* Mensaje de Error */}
+          {hasError && (
+            <div className="p-3.5 rounded-xl bg-red-950/40 border border-red-500/40 text-xs text-red-300 flex items-start gap-2.5">
+              <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+              <div className="leading-relaxed">
+                {actionError || activeProgress.error || "Ocurrió un error durante la actualización."}
+              </div>
+            </div>
+          )}
+
+          {/* Notas de la Versión (Changelog) */}
+          <div className="space-y-2">
+            <div className="text-xs font-semibold text-main flex items-center gap-1.5 uppercase tracking-wider text-muted">
+              <FileText className="w-3.5 h-3.5 text-gold" />
+              <span>{t("updates.releaseNotes", "Notas del Parche")}</span>
+            </div>
+            <div className="p-3.5 rounded-xl bg-card/60 border border-border-iron text-xs text-slate-300 max-h-48 overflow-y-auto whitespace-pre-wrap font-sans leading-relaxed select-text">
+              {release.body || "Mejoras de rendimiento, correcciones visuales y optimizaciones generales."}
+            </div>
+          </div>
+        </div>
+
+        {/* Pie del Modal con Acciones */}
+        <div className="px-6 py-3 border-t border-border-iron bg-card/40 flex flex-wrap items-center justify-between gap-2">
+          {onIgnoreVersion && (
+            <button
+              type="button"
+              onClick={() => onIgnoreVersion(release.tag_name)}
+              className="text-[11px] text-muted hover:text-main underline cursor-pointer"
+            >
+              {t("updates.ignoreVersion", "No volver a avisar de esta versión")}
+            </button>
+          )}
+
+          <div className="flex items-center gap-2 ml-auto">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-3.5 py-1.5 rounded-xl border border-border-iron hover:bg-surface text-xs font-medium text-muted hover:text-main transition-colors cursor-pointer"
+            >
+              {isDownloading ? "Descargar en segundo plano" : t("common.close", "Cerrar")}
+            </button>
+
+            {!isDownloading && !isReadyToRestart && (
               <button
                 type="button"
                 onClick={handleStartDownload}
-                className="px-5 py-2 text-xs font-bold rounded-xl bg-gold hover:bg-gold-hover text-canvas active:scale-95 transition-all shadow-md flex items-center gap-2 cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-gold hover:bg-gold-hover text-canvas font-bold text-xs transition-all shadow-sm active:scale-95 cursor-pointer"
               >
                 <Download className="w-3.5 h-3.5" />
-                <span>{t("updates.updateBtn", "Actualizar")}</span>
+                <span>{t("updates.updateBtn", "Actualizar al tiro")}</span>
               </button>
             )}
           </div>

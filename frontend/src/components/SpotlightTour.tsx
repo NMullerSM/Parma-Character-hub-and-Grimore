@@ -209,7 +209,7 @@ export const SpotlightTour: React.FC<SpotlightTourProps> = ({
             )}
           </mask>
         </defs>
-        {/* Capa oscura semitransparente con máscara y blur nativo */}
+        {/* Capa oscura semitransparente con máscara de recorte */}
         <rect
           x="0"
           y="0"
@@ -217,7 +217,7 @@ export const SpotlightTour: React.FC<SpotlightTourProps> = ({
           height="100%"
           fill="rgba(5, 7, 10, 0.78)"
           mask="url(#spotlight-tour-mask)"
-          className="pointer-events-auto backdrop-blur-xs"
+          className="pointer-events-auto"
         />
       </svg>
 
