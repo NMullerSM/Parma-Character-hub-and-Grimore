@@ -62,7 +62,6 @@ frontend/dist/
 # Worktrees aislados para agentes concurrentes (MCP2P)
 .worktrees/
 
-
 # Documentos internos de contexto de agentes
 CLAUDE.md
 docs/PARMA_MASTER_CONTEXT_AND_ARCHITECTURE.md

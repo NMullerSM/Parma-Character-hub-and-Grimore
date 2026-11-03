@@ -215,8 +215,47 @@ class DmSessionServer:
             allow_headers=["*"],
         )
 
+        def _check_remote_access(
+            request: Request,
+            key: Optional[str] = None,
+            token: Optional[str] = None,
+            invite: Optional[str] = None
+        ) -> bool:
+            client_host = request.client.host if request.client else "unknown"
+            headers = {k.lower(): v for k, v in request.headers.items()}
+            if is_local_request(client_host, headers):
+                return True
+
+            # Chequeo para accesos remotos vía túnel o proxy
+            auth_token = key or token or request.query_params.get("key") or request.query_params.get("token") or headers.get("x-session-token")
+            if auth_token:
+                token_hash = hashlib.sha256(auth_token.encode("utf-8")).hexdigest()
+                trusted = self.db.get_trusted_player_by_hash(token_hash)
+                if trusted and trusted.get("approved_by_dm") and not trusted.get("is_revoked"):
+                    return True
+
+            inv_code = invite or request.query_params.get("invite") or headers.get("x-invite-code")
+            if inv_code:
+                if self.current_invite_token and inv_code == self.current_invite_token:
+                    return True
+                inv = self.db.get_invitation(inv_code)
+                if inv:
+                    return True
+
+            return False
+
         @app.get("/api/session/info")
-        async def session_info():
+        async def session_info(
+            request: Request,
+            key: Optional[str] = None,
+            token: Optional[str] = None,
+            invite: Optional[str] = None
+        ):
+            if not _check_remote_access(request, key, token, invite):
+                return JSONResponse(
+                    status_code=401,
+                    content={"error": "Acceso no autorizado", "is_active": self.current_session_id is not None}
+                )
             return {
                 "session_id": self.current_session_id,
                 "session_name": self.session_name,
@@ -226,7 +265,17 @@ class DmSessionServer:
             }
 
         @app.get("/api/session/players")
-        async def session_players():
+        async def session_players(
+            request: Request,
+            key: Optional[str] = None,
+            token: Optional[str] = None,
+            invite: Optional[str] = None
+        ):
+            if not _check_remote_access(request, key, token, invite):
+                return JSONResponse(
+                    status_code=401,
+                    content={"error": "Acceso no autorizado al listado de jugadores"}
+                )
             if not self.current_session_id:
                 return []
             return self.db.get_session_players(self.current_session_id)

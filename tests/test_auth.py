@@ -2,8 +2,11 @@ import os
 import tempfile
 import hashlib
 import pytest
+from fastapi.testclient import TestClient
 from core.db import DatabaseManager
 from desktop_api.session_server import is_local_request, DmSessionServer
+
+REMOTE_HEADERS = {"cf-ray": "8e31bf1234567890-EZE"}
 
 
 @pytest.fixture
@@ -89,3 +92,79 @@ def test_trusted_players_approval_and_revocation(temp_db):
     player = temp_db.get_trusted_player_by_hash(key_hash)
     assert player["is_revoked"] == 1
     assert player["approved_by_dm"] == 0
+
+
+@pytest.fixture
+def session_server(temp_db):
+    server = DmSessionServer(temp_db, tempfile.gettempdir())
+    server.current_session_id = "test_sess_rest"
+    return server
+
+
+def test_session_info_rejects_remote_without_credentials(session_server):
+    client = TestClient(session_server.app)
+    resp = client.get("/api/session/info", headers=REMOTE_HEADERS)
+    assert resp.status_code == 401
+
+
+def test_session_info_allows_local_without_credentials(session_server):
+    client = TestClient(session_server.app)
+    resp = client.get("/api/session/info")
+    assert resp.status_code == 200
+
+
+def test_session_endpoints_reject_p_prefixed_bypass_token(session_server):
+    """Regresión: un token con prefijo 'p_' no registrado no debe otorgar acceso (bypass corregido)."""
+    client = TestClient(session_server.app)
+    resp = client.get("/api/session/info", headers=REMOTE_HEADERS, params={"token": "p_unregistered_attacker"})
+    assert resp.status_code == 401
+    resp = client.get("/api/session/players", headers=REMOTE_HEADERS, params={"token": "p_unregistered_attacker"})
+    assert resp.status_code == 401
+
+
+def test_session_endpoints_reject_unapproved_trusted_token(session_server, temp_db):
+    secret = "player_secret_not_yet_approved"
+    token_hash = hashlib.sha256(secret.encode("utf-8")).hexdigest()
+    temp_db.register_trusted_player("Pendiente", token_hash, approved=False)
+
+    client = TestClient(session_server.app)
+    resp = client.get("/api/session/info", headers=REMOTE_HEADERS, params={"token": secret})
+    assert resp.status_code == 401
+
+
+def test_session_endpoints_allow_approved_trusted_token(session_server, temp_db):
+    secret = "player_secret_approved"
+    token_hash = hashlib.sha256(secret.encode("utf-8")).hexdigest()
+    temp_db.register_trusted_player("Aprobado", token_hash, approved=True)
+
+    client = TestClient(session_server.app)
+    resp = client.get("/api/session/info", headers=REMOTE_HEADERS, params={"token": secret})
+    assert resp.status_code == 200
+    resp = client.get("/api/session/players", headers=REMOTE_HEADERS, params={"token": secret})
+    assert resp.status_code == 200
+
+
+def test_session_endpoints_reject_revoked_trusted_token(session_server, temp_db):
+    secret = "player_secret_revoked"
+    token_hash = hashlib.sha256(secret.encode("utf-8")).hexdigest()
+    temp_db.register_trusted_player("Revocado", token_hash, approved=True)
+    temp_db.revoke_trusted_player(token_hash)
+
+    client = TestClient(session_server.app)
+    resp = client.get("/api/session/info", headers=REMOTE_HEADERS, params={"token": secret})
+    assert resp.status_code == 401
+
+
+def test_session_endpoints_allow_valid_invite_code(session_server, temp_db):
+    invite_token = "invite_code_valid_123"
+    temp_db.create_invitation(session_server.current_session_id, invite_token, expires_seconds=3600)
+
+    client = TestClient(session_server.app)
+    resp = client.get("/api/session/info", headers=REMOTE_HEADERS, params={"invite": invite_token})
+    assert resp.status_code == 200
+
+
+def test_session_endpoints_reject_unknown_invite_code(session_server):
+    client = TestClient(session_server.app)
+    resp = client.get("/api/session/info", headers=REMOTE_HEADERS, params={"invite": "nonexistent_invite"})
+    assert resp.status_code == 401
