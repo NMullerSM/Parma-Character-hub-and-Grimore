@@ -167,9 +167,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Instalar Bindings GTK para Python (PyGObject, pycairo)
+        run: pip install PyGObject pycairo
+
       - name: Ejecutar Pruebas Automatizadas (pytest)
         run: pytest tests
-          pip install PyGObject pycairo
 
       - name: Generar Iconos de Alto Contraste (Escudo Sólido)
         run: python scripts/generate_taskbar_icons.py
