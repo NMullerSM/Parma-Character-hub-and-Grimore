@@ -223,6 +223,101 @@ class DatabaseManager:
                 """)
                 cursor.execute("PRAGMA user_version = 1;")
 
+            # Migración a versión 2: Compendio Relacional-Documental D&D 5.5e (2024 PHB/SRD)
+            if current_version < 2:
+                if db_existed and current_version >= 1:
+                    backup_path_v1 = f"{self.db_path}.bak_v1"
+                    if not os.path.exists(backup_path_v1):
+                        try:
+                            shutil.copy2(self.db_path, backup_path_v1)
+                        except Exception as e:
+                            print(f"[DatabaseManager] Advertencia al respaldar BD v1: {e}")
+
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS compendium_monsters (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        entity_id TEXT NOT NULL UNIQUE,
+                        name TEXT NOT NULL,
+                        name_en TEXT,
+                        cr REAL NOT NULL DEFAULT 0.0,
+                        cr_text TEXT NOT NULL DEFAULT '0',
+                        size TEXT,
+                        monster_type TEXT,
+                        alignment TEXT,
+                        ac INTEGER DEFAULT 10,
+                        hp_avg INTEGER DEFAULT 10,
+                        hp_formula TEXT DEFAULT '',
+                        speed TEXT DEFAULT '',
+                        edition TEXT NOT NULL DEFAULT '5.5e',
+                        language TEXT NOT NULL DEFAULT 'en',
+                        data_json TEXT NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    );
+                """)
+                cursor.execute("CREATE INDEX IF NOT EXISTS idx_monsters_cr ON compendium_monsters(cr);")
+                cursor.execute("CREATE INDEX IF NOT EXISTS idx_monsters_type ON compendium_monsters(monster_type);")
+                cursor.execute("CREATE INDEX IF NOT EXISTS idx_monsters_name ON compendium_monsters(name);")
+                cursor.execute("CREATE INDEX IF NOT EXISTS idx_monsters_edition_lang ON compendium_monsters(edition, language);")
+
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS compendium_spells (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        entity_id TEXT NOT NULL UNIQUE,
+                        name TEXT NOT NULL,
+                        name_en TEXT,
+                        level INTEGER NOT NULL DEFAULT 0,
+                        school TEXT NOT NULL DEFAULT 'Evocation',
+                        casting_time TEXT NOT NULL DEFAULT '1 action',
+                        range_area TEXT NOT NULL DEFAULT '60 feet',
+                        components TEXT NOT NULL DEFAULT 'V, S',
+                        duration TEXT NOT NULL DEFAULT 'Instantaneous',
+                        is_concentration INTEGER DEFAULT 0,
+                        is_ritual INTEGER DEFAULT 0,
+                        classes TEXT DEFAULT '',
+                        edition TEXT NOT NULL DEFAULT '5.5e',
+                        language TEXT NOT NULL DEFAULT 'en',
+                        description TEXT NOT NULL DEFAULT '',
+                        data_json TEXT NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    );
+                """)
+                cursor.execute("CREATE INDEX IF NOT EXISTS idx_spells_level ON compendium_spells(level);")
+                cursor.execute("CREATE INDEX IF NOT EXISTS idx_spells_school ON compendium_spells(school);")
+                cursor.execute("CREATE INDEX IF NOT EXISTS idx_spells_name ON compendium_spells(name);")
+                cursor.execute("CREATE INDEX IF NOT EXISTS idx_spells_edition_lang ON compendium_spells(edition, language);")
+
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS compendium_items (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        entity_id TEXT NOT NULL UNIQUE,
+                        name TEXT NOT NULL,
+                        name_en TEXT,
+                        item_type TEXT NOT NULL DEFAULT 'gear',
+                        rarity TEXT DEFAULT 'common',
+                        cost TEXT DEFAULT '',
+                        weight TEXT DEFAULT '',
+                        weapon_mastery TEXT DEFAULT '',
+                        damage TEXT DEFAULT '',
+                        damage_type TEXT DEFAULT '',
+                        ac_bonus INTEGER DEFAULT 0,
+                        edition TEXT NOT NULL DEFAULT '5.5e',
+                        language TEXT NOT NULL DEFAULT 'en',
+                        description TEXT NOT NULL DEFAULT '',
+                        data_json TEXT NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    );
+                """)
+                cursor.execute("CREATE INDEX IF NOT EXISTS idx_items_type ON compendium_items(item_type);")
+                cursor.execute("CREATE INDEX IF NOT EXISTS idx_items_rarity ON compendium_items(rarity);")
+                cursor.execute("CREATE INDEX IF NOT EXISTS idx_items_name ON compendium_items(name);")
+                cursor.execute("CREATE INDEX IF NOT EXISTS idx_items_mastery ON compendium_items(weapon_mastery);")
+                cursor.execute("CREATE INDEX IF NOT EXISTS idx_items_edition_lang ON compendium_items(edition, language);")
+
+                cursor.execute("PRAGMA user_version = 2;")
+
             conn.commit()
 
     def get_active_character(self) -> Optional[CharacterSheet]:
@@ -772,3 +867,378 @@ class DatabaseManager:
                 UPDATE trusted_players SET last_seen = datetime('now') WHERE token_hash = ?;
             """, (token_hash,))
             conn.commit()
+
+    # =========================================================================
+    # COMPENDIO RELACIONAL-DOCUMENTAL (MONSTRUOS, CONJUROS, EQUIPO)
+    # =========================================================================
+
+    def upsert_compendium_monster(self, monster_data: Dict[str, Any]) -> str:
+        """Inserta o actualiza un monstruo en el compendio relacional SQLite."""
+        entity_id = monster_data.get("entity_id") or monster_data.get("id") or monster_data["name"].lower().replace(" ", "_")
+        name = monster_data["name"]
+        name_en = monster_data.get("name_en")
+        cr = float(monster_data.get("cr", 0.0))
+        cr_text = str(monster_data.get("cr_text", monster_data.get("cr", "0")))
+        size = monster_data.get("size", "Medium")
+        m_type = monster_data.get("monster_type") or monster_data.get("type", "Monstrosity")
+        alignment = monster_data.get("alignment", "Unaligned")
+        ac = int(monster_data.get("ac", 10))
+        hp_avg = int(monster_data.get("hp_avg") or monster_data.get("hp", 10))
+        hp_formula = str(monster_data.get("hp_formula", ""))
+        speed = str(monster_data.get("speed", "30 ft."))
+        edition = str(monster_data.get("edition", "5.5e"))
+        language = str(monster_data.get("language", "en"))
+        raw_json = monster_data.get("data_json")
+        data_json = raw_json if isinstance(raw_json, str) else json.dumps(monster_data, ensure_ascii=False)
+
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO compendium_monsters (
+                    entity_id, name, name_en, cr, cr_text, size, monster_type,
+                    alignment, ac, hp_avg, hp_formula, speed, edition, language,
+                    data_json, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                ON CONFLICT(entity_id) DO UPDATE SET
+                    name = excluded.name,
+                    name_en = excluded.name_en,
+                    cr = excluded.cr,
+                    cr_text = excluded.cr_text,
+                    size = excluded.size,
+                    monster_type = excluded.monster_type,
+                    alignment = excluded.alignment,
+                    ac = excluded.ac,
+                    hp_avg = excluded.hp_avg,
+                    hp_formula = excluded.hp_formula,
+                    speed = excluded.speed,
+                    edition = excluded.edition,
+                    language = excluded.language,
+                    data_json = excluded.data_json,
+                    updated_at = CURRENT_TIMESTAMP;
+            """, (
+                entity_id, name, name_en, cr, cr_text, size, m_type,
+                alignment, ac, hp_avg, hp_formula, speed, edition, language, data_json
+            ))
+            conn.commit()
+            return entity_id
+
+    def search_compendium_monsters(
+        self,
+        query: str = "",
+        min_cr: Optional[float] = None,
+        max_cr: Optional[float] = None,
+        monster_type: Optional[str] = None,
+        size: Optional[str] = None,
+        edition: Optional[str] = None,
+        language: str = "en",
+        limit: int = 50,
+        offset: int = 0,
+    ) -> List[Dict[str, Any]]:
+        """Búsqueda y filtrado rápido de monstruos indexados con soporte de paginación."""
+        sql = "SELECT id, entity_id, name, name_en, cr, cr_text, size, monster_type, alignment, ac, hp_avg, hp_formula, speed, edition, language FROM compendium_monsters WHERE 1=1"
+        params: List[Any] = []
+
+        if query:
+            sql += " AND (name LIKE ? OR name_en LIKE ? OR entity_id LIKE ?)"
+            q_like = f"%{query}%"
+            params.extend([q_like, q_like, q_like])
+        if min_cr is not None:
+            sql += " AND cr >= ?"
+            params.append(min_cr)
+        if max_cr is not None:
+            sql += " AND cr <= ?"
+            params.append(max_cr)
+        if monster_type:
+            sql += " AND LOWER(monster_type) = LOWER(?)"
+            params.append(monster_type)
+        if size:
+            sql += " AND LOWER(size) = LOWER(?)"
+            params.append(size)
+        if edition:
+            sql += " AND edition = ?"
+            params.append(edition)
+        if language:
+            sql += " AND language = ?"
+            params.append(language)
+
+        sql += " ORDER BY cr ASC, name ASC LIMIT ? OFFSET ?;"
+        params.extend([limit, offset])
+
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(sql, params)
+            return [dict(r) for r in cursor.fetchall()]
+
+    def get_compendium_monster_by_id(self, entity_id: str) -> Optional[Dict[str, Any]]:
+        """Retorna el registro completo de un monstruo con su data_json deserializado."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM compendium_monsters WHERE entity_id = ? OR name = ? LIMIT 1;", (entity_id, entity_id))
+            row = cursor.fetchone()
+            if not row:
+                return None
+            res = dict(row)
+            try:
+                res["details"] = json.loads(res["data_json"])
+            except Exception:
+                res["details"] = {}
+            return res
+
+    def upsert_compendium_spell(self, spell_data: Dict[str, Any]) -> str:
+        """Inserta o actualiza un conjuro en el compendio relacional."""
+        entity_id = spell_data.get("entity_id") or spell_data.get("id") or spell_data["name"].lower().replace(" ", "_")
+        name = spell_data["name"]
+        name_en = spell_data.get("name_en")
+        level = int(spell_data.get("level", 0))
+        school = spell_data.get("school", "Evocation")
+        casting_time = spell_data.get("casting_time") or spell_data.get("cast_time", "1 action")
+        range_area = spell_data.get("range_area") or spell_data.get("range", "60 feet")
+        components = spell_data.get("components", "V, S")
+        duration = spell_data.get("duration", "Instantaneous")
+        is_conc = 1 if spell_data.get("is_concentration") or spell_data.get("concentration") else 0
+        is_rit = 1 if spell_data.get("is_ritual") or spell_data.get("ritual") else 0
+        raw_classes = spell_data.get("classes", "")
+        classes_str = ", ".join(raw_classes) if isinstance(raw_classes, list) else str(raw_classes)
+        edition = str(spell_data.get("edition", "5.5e"))
+        language = str(spell_data.get("language", "en"))
+        desc = str(spell_data.get("description") or spell_data.get("notes", ""))
+        raw_json = spell_data.get("data_json")
+        data_json = raw_json if isinstance(raw_json, str) else json.dumps(spell_data, ensure_ascii=False)
+
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO compendium_spells (
+                    entity_id, name, name_en, level, school, casting_time, range_area,
+                    components, duration, is_concentration, is_ritual, classes,
+                    edition, language, description, data_json, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                ON CONFLICT(entity_id) DO UPDATE SET
+                    name = excluded.name,
+                    name_en = excluded.name_en,
+                    level = excluded.level,
+                    school = excluded.school,
+                    casting_time = excluded.casting_time,
+                    range_area = excluded.range_area,
+                    components = excluded.components,
+                    duration = excluded.duration,
+                    is_concentration = excluded.is_concentration,
+                    is_ritual = excluded.is_ritual,
+                    classes = excluded.classes,
+                    edition = excluded.edition,
+                    language = excluded.language,
+                    description = excluded.description,
+                    data_json = excluded.data_json,
+                    updated_at = CURRENT_TIMESTAMP;
+            """, (
+                entity_id, name, name_en, level, school, casting_time, range_area,
+                components, duration, is_conc, is_rit, classes_str,
+                edition, language, desc, data_json
+            ))
+            conn.commit()
+            return entity_id
+
+    def search_compendium_spells(
+        self,
+        query: str = "",
+        level: Optional[int] = None,
+        max_level: Optional[int] = None,
+        school: Optional[str] = None,
+        class_name: Optional[str] = None,
+        is_concentration: Optional[bool] = None,
+        is_ritual: Optional[bool] = None,
+        edition: Optional[str] = None,
+        language: str = "en",
+        limit: int = 50,
+        offset: int = 0,
+    ) -> List[Dict[str, Any]]:
+        """Búsqueda y filtrado de conjuros indexados."""
+        sql = "SELECT id, entity_id, name, name_en, level, school, casting_time, range_area, components, duration, is_concentration, is_ritual, classes, edition, language, description FROM compendium_spells WHERE 1=1"
+        params: List[Any] = []
+
+        if query:
+            sql += " AND (name LIKE ? OR name_en LIKE ? OR description LIKE ?)"
+            q_like = f"%{query}%"
+            params.extend([q_like, q_like, q_like])
+        if level is not None:
+            sql += " AND level = ?"
+            params.append(level)
+        elif max_level is not None:
+            sql += " AND level <= ?"
+            params.append(max_level)
+        if school:
+            sql += " AND LOWER(school) = LOWER(?)"
+            params.append(school)
+        if class_name:
+            sql += " AND classes LIKE ?"
+            params.append(f"%{class_name}%")
+        if is_concentration is not None:
+            sql += " AND is_concentration = ?"
+            params.append(1 if is_concentration else 0)
+        if is_ritual is not None:
+            sql += " AND is_ritual = ?"
+            params.append(1 if is_ritual else 0)
+        if edition:
+            sql += " AND edition = ?"
+            params.append(edition)
+        if language:
+            sql += " AND language = ?"
+            params.append(language)
+
+        sql += " ORDER BY level ASC, name ASC LIMIT ? OFFSET ?;"
+        params.extend([limit, offset])
+
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(sql, params)
+            return [dict(r) for r in cursor.fetchall()]
+
+    def get_compendium_spell_by_id(self, entity_id: str) -> Optional[Dict[str, Any]]:
+        """Retorna un conjuro por id o nombre con su data_json deserializado."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM compendium_spells WHERE entity_id = ? OR name = ? LIMIT 1;", (entity_id, entity_id))
+            row = cursor.fetchone()
+            if not row:
+                return None
+            res = dict(row)
+            try:
+                res["details"] = json.loads(res["data_json"])
+            except Exception:
+                res["details"] = {}
+            return res
+
+    def upsert_compendium_item(self, item_data: Dict[str, Any]) -> str:
+        """Inserta o actualiza un objeto/arma/armadura en el compendio relacional."""
+        entity_id = item_data.get("entity_id") or item_data.get("id") or item_data["name"].lower().replace(" ", "_")
+        name = item_data["name"]
+        name_en = item_data.get("name_en")
+        item_type = item_data.get("item_type", "gear")
+        rarity = item_data.get("rarity", "common")
+        cost = str(item_data.get("cost", ""))
+        weight = str(item_data.get("weight", ""))
+        weapon_mastery = str(item_data.get("weapon_mastery", ""))
+        damage = str(item_data.get("damage", ""))
+        damage_type = str(item_data.get("damage_type", ""))
+        ac_bonus = int(item_data.get("ac_bonus", 0))
+        edition = str(item_data.get("edition", "5.5e"))
+        language = str(item_data.get("language", "en"))
+        desc = str(item_data.get("description", ""))
+        raw_json = item_data.get("data_json")
+        data_json = raw_json if isinstance(raw_json, str) else json.dumps(item_data, ensure_ascii=False)
+
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO compendium_items (
+                    entity_id, name, name_en, item_type, rarity, cost, weight,
+                    weapon_mastery, damage, damage_type, ac_bonus, edition,
+                    language, description, data_json, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                ON CONFLICT(entity_id) DO UPDATE SET
+                    name = excluded.name,
+                    name_en = excluded.name_en,
+                    item_type = excluded.item_type,
+                    rarity = excluded.rarity,
+                    cost = excluded.cost,
+                    weight = excluded.weight,
+                    weapon_mastery = excluded.weapon_mastery,
+                    damage = excluded.damage,
+                    damage_type = excluded.damage_type,
+                    ac_bonus = excluded.ac_bonus,
+                    edition = excluded.edition,
+                    language = excluded.language,
+                    description = excluded.description,
+                    data_json = excluded.data_json,
+                    updated_at = CURRENT_TIMESTAMP;
+            """, (
+                entity_id, name, name_en, item_type, rarity, cost, weight,
+                weapon_mastery, damage, damage_type, ac_bonus, edition,
+                language, desc, data_json
+            ))
+            conn.commit()
+            return entity_id
+
+    def search_compendium_items(
+        self,
+        query: str = "",
+        item_type: Optional[str] = None,
+        rarity: Optional[str] = None,
+        weapon_mastery: Optional[str] = None,
+        edition: Optional[str] = None,
+        language: str = "en",
+        limit: int = 50,
+        offset: int = 0,
+    ) -> List[Dict[str, Any]]:
+        """Búsqueda y filtrado de equipo, armas y objetos mágicos."""
+        sql = "SELECT id, entity_id, name, name_en, item_type, rarity, cost, weight, weapon_mastery, damage, damage_type, ac_bonus, edition, language, description FROM compendium_items WHERE 1=1"
+        params: List[Any] = []
+
+        if query:
+            sql += " AND (name LIKE ? OR name_en LIKE ? OR description LIKE ?)"
+            q_like = f"%{query}%"
+            params.extend([q_like, q_like, q_like])
+        if item_type:
+            sql += " AND LOWER(item_type) = LOWER(?)"
+            params.append(item_type)
+        if rarity:
+            sql += " AND LOWER(rarity) = LOWER(?)"
+            params.append(rarity)
+        if weapon_mastery:
+            sql += " AND LOWER(weapon_mastery) = LOWER(?)"
+            params.append(weapon_mastery)
+        if edition:
+            sql += " AND edition = ?"
+            params.append(edition)
+        if language:
+            sql += " AND language = ?"
+            params.append(language)
+
+        sql += " ORDER BY name ASC LIMIT ? OFFSET ?;"
+        params.extend([limit, offset])
+
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(sql, params)
+            return [dict(r) for r in cursor.fetchall()]
+
+    def get_compendium_item_by_id(self, entity_id: str) -> Optional[Dict[str, Any]]:
+        """Retorna un objeto por id o nombre con su data_json deserializado."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM compendium_items WHERE entity_id = ? OR name = ? LIMIT 1;", (entity_id, entity_id))
+            row = cursor.fetchone()
+            if not row:
+                return None
+            res = dict(row)
+            try:
+                res["details"] = json.loads(res["data_json"])
+            except Exception:
+                res["details"] = {}
+            return res
+
+    def count_compendium_entries(self, category: str, edition: Optional[str] = None, language: str = "en") -> int:
+        """Retorna el conteo total de entradas en una tabla del compendio."""
+        table_map = {
+            "monsters": "compendium_monsters",
+            "spells": "compendium_spells",
+            "items": "compendium_items",
+        }
+        tbl = table_map.get(category.lower())
+        if not tbl:
+            return 0
+
+        sql = f"SELECT COUNT(*) FROM {tbl} WHERE 1=1"
+        params: List[Any] = []
+        if edition:
+            sql += " AND edition = ?"
+            params.append(edition)
+        if language:
+            sql += " AND language = ?"
+            params.append(language)
+
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(sql, params)
+            row = cursor.fetchone()
+            return row[0] if row else 0
