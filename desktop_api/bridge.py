@@ -8,6 +8,7 @@ Reúne mixins modulares especializados por dominio:
 - MediaBridgeMixin: Retratos de personajes, generación de imagen con IA y diálogos nativos.
 - SessionBridgeMixin: Gestión de sesión DM online, LAN sin internet, túnel Cloudflare e invitaciones.
 - UpdaterBridgeMixin: Auto-actualización y reinicio silencioso en segundo plano.
+- CompendiumBridgeMixin: Búsqueda, filtrado y detalle sobre tablas relacionales compendium_* SQLite.
 """
 import os
 import sys
@@ -29,6 +30,7 @@ from .bridges import (
     MediaBridgeMixin,
     SessionBridgeMixin,
     UpdaterBridgeMixin,
+    CompendiumBridgeMixin,
     FULL_CASTER_SLOTS,
     _compute_spell_slots_for_class,
 )
@@ -41,6 +43,7 @@ class DesktopBridge(
     MediaBridgeMixin,
     SessionBridgeMixin,
     UpdaterBridgeMixin,
+    CompendiumBridgeMixin,
 ):
     """
     Clase expuesta a JavaScript en 'window.pywebview.api'.

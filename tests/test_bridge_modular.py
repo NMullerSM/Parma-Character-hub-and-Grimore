@@ -7,6 +7,7 @@ from desktop_api.bridges import (
     MediaBridgeMixin,
     SessionBridgeMixin,
     UpdaterBridgeMixin,
+    CompendiumBridgeMixin,
 )
 
 
@@ -17,6 +18,7 @@ def test_desktop_bridge_inherits_all_mixins():
     assert issubclass(DesktopBridge, MediaBridgeMixin)
     assert issubclass(DesktopBridge, SessionBridgeMixin)
     assert issubclass(DesktopBridge, UpdaterBridgeMixin)
+    assert issubclass(DesktopBridge, CompendiumBridgeMixin)
 
 
 def test_desktop_bridge_methods_contract():
@@ -105,6 +107,14 @@ def test_desktop_bridge_methods_contract():
         "start_auto_update",
         "get_update_progress",
         "apply_update_and_restart",
+        # Compendium (SQLite)
+        "search_monsters",
+        "get_monster_by_id",
+        "search_spells",
+        "get_spell_by_id",
+        "search_items",
+        "get_item_by_id",
+        "get_compendium_counts",
     ]
 
     for method in expected_methods:
