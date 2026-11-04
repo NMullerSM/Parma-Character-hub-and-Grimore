@@ -68,8 +68,8 @@ declare global {
         open_pdf_dialog: () => Promise<string | null>;
         open_pdf_document: (filePath: string) => Promise<PdfDocumentInfo>;
         render_pdf_page: (pageNum: number, zoom?: number, trimMargins?: boolean) => Promise<PdfPageRenderResult>;
-        get_compendium_categories: (lang?: string, edition?: string) => Promise<CompendiumCategory[]>;
-        search_compendium: (query: string, category?: string, lang?: string, edition?: string) => Promise<CompendiumSearchResult[]>;
+        get_compendium_categories: (lang?: string, edition?: string, expansions?: string[]) => Promise<CompendiumCategory[]>;
+        search_compendium: (query: string, category?: string, lang?: string, edition?: string, expansions?: string[]) => Promise<CompendiumSearchResult[]>;
         get_compendium_entry: (category: string, entryName: string, lang?: string) => Promise<any>;
         search_monsters: (
           query: string,
@@ -80,7 +80,8 @@ declare global {
           edition?: string | null,
           language?: string,
           page?: number,
-          page_size?: number
+          page_size?: number,
+          expansions?: string[]
         ) => Promise<CompendiumPaginatedResult<CompendiumMonsterSummary>>;
         get_monster_by_id: (entity_id: string) => Promise<CompendiumMonsterDetail | null>;
         search_spells: (
@@ -94,7 +95,8 @@ declare global {
           edition?: string | null,
           language?: string,
           page?: number,
-          page_size?: number
+          page_size?: number,
+          expansions?: string[]
         ) => Promise<CompendiumPaginatedResult<CompendiumSpellSummary>>;
         get_spell_by_id: (entity_id: string) => Promise<CompendiumSpellDetail | null>;
         search_items: (
@@ -105,10 +107,11 @@ declare global {
           edition?: string | null,
           language?: string,
           page?: number,
-          page_size?: number
+          page_size?: number,
+          expansions?: string[]
         ) => Promise<CompendiumPaginatedResult<CompendiumItemSummary>>;
         get_item_by_id: (entity_id: string) => Promise<CompendiumItemDetail | null>;
-        get_compendium_counts: (edition?: string | null, language?: string) => Promise<CompendiumCounts>;
+        get_compendium_counts: (edition?: string | null, language?: string, expansions?: string[]) => Promise<CompendiumCounts>;
         get_class_spells: (className: string, maxLevel?: number, lang?: string) => Promise<SpellItemData[]>;
         get_available_spells: (
           className: string | null,
@@ -123,7 +126,7 @@ declare global {
         remove_spell_from_character: (charId: number, spellName: string) => Promise<{ success: boolean; character?: CharacterSheetData; error?: string }>;
         sync_character_features: (charId: number, lang?: string) => Promise<{ success: boolean; character?: CharacterSheetData; error?: string }>;
         sync_compendium_from_srd: (edition?: string) => Promise<{ success: boolean; total_entities?: number; error?: string }>;
-        get_builder_catalog: (edition?: string, lang?: string) => Promise<BuilderCatalog>;
+        get_builder_catalog: (edition?: string, lang?: string, expansions?: string[]) => Promise<BuilderCatalog>;
         validate_point_buy: (scores: Record<string, number>) => Promise<PointBuyValidationResult>;
         build_character_from_wizard: (payload: any) => Promise<CharacterSheetData>;
         generate_quick_build_preview: (charClass: string, species?: string) => Promise<CharacterSheetData>;
@@ -668,8 +671,8 @@ export const api = {
   },
 
   // --- Compendio OKF ---
-  async getCompendiumCategories(lang: string = "es", edition?: string): Promise<CompendiumCategory[]> {
-    if (this.isNative()) return await window.pywebview!.api.get_compendium_categories(lang, edition);
+  async getCompendiumCategories(lang: string = "es", edition?: string, expansions?: string[]): Promise<CompendiumCategory[]> {
+    if (this.isNative()) return await window.pywebview!.api.get_compendium_categories(lang, edition, expansions);
     return [
       { id: "clases", label: lang === "en" ? "Classes & Subclasses" : "Clases y Subclases", count: 70 },
       { id: "especies_y_linajes", label: lang === "en" ? "Species & Lineages" : "Especies y Linajes", count: 10 },
@@ -681,8 +684,8 @@ export const api = {
     ];
   },
 
-  async searchCompendium(query: string, category?: string, lang: string = "es", edition?: string): Promise<CompendiumSearchResult[]> {
-    if (this.isNative()) return await window.pywebview!.api.search_compendium(query, category, lang, edition);
+  async searchCompendium(query: string, category?: string, lang: string = "es", edition?: string, expansions?: string[]): Promise<CompendiumSearchResult[]> {
+    if (this.isNative()) return await window.pywebview!.api.search_compendium(query, category, lang, edition, expansions);
     return [
       {
         id: "castigo-divino",
@@ -713,10 +716,11 @@ export const api = {
     edition?: string | null,
     language: string = "en",
     page: number = 1,
-    pageSize: number = 25
+    pageSize: number = 25,
+    expansions?: string[]
   ): Promise<CompendiumPaginatedResult<CompendiumMonsterSummary>> {
     if (this.isNative() && window.pywebview?.api?.search_monsters) {
-      return await window.pywebview.api.search_monsters(query, crMin, crMax, typeFilter, size, edition, language, page, pageSize);
+      return await window.pywebview.api.search_monsters(query, crMin, crMax, typeFilter, size, edition, language, page, pageSize, expansions);
     }
     const mockList: CompendiumMonsterSummary[] = [
       {
@@ -814,10 +818,11 @@ export const api = {
     edition?: string | null,
     language: string = "en",
     page: number = 1,
-    pageSize: number = 25
+    pageSize: number = 25,
+    expansions?: string[]
   ): Promise<CompendiumPaginatedResult<CompendiumSpellSummary>> {
     if (this.isNative() && window.pywebview?.api?.search_spells) {
-      return await window.pywebview.api.search_spells(query, level, maxLevel, school, className, isConcentration, isRitual, edition, language, page, pageSize);
+      return await window.pywebview.api.search_spells(query, level, maxLevel, school, className, isConcentration, isRitual, edition, language, page, pageSize, expansions);
     }
     const mockSpells: CompendiumSpellSummary[] = [
       {
@@ -879,10 +884,11 @@ export const api = {
     edition?: string | null,
     language: string = "en",
     page: number = 1,
-    pageSize: number = 25
+    pageSize: number = 25,
+    expansions?: string[]
   ): Promise<CompendiumPaginatedResult<CompendiumItemSummary>> {
     if (this.isNative() && window.pywebview?.api?.search_items) {
-      return await window.pywebview.api.search_items(query, itemType, rarity, weaponMastery, edition, language, page, pageSize);
+      return await window.pywebview.api.search_items(query, itemType, rarity, weaponMastery, edition, language, page, pageSize, expansions);
     }
     const mockItems: CompendiumItemSummary[] = [
       {
@@ -944,8 +950,8 @@ export const api = {
   },
 
   // --- Creador de Personajes & Reglas ---
-  async getBuilderCatalog(edition: string = "5.5e", lang: string = "es"): Promise<BuilderCatalog> {
-    if (this.isNative()) return await window.pywebview!.api.get_builder_catalog(edition, lang);
+  async getBuilderCatalog(edition: string = "5.5e", lang: string = "es", expansions?: string[]): Promise<BuilderCatalog> {
+    if (this.isNative()) return await window.pywebview!.api.get_builder_catalog(edition, lang, expansions);
     return {
       edition,
       species: [

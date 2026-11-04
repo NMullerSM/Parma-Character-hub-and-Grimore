@@ -466,11 +466,11 @@ class CharacterBridgeMixin:
     # FORJA DE PERSONAJES (OKF + POINT BUY + QUICK BUILD + RANDOMIZE)
     # =========================================================================
 
-    def get_builder_catalog(self, edition: Optional[str] = None, lang: str = "es") -> Dict[str, Any]:
+    def get_builder_catalog(self, edition: Optional[str] = None, lang: str = "es", expansions: Optional[List[str]] = None) -> Dict[str, Any]:
         """
-        Devuelve el catálogo dinámico completo desde OkfEngine para poblar la Forja:
+        Devuelve el catálogo dinámico completo desde OkfEngine y SQLite para poblar la Forja:
         especies, linajes, clases, subclases, trasfondos, dotes de origen y condiciones.
-        Adapta niveles de subclase según la edición activa (5.5e 2024 vs 5e 2014) e idioma.
+        Adapta niveles de subclase y filtra según edición y expansiones activas.
         """
         ed = edition or self._db.get_setting("dnd_edition", "5.5e")
         is_2024 = (ed == "5.5e")
@@ -528,6 +528,17 @@ class CharacterBridgeMixin:
             c_name = c["nombre"]
             sub_lvl = 3 if is_2024 else subclass_lvl_2014.get(c_name, 3)
             subs = self._okf.get_subclasses(c_name, lang=lang)
+            if expansions and "all" not in [e.lower() for e in expansions]:
+                exp_set = {e.lower() for e in expansions}
+                filtered_subs = []
+                for s in subs:
+                    s_fuente = str(s.get("fuente", "")).lower()
+                    if "tasha" in s_fuente and "tce" not in exp_set and "tasha's cauldron of everything" not in exp_set:
+                        continue
+                    if "xanathar" in s_fuente and "xge" not in exp_set and "xanathar's guide to everything" not in exp_set:
+                        continue
+                    filtered_subs.append(s)
+                subs = filtered_subs
             sub_names = [s["nombre"] for s in subs] if subs else [f"Arquetipo de {c_name}" if lang == "es" else f"{c_name} Archetype"]
             preset = CLASS_QUICK_PRESETS.get(c_name, CLASS_QUICK_PRESETS.get("Guerrero", {}))
             rec_skills = list(preset.get("skills", ["Atletismo", "Percepción"]))
@@ -1131,21 +1142,21 @@ class CharacterBridgeMixin:
         "reglas_y_mecanicas": ["regla"],
     }
 
-    def get_compendium_categories(self, lang: str = "es", edition: Optional[str] = None) -> List[Dict[str, Any]]:
-        """Lista las categorías disponibles en el compendio SQLite con su conteo unificado por idioma y edición."""
+    def get_compendium_categories(self, lang: str = "es", edition: Optional[str] = None, expansions: Optional[List[str]] = None) -> List[Dict[str, Any]]:
+        """Lista las categorías disponibles en el compendio SQLite con su conteo unificado por idioma, edición y expansiones."""
         target_lang = "en" if (lang or "").lower().startswith("en") else "es"
         
         # Conteo SQLite canónico
-        sql_monsters = self._db.count_compendium_entries("monsters", edition=edition, language=target_lang)
-        sql_spells = self._db.count_compendium_entries("spells", edition=edition, language=target_lang)
-        sql_items = self._db.count_compendium_entries("items", edition=edition, language=target_lang)
+        sql_monsters = self._db.count_compendium_entries("monsters", edition=edition, language=target_lang, expansions=expansions)
+        sql_spells = self._db.count_compendium_entries("spells", edition=edition, language=target_lang, expansions=expansions)
+        sql_items = self._db.count_compendium_entries("items", edition=edition, language=target_lang, expansions=expansions)
 
         # Conteo SQLite de entidades unificadas
-        sql_clases = self._db.count_compendium_entries("entities", categories=self.COMPENDIUM_CATEGORY_TYPES["clases"], edition=edition, language=target_lang)
-        sql_especies = self._db.count_compendium_entries("entities", categories=self.COMPENDIUM_CATEGORY_TYPES["especies_y_linajes"], edition=edition, language=target_lang)
-        sql_trasfondos = self._db.count_compendium_entries("entities", categories=self.COMPENDIUM_CATEGORY_TYPES["trasfondos"], edition=edition, language=target_lang)
-        sql_dotes = self._db.count_compendium_entries("entities", categories=self.COMPENDIUM_CATEGORY_TYPES["dotes"], edition=edition, language=target_lang)
-        sql_reglas = self._db.count_compendium_entries("entities", categories=self.COMPENDIUM_CATEGORY_TYPES["reglas_y_mecanicas"], edition=edition, language=target_lang)
+        sql_clases = self._db.count_compendium_entries("entities", categories=self.COMPENDIUM_CATEGORY_TYPES["clases"], edition=edition, language=target_lang, expansions=expansions)
+        sql_especies = self._db.count_compendium_entries("entities", categories=self.COMPENDIUM_CATEGORY_TYPES["especies_y_linajes"], edition=edition, language=target_lang, expansions=expansions)
+        sql_trasfondos = self._db.count_compendium_entries("entities", categories=self.COMPENDIUM_CATEGORY_TYPES["trasfondos"], edition=edition, language=target_lang, expansions=expansions)
+        sql_dotes = self._db.count_compendium_entries("entities", categories=self.COMPENDIUM_CATEGORY_TYPES["dotes"], edition=edition, language=target_lang, expansions=expansions)
+        sql_reglas = self._db.count_compendium_entries("entities", categories=self.COMPENDIUM_CATEGORY_TYPES["reglas_y_mecanicas"], edition=edition, language=target_lang, expansions=expansions)
 
         # Fallback a OKF solo si compendium_entities aún no ha sido poblado en SQLite
         cnt_clases = sql_clases if sql_clases > 0 else self._okf.count_entities(self.COMPENDIUM_CATEGORY_TYPES["clases"], lang=target_lang)
@@ -1245,14 +1256,14 @@ class CharacterBridgeMixin:
             "metadata": it,
         }
 
-    def search_compendium(self, query: str = "", category: Optional[str] = None, lang: str = "es", edition: Optional[str] = None) -> List[Dict[str, Any]]:
-        """Búsqueda de texto o listado por categoría en el compendio SQLite (monstruos, conjuros, equipo, clases, especies, reglas)."""
+    def search_compendium(self, query: str = "", category: Optional[str] = None, lang: str = "es", edition: Optional[str] = None, expansions: Optional[List[str]] = None) -> List[Dict[str, Any]]:
+        """Búsqueda de texto o listado por categoría en el compendio SQLite con soporte de edición y expansiones."""
         query_clean = (query or "").strip()
         target_lang = "en" if (lang or "").lower().startswith("en") else "es"
 
         # Categoría Monstruos (SQLite)
         if category == "monstruos":
-            monsters = self._db.search_compendium_monsters(query=query_clean, edition=edition, language=target_lang, limit=150)
+            monsters = self._db.search_compendium_monsters(query=query_clean, edition=edition, language=target_lang, expansions=expansions, limit=150)
             return [
                 {
                     "id": m.get("entity_id", ""),
@@ -1266,7 +1277,7 @@ class CharacterBridgeMixin:
 
         # Categoría Conjuros (SQLite)
         if category == "conjuros":
-            spells = self._db.search_compendium_spells(query=query_clean, edition=edition, language=target_lang, limit=150)
+            spells = self._db.search_compendium_spells(query=query_clean, edition=edition, language=target_lang, expansions=expansions, limit=150)
             lvl_lbl = "Level" if target_lang == "en" else "Nivel"
             return [
                 {
@@ -1281,7 +1292,7 @@ class CharacterBridgeMixin:
 
         # Categoría Equipo y Armamento (SQLite)
         if category in ("equipo_y_armamento", "equipo", "items"):
-            items = self._db.search_compendium_items(query=query_clean, edition=edition, language=target_lang, limit=150)
+            items = self._db.search_compendium_items(query=query_clean, edition=edition, language=target_lang, expansions=expansions, limit=150)
             return [
                 {
                     "id": it.get("entity_id", ""),
@@ -1301,6 +1312,7 @@ class CharacterBridgeMixin:
                 categories=types,
                 language=target_lang,
                 edition=edition,
+                expansions=expansions,
                 limit=150
             )
             if sql_entities:

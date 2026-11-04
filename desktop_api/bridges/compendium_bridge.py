@@ -19,9 +19,10 @@ class CompendiumBridgeMixin:
         language: str = "en",
         page: int = 1,
         page_size: int = 25,
+        expansions: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """
-        Búsqueda de criaturas en compendium_monsters con filtros de CR, tipo y tamaño.
+        Búsqueda de criaturas en compendium_monsters con filtros de CR, tipo, tamaño y expansión.
         Retorna resultados paginados y el total de registros encontrados.
         """
         safe_page = max(1, int(page or 1))
@@ -36,10 +37,11 @@ class CompendiumBridgeMixin:
             size=size,
             edition=edition,
             language=language,
+            expansions=expansions,
             limit=safe_limit,
             offset=offset,
         )
-        total = self._db.count_compendium_entries("monsters", edition=edition, language=language)
+        total = self._db.count_compendium_entries("monsters", edition=edition, language=language, expansions=expansions)
         return {
             "items": items,
             "total": total,
@@ -67,9 +69,10 @@ class CompendiumBridgeMixin:
         language: str = "en",
         page: int = 1,
         page_size: int = 25,
+        expansions: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """
-        Búsqueda de conjuros en compendium_spells con filtros de nivel, escuela, clase, concentración y ritual.
+        Búsqueda de conjuros en compendium_spells con filtros de nivel, escuela, clase, concentración, ritual y expansión.
         """
         safe_page = max(1, int(page or 1))
         safe_limit = max(1, min(100, int(page_size or 25)))
@@ -85,10 +88,11 @@ class CompendiumBridgeMixin:
             is_ritual=is_ritual,
             edition=edition,
             language=language,
+            expansions=expansions,
             limit=safe_limit,
             offset=offset,
         )
-        total = self._db.count_compendium_entries("spells", edition=edition, language=language)
+        total = self._db.count_compendium_entries("spells", edition=edition, language=language, expansions=expansions)
         return {
             "items": items,
             "total": total,
@@ -113,9 +117,10 @@ class CompendiumBridgeMixin:
         language: str = "en",
         page: int = 1,
         page_size: int = 25,
+        expansions: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """
-        Búsqueda de equipo, armas y objetos mágicos en compendium_items con soporte de Weapon Mastery 2024.
+        Búsqueda de equipo, armas y objetos mágicos en compendium_items con soporte de Weapon Mastery y expansión.
         """
         safe_page = max(1, int(page or 1))
         safe_limit = max(1, min(100, int(page_size or 25)))
@@ -128,10 +133,11 @@ class CompendiumBridgeMixin:
             weapon_mastery=weapon_mastery,
             edition=edition,
             language=language,
+            expansions=expansions,
             limit=safe_limit,
             offset=offset,
         )
-        total = self._db.count_compendium_entries("items", edition=edition, language=language)
+        total = self._db.count_compendium_entries("items", edition=edition, language=language, expansions=expansions)
         return {
             "items": items,
             "total": total,
@@ -146,10 +152,10 @@ class CompendiumBridgeMixin:
             return None
         return self._db.get_compendium_item_by_id(entity_id)
 
-    def get_compendium_counts(self, edition: Optional[str] = None, language: str = "en") -> Dict[str, int]:
+    def get_compendium_counts(self, edition: Optional[str] = None, language: str = "en", expansions: Optional[List[str]] = None) -> Dict[str, int]:
         """Retorna el conteo total de registros en las 3 categorías principales del compendio."""
         return {
-            "monsters": self._db.count_compendium_entries("monsters", edition=edition, language=language),
-            "spells": self._db.count_compendium_entries("spells", edition=edition, language=language),
-            "items": self._db.count_compendium_entries("items", edition=edition, language=language),
+            "monsters": self._db.count_compendium_entries("monsters", edition=edition, language=language, expansions=expansions),
+            "spells": self._db.count_compendium_entries("spells", edition=edition, language=language, expansions=expansions),
+            "items": self._db.count_compendium_entries("items", edition=edition, language=language, expansions=expansions),
         }

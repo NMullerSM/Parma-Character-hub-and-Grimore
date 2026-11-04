@@ -332,6 +332,8 @@ class DatabaseManager:
                         snippet TEXT DEFAULT '',
                         content_markdown TEXT NOT NULL DEFAULT '',
                         data_json TEXT NOT NULL DEFAULT '{}',
+                        source TEXT NOT NULL DEFAULT 'PHB 2024',
+                        expansion_tag TEXT NOT NULL DEFAULT 'phb_2024',
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     );
@@ -342,6 +344,61 @@ class DatabaseManager:
                 cursor.execute("CREATE INDEX IF NOT EXISTS idx_entities_entity_id ON compendium_entities(entity_id);")
 
                 cursor.execute("PRAGMA user_version = 3;")
+
+            # Migración a versión 4: Columnas source y expansion_tag para compendio y expansiones (Xanathar / Tasha)
+            if current_version < 4:
+                for tbl in ("compendium_monsters", "compendium_spells", "compendium_items", "compendium_entities"):
+                    cursor.execute(f"PRAGMA table_info({tbl});")
+                    cols = [row[1] for row in cursor.fetchall()]
+                    if "source" not in cols:
+                        cursor.execute(f"ALTER TABLE {tbl} ADD COLUMN source TEXT DEFAULT '';")
+                    if "expansion_tag" not in cols:
+                        cursor.execute(f"ALTER TABLE {tbl} ADD COLUMN expansion_tag TEXT DEFAULT '';")
+                    cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_{tbl}_source ON {tbl}(source);")
+                    cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_{tbl}_expansion_tag ON {tbl}(expansion_tag);")
+
+                # Backfill de fuentes en datos existentes
+                cursor.execute("""
+                    UPDATE compendium_monsters SET source = 'SRD 5.2 (2024)', expansion_tag = 'phb_2024'
+                    WHERE (source = '' OR source IS NULL) AND edition IN ('5.5e', '2024');
+                """)
+                cursor.execute("""
+                    UPDATE compendium_monsters SET source = 'SRD 5.1 (2014)', expansion_tag = 'srd_2014'
+                    WHERE (source = '' OR source IS NULL) AND edition IN ('5e', '2014');
+                """)
+
+                cursor.execute("""
+                    UPDATE compendium_spells SET source = 'SRD 5.2 (2024)', expansion_tag = 'phb_2024'
+                    WHERE (source = '' OR source IS NULL) AND edition IN ('5.5e', '2024');
+                """)
+                cursor.execute("""
+                    UPDATE compendium_spells SET source = 'SRD 5.1 (2014)', expansion_tag = 'srd_2014'
+                    WHERE (source = '' OR source IS NULL) AND edition IN ('5e', '2014');
+                """)
+
+                cursor.execute("""
+                    UPDATE compendium_items SET source = 'SRD 5.2 (2024)', expansion_tag = 'phb_2024'
+                    WHERE (source = '' OR source IS NULL) AND edition IN ('5.5e', '2024');
+                """)
+                cursor.execute("""
+                    UPDATE compendium_items SET source = 'SRD 5.1 (2014)', expansion_tag = 'srd_2014'
+                    WHERE (source = '' OR source IS NULL) AND edition IN ('5e', '2014');
+                """)
+
+                cursor.execute("""
+                    UPDATE compendium_entities SET source = "Tasha's Cauldron of Everything", expansion_tag = 'tce'
+                    WHERE (source = '' OR source IS NULL) AND (LOWER(data_json) LIKE '%tasha%');
+                """)
+                cursor.execute("""
+                    UPDATE compendium_entities SET source = "Xanathar's Guide to Everything", expansion_tag = 'xge'
+                    WHERE (source = '' OR source IS NULL) AND (LOWER(data_json) LIKE '%xanathar%');
+                """)
+                cursor.execute("""
+                    UPDATE compendium_entities SET source = 'PHB 2024', expansion_tag = 'phb_2024'
+                    WHERE source = '' OR source IS NULL;
+                """)
+
+                cursor.execute("PRAGMA user_version = 4;")
 
             conn.commit()
 
@@ -913,6 +970,8 @@ class DatabaseManager:
         speed = str(monster_data.get("speed", "30 ft."))
         edition = str(monster_data.get("edition", "5.5e"))
         language = str(monster_data.get("language", "en"))
+        source = str(monster_data.get("source", "SRD 5.2 (2024)" if edition == "5.5e" else "SRD 5.1 (2014)"))
+        expansion_tag = str(monster_data.get("expansion_tag", "phb_2024" if edition == "5.5e" else "srd_2014"))
         raw_json = monster_data.get("data_json")
         data_json = raw_json if isinstance(raw_json, str) else json.dumps(monster_data, ensure_ascii=False)
 
@@ -922,8 +981,8 @@ class DatabaseManager:
                 INSERT INTO compendium_monsters (
                     entity_id, name, name_en, cr, cr_text, size, monster_type,
                     alignment, ac, hp_avg, hp_formula, speed, edition, language,
-                    data_json, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                    source, expansion_tag, data_json, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
                 ON CONFLICT(entity_id) DO UPDATE SET
                     name = excluded.name,
                     name_en = excluded.name_en,
@@ -938,11 +997,14 @@ class DatabaseManager:
                     speed = excluded.speed,
                     edition = excluded.edition,
                     language = excluded.language,
+                    source = excluded.source,
+                    expansion_tag = excluded.expansion_tag,
                     data_json = excluded.data_json,
                     updated_at = CURRENT_TIMESTAMP;
             """, (
                 entity_id, name, name_en, cr, cr_text, size, m_type,
-                alignment, ac, hp_avg, hp_formula, speed, edition, language, data_json
+                alignment, ac, hp_avg, hp_formula, speed, edition, language,
+                source, expansion_tag, data_json
             ))
             conn.commit()
             return entity_id
@@ -956,11 +1018,12 @@ class DatabaseManager:
         size: Optional[str] = None,
         edition: Optional[str] = None,
         language: str = "en",
+        expansions: Optional[List[str]] = None,
         limit: int = 50,
         offset: int = 0,
     ) -> List[Dict[str, Any]]:
-        """Búsqueda y filtrado rápido de monstruos indexados con soporte de paginación."""
-        sql = "SELECT id, entity_id, name, name_en, cr, cr_text, size, monster_type, alignment, ac, hp_avg, hp_formula, speed, edition, language FROM compendium_monsters WHERE 1=1"
+        """Búsqueda y filtrado rápido de monstruos indexados con soporte de paginación y expansiones."""
+        sql = "SELECT id, entity_id, name, name_en, cr, cr_text, size, monster_type, alignment, ac, hp_avg, hp_formula, speed, edition, language, source, expansion_tag FROM compendium_monsters WHERE 1=1"
         params: List[Any] = []
 
         if query:
@@ -990,6 +1053,13 @@ class DatabaseManager:
         if language:
             sql += " AND language = ?"
             params.append(language)
+        if expansions:
+            valid_exp = [e.lower() for e in expansions if e and e.lower() != "all"]
+            if valid_exp:
+                placeholders = ",".join("?" for _ in valid_exp)
+                sql += f" AND (LOWER(expansion_tag) IN ({placeholders}) OR LOWER(source) IN ({placeholders}))"
+                params.extend(valid_exp)
+                params.extend(valid_exp)
 
         sql += " ORDER BY cr ASC, name ASC LIMIT ? OFFSET ?;"
         params.extend([limit, offset])
@@ -1031,6 +1101,8 @@ class DatabaseManager:
         classes_str = ", ".join(raw_classes) if isinstance(raw_classes, list) else str(raw_classes)
         edition = str(spell_data.get("edition", "5.5e"))
         language = str(spell_data.get("language", "en"))
+        source = str(spell_data.get("source", "SRD 5.2 (2024)" if edition == "5.5e" else "SRD 5.1 (2014)"))
+        expansion_tag = str(spell_data.get("expansion_tag", "phb_2024" if edition == "5.5e" else "srd_2014"))
         desc = str(spell_data.get("description") or spell_data.get("notes", ""))
         raw_json = spell_data.get("data_json")
         data_json = raw_json if isinstance(raw_json, str) else json.dumps(spell_data, ensure_ascii=False)
@@ -1041,8 +1113,8 @@ class DatabaseManager:
                 INSERT INTO compendium_spells (
                     entity_id, name, name_en, level, school, casting_time, range_area,
                     components, duration, is_concentration, is_ritual, classes,
-                    edition, language, description, data_json, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                    edition, language, source, expansion_tag, description, data_json, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
                 ON CONFLICT(entity_id) DO UPDATE SET
                     name = excluded.name,
                     name_en = excluded.name_en,
@@ -1057,13 +1129,15 @@ class DatabaseManager:
                     classes = excluded.classes,
                     edition = excluded.edition,
                     language = excluded.language,
+                    source = excluded.source,
+                    expansion_tag = excluded.expansion_tag,
                     description = excluded.description,
                     data_json = excluded.data_json,
                     updated_at = CURRENT_TIMESTAMP;
             """, (
                 entity_id, name, name_en, level, school, casting_time, range_area,
                 components, duration, is_conc, is_rit, classes_str,
-                edition, language, desc, data_json
+                edition, language, source, expansion_tag, desc, data_json
             ))
             conn.commit()
             return entity_id
@@ -1079,11 +1153,12 @@ class DatabaseManager:
         is_ritual: Optional[bool] = None,
         edition: Optional[str] = None,
         language: str = "en",
+        expansions: Optional[List[str]] = None,
         limit: int = 50,
         offset: int = 0,
     ) -> List[Dict[str, Any]]:
-        """Búsqueda y filtrado de conjuros indexados."""
-        sql = "SELECT id, entity_id, name, name_en, level, school, casting_time, range_area, components, duration, is_concentration, is_ritual, classes, edition, language, description FROM compendium_spells WHERE 1=1"
+        """Búsqueda y filtrado de conjuros indexados con soporte de expansiones."""
+        sql = "SELECT id, entity_id, name, name_en, level, school, casting_time, range_area, components, duration, is_concentration, is_ritual, classes, edition, language, source, expansion_tag, description FROM compendium_spells WHERE 1=1"
         params: List[Any] = []
 
         if query:
@@ -1119,6 +1194,13 @@ class DatabaseManager:
         if language:
             sql += " AND language = ?"
             params.append(language)
+        if expansions:
+            valid_exp = [e.lower() for e in expansions if e and e.lower() != "all"]
+            if valid_exp:
+                placeholders = ",".join("?" for _ in valid_exp)
+                sql += f" AND (LOWER(expansion_tag) IN ({placeholders}) OR LOWER(source) IN ({placeholders}))"
+                params.extend(valid_exp)
+                params.extend(valid_exp)
 
         sql += " ORDER BY level ASC, name ASC LIMIT ? OFFSET ?;"
         params.extend([limit, offset])
@@ -1158,6 +1240,8 @@ class DatabaseManager:
         ac_bonus = int(item_data.get("ac_bonus", 0))
         edition = str(item_data.get("edition", "5.5e"))
         language = str(item_data.get("language", "en"))
+        source = str(item_data.get("source", "SRD 5.2 (2024)" if edition == "5.5e" else "SRD 5.1 (2014)"))
+        expansion_tag = str(item_data.get("expansion_tag", "phb_2024" if edition == "5.5e" else "srd_2014"))
         desc = str(item_data.get("description", ""))
         raw_json = item_data.get("data_json")
         data_json = raw_json if isinstance(raw_json, str) else json.dumps(item_data, ensure_ascii=False)
@@ -1168,8 +1252,8 @@ class DatabaseManager:
                 INSERT INTO compendium_items (
                     entity_id, name, name_en, item_type, rarity, cost, weight,
                     weapon_mastery, damage, damage_type, ac_bonus, edition,
-                    language, description, data_json, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                    language, source, expansion_tag, description, data_json, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
                 ON CONFLICT(entity_id) DO UPDATE SET
                     name = excluded.name,
                     name_en = excluded.name_en,
@@ -1183,13 +1267,15 @@ class DatabaseManager:
                     ac_bonus = excluded.ac_bonus,
                     edition = excluded.edition,
                     language = excluded.language,
+                    source = excluded.source,
+                    expansion_tag = excluded.expansion_tag,
                     description = excluded.description,
                     data_json = excluded.data_json,
                     updated_at = CURRENT_TIMESTAMP;
             """, (
                 entity_id, name, name_en, item_type, rarity, cost, weight,
                 weapon_mastery, damage, damage_type, ac_bonus, edition,
-                language, desc, data_json
+                language, source, expansion_tag, desc, data_json
             ))
             conn.commit()
             return entity_id
@@ -1202,11 +1288,12 @@ class DatabaseManager:
         weapon_mastery: Optional[str] = None,
         edition: Optional[str] = None,
         language: str = "en",
+        expansions: Optional[List[str]] = None,
         limit: int = 50,
         offset: int = 0,
     ) -> List[Dict[str, Any]]:
-        """Búsqueda y filtrado de equipo, armas y objetos mágicos."""
-        sql = "SELECT id, entity_id, name, name_en, item_type, rarity, cost, weight, weapon_mastery, damage, damage_type, ac_bonus, edition, language, description FROM compendium_items WHERE 1=1"
+        """Búsqueda y filtrado de equipo, armas y objetos mágicos con soporte de expansiones."""
+        sql = "SELECT id, entity_id, name, name_en, item_type, rarity, cost, weight, weapon_mastery, damage, damage_type, ac_bonus, edition, language, source, expansion_tag, description FROM compendium_items WHERE 1=1"
         params: List[Any] = []
 
         if query:
@@ -1233,6 +1320,13 @@ class DatabaseManager:
         if language:
             sql += " AND language = ?"
             params.append(language)
+        if expansions:
+            valid_exp = [e.lower() for e in expansions if e and e.lower() != "all"]
+            if valid_exp:
+                placeholders = ",".join("?" for _ in valid_exp)
+                sql += f" AND (LOWER(expansion_tag) IN ({placeholders}) OR LOWER(source) IN ({placeholders}))"
+                params.extend(valid_exp)
+                params.extend(valid_exp)
 
         sql += " ORDER BY name ASC LIMIT ? OFFSET ?;"
         params.extend([limit, offset])
@@ -1265,6 +1359,8 @@ class DatabaseManager:
         category = entity_data.get("category", "regla")
         edition = str(entity_data.get("edition", "5.5e"))
         language = str(entity_data.get("language", "es"))
+        source = str(entity_data.get("source", "PHB 2024"))
+        expansion_tag = str(entity_data.get("expansion_tag", "phb_2024"))
         snippet = str(entity_data.get("snippet", ""))
         content_md = str(entity_data.get("content_markdown") or entity_data.get("content") or entity_data.get("description", ""))
         raw_json = entity_data.get("data_json")
@@ -1280,21 +1376,23 @@ class DatabaseManager:
             cursor.execute("""
                 INSERT INTO compendium_entities (
                     entity_id, name, name_en, category, edition,
-                    language, snippet, content_markdown, data_json, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                    language, source, expansion_tag, snippet, content_markdown, data_json, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
                 ON CONFLICT(entity_id) DO UPDATE SET
                     name = excluded.name,
                     name_en = excluded.name_en,
                     category = excluded.category,
                     edition = excluded.edition,
                     language = excluded.language,
+                    source = excluded.source,
+                    expansion_tag = excluded.expansion_tag,
                     snippet = excluded.snippet,
                     content_markdown = excluded.content_markdown,
                     data_json = excluded.data_json,
                     updated_at = CURRENT_TIMESTAMP;
             """, (
                 entity_id, name, name_en, category, edition,
-                language, snippet, content_md, data_json
+                language, source, expansion_tag, snippet, content_md, data_json
             ))
             conn.commit()
             return entity_id
@@ -1306,11 +1404,12 @@ class DatabaseManager:
         categories: Optional[List[str]] = None,
         language: str = "es",
         edition: Optional[str] = None,
+        expansions: Optional[List[str]] = None,
         limit: int = 150,
         offset: int = 0,
     ) -> List[Dict[str, Any]]:
-        """Búsqueda y listado de entidades en compendium_entities (clases, especies, trasfondos, etc.)."""
-        sql = "SELECT id, entity_id, name, name_en, category, edition, language, snippet, content_markdown, data_json FROM compendium_entities WHERE 1=1"
+        """Búsqueda y listado de entidades en compendium_entities con soporte de expansiones."""
+        sql = "SELECT id, entity_id, name, name_en, category, edition, language, source, expansion_tag, snippet, content_markdown, data_json FROM compendium_entities WHERE 1=1"
         params: List[Any] = []
 
         if query:
@@ -1338,6 +1437,14 @@ class DatabaseManager:
         if language:
             sql += " AND language = ?"
             params.append(language)
+
+        if expansions:
+            valid_exp = [e.lower() for e in expansions if e and e.lower() != "all"]
+            if valid_exp:
+                placeholders = ",".join("?" for _ in valid_exp)
+                sql += f" AND (LOWER(expansion_tag) IN ({placeholders}) OR LOWER(source) IN ({placeholders}))"
+                params.extend(valid_exp)
+                params.extend(valid_exp)
 
         sql += " ORDER BY name ASC LIMIT ? OFFSET ?;"
         params.extend([limit, offset])
@@ -1380,9 +1487,10 @@ class DatabaseManager:
         category: str,
         categories: Optional[List[str]] = None,
         edition: Optional[str] = None,
-        language: Optional[str] = None
+        language: Optional[str] = None,
+        expansions: Optional[List[str]] = None,
     ) -> int:
-        """Retorna el conteo total de entradas en una tabla del compendio o por categoría."""
+        """Retorna el conteo total de entradas en una tabla del compendio o por categoría y expansión."""
         cat_lower = category.lower() if category else ""
         if cat_lower in ("monsters", "monstruos"):
             tbl = "compendium_monsters"
@@ -1419,6 +1527,13 @@ class DatabaseManager:
         if language:
             sql += " AND language = ?"
             params.append(language)
+        if expansions:
+            valid_exp = [e.lower() for e in expansions if e and e.lower() != "all"]
+            if valid_exp:
+                placeholders = ",".join("?" for _ in valid_exp)
+                sql += f" AND (LOWER(expansion_tag) IN ({placeholders}) OR LOWER(source) IN ({placeholders}))"
+                params.extend(valid_exp)
+                params.extend(valid_exp)
 
         with self._get_connection() as conn:
             cursor = conn.cursor()
