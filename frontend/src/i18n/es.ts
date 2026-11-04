@@ -344,6 +344,7 @@ export const es = {
     catClasses: "Clases y Subclases",
     catSpecies: "Especies y Linajes",
     catSpells: "Grimorio de Conjuros",
+    catMonsters: "Monstruos y Bestiario",
     catBackgrounds: "Trasfondos",
     catFeats: "Dotes de Personaje",
     catEquipment: "Equipo y Armamento",

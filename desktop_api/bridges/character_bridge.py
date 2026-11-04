@@ -1124,25 +1124,40 @@ class CharacterBridgeMixin:
     # =========================================================================
 
     def get_compendium_categories(self, lang: str = "es") -> List[Dict[str, Any]]:
-        """Lista las categorías disponibles en el compendio OKF con su conteo por idioma."""
+        """Lista las categorías disponibles en el compendio OKF y SQLite con su conteo por idioma."""
         target_lang = "en" if (lang or "").lower().startswith("en") else "es"
+        
+        # Conteo SQLite
+        sql_monsters = self._db.count_compendium_entries("monsters", language=target_lang)
+        sql_spells = self._db.count_compendium_entries("spells", language=target_lang)
+        sql_items = self._db.count_compendium_entries("items", language=target_lang)
+
+        # Conteo OKF
+        okf_spells = self._okf.count_entities("conjuro", lang=target_lang)
+        okf_items = self._okf.count_entities("equipo", lang=target_lang)
+
+        spells_count = sql_spells if sql_spells > 0 else okf_spells
+        items_count = sql_items if sql_items > 0 else okf_items
+
         if target_lang == "en":
             return [
                 {"id": "clases", "label": "Classes & Subclasses", "count": self._okf.count_entities(["clase", "subclase"], lang=target_lang)},
                 {"id": "especies_y_linajes", "label": "Species & Lineages", "count": self._okf.count_entities(["especie", "linaje"], lang=target_lang)},
-                {"id": "conjuros", "label": "Spell Grimoire", "count": self._okf.count_entities("conjuro", lang=target_lang)},
+                {"id": "conjuros", "label": "Spell Grimoire", "count": spells_count},
+                {"id": "monstruos", "label": "Monsters & Bestiary", "count": sql_monsters},
                 {"id": "trasfondos", "label": "Backgrounds", "count": self._okf.count_entities("trasfondo", lang=target_lang)},
                 {"id": "dotes", "label": "Character Feats", "count": self._okf.count_entities("dote", lang=target_lang)},
-                {"id": "equipo_y_armamento", "label": "Equipment & Weapons", "count": self._okf.count_entities("equipo", lang=target_lang)},
+                {"id": "equipo_y_armamento", "label": "Equipment & Weapons", "count": items_count},
                 {"id": "reglas_y_mecanicas", "label": "Rules & Mechanics", "count": self._okf.count_entities("regla", lang=target_lang)},
             ]
         return [
             {"id": "clases", "label": "Clases y Subclases", "count": self._okf.count_entities(["clase", "subclase"], lang=target_lang)},
             {"id": "especies_y_linajes", "label": "Especies y Linajes", "count": self._okf.count_entities(["especie", "linaje"], lang=target_lang)},
-            {"id": "conjuros", "label": "Grimorio de Conjuros", "count": self._okf.count_entities("conjuro", lang=target_lang)},
+            {"id": "conjuros", "label": "Grimorio de Conjuros", "count": spells_count},
+            {"id": "monstruos", "label": "Monstruos y Bestiario", "count": sql_monsters},
             {"id": "trasfondos", "label": "Trasfondos", "count": self._okf.count_entities("trasfondo", lang=target_lang)},
             {"id": "dotes", "label": "Dotes de Personaje", "count": self._okf.count_entities("dote", lang=target_lang)},
-            {"id": "equipo_y_armamento", "label": "Equipo y Armamento", "count": self._okf.count_entities("equipo", lang=target_lang)},
+            {"id": "equipo_y_armamento", "label": "Equipo y Armamento", "count": items_count},
             {"id": "reglas_y_mecanicas", "label": "Reglas y Mecánicas", "count": self._okf.count_entities("regla", lang=target_lang)},
         ]
 
@@ -1150,6 +1165,19 @@ class CharacterBridgeMixin:
         """Búsqueda de texto o listado por categoría en el compendio OKF según idioma."""
         query_clean = (query or "").strip()
         target_lang = "en" if (lang or "").lower().startswith("en") else "es"
+
+        if category == "monstruos":
+            monsters = self._db.search_compendium_monsters(query=query_clean, language=target_lang, limit=150)
+            return [
+                {
+                    "id": m.get("entity_id", ""),
+                    "name": m.get("name", ""),
+                    "category": "monstruos",
+                    "snippet": f"{m.get('size', '')} {m.get('monster_type', '')} • CR {m.get('cr_text', '0')} • CA {m.get('ac', 10)} • PG {m.get('hp_avg', 10)}",
+                    "path": "sqlite:compendium_monsters",
+                }
+                for m in monsters
+            ]
 
         category_type_map = {
             "clases": ["clase", "subclase"],
@@ -1186,6 +1214,18 @@ class CharacterBridgeMixin:
                 "snippet": " • ".join(snippet_parts),
                 "path": item.get("path", ""),
             })
+
+        if not category and query_clean:
+            monsters = self._db.search_compendium_monsters(query=query_clean, language=target_lang, limit=25)
+            for m in monsters:
+                results.append({
+                    "id": m.get("entity_id", ""),
+                    "name": m.get("name", ""),
+                    "category": "monstruos",
+                    "snippet": f"{m.get('size', '')} {m.get('monster_type', '')} • CR {m.get('cr_text', '0')} • CA {m.get('ac', 10)} • PG {m.get('hp_avg', 10)}",
+                    "path": "sqlite:compendium_monsters",
+                })
+
         return results
 
     def get_compendium_entry(self, category: str, entry_name: str, lang: str = "es") -> Optional[Dict[str, Any]]:
@@ -1224,6 +1264,76 @@ class CharacterBridgeMixin:
             )
 
         if not matched:
+            # Fallback a compendio SQLite (monstruos, conjuros, equipo)
+            m = self._db.get_compendium_monster_by_id(query_id)
+            if m:
+                cr_str = m.get("cr_text", "0")
+                md_content = f"### {m.get('name')}\n\n*{m.get('size', '')} {m.get('monster_type', '')}, {m.get('alignment', '')}*\n\n"
+                md_content += f"- **Clase de Armadura:** {m.get('ac')}\n"
+                md_content += f"- **Puntos de Golpe:** {m.get('hp_avg')} ({m.get('hp_formula', '')})\n"
+                md_content += f"- **Velocidad:** {m.get('speed')}\n"
+                md_content += f"- **Desafío (CR):** {cr_str}\n"
+                details = m.get("details", {})
+                if isinstance(details, dict):
+                    if "str" in details or "fuerza" in details:
+                        md_content += f"\n| FUE | DES | CON | INT | SAB | CAR |\n| :---: | :---: | :---: | :---: | :---: | :---: |\n"
+                        md_content += f"| {details.get('str', 10)} | {details.get('dex', 10)} | {details.get('con', 10)} | {details.get('int', 10)} | {details.get('wis', 10)} | {details.get('cha', 10)} |\n\n"
+                    traits = details.get("trait") or details.get("special_abilities") or []
+                    if traits:
+                        md_content += "#### Rasgos\n"
+                        for t in traits:
+                            if isinstance(t, dict):
+                                md_content += f"**{t.get('name')}:** {t.get('desc', t.get('entries', ''))}\n\n"
+                    actions = details.get("action") or details.get("actions") or []
+                    if actions:
+                        md_content += "#### Acciones\n"
+                        for a in actions:
+                            if isinstance(a, dict):
+                                md_content += f"**{a.get('name')}:** {a.get('desc', a.get('entries', ''))}\n\n"
+                return {
+                    "id": m.get("entity_id", ""),
+                    "name": m.get("name", entry_name),
+                    "category": "monstruos",
+                    "content": md_content,
+                    "metadata": m,
+                }
+
+            s = self._db.get_compendium_spell_by_id(query_id)
+            if s:
+                md_content = f"### {s.get('name')}\n\n*{s.get('school')} • Nivel {s.get('level')}*\n\n"
+                md_content += f"- **Tiempo de Lanzamiento:** {s.get('casting_time')}\n"
+                md_content += f"- **Alcance / Área:** {s.get('range_area')}\n"
+                md_content += f"- **Componentes:** {s.get('components')}\n"
+                md_content += f"- **Duración:** {s.get('duration')}\n\n"
+                md_content += s.get("description", "")
+                return {
+                    "id": s.get("entity_id", ""),
+                    "name": s.get("name", entry_name),
+                    "category": "conjuros",
+                    "content": md_content,
+                    "metadata": s,
+                }
+
+            it = self._db.get_compendium_item_by_id(query_id)
+            if it:
+                md_content = f"### {it.get('name')}\n\n*{it.get('item_type')} • {it.get('rarity')}*\n\n"
+                if it.get("weapon_mastery"):
+                    md_content += f"- **Weapon Mastery (2024):** {it.get('weapon_mastery')}\n"
+                if it.get("damage"):
+                    md_content += f"- **Daño:** {it.get('damage')} ({it.get('damage_type', '')})\n"
+                if it.get("cost"):
+                    md_content += f"- **Precio:** {it.get('cost')}\n"
+                if it.get("weight"):
+                    md_content += f"- **Peso:** {it.get('weight')}\n\n"
+                md_content += it.get("description", "")
+                return {
+                    "id": it.get("entity_id", ""),
+                    "name": it.get("name", entry_name),
+                    "category": "equipo_y_armamento",
+                    "content": md_content,
+                    "metadata": it,
+                }
+
             return None
 
         rel_path = matched.get("path")

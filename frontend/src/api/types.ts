@@ -283,6 +283,90 @@ export interface CompendiumSearchResult {
   path: string;
 }
 
+export interface CompendiumMonsterSummary {
+  id?: number;
+  entity_id: string;
+  name: string;
+  name_en?: string;
+  cr: number;
+  cr_text: string;
+  size: string;
+  monster_type: string;
+  alignment: string;
+  ac: number;
+  hp_avg: number;
+  hp_formula: string;
+  speed: string;
+  edition: string;
+  language: string;
+}
+
+export interface CompendiumMonsterDetail extends CompendiumMonsterSummary {
+  data_json?: string;
+  details?: Record<string, any>;
+}
+
+export interface CompendiumSpellSummary {
+  id?: number;
+  entity_id: string;
+  name: string;
+  name_en?: string;
+  level: number;
+  school: string;
+  casting_time: string;
+  range_area: string;
+  components: string;
+  duration: string;
+  is_concentration: number | boolean;
+  is_ritual: number | boolean;
+  classes: string;
+  edition: string;
+  language: string;
+  description: string;
+}
+
+export interface CompendiumSpellDetail extends CompendiumSpellSummary {
+  data_json?: string;
+  details?: Record<string, any>;
+}
+
+export interface CompendiumItemSummary {
+  id?: number;
+  entity_id: string;
+  name: string;
+  name_en?: string;
+  item_type: string;
+  rarity: string;
+  cost: string;
+  weight: string;
+  weapon_mastery?: string;
+  damage?: string;
+  damage_type?: string;
+  ac_bonus?: number;
+  edition: string;
+  language: string;
+  description: string;
+}
+
+export interface CompendiumItemDetail extends CompendiumItemSummary {
+  data_json?: string;
+  details?: Record<string, any>;
+}
+
+export interface CompendiumPaginatedResult<T> {
+  items: T[];
+  total: number;
+  page: number;
+  page_size: number;
+  has_more: boolean;
+}
+
+export interface CompendiumCounts {
+  monsters: number;
+  spells: number;
+  items: number;
+}
+
 export interface AppSettings {
   theme: string;
   dnd_edition?: string;

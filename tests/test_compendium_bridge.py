@@ -250,3 +250,29 @@ def test_get_compendium_counts(compendium_fixture):
         "spells": 2,
         "items": 2
     }
+
+
+def test_character_bridge_compendium_integration(compendium_fixture):
+    _, db = compendium_fixture
+    desktop_bridge = DesktopBridge()
+    desktop_bridge._db = db
+
+    # 1. Categorías incluyen monstruos
+    cats = desktop_bridge.get_compendium_categories("en")
+    cat_ids = [c["id"] for c in cats]
+    assert "monstruos" in cat_ids
+    monster_cat = next(c for c in cats if c["id"] == "monstruos")
+    assert monster_cat["count"] == 2
+
+    # 2. search_compendium con category="monstruos"
+    res_m = desktop_bridge.search_compendium(query="dragon", category="monstruos", lang="en")
+    assert len(res_m) == 1
+    assert res_m[0]["id"] == "ancient_red_dragon"
+    assert res_m[0]["category"] == "monstruos"
+
+    # 3. get_compendium_entry para monstruo
+    entry = desktop_bridge.get_compendium_entry(category="monstruos", entry_name="goblin", lang="en")
+    assert entry is not None
+    assert entry["name"] == "Goblin"
+    assert "Clase de Armadura" in entry["content"] or "Armadura" in entry["content"]
+

@@ -336,6 +336,8 @@ export function translateCategory(catId: string, lang: Language): string {
       return dict.catSpecies;
     case "conjuros":
       return dict.catSpells;
+    case "monstruos":
+      return (dict as any).catMonsters || (lang === "en" ? "Monsters & Bestiary" : "Monstruos y Bestiario");
     case "trasfondos":
       return dict.catBackgrounds;
     case "dotes":
