@@ -281,6 +281,8 @@ export interface CompendiumSearchResult {
   category: string;
   snippet: string;
   path: string;
+  source?: string;
+  expansion_tag?: string;
 }
 
 export interface CompendiumMonsterSummary {
@@ -299,6 +301,8 @@ export interface CompendiumMonsterSummary {
   speed: string;
   edition: string;
   language: string;
+  source?: string;
+  expansion_tag?: string;
 }
 
 export interface CompendiumMonsterDetail extends CompendiumMonsterSummary {
@@ -323,6 +327,8 @@ export interface CompendiumSpellSummary {
   edition: string;
   language: string;
   description: string;
+  source?: string;
+  expansion_tag?: string;
 }
 
 export interface CompendiumSpellDetail extends CompendiumSpellSummary {
@@ -346,6 +352,8 @@ export interface CompendiumItemSummary {
   edition: string;
   language: string;
   description: string;
+  source?: string;
+  expansion_tag?: string;
 }
 
 export interface CompendiumItemDetail extends CompendiumItemSummary {
@@ -370,6 +378,7 @@ export interface CompendiumCounts {
 export interface AppSettings {
   theme: string;
   dnd_edition?: string;
+  active_expansions?: string | string[];
   language?: "es" | "en";
   talespire_mode: "dm" | "player";
   talespire_enabled: boolean;

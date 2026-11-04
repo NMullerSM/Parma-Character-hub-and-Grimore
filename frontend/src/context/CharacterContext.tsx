@@ -23,6 +23,7 @@ interface CharacterContextType {
   loading: boolean;
   talespireStatus: TaleSpireStatus;
   dndEdition: string;
+  activeExpansions: string[];
   isDiceDrawerOpen: boolean;
   diceRequest: RollRequest;
   lastRollResult: RollResult | null;
@@ -40,6 +41,8 @@ interface CharacterContextType {
 
   // Acciones
   setDndEdition: (edition: string) => Promise<void>;
+  setActiveExpansions: (expansions: string[]) => Promise<void>;
+  toggleExpansion: (expansionTag: string) => Promise<void>;
   reloadCharacters: () => Promise<void>;
   selectCharacter: (id: number) => Promise<void>;
   updateActiveCharacter: (updates: Partial<CharacterSheetData>) => void;
@@ -78,6 +81,18 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [characters, setCharacters] = useState<CharacterSummary[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [dndEdition, setEditionState] = useState<string>("5.5e");
+  const [activeExpansions, setActiveExpansionsState] = useState<string[]>(() => {
+    try {
+      const stored = safeStorage.getItem("dnd_sanctum_expansions");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {
+      // fallback
+    }
+    return ["phb_2024", "srd_2014", "xge", "tce"];
+  });
   const [language, setLanguageState] = useState<"es" | "en">(() => {
     return (safeStorage.getItem("dnd_sanctum_lang") as "es" | "en") || "es";
   });
@@ -169,6 +184,16 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       setActiveCharacter(active);
       const settings = await api.getSettings();
       if (settings.dnd_edition) setEditionState(settings.dnd_edition);
+      if (settings.active_expansions) {
+        try {
+          const parsed = typeof settings.active_expansions === "string"
+            ? JSON.parse(settings.active_expansions)
+            : settings.active_expansions;
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setActiveExpansionsState(parsed);
+          }
+        } catch (_) {}
+      }
       if (settings.language && (settings.language === "es" || settings.language === "en")) {
         setLanguageState(settings.language);
         safeStorage.setItem("dnd_sanctum_lang", settings.language);
@@ -270,6 +295,23 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     setEditionState(edition);
     await api.setSetting("dnd_edition", edition);
     showToast(`Edición activa: D&D ${edition}`, "info");
+  };
+
+  const setActiveExpansions = async (expansions: string[]) => {
+    setActiveExpansionsState(expansions);
+    safeStorage.setItem("dnd_sanctum_expansions", JSON.stringify(expansions));
+    try {
+      await api.setSetting("active_expansions", JSON.stringify(expansions));
+    } catch (e) {
+      console.error("Error saving active_expansions setting:", e);
+    }
+  };
+
+  const toggleExpansion = async (tag: string) => {
+    const next = activeExpansions.includes(tag)
+      ? activeExpansions.filter((t) => t !== tag)
+      : [...activeExpansions, tag];
+    await setActiveExpansions(next);
   };
 
   const selectCharacter = async (id: number) => {
@@ -520,6 +562,9 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         isRollingAnimation,
         currentRollingData,
         setDndEdition,
+        activeExpansions,
+        setActiveExpansions,
+        toggleExpansion,
         reloadCharacters,
         selectCharacter,
         updateActiveCharacter,

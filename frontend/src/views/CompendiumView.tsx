@@ -14,7 +14,7 @@ import { MarkdownViewer } from "../components/MarkdownViewer";
 
 export const CompendiumView: React.FC = () => {
   const { t, language, translateCategory, translateSpellName } = useTranslation();
-  const { dndEdition } = useCharacter();
+  const { dndEdition, activeExpansions, toggleExpansion } = useCharacter();
 
   const [categories, setCategories] = useState<CompendiumCategory[]>([]);
   const [selectedCat, setSelectedCat] = useState<string>("");
@@ -37,7 +37,7 @@ export const CompendiumView: React.FC = () => {
   useEffect(() => {
     async function loadCategories() {
       try {
-        const cats = await api.getCompendiumCategories(language, selectedEdition || undefined);
+        const cats = await api.getCompendiumCategories(language, selectedEdition || undefined, activeExpansions);
         setCategories(cats);
         if (cats.length > 0 && !selectedCat) setSelectedCat(cats[0].id);
       } catch (e) {
@@ -45,7 +45,7 @@ export const CompendiumView: React.FC = () => {
       }
     }
     loadCategories();
-  }, [language, selectedEdition]);
+  }, [language, selectedEdition, activeExpansions]);
 
   useEffect(() => {
     const timer = setTimeout(async () => {
@@ -56,7 +56,7 @@ export const CompendiumView: React.FC = () => {
         const edFilter = selectedEdition || undefined;
 
         if (selectedCat === "monstruos") {
-          const res = await api.searchMonsters(queryToRun, null, null, null, null, edFilter, language, 1, 150);
+          const res = await api.searchMonsters(queryToRun, null, null, null, null, edFilter, language, 1, 150, activeExpansions);
           if (searchId !== lastSearchIdRef.current) return;
           const mapped: CompendiumSearchResult[] = res.items.map((m) => ({
             id: m.entity_id,
@@ -64,6 +64,8 @@ export const CompendiumView: React.FC = () => {
             category: "monstruos",
             snippet: `${m.size || ""} ${m.monster_type || ""} • CR ${m.cr_text || "0"} • CA ${m.ac ?? 10} • PG ${m.hp_avg ?? 10}`.trim(),
             path: "sqlite:compendium_monsters",
+            source: m.source,
+            expansion_tag: m.expansion_tag,
           }));
           setResults(mapped);
           if (mapped.length > 0) {
@@ -72,7 +74,7 @@ export const CompendiumView: React.FC = () => {
             setSelectedEntry(null);
           }
         } else if (selectedCat === "conjuros") {
-          const res = await api.searchSpells(queryToRun, null, null, null, null, null, null, edFilter, language, 1, 150);
+          const res = await api.searchSpells(queryToRun, null, null, null, null, null, null, edFilter, language, 1, 150, activeExpansions);
           if (searchId !== lastSearchIdRef.current) return;
           const mapped: CompendiumSearchResult[] = res.items.map((s) => ({
             id: s.entity_id,
@@ -80,6 +82,8 @@ export const CompendiumView: React.FC = () => {
             category: "conjuros",
             snippet: `${language === "en" ? "Level" : "Nivel"} ${s.level} • ${s.school} • ${s.casting_time}`,
             path: "sqlite:compendium_spells",
+            source: s.source,
+            expansion_tag: s.expansion_tag,
           }));
           setResults(mapped);
           if (mapped.length > 0) {
@@ -88,7 +92,7 @@ export const CompendiumView: React.FC = () => {
             setSelectedEntry(null);
           }
         } else if (selectedCat === "equipo_y_armamento") {
-          const res = await api.searchItems(queryToRun, null, null, null, edFilter, language, 1, 150);
+          const res = await api.searchItems(queryToRun, null, null, null, edFilter, language, 1, 150, activeExpansions);
           if (searchId !== lastSearchIdRef.current) return;
           const mapped: CompendiumSearchResult[] = res.items.map((it) => ({
             id: it.entity_id,
@@ -96,6 +100,8 @@ export const CompendiumView: React.FC = () => {
             category: "equipo_y_armamento",
             snippet: `${it.item_type} • ${it.rarity}${it.weapon_mastery ? " • Dominio: " + it.weapon_mastery : ""}`,
             path: "sqlite:compendium_items",
+            source: it.source,
+            expansion_tag: it.expansion_tag,
           }));
           setResults(mapped);
           if (mapped.length > 0) {
@@ -105,7 +111,7 @@ export const CompendiumView: React.FC = () => {
           }
         } else {
           // OKF y compendium_entities en SQLite
-          const data = await api.searchCompendium(queryToRun, selectedCat || undefined, language, edFilter);
+          const data = await api.searchCompendium(queryToRun, selectedCat || undefined, language, edFilter, activeExpansions);
           if (searchId !== lastSearchIdRef.current) return;
           setResults(data);
           if (data.length > 0) {
@@ -126,7 +132,7 @@ export const CompendiumView: React.FC = () => {
     }, 200);
 
     return () => clearTimeout(timer);
-  }, [searchQuery, selectedCat, language, selectedEdition]);
+  }, [searchQuery, selectedCat, language, selectedEdition, activeExpansions]);
 
   const loadEntry = async (category: string, name: string, id?: string) => {
     const loadId = ++lastLoadIdRef.current;
@@ -228,6 +234,37 @@ export const CompendiumView: React.FC = () => {
             </button>
           </div>
 
+          {/* Selector de Expansiones Activas */}
+          <div className="flex items-center bg-card border border-border-iron rounded-lg p-0.5 text-xs gap-1">
+            <span className="text-[10px] uppercase font-stat text-muted px-1.5 hidden sm:inline">
+              {language === "en" ? "Expansions:" : "Expansiones:"}
+            </span>
+            <button
+              type="button"
+              onClick={() => toggleExpansion("xge")}
+              title="Xanathar's Guide to Everything"
+              className={`px-2 py-1 rounded font-medium transition-colors ${
+                activeExpansions?.includes("xge")
+                  ? "bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold"
+                  : "text-muted hover:text-main opacity-50"
+              }`}
+            >
+              XGtE (Xanathar)
+            </button>
+            <button
+              type="button"
+              onClick={() => toggleExpansion("tce")}
+              title="Tasha's Cauldron of Everything"
+              className={`px-2 py-1 rounded font-medium transition-colors ${
+                activeExpansions?.includes("tce")
+                  ? "bg-purple-500/20 text-purple-300 border border-purple-500/40 font-bold"
+                  : "text-muted hover:text-main opacity-50"
+              }`}
+            >
+              TCoE (Tasha)
+            </button>
+          </div>
+
           {/* Input de Búsqueda */}
           <div className="relative w-full md:w-72">
             <Search className="w-4 h-4 absolute left-3 top-2.5 text-muted pointer-events-none" />
@@ -284,7 +321,14 @@ export const CompendiumView: React.FC = () => {
                   <h4 className="font-semibold text-xs text-main">
                     {r.category === "conjuros" && language === "en" ? translateSpellName(r.name) : r.name}
                   </h4>
-                  <span className="text-[10px] uppercase font-stat text-gold/80">{translateCategory(r.category)}</span>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {r.expansion_tag && r.expansion_tag !== "phb_2024" && r.expansion_tag !== "srd_2014" && (
+                      <span className="text-[9px] uppercase px-1.5 py-0.2 rounded bg-amber-500/15 text-amber-300 font-stat border border-amber-500/30">
+                        {r.expansion_tag}
+                      </span>
+                    )}
+                    <span className="text-[10px] uppercase font-stat text-gold/80">{translateCategory(r.category)}</span>
+                  </div>
                 </div>
                 {r.snippet && <p className="text-[11px] text-muted line-clamp-2 leading-relaxed">{r.snippet}</p>}
               </div>
@@ -300,9 +344,16 @@ export const CompendiumView: React.FC = () => {
             <div>
               {/* Header de la Entrada */}
               <div className="border-b border-border-iron pb-3 mb-4">
-                <span className="text-[10px] uppercase font-stat tracking-widest text-gold">
-                  {translateCategory(selectedEntry.category)}
-                </span>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[10px] uppercase font-stat tracking-widest text-gold">
+                    {translateCategory(selectedEntry.category)}
+                  </span>
+                  {(selectedEntry.source || selectedEntry.monster?.source || selectedEntry.spell?.source || selectedEntry.item?.source) && (
+                    <span className="text-[10px] px-2 py-0.5 rounded font-stat bg-surface text-gold/90 border border-border-iron">
+                      {selectedEntry.source || selectedEntry.monster?.source || selectedEntry.spell?.source || selectedEntry.item?.source}
+                    </span>
+                  )}
+                </div>
                 <h2 className="font-display font-bold text-2xl text-main mt-0.5">
                   {selectedEntry.category === "conjuros" && language === "en"
                     ? translateSpellName(selectedEntry.name)

@@ -1005,6 +1005,8 @@ def normalize_foundry_monster(
         "speed": speed_es if is_es else speed_en,
         "edition": edition,
         "language": lang,
+        "source": "SRD 5.2 (2024)" if edition == "5.5e" else "SRD 5.1 (2014)",
+        "expansion_tag": "phb_2024" if edition == "5.5e" else "srd_2014",
         "data_json": json.dumps(details, ensure_ascii=False),
     }
 
@@ -1119,6 +1121,8 @@ def normalize_foundry_spell(
         "classes": classes_str,
         "edition": edition,
         "language": lang,
+        "source": "SRD 5.2 (2024)" if edition == "5.5e" else "SRD 5.1 (2014)",
+        "expansion_tag": "phb_2024" if edition == "5.5e" else "srd_2014",
         "description": desc_es if is_es else desc_en,
         "data_json": json.dumps(details, ensure_ascii=False),
     }
@@ -1224,6 +1228,8 @@ def normalize_foundry_item(
         "ac_bonus": ac_bonus,
         "edition": edition,
         "language": lang,
+        "source": "SRD 5.2 (2024)" if edition == "5.5e" else "SRD 5.1 (2014)",
+        "expansion_tag": "phb_2024" if edition == "5.5e" else "srd_2014",
         "description": desc_final,
         "data_json": json.dumps(details, ensure_ascii=False),
     }
@@ -1664,10 +1670,11 @@ class CompendiumImporter:
         entities = data.get("entities", [])
         valid_types = {"clase", "subclase", "especie", "especie_linaje", "trasfondo", "dote", "regla"}
         count = 0
+        spells_count = 0
 
         for e in entities:
             tipo = e.get("tipo")
-            if tipo not in valid_types:
+            if tipo not in valid_types and tipo != "conjuro":
                 continue
 
             entity_id = e.get("id")
@@ -1676,7 +1683,22 @@ class CompendiumImporter:
             lang = e.get("idioma", "es")
             edition = "5.5e"
 
-            snippet_parts = [e.get("fuente", "PHB 2024")]
+            fuente_raw = str(e.get("fuente", "PHB 2024")).strip()
+            f_lower = fuente_raw.lower()
+            if "tasha" in f_lower:
+                source = "Tasha's Cauldron of Everything"
+                expansion_tag = "tce"
+            elif "xanathar" in f_lower:
+                source = "Xanathar's Guide to Everything"
+                expansion_tag = "xge"
+            elif "2014" in f_lower or "5e" in f_lower:
+                source = "PHB 2014"
+                expansion_tag = "srd_2014"
+            else:
+                source = "PHB 2024"
+                expansion_tag = "phb_2024"
+
+            snippet_parts = [source]
             if e.get("nivel") is not None:
                 snippet_parts.append(f"Level {e['nivel']}" if lang == "en" else f"Nivel {e['nivel']}")
             if e.get("escuela"):
@@ -1716,6 +1738,33 @@ class CompendiumImporter:
             if not content_md:
                 content_md = e.get("descripcion", "")
 
+            # Si es conjuro de expansión (Tasha o Xanathar), insertarlo en compendium_spells
+            if tipo == "conjuro":
+                if expansion_tag in ("tce", "xge") or entity_id in ("caldero_burbujeante_de_tasha", "caldero_burbujeante_de_tasha_en", "risa_espantosa_de_tasha", "risa_espantosa_de_tasha_en"):
+                    spell_dict = {
+                        "entity_id": entity_id,
+                        "name": name,
+                        "name_en": name_en,
+                        "level": int(e.get("nivel", 0)),
+                        "school": str(e.get("escuela", "Conjuración" if lang == "es" else "Conjuration")),
+                        "casting_time": str(e.get("tiempo_lanzamiento", "1 acción" if lang == "es" else "1 action")),
+                        "range_area": str(e.get("alcance", "9 m" if lang == "es" else "30 ft")),
+                        "components": str(e.get("componentes", "V, S")),
+                        "duration": str(e.get("duracion", "Instantáneo" if lang == "es" else "Instantaneous")),
+                        "is_concentration": 1 if e.get("concentracion") else 0,
+                        "is_ritual": 1 if e.get("ritual") else 0,
+                        "classes": ", ".join(e.get("clases", [])) if isinstance(e.get("clases"), list) else str(e.get("clases", "")),
+                        "edition": edition,
+                        "language": lang,
+                        "source": source,
+                        "expansion_tag": expansion_tag,
+                        "description": content_md,
+                        "data_json": json.dumps(full_meta, ensure_ascii=False),
+                    }
+                    self.db.upsert_compendium_spell(spell_dict)
+                    spells_count += 1
+                continue
+
             entity_dict = {
                 "entity_id": entity_id,
                 "name": name,
@@ -1723,6 +1772,8 @@ class CompendiumImporter:
                 "category": tipo,
                 "edition": edition,
                 "language": lang,
+                "source": source,
+                "expansion_tag": expansion_tag,
                 "snippet": snippet,
                 "content_markdown": content_md,
                 "data_json": json.dumps(full_meta, ensure_ascii=False),
@@ -1731,5 +1782,6 @@ class CompendiumImporter:
             self.db.upsert_compendium_entity(entity_dict)
             count += 1
 
-        print(f"[CompendiumImporter] Ingestadas {count} entidades OKF a SQLite (compendium_entities).")
+        print(f"[CompendiumImporter] Ingestadas {count} entidades OKF a SQLite (compendium_entities) y {spells_count} conjuros de expansión a compendium_spells.")
+        return count
         return count

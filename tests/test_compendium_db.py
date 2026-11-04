@@ -288,3 +288,70 @@ def test_compendium_entities_crud():
     assert db.count_compendium_entries("clase") == 1
     assert db.count_compendium_entries("entities") == 1
     assert db.count_compendium_entries("dotes") == 0
+
+
+def test_expansions_schema_and_filtering():
+    fd, path = tempfile.mkstemp(suffix=".db")
+    os.close(fd)
+    db = DatabaseManager(db_path=path)
+
+    # 1. Verificar user_version >= 4
+    with db._get_connection() as c:
+        cursor = c.cursor()
+        cursor.execute("PRAGMA user_version;")
+        assert cursor.fetchone()[0] >= 4
+
+    # 2. Insertar entidades con distintas expansiones (XGtE, TCoE, PHB 2024)
+    db.upsert_compendium_entity({
+        "entity_id": "subclase_gloom_stalker",
+        "name": "Acechador Sombrío",
+        "name_en": "Gloom Stalker",
+        "category": "subclase",
+        "edition": "5.5e",
+        "language": "es",
+        "source": "Xanathar's Guide to Everything",
+        "expansion_tag": "xge",
+        "snippet": "Subclase de explorador sombrío",
+        "content_markdown": "Detalles...",
+    })
+    db.upsert_compendium_entity({
+        "entity_id": "subclase_rune_knight",
+        "name": "Caballero Rúnico",
+        "name_en": "Rune Knight",
+        "category": "subclase",
+        "edition": "5.5e",
+        "language": "es",
+        "source": "Tasha's Cauldron of Everything",
+        "expansion_tag": "tce",
+        "snippet": "Subclase de guerrero rúnico",
+        "content_markdown": "Detalles...",
+    })
+    db.upsert_compendium_entity({
+        "entity_id": "subclase_champion",
+        "name": "Campeón",
+        "name_en": "Champion",
+        "category": "subclase",
+        "edition": "5.5e",
+        "language": "es",
+        "source": "PHB 2024",
+        "expansion_tag": "phb_2024",
+        "snippet": "Subclase clásica",
+        "content_markdown": "Detalles...",
+    })
+
+    # 3. Filtrar por expansión
+    xge_entities = db.search_compendium_entities(category="subclase", expansions=["xge"])
+    assert len(xge_entities) == 1
+    assert xge_entities[0]["name"] == "Acechador Sombrío"
+    assert xge_entities[0]["source"] == "Xanathar's Guide to Everything"
+
+    tce_entities = db.search_compendium_entities(category="subclase", expansions=["tce"])
+    assert len(tce_entities) == 1
+    assert tce_entities[0]["name"] == "Caballero Rúnico"
+    assert tce_entities[0]["source"] == "Tasha's Cauldron of Everything"
+
+    multi_entities = db.search_compendium_entities(category="subclase", expansions=["xge", "tce"])
+    assert len(multi_entities) == 2
+
+    count_xge = db.count_compendium_entries("subclase", expansions=["xge"])
+    assert count_xge == 1
