@@ -955,8 +955,13 @@ class DatabaseManager:
             sql += " AND LOWER(size) = LOWER(?)"
             params.append(size)
         if edition:
-            sql += " AND edition = ?"
-            params.append(edition)
+            if edition in ("5.5e", "2024"):
+                sql += " AND edition IN ('5.5e', '2024')"
+            elif edition in ("5e", "2014"):
+                sql += " AND edition IN ('5e', '2014')"
+            else:
+                sql += " AND edition = ?"
+                params.append(edition)
         if language:
             sql += " AND language = ?"
             params.append(language)
@@ -973,7 +978,7 @@ class DatabaseManager:
         """Retorna el registro completo de un monstruo con su data_json deserializado."""
         with self._get_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM compendium_monsters WHERE entity_id = ? OR name = ? LIMIT 1;", (entity_id, entity_id))
+            cursor.execute("SELECT * FROM compendium_monsters WHERE entity_id = ? OR name = ? OR name_en = ? LIMIT 1;", (entity_id, entity_id, entity_id))
             row = cursor.fetchone()
             if not row:
                 return None
@@ -1079,8 +1084,13 @@ class DatabaseManager:
             sql += " AND is_ritual = ?"
             params.append(1 if is_ritual else 0)
         if edition:
-            sql += " AND edition = ?"
-            params.append(edition)
+            if edition in ("5.5e", "2024"):
+                sql += " AND edition IN ('5.5e', '2024')"
+            elif edition in ("5e", "2014"):
+                sql += " AND edition IN ('5e', '2014')"
+            else:
+                sql += " AND edition = ?"
+                params.append(edition)
         if language:
             sql += " AND language = ?"
             params.append(language)
@@ -1097,7 +1107,7 @@ class DatabaseManager:
         """Retorna un conjuro por id o nombre con su data_json deserializado."""
         with self._get_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM compendium_spells WHERE entity_id = ? OR name = ? LIMIT 1;", (entity_id, entity_id))
+            cursor.execute("SELECT * FROM compendium_spells WHERE entity_id = ? OR name = ? OR name_en = ? LIMIT 1;", (entity_id, entity_id, entity_id))
             row = cursor.fetchone()
             if not row:
                 return None
@@ -1188,8 +1198,13 @@ class DatabaseManager:
             sql += " AND LOWER(weapon_mastery) = LOWER(?)"
             params.append(weapon_mastery)
         if edition:
-            sql += " AND edition = ?"
-            params.append(edition)
+            if edition in ("5.5e", "2024"):
+                sql += " AND edition IN ('5.5e', '2024')"
+            elif edition in ("5e", "2014"):
+                sql += " AND edition IN ('5e', '2014')"
+            else:
+                sql += " AND edition = ?"
+                params.append(edition)
         if language:
             sql += " AND language = ?"
             params.append(language)
@@ -1206,7 +1221,7 @@ class DatabaseManager:
         """Retorna un objeto por id o nombre con su data_json deserializado."""
         with self._get_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM compendium_items WHERE entity_id = ? OR name = ? LIMIT 1;", (entity_id, entity_id))
+            cursor.execute("SELECT * FROM compendium_items WHERE entity_id = ? OR name = ? OR name_en = ? LIMIT 1;", (entity_id, entity_id, entity_id))
             row = cursor.fetchone()
             if not row:
                 return None
@@ -1231,8 +1246,13 @@ class DatabaseManager:
         sql = f"SELECT COUNT(*) FROM {tbl} WHERE 1=1"
         params: List[Any] = []
         if edition:
-            sql += " AND edition = ?"
-            params.append(edition)
+            if edition in ("5.5e", "2024"):
+                sql += " AND edition IN ('5.5e', '2024')"
+            elif edition in ("5e", "2014"):
+                sql += " AND edition IN ('5e', '2014')"
+            else:
+                sql += " AND edition = ?"
+                params.append(edition)
         if language:
             sql += " AND language = ?"
             params.append(language)

@@ -56,47 +56,33 @@ export const CompendiumView: React.FC = () => {
           }
         } else if (selectedCat === "conjuros") {
           const res = await api.searchSpells(queryToRun, null, null, null, null, null, null, null, language, 1, 150);
-          if (res.items.length > 0) {
-            const mapped: CompendiumSearchResult[] = res.items.map((s) => ({
-              id: s.entity_id,
-              name: language === "en" && s.name_en ? s.name_en : s.name,
-              category: "conjuros",
-              snippet: `${language === "en" ? "Level" : "Nivel"} ${s.level} • ${s.school} • ${s.casting_time}`,
-              path: "sqlite:compendium_spells",
-            }));
-            setResults(mapped);
+          const mapped: CompendiumSearchResult[] = res.items.map((s) => ({
+            id: s.entity_id,
+            name: language === "en" && s.name_en ? s.name_en : s.name,
+            category: "conjuros",
+            snippet: `${language === "en" ? "Level" : "Nivel"} ${s.level} • ${s.school} • ${s.casting_time}`,
+            path: "sqlite:compendium_spells",
+          }));
+          setResults(mapped);
+          if (mapped.length > 0) {
             loadEntry("conjuros", mapped[0].name, mapped[0].id);
           } else {
-            // Fallback a OKF
-            const data = await api.searchCompendium(queryToRun, "conjuros", language);
-            setResults(data);
-            if (data.length > 0) {
-              loadEntry(data[0].category, data[0].name, data[0].id);
-            } else {
-              setSelectedEntry(null);
-            }
+            setSelectedEntry(null);
           }
         } else if (selectedCat === "equipo_y_armamento") {
           const res = await api.searchItems(queryToRun, null, null, null, null, language, 1, 150);
-          if (res.items.length > 0) {
-            const mapped: CompendiumSearchResult[] = res.items.map((it) => ({
-              id: it.entity_id,
-              name: language === "en" && it.name_en ? it.name_en : it.name,
-              category: "equipo_y_armamento",
-              snippet: `${it.item_type} • ${it.rarity}${it.weapon_mastery ? " • Dominio: " + it.weapon_mastery : ""}`,
-              path: "sqlite:compendium_items",
-            }));
-            setResults(mapped);
+          const mapped: CompendiumSearchResult[] = res.items.map((it) => ({
+            id: it.entity_id,
+            name: language === "en" && it.name_en ? it.name_en : it.name,
+            category: "equipo_y_armamento",
+            snippet: `${it.item_type} • ${it.rarity}${it.weapon_mastery ? " • Dominio: " + it.weapon_mastery : ""}`,
+            path: "sqlite:compendium_items",
+          }));
+          setResults(mapped);
+          if (mapped.length > 0) {
             loadEntry("equipo_y_armamento", mapped[0].name, mapped[0].id);
           } else {
-            // Fallback a OKF
-            const data = await api.searchCompendium(queryToRun, "equipo_y_armamento", language);
-            setResults(data);
-            if (data.length > 0) {
-              loadEntry(data[0].category, data[0].name, data[0].id);
-            } else {
-              setSelectedEntry(null);
-            }
+            setSelectedEntry(null);
           }
         } else {
           // OKF y búsqueda general
