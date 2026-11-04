@@ -43,16 +43,18 @@ def test_schema_user_version_and_migration():
     backup_path = f"{path}.bak_v0"
     assert os.path.exists(backup_path), "No se creó el respaldo .bak_v0 antes de migrar"
 
-    # 4. Comprobar que user_version fue actualizado a 1
+    # 4. Comprobar que user_version fue actualizado a la versión vigente (v2 en 1.0.5)
     with db._get_connection() as c:
         cur = c.cursor()
         cur.execute("PRAGMA user_version;")
-        assert cur.fetchone()[0] == 1
+        assert cur.fetchone()[0] == 2
 
         # 5. Comprobar que las nuevas tablas existen
         cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='trusted_players';")
         assert cur.fetchone() is not None
         cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='dm_invitations';")
+        assert cur.fetchone() is not None
+        cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='compendium_monsters';")
         assert cur.fetchone() is not None
 
         # 6. Comprobar que los datos del personaje previo se conservaron intactos
