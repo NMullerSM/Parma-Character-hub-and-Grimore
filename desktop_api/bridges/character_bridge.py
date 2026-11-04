@@ -1120,38 +1120,60 @@ class CharacterBridgeMixin:
         return {"success": True, "network": self.get_character_network(char_id)}
 
     # =========================================================================
-    # COMPENDIO OKF (MARKDOWN & REGLAS)
+    # COMPENDIO SQLITE (CANÓNICO) & OKF (CATÁLOGO BUILDER)
     # =========================================================================
 
-    def get_compendium_categories(self, lang: str = "es") -> List[Dict[str, Any]]:
-        """Lista las categorías disponibles en el compendio SQLite (monstruos, conjuros, equipo) y OKF (clases, especies, reglas) con su conteo por idioma."""
+    COMPENDIUM_CATEGORY_TYPES = {
+        "clases": ["clase", "subclase"],
+        "especies_y_linajes": ["especie", "linaje", "especie_linaje"],
+        "trasfondos": ["trasfondo"],
+        "dotes": ["dote"],
+        "reglas_y_mecanicas": ["regla"],
+    }
+
+    def get_compendium_categories(self, lang: str = "es", edition: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Lista las categorías disponibles en el compendio SQLite con su conteo unificado por idioma y edición."""
         target_lang = "en" if (lang or "").lower().startswith("en") else "es"
         
         # Conteo SQLite canónico
-        sql_monsters = self._db.count_compendium_entries("monsters", language=target_lang)
-        sql_spells = self._db.count_compendium_entries("spells", language=target_lang)
-        sql_items = self._db.count_compendium_entries("items", language=target_lang)
+        sql_monsters = self._db.count_compendium_entries("monsters", edition=edition, language=target_lang)
+        sql_spells = self._db.count_compendium_entries("spells", edition=edition, language=target_lang)
+        sql_items = self._db.count_compendium_entries("items", edition=edition, language=target_lang)
+
+        # Conteo SQLite de entidades unificadas
+        sql_clases = self._db.count_compendium_entries("entities", categories=self.COMPENDIUM_CATEGORY_TYPES["clases"], edition=edition, language=target_lang)
+        sql_especies = self._db.count_compendium_entries("entities", categories=self.COMPENDIUM_CATEGORY_TYPES["especies_y_linajes"], edition=edition, language=target_lang)
+        sql_trasfondos = self._db.count_compendium_entries("entities", categories=self.COMPENDIUM_CATEGORY_TYPES["trasfondos"], edition=edition, language=target_lang)
+        sql_dotes = self._db.count_compendium_entries("entities", categories=self.COMPENDIUM_CATEGORY_TYPES["dotes"], edition=edition, language=target_lang)
+        sql_reglas = self._db.count_compendium_entries("entities", categories=self.COMPENDIUM_CATEGORY_TYPES["reglas_y_mecanicas"], edition=edition, language=target_lang)
+
+        # Fallback a OKF solo si compendium_entities aún no ha sido poblado en SQLite
+        cnt_clases = sql_clases if sql_clases > 0 else self._okf.count_entities(self.COMPENDIUM_CATEGORY_TYPES["clases"], lang=target_lang)
+        cnt_especies = sql_especies if sql_especies > 0 else self._okf.count_entities(self.COMPENDIUM_CATEGORY_TYPES["especies_y_linajes"], lang=target_lang)
+        cnt_trasfondos = sql_trasfondos if sql_trasfondos > 0 else self._okf.count_entities("trasfondo", lang=target_lang)
+        cnt_dotes = sql_dotes if sql_dotes > 0 else self._okf.count_entities("dote", lang=target_lang)
+        cnt_reglas = sql_reglas if sql_reglas > 0 else self._okf.count_entities("regla", lang=target_lang)
 
         if target_lang == "en":
             return [
-                {"id": "clases", "label": "Classes & Subclasses", "count": self._okf.count_entities(["clase", "subclase"], lang=target_lang)},
-                {"id": "especies_y_linajes", "label": "Species & Lineages", "count": self._okf.count_entities(["especie", "linaje"], lang=target_lang)},
+                {"id": "clases", "label": "Classes & Subclasses", "count": cnt_clases},
+                {"id": "especies_y_linajes", "label": "Species & Lineages", "count": cnt_especies},
                 {"id": "conjuros", "label": "Spell Grimoire", "count": sql_spells},
                 {"id": "monstruos", "label": "Monsters & Bestiary", "count": sql_monsters},
-                {"id": "trasfondos", "label": "Backgrounds", "count": self._okf.count_entities("trasfondo", lang=target_lang)},
-                {"id": "dotes", "label": "Character Feats", "count": self._okf.count_entities("dote", lang=target_lang)},
+                {"id": "trasfondos", "label": "Backgrounds", "count": cnt_trasfondos},
+                {"id": "dotes", "label": "Character Feats", "count": cnt_dotes},
                 {"id": "equipo_y_armamento", "label": "Equipment & Weapons", "count": sql_items},
-                {"id": "reglas_y_mecanicas", "label": "Rules & Mechanics", "count": self._okf.count_entities("regla", lang=target_lang)},
+                {"id": "reglas_y_mecanicas", "label": "Rules & Mechanics", "count": cnt_reglas},
             ]
         return [
-            {"id": "clases", "label": "Clases y Subclases", "count": self._okf.count_entities(["clase", "subclase"], lang=target_lang)},
-            {"id": "especies_y_linajes", "label": "Especies y Linajes", "count": self._okf.count_entities(["especie", "linaje"], lang=target_lang)},
+            {"id": "clases", "label": "Clases y Subclases", "count": cnt_clases},
+            {"id": "especies_y_linajes", "label": "Especies y Linajes", "count": cnt_especies},
             {"id": "conjuros", "label": "Grimorio de Conjuros", "count": sql_spells},
             {"id": "monstruos", "label": "Monstruos y Bestiario", "count": sql_monsters},
-            {"id": "trasfondos", "label": "Trasfondos", "count": self._okf.count_entities("trasfondo", lang=target_lang)},
-            {"id": "dotes", "label": "Dotes de Personaje", "count": self._okf.count_entities("dote", lang=target_lang)},
+            {"id": "trasfondos", "label": "Trasfondos", "count": cnt_trasfondos},
+            {"id": "dotes", "label": "Dotes de Personaje", "count": cnt_dotes},
             {"id": "equipo_y_armamento", "label": "Equipo y Armamento", "count": sql_items},
-            {"id": "reglas_y_mecanicas", "label": "Reglas y Mecánicas", "count": self._okf.count_entities("regla", lang=target_lang)},
+            {"id": "reglas_y_mecanicas", "label": "Reglas y Mecánicas", "count": cnt_reglas},
         ]
 
     def _format_monster_entry(self, m: Dict[str, Any], entry_name: str) -> Dict[str, Any]:
@@ -1223,14 +1245,14 @@ class CharacterBridgeMixin:
             "metadata": it,
         }
 
-    def search_compendium(self, query: str = "", category: Optional[str] = None, lang: str = "es") -> List[Dict[str, Any]]:
-        """Búsqueda de texto o listado por categoría en el compendio SQLite (monstruos, conjuros, equipo) y OKF (clases, especies, reglas, etc.)."""
+    def search_compendium(self, query: str = "", category: Optional[str] = None, lang: str = "es", edition: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Búsqueda de texto o listado por categoría en el compendio SQLite (monstruos, conjuros, equipo, clases, especies, reglas)."""
         query_clean = (query or "").strip()
         target_lang = "en" if (lang or "").lower().startswith("en") else "es"
 
         # Categoría Monstruos (SQLite)
         if category == "monstruos":
-            monsters = self._db.search_compendium_monsters(query=query_clean, language=target_lang, limit=150)
+            monsters = self._db.search_compendium_monsters(query=query_clean, edition=edition, language=target_lang, limit=150)
             return [
                 {
                     "id": m.get("entity_id", ""),
@@ -1244,7 +1266,7 @@ class CharacterBridgeMixin:
 
         # Categoría Conjuros (SQLite)
         if category == "conjuros":
-            spells = self._db.search_compendium_spells(query=query_clean, language=target_lang, limit=150)
+            spells = self._db.search_compendium_spells(query=query_clean, edition=edition, language=target_lang, limit=150)
             lvl_lbl = "Level" if target_lang == "en" else "Nivel"
             return [
                 {
@@ -1259,7 +1281,7 @@ class CharacterBridgeMixin:
 
         # Categoría Equipo y Armamento (SQLite)
         if category in ("equipo_y_armamento", "equipo", "items"):
-            items = self._db.search_compendium_items(query=query_clean, language=target_lang, limit=150)
+            items = self._db.search_compendium_items(query=query_clean, edition=edition, language=target_lang, limit=150)
             return [
                 {
                     "id": it.get("entity_id", ""),
@@ -1271,15 +1293,30 @@ class CharacterBridgeMixin:
                 for it in items
             ]
 
-        # Categorías OKF (clases, especies, trasfondos, dotes, reglas)
-        category_type_map = {
-            "clases": ["clase", "subclase"],
-            "especies_y_linajes": ["especie", "linaje", "especie_linaje"],
-            "trasfondos": "trasfondo",
-            "dotes": "dote",
-            "reglas_y_mecanicas": "regla",
-        }
+        # Categorías en SQLite compendium_entities (clases, especies_y_linajes, trasfondos, dotes, reglas_y_mecanicas)
+        if category in self.COMPENDIUM_CATEGORY_TYPES:
+            types = self.COMPENDIUM_CATEGORY_TYPES[category]
+            sql_entities = self._db.search_compendium_entities(
+                query=query_clean,
+                categories=types,
+                language=target_lang,
+                edition=edition,
+                limit=150
+            )
+            if sql_entities:
+                return [
+                    {
+                        "id": item.get("entity_id", ""),
+                        "name": item.get("name", ""),
+                        "category": item.get("category", category),
+                        "snippet": item.get("snippet", ""),
+                        "path": f"sqlite:compendium_entities:{item.get('entity_id')}",
+                    }
+                    for item in sql_entities
+                ]
 
+        # Fallback para búsqueda general o si compendium_entities aún no está poblada
+        category_type_map = self.COMPENDIUM_CATEGORY_TYPES
         tipo_filter = category_type_map.get(category) if category else [
             "clase", "subclase", "especie", "linaje", "especie_linaje", "trasfondo", "dote", "regla"
         ]
@@ -1310,7 +1347,7 @@ class CharacterBridgeMixin:
 
         # Búsqueda global agregada (sin categoría): sumar muestras de SQLite
         if not category and query_clean:
-            monsters = self._db.search_compendium_monsters(query=query_clean, language=target_lang, limit=20)
+            monsters = self._db.search_compendium_monsters(query=query_clean, edition=edition, language=target_lang, limit=20)
             for m in monsters:
                 results.append({
                     "id": m.get("entity_id", ""),
@@ -1319,7 +1356,7 @@ class CharacterBridgeMixin:
                     "snippet": f"{m.get('size', '')} {m.get('monster_type', '')} • CR {m.get('cr_text', '0')} • CA {m.get('ac', 10)} • PG {m.get('hp_avg', 10)}",
                     "path": "sqlite:compendium_monsters",
                 })
-            spells = self._db.search_compendium_spells(query=query_clean, language=target_lang, limit=20)
+            spells = self._db.search_compendium_spells(query=query_clean, edition=edition, language=target_lang, limit=20)
             lvl_lbl = "Level" if target_lang == "en" else "Nivel"
             for s in spells:
                 results.append({
@@ -1329,7 +1366,7 @@ class CharacterBridgeMixin:
                     "snippet": f"{lvl_lbl} {s.get('level', 0)} • {s.get('school', '')} • {s.get('casting_time', '')}",
                     "path": "sqlite:compendium_spells",
                 })
-            items = self._db.search_compendium_items(query=query_clean, language=target_lang, limit=20)
+            items = self._db.search_compendium_items(query=query_clean, edition=edition, language=target_lang, limit=20)
             for it in items:
                 results.append({
                     "id": it.get("entity_id", ""),
@@ -1342,7 +1379,7 @@ class CharacterBridgeMixin:
         return results
 
     def get_compendium_entry(self, category: str, entry_name: str, lang: str = "es") -> Optional[Dict[str, Any]]:
-        """Obtiene una entrada completa del compendio desde SQLite (monstruos, conjuros, equipo) u OKF (reglas, clases, etc.) con formato markdown."""
+        """Obtiene una entrada completa del compendio desde SQLite (monstruos, conjuros, equipo, clases, etc.) u OKF con formato markdown."""
         target_lang = "en" if (lang or "").lower().startswith("en") else "es"
         query_id = entry_name.strip()
 
@@ -1365,7 +1402,18 @@ class CharacterBridgeMixin:
                 return self._format_item_entry(it, entry_name)
             return None
 
-        # Para categorías OKF (clases, trasfondos, dotes, especies, reglas)
+        # Consultar compendium_entities en SQLite (clases, trasfondos, dotes, especies, reglas)
+        ent = self._db.get_compendium_entity_by_id(query_id)
+        if ent:
+            return {
+                "id": ent.get("entity_id", ""),
+                "name": ent.get("name", entry_name),
+                "category": ent.get("category", category),
+                "content": ent.get("content_markdown", ""),
+                "metadata": ent.get("details", {}),
+            }
+
+        # Fallback a OKF solo si no se encuentra en SQLite
         clean = query_id.lower()
         clean_slug = clean.replace(" ", "_")
         clean_en = f"{clean_slug}_en"
@@ -1391,11 +1439,22 @@ class CharacterBridgeMixin:
                 matched = results[0]
 
         if not matched:
-            # Fallback a cualquier idioma si no se encontró en el target
             matched = next(
                 (item for item in self._okf._index if item.get("id") == query_id or item.get("nombre", "").lower() == clean),
                 None
             )
+
+        if not matched:
+            m = self._db.get_compendium_monster_by_id(query_id)
+            if m:
+                return self._format_monster_entry(m, entry_name)
+            s = self._db.get_compendium_spell_by_id(query_id)
+            if s:
+                return self._format_spell_entry(s, entry_name)
+            it = self._db.get_compendium_item_by_id(query_id)
+            if it:
+                return self._format_item_entry(it, entry_name)
+            return None
 
         if not matched:
             # Fallback de seguridad cruzado a compendio SQLite

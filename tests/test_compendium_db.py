@@ -31,14 +31,14 @@ def test_migration_user_version_2_and_backup():
     backup_path = f"{path}.bak_v1"
     assert os.path.exists(backup_path), "No se creó el respaldo .bak_v1 antes de migrar a v2"
 
-    # 4. Comprobar que user_version es 2
+    # 4. Comprobar que user_version es >= 3
     with db._get_connection() as c:
         cursor = c.cursor()
         cursor.execute("PRAGMA user_version;")
-        assert cursor.fetchone()[0] == 2
+        assert cursor.fetchone()[0] >= 3
 
-        # 5. Comprobar existencia de las tres tablas relacionales del compendio
-        for tbl in ("compendium_monsters", "compendium_spells", "compendium_items"):
+        # 5. Comprobar existencia de las tablas relacionales del compendio
+        for tbl in ("compendium_monsters", "compendium_spells", "compendium_items", "compendium_entities"):
             cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{tbl}';")
             assert cursor.fetchone() is not None, f"Falta la tabla {tbl}"
 
@@ -201,3 +201,90 @@ def test_item_weapon_mastery_55e():
     assert len(graze_weapons) == 1
     assert graze_weapons[0]["name"] == "Greatsword"
     assert graze_weapons[0]["weapon_mastery"] == "graze"
+
+
+def test_clean_foundry_syntax():
+    from core.compendium_importer import clean_foundry_syntax
+
+    raw_text = "<p>The [[lookup @name lowercase]]{monster} uses [[/attack]] [[/r 1d20+5]]. On hit, [[/damage]] &Reference[poisoned].</p>"
+    cleaned = clean_foundry_syntax(
+        raw_text,
+        name_en="Barbed Devil",
+        name_es="Barbed Devil",
+        it_data={"system": {"damage": {"base": {"number": 2, "denomination": 6, "types": ["fire"]}}}},
+        raw_data={},
+        lang="es"
+    )
+    assert "[[" not in cleaned
+    assert "]]" not in cleaned
+    assert "barbed devil" in cleaned
+    assert "envenenado" in cleaned
+    assert "Impacto:" in cleaned
+
+
+def test_item_damage_filtering_non_weapons():
+    from core.compendium_importer import normalize_foundry_item
+
+    # Ítem no arma (poción)
+    potion_raw = {
+        "name": "Potion of Healing",
+        "type": "consumable",
+        "system": {
+            "type": {"value": "potion"},
+            "damage": {"base": {}},
+            "price": {"value": 50, "denomination": "gp"},
+        }
+    }
+    norm_potion = normalize_foundry_item(potion_raw, edition="5.5e", lang="es")
+    assert norm_potion["damage"] == ""
+
+    # Ítem arma
+    weapon_raw = {
+        "name": "Longsword",
+        "type": "weapon",
+        "system": {
+            "type": {"value": "martialM"},
+            "damage": {"base": {"number": 1, "denomination": 8, "types": ["slashing"]}},
+            "price": {"value": 15, "denomination": "gp"},
+            "mastery": "sap",
+        }
+    }
+    norm_weapon = normalize_foundry_item(weapon_raw, edition="5.5e", lang="es")
+    assert "1d8" in norm_weapon["damage"]
+    assert "Sap" in norm_weapon["weapon_mastery"]
+
+
+def test_compendium_entities_crud():
+    fd, path = tempfile.mkstemp(suffix=".db")
+    os.close(fd)
+    db = DatabaseManager(db_path=path)
+
+    entity = {
+        "entity_id": "paladin_55e_es",
+        "name": "Paladín",
+        "name_en": "Paladin",
+        "category": "clase",
+        "edition": "5.5e",
+        "language": "es",
+        "snippet": "Un guerrero santo unido por un juramento sagrado.",
+        "content_markdown": "# Paladín\n\nEl paladín es...",
+        "data_json": {"hit_die": "d10", "primary_ability": "FUE, CAR"},
+    }
+    db.upsert_compendium_entity(entity)
+
+    # Búsqueda
+    results = db.search_compendium_entities("paladin", category="clase", language="es", edition="5.5e")
+    assert len(results) == 1
+    assert results[0]["name"] == "Paladín"
+    assert results[0]["entity_id"] == "paladin_55e_es"
+
+    # Obtención directa por ID o nombre
+    got = db.get_compendium_entity_by_id("paladin_55e_es")
+    assert got is not None
+    assert got["category"] == "clase"
+    assert got["details"].get("hit_die") == "d10"
+
+    # Conteo
+    assert db.count_compendium_entries("clase") == 1
+    assert db.count_compendium_entries("entities") == 1
+    assert db.count_compendium_entries("dotes") == 0

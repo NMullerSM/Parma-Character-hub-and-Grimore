@@ -68,8 +68,8 @@ declare global {
         open_pdf_dialog: () => Promise<string | null>;
         open_pdf_document: (filePath: string) => Promise<PdfDocumentInfo>;
         render_pdf_page: (pageNum: number, zoom?: number, trimMargins?: boolean) => Promise<PdfPageRenderResult>;
-        get_compendium_categories: (lang?: string) => Promise<CompendiumCategory[]>;
-        search_compendium: (query: string, category?: string, lang?: string) => Promise<CompendiumSearchResult[]>;
+        get_compendium_categories: (lang?: string, edition?: string) => Promise<CompendiumCategory[]>;
+        search_compendium: (query: string, category?: string, lang?: string, edition?: string) => Promise<CompendiumSearchResult[]>;
         get_compendium_entry: (category: string, entryName: string, lang?: string) => Promise<any>;
         search_monsters: (
           query: string,
@@ -668,8 +668,8 @@ export const api = {
   },
 
   // --- Compendio OKF ---
-  async getCompendiumCategories(lang: string = "es"): Promise<CompendiumCategory[]> {
-    if (this.isNative()) return await window.pywebview!.api.get_compendium_categories(lang);
+  async getCompendiumCategories(lang: string = "es", edition?: string): Promise<CompendiumCategory[]> {
+    if (this.isNative()) return await window.pywebview!.api.get_compendium_categories(lang, edition);
     return [
       { id: "clases", label: lang === "en" ? "Classes & Subclasses" : "Clases y Subclases", count: 70 },
       { id: "especies_y_linajes", label: lang === "en" ? "Species & Lineages" : "Especies y Linajes", count: 10 },
@@ -681,8 +681,8 @@ export const api = {
     ];
   },
 
-  async searchCompendium(query: string, category?: string, lang: string = "es"): Promise<CompendiumSearchResult[]> {
-    if (this.isNative()) return await window.pywebview!.api.search_compendium(query, category, lang);
+  async searchCompendium(query: string, category?: string, lang: string = "es", edition?: string): Promise<CompendiumSearchResult[]> {
+    if (this.isNative()) return await window.pywebview!.api.search_compendium(query, category, lang, edition);
     return [
       {
         id: "castigo-divino",

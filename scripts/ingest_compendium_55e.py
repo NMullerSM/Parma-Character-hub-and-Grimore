@@ -23,6 +23,7 @@ def main():
     parser = argparse.ArgumentParser(description="Ingesta de compendio D&D a SQLite relacional.")
     parser.add_argument("--db", default=None, help="Ruta a characters.db (por defecto usa la del sistema)")
     parser.add_argument("--foundry-packs", default=None, help="Ruta a la carpeta packs/_source del repositorio foundryvtt/dnd5e")
+    parser.add_argument("--okf-entities", action="store_true", help="Ingestar entidades OKF (clases, especies, etc.) a compendium_entities")
     parser.add_argument("--monsters", help="Ruta al archivo JSON de monstruos/bestiario (5etools/plano)")
     parser.add_argument("--spells", help="Ruta al archivo JSON de conjuros (5etools/plano)")
     parser.add_argument("--items", help="Ruta al archivo JSON de equipo/armas (5etools/plano)")
@@ -47,6 +48,12 @@ def main():
             print(f"[Compendium Ingest] ✓ {k}: {v} filas generadas.")
             total_ingested += v
 
+    if args.okf_entities and not args.foundry_packs:
+        print(f"[Compendium Ingest] Ingestando entidades OKF (clases, especies, trasfondos, dotes, reglas)...")
+        cnt = importer.ingest_okf_entities()
+        print(f"[Compendium Ingest] ✓ {cnt} entidades OKF ingestadas.")
+        total_ingested += cnt
+
     if args.monsters:
         print(f"[Compendium Ingest] Ingestando monstruos desde {args.monsters}...")
         cnt = importer.ingest_from_json_file(args.monsters, category="monsters", edition=args.edition, lang=args.lang)
@@ -70,6 +77,7 @@ def main():
     print(f"  - Monstruos: {db.count_compendium_entries('monsters')}")
     print(f"  - Conjuros:  {db.count_compendium_entries('spells')}")
     print(f"  - Equipo:    {db.count_compendium_entries('items')}")
+    print(f"  - Entidades: {db.count_compendium_entries('entities')}")
 
 
 if __name__ == "__main__":

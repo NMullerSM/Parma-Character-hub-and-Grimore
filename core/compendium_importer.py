@@ -281,39 +281,50 @@ MONSTER_NOUNS = {
 }
 
 ITEM_NAMES_TRANSLATION = {
+    # Armas CaC Simples
+    "club": "Clava",
     "dagger": "Daga",
-    "shortsword": "Espada Corta",
-    "longsword": "Espada Larga",
-    "greatsword": "Espadón",
-    "scimitar": "Cimitarra",
-    "rapier": "Estoque",
+    "greatclub": "Gran Clava",
     "handaxe": "Hacha de Mano",
-    "battleaxe": "Hacha de Batalla",
-    "greataxe": "Gran Hacha",
-    "halberd": "Alabarda",
-    "glaive": "Guja",
-    "pike": "Pica",
-    "spear": "Lanza",
-    "trident": "Tridente",
+    "javelin": "Jabalina",
+    "light hammer": "Martillo Ligero",
     "mace": "Maza",
+    "quarterstaff": "Bastón",
+    "sickle": "Hoz",
+    "spear": "Lanza",
+    # Armas a Distancia Simples
+    "light crossbow": "Ballesta Ligera",
+    "dart": "Dardo",
+    "shortbow": "Arco Corto",
+    "sling": "Honda",
+    # Armas CaC Marciales
+    "battleaxe": "Hacha de Batalla",
+    "flail": "Mayal",
+    "glaive": "Guja",
+    "greataxe": "Gran Hacha",
+    "greatsword": "Espadón",
+    "halberd": "Alabarda",
+    "lance": "Lanza de Caballería",
+    "longsword": "Espada Larga",
+    "maul": "Mazo de Guerra",
     "morningstar": "Lucero del Alba",
+    "pike": "Pica",
+    "rapier": "Estoque",
+    "scimitar": "Cimitarra",
+    "shortsword": "Espada Corta",
+    "trident": "Tridente",
     "war pick": "Pico de Guerra",
     "warhammer": "Martillo de Guerra",
-    "flail": "Mayal",
     "whip": "Látigo",
-    "quarterstaff": "Bastón",
-    "club": "Garrote",
-    "greatclub": "Gran Garrote",
-    "shortbow": "Arco Corto",
-    "longbow": "Arco Largo",
-    "light crossbow": "Ballesta Ligera",
-    "heavy crossbow": "Ballesta Pesada",
-    "hand crossbow": "Ballesta de Mano",
-    "sling": "Honda",
+    # Armas a Distancia Marciales
     "blowgun": "Cerbatana",
-    "dart": "Dardo",
+    "hand crossbow": "Ballesta de Mano",
+    "heavy crossbow": "Ballesta Pesada",
+    "longbow": "Arco Largo",
     "net": "Red",
-    "shield": "Escudo",
+    "musket": "Mosquete",
+    "pistol": "Pistola",
+    # Armaduras y Escudos
     "padded armor": "Armadura Acolchada",
     "leather armor": "Armadura de Cuero",
     "studded leather armor": "Armadura de Cuero Tachonado",
@@ -326,23 +337,460 @@ ITEM_NAMES_TRANSLATION = {
     "chain mail": "Cota de Malla",
     "splint armor": "Armadura de Bandas",
     "plate armor": "Armadura de Placas",
+    "shield": "Escudo",
+    # Pociones
     "potion of healing": "Poción de Curación",
     "potion of greater healing": "Poción de Curación Mayor",
     "potion of superior healing": "Poción de Curación Superior",
     "potion of supreme healing": "Poción de Curación Suprema",
+    "potion of invisibility": "Poción de Invisibilidad",
+    "potion of speed": "Poción de Velocidad",
+    "potion of flying": "Poción de Vuelo",
+    "potion of resistance": "Poción de Resistencia",
+    "potion of clairvoyance": "Poción de Clarividencia",
+    "potion of animal friendship": "Poción de Amistad con los Animales",
+    "potion of water breathing": "Poción de Respirar Bajo el Agua",
+    "potion of heroism": "Poción de Heroísmo",
+    "potion of giant strength": "Poción de Fuerza de Gigante",
+    "potion of longevity": "Poción de Longevidad",
+    "potion of poison": "Poción de Veneno",
+    # Objetos Maravillosos y Mágicos Clásicos
+    "abacus": "Ábaco",
+    "backpack": "Mochila",
+    "bedroll": "Saco de Dormir",
+    "blanket": "Manta",
+    "candle": "Vela",
+    "crowbar": "Palanca",
+    "hammer": "Martillo",
+    "hourglass": "Reloj de Arena",
+    "lock": "Cerradura",
+    "magnifying glass": "Lupa",
+    "manacles": "Grilletes",
+    "mirror, steel": "Espejo de Acero",
+    "oil (flask)": "Aceite (frasco)",
+    "paper (one sheet)": "Papel (una hoja)",
+    "parchment (one sheet)": "Pergamino (una hoja)",
+    "piton": "Pitón",
+    "pouch": "Bolsa de Cinturón",
+    "quiver": "Carcaj",
+    "rations (1 day)": "Raciones (1 día)",
+    "robes": "Túnica",
+    "sack": "Saco",
+    "shovel": "Pala",
+    "signal whistle": "Silbato de Señales",
+    "spellbook": "Libro de Conjuros",
+    "spyglass": "Catalejo",
+    "tinderbox": "Yesquero",
+    "torch": "Antorcha",
+    "vial": "Vial",
+    "waterskin": "Odre",
+    "whetstone": "Piedra de Afilar",
     "bag of holding": "Bolsa de Contención",
-    "boots of elvenkind": "Botas de Élficas",
+    "boots of elvenkind": "Botas Élficas",
     "cloak of elvenkind": "Capa Élfica",
     "cloak of protection": "Capa de Protección",
     "ring of protection": "Anillo de Protección",
+    "ring of invisibility": "Anillo de Invisibilidad",
+    "ring of evasion": "Anillo de Evasión",
+    "ring of feather falling": "Anillo de Caída de Pluma",
+    "ring of free action": "Anillo de Acción Libre",
+    "ring of regeneration": "Anillo de Regeneración",
+    "ring of resistance": "Anillo de Resistencia",
+    "ring of spell storing": "Anillo de Almacenar Conjuros",
+    "ring of warmth": "Anillo de Calidez",
+    "ring of water walking": "Anillo de Caminar sobre el Agua",
+    "wand of magic missiles": "Varita de Proyectiles Mágicos",
+    "wand of web": "Varita de Telaraña",
+    "wand of fireballs": "Varita de Bolas de Fuego",
+    "wand of lightning bolts": "Varita de Relámpagos",
+    "wand of magic detection": "Varita de Detección Mágica",
+    "wand of secrets": "Varita de Secretos",
+    "wand of wonder": "Varita de Maravillas",
+    "wand of the war mage": "Varita del Mago de Guerra",
+    "staff of charming": "Bastón de Hechizo",
+    "staff of fire": "Bastón de Fuego",
+    "staff of frost": "Bastón de Escarcha",
+    "staff of healing": "Bastón de Sanación",
+    "staff of power": "Bastón de Poder",
+    "staff of striking": "Bastón de Golpeo",
+    "staff of the magi": "Bastón de los Magos",
+    "staff of the woodlands": "Bastón de los Bosques",
+    "rod of lordly might": "Cetro del Poder Señorial",
+    "rod of the pact keeper": "Cetro del Guardián del Pacto",
+    "sun blade": "Espada Solar",
+    "moon sickle": "Hoz Lunar",
+}
+
+ITEM_PATTERNS = [
+    (re.compile(r'^(?:potion|philter)\s+of\s+(.+)$', re.I), "Poción de {}"),
+    (re.compile(r'^(?:scroll)\s+of\s+(.+)$', re.I), "Pergamino de {}"),
+    (re.compile(r'^(?:ring)\s+of\s+(.+)$', re.I), "Anillo de {}"),
+    (re.compile(r'^(?:wand)\s+of\s+(.+)$', re.I), "Varita de {}"),
+    (re.compile(r'^(?:staff)\s+of\s+(.+)$', re.I), "Bastón de {}"),
+    (re.compile(r'^(?:rod)\s+of\s+(.+)$', re.I), "Cetro de {}"),
+    (re.compile(r'^(?:robe)\s+of\s+(.+)$', re.I), "Túnica de {}"),
+    (re.compile(r'^(?:cloak)\s+of\s+(.+)$', re.I), "Capa de {}"),
+    (re.compile(r'^(?:boots)\s+of\s+(.+)$', re.I), "Botas de {}"),
+    (re.compile(r'^(?:belt)\s+of\s+(.+)$', re.I), "Cinturón de {}"),
+    (re.compile(r'^(?:bracers)\s+of\s+(.+)$', re.I), "Brazales de {}"),
+    (re.compile(r'^(?:amulet)\s+of\s+(.+)$', re.I), "Amuleto de {}"),
+    (re.compile(r'^(?:bag)\s+of\s+(.+)$', re.I), "Bolsa de {}"),
+    (re.compile(r'^(?:manual)\s+of\s+(.+)$', re.I), "Manual de {}"),
+    (re.compile(r'^(?:tome)\s+of\s+(.+)$', re.I), "Tomo de {}"),
+    (re.compile(r'^(?:oil)\s+of\s+(.+)$', re.I), "Aceite de {}"),
+    (re.compile(r'^(?:periapt)\s+of\s+(.+)$', re.I), "Talismán de {}"),
+    (re.compile(r'^dancing\s+(.+)$', re.I), "{} Danzante"),
+    (re.compile(r'^defender\s+(.+)$', re.I), "{} Defensora"),
+    (re.compile(r'^vicious\s+(.+)$', re.I), "{} Voraz"),
+    (re.compile(r'^vorpal\s+(.+)$', re.I), "{} Decapitadora"),
+    (re.compile(r'^flame\s+tongue\s+(.+)$', re.I), "{} Lengua de Fuego"),
+    (re.compile(r'^frost\s+brand\s+(.+)$', re.I), "{} Marca Helada"),
+    (re.compile(r'^([a-zA-Z\s]+),\s*\+([123])$', re.I), "{} +{}"),
+]
+
+COMMON_TRAIT_NAMES = {
+    "multiattack": "Multiataque",
+    "magic resistance": "Resistencia Mágica",
+    "keen senses": "Sentidos Agudos",
+    "keen smell": "Olfato Agudo",
+    "keen sight": "Vista Aguda",
+    "keen hearing": "Oído Agudo",
+    "keen hearing and smell": "Oído y Olfato Agudos",
+    "keen sight and smell": "Vista y Olfato Agudos",
+    "amphibious": "Anfibio",
+    "flyby": "Ataque al Vuelo",
+    "spider climb": "Trepar como una Araña",
+    "pack tactics": "Tácticas de Manada",
+    "legendary resistance": "Resistencia Legendaria",
+    "sunlight sensitivity": "Sensibilidad a la Luz Solar",
+    "undead fortitude": "Fortaleza de No Muerto",
+    "regeneration": "Regeneración",
+    "frightful presence": "Presencia Aterradora",
+    "breath weapon": "Arma de Aliento",
+    "breath weapons": "Armas de Aliento",
+    "bite": "Mordisco",
+    "claw": "Garra",
+    "claws": "Garras",
+    "tail": "Cola",
+    "tail attack": "Ataque de Cola",
+    "slam": "Golpe",
+    "tentacle": "Tentáculo",
+    "tentacles": "Tentáculos",
+    "beak": "Pico",
+    "gore": "Cornada",
+    "sting": "Aguijón",
+    "constrict": "Constreñir",
+    "fist": "Puñetazo",
+    "club": "Clava",
+    "dagger": "Daga",
+    "shortsword": "Espada Corta",
+    "longsword": "Espada Larga",
+    "greatsword": "Espadón",
+    "javelin": "Jabalina",
+    "shortbow": "Arco Corto",
+    "longbow": "Arco Largo",
+    "heavy crossbow": "Ballesta Pesada",
+    "light crossbow": "Ballesta Ligera",
+    "hurl flame": "Lanzar Fuego",
+    "barbed hide": "Piel Espinosa",
+    "diabolical restoration": "Restauración Diabólica",
 }
 
 
+def translate_monster_action_name(name: str, lang: str = "es") -> str:
+    """Traduce el nombre de un rasgo o acción de criatura al español."""
+    if lang != "es" or not name:
+        return name
+    n_lower = name.strip().lower()
+    if n_lower in COMMON_TRAIT_NAMES:
+        return COMMON_TRAIT_NAMES[n_lower]
+    for k, v in COMMON_TRAIT_NAMES.items():
+        if n_lower.startswith(k):
+            return name.replace(name[:len(k)], v)
+    return name
+
+
+def translate_item_description(desc: str) -> str:
+    """Traduce cláusulas estándar de descripciones de objetos de D&D al español."""
+    if not desc:
+        return ""
+    text = desc
+    replacements = [
+        (r'\*\(Requires attunement\)\*', '*(Requiere sintonización)*'),
+        (r'\*\(Requires attunement by a [a-zA-Z\s]+\)\*', '*(Requiere sintonización)*'),
+        (r'You gain a \+(\d+) bonus to attack and damage rolls made with this magic weapon\.', r'Obtienes una bonificación de +\1 a las tiradas de ataque y daño realizadas con esta arma mágica.'),
+        (r'You have a \+(\d+) bonus to AC while wearing this armor\.', r'Tienes una bonificación de +\1 a la CA mientras vistes esta armadura.'),
+        (r'While holding this shield, you have a \+(\d+) bonus to AC\.', r'Mientras empuñas este escudo, tienes una bonificación de +\1 a la CA.'),
+        (r'When you drink this potion, you regain (\d+d\d+(?:\s*\+\s*\d+)?) [hH]it [pP]oints\.', r'Al beber esta poción, recuperas \1 puntos de golpe.'),
+        (r'This potion\'s (?:red|golden|clear|blue) liquid', 'El líquido de esta poción'),
+        (r'You can use a bonus action to', 'Puedes usar una acción adicional para'),
+        (r'As an action, you can', 'Como una acción, puedes'),
+        (r'While wearing this ring,', 'Mientras llevas este anillo,'),
+        (r'While wearing these boots,', 'Mientras calzas estas botas,'),
+        (r'While wearing this cloak,', 'Mientras vistes esta capa,'),
+        (r'While holding this wand,', 'Mientras empuñas esta varita,'),
+        (r'While holding this staff,', 'Mientras empuñas este bastón,'),
+        (r'While holding this rod,', 'Mientras sostienes este cetro,'),
+    ]
+    for pat, rep in replacements:
+        text = re.sub(pat, rep, text, flags=re.IGNORECASE)
+    return text
+
+
+def clean_foundry_syntax(
+    text: str,
+    name_en: str,
+    name_es: str,
+    it_data: Optional[Dict[str, Any]] = None,
+    raw_data: Optional[Dict[str, Any]] = None,
+    lang: str = "en"
+) -> str:
+    """Resuelve y limpia macros y sintaxis interna de Foundry VTT en rasgos y acciones."""
+    if not text:
+        return ""
+
+    c_name = name_es if lang == "es" else name_en
+    text = re.sub(r'\[\[lookup @name lowercase\]\]\{monster\}', c_name.lower(), text, flags=re.IGNORECASE)
+    text = re.sub(r'\[\[lookup @name lowercase\]\]', c_name.lower(), text, flags=re.IGNORECASE)
+    text = re.sub(r'\[\[lookup @name\]\]\{monster\}', c_name, text, flags=re.IGNORECASE)
+    text = re.sub(r'\[\[lookup @name\]\]', c_name, text, flags=re.IGNORECASE)
+
+    sys = (it_data or {}).get("system", {})
+    activities = sys.get("activities", {})
+
+    def replace_act_special(m):
+        aid = m.group(1)
+        act = activities.get(aid, {})
+        spec = act.get("target", {}).get("affects", {}).get("special", "")
+        if not spec:
+            return "al objetivo" if lang == "es" else "the target"
+        if lang == "es":
+            spec = spec.replace("it is grappling or any creature grappling it", "que esté apresando o que la esté apresando")
+        return spec
+
+    text = re.sub(r'\[\[lookup @target\.affects\.special activity=([a-zA-Z0-9]+)\]\]', replace_act_special, text)
+
+    def replace_act_label(m):
+        aid = m.group(1)
+        act = activities.get(aid, {})
+        aff = act.get("target", {}).get("affects", {})
+        cnt = aff.get("count", "1")
+        typ = aff.get("type", "creature")
+        if lang == "es":
+            typ = "criatura" if typ == "creature" else typ
+        return f"{cnt} {typ}"
+
+    text = re.sub(r'\[\[lookup @target\.affects\.labels\.statblock activity=([a-zA-Z0-9]+)\]\]', replace_act_label, text)
+
+    def replace_range(m):
+        aid = m.group(1)
+        act = activities.get(aid, {})
+        r = act.get("range", {})
+        val = r.get("value", "30")
+        units = r.get("units", "ft")
+        if lang == "es":
+            units = "pies" if units in ("ft", "feet") else units
+        return f"{val} {units}".strip()
+
+    text = re.sub(r'\[\[lookup @range\.value activity=([a-zA-Z0-9]+)\]\]\s*\[\[lookup @range\.units activity=\1\]\]', replace_range, text)
+    text = re.sub(r'\[\[lookup @range\.value activity=([a-zA-Z0-9]+)\]\]', "30", text)
+    text = re.sub(r'\[\[lookup @range\.units activity=([a-zA-Z0-9]+)\]\]', "pies" if lang == "es" else "ft.", text)
+
+    text = re.sub(r'\[\[lookup @skills\.([a-z]+)\.passive\]\]', r'14', text)
+    text = re.sub(r'\[\[lookup @[a-zA-Z0-9_\.]+\]\]', '', text)
+    text = re.sub(r'\[\[/r\s+([0-9d\+\-\s]+)\]\]', r'\1', text)
+
+    ref_map = {
+        "grappled": ("apresado", "Grappled"),
+        "poisoned": ("envenenado", "Poisoned"),
+        "prone": ("derribado", "Prone"),
+        "restrained": ("retenido", "Restrained"),
+        "blinded": ("cegado", "Blinded"),
+        "charmed": ("hechizado", "Charmed"),
+        "frightened": ("asustado", "Frightened"),
+        "paralyzed": ("paralizado", "Paralyzed"),
+        "petrified": ("petrificado", "Petrified"),
+        "stunned": ("aturdido", "Stunned"),
+        "unconscious": ("inconsciente", "Unconscious"),
+        "incapacitated": ("incapacitado", "Incapacitated"),
+    }
+
+    def replace_ref(m):
+        c = m.group(1).strip()
+        pair = ref_map.get(c.lower())
+        if pair:
+            return pair[0] if lang == "es" else pair[1]
+        return c
+
+    text = re.sub(r'(?:&amp;|&)Reference\[([a-zA-Z0-9_\s]+)(?:\s+apply=[a-z]+)?\]', replace_ref, text)
+    text = re.sub(r'@Reference\[([a-zA-Z0-9_\s]+)(?:\s+apply=[a-z]+)?\]', replace_ref, text)
+
+    # Nombres de items referenciados en multiataque
+    raw_items = (raw_data or {}).get("items", [])
+    items_by_slug = {}
+    for i_it in raw_items:
+        i_name = i_it.get("name", "")
+        s = re.sub(r'[^a-zA-Z0-9]+', '', i_name.lower())
+        items_by_slug[s] = i_name
+
+    def replace_item_link(m):
+        code = m.group(1).lower()
+        clean_code = re.sub(r'0+$', '', code)
+        for s, iname in items_by_slug.items():
+            if clean_code in s or s in clean_code:
+                return translate_monster_action_name(iname, lang) if lang == "es" else iname
+        return clean_code.capitalize()
+
+    text = re.sub(r'\[\[/item\s+\.mm([a-zA-Z0-9_]+)\]\]', replace_item_link, text)
+
+    # Ataque y daño
+    t_es_map = {
+        "slashing": "cortante", "piercing": "perforante", "bludgeoning": "contundente",
+        "fire": "fuego", "cold": "frío", "acid": "ácido", "lightning": "relámpago",
+        "poison": "veneno", "necrotic": "necrótico", "radiant": "radiante",
+        "force": "fuerza", "psychic": "psíquico", "thunder": "trueno"
+    }
+
+    def replace_template_or_labels(m):
+        aid = m.group(1)
+        act = activities.get(aid, {})
+        tpl = act.get("target", {}).get("template", {})
+        tsize = tpl.get("size", "")
+        ttype = tpl.get("type", "cone")
+        tunits = tpl.get("units", "ft")
+        type_es = {"cone": "cono", "line": "línea", "sphere": "esfera", "cube": "cubo", "cylinder": "cilindro"}.get(ttype, ttype)
+        if lang == "es":
+            units_es = "pies" if tunits in ("ft", "feet") else tunits
+            return f"{type_es} de {tsize} {units_es}".strip() if tsize else type_es
+        return f"{tsize}-{tunits} {ttype}".strip() if tsize else ttype
+
+    text = re.sub(r'\[\[lookup @labels\.description\.(?:template|labels) activity=([a-zA-Z0-9]+)\]\]', replace_template_or_labels, text)
+
+    def replace_duration_label(m):
+        aid = m.group(1)
+        act = activities.get(aid, {})
+        dur = act.get("duration", {})
+        val = dur.get("value", "")
+        units = dur.get("units", "minute")
+        units_es = {"minute": "minuto", "minutes": "minutos", "round": "asalto", "rounds": "asaltos", "hour": "hora", "hours": "horas", "inst": "instantáneo"}.get(units, units)
+        if lang == "es":
+            return f"{val} {units_es}".strip() if val else units_es
+        return f"{val} {units}".strip() if val else units
+
+    text = re.sub(r'\[\[lookup @labels\.duration activity=([a-zA-Z0-9]+)\]\]', replace_duration_label, text)
+
+    def replace_save(m):
+        aid = m.group(1)
+        act = activities.get(aid, {})
+        save = act.get("save", {})
+        ability = save.get("ability", ["con"])
+        ab_name = ability[0] if isinstance(ability, list) and ability else str(ability)
+        dc = save.get("dc", {}).get("formula", "") or "10"
+        ab_es = {"str": "FUE", "dex": "DES", "con": "CON", "int": "INT", "wis": "SAB", "cha": "CAR"}.get(ab_name.lower(), ab_name.upper())
+        ab_en = {"str": "Strength", "dex": "Dexterity", "con": "Constitution", "int": "Intelligence", "wis": "Wisdom", "cha": "Charisma"}.get(ab_name.lower(), ab_name.capitalize())
+        if lang == "es":
+            return f"salvación de {ab_es} CD {dc}"
+        return f"DC {dc} {ab_en}"
+
+    text = re.sub(r'\[\[/save activity=([a-zA-Z0-9]+)\]\]', replace_save, text)
+
+    def replace_damage_activity(m):
+        aid = m.group(1)
+        act = activities.get(aid, {})
+        parts = act.get("damage", {}).get("parts", [])
+        if parts and isinstance(parts, list):
+            p = parts[0]
+            if isinstance(p, dict):
+                p_den = p.get("denomination")
+                p_num = p.get("number", 1)
+                p_types = p.get("types", [])
+                p_tstr = p_types[0] if p_types else ""
+                try:
+                    d_int = int(p_den) if p_den is not None and str(p_den).strip() != "" else None
+                except (ValueError, TypeError):
+                    d_int = None
+                try:
+                    n_int = int(p_num) if p_num is not None and str(p_num).strip() != "" else 1
+                except (ValueError, TypeError):
+                    n_int = 1
+                if d_int:
+                    avg_d = int(n_int * (d_int + 1) / 2)
+                    td = t_es_map.get(p_tstr.lower(), p_tstr) if lang == "es" else p_tstr
+                    if lang == "es":
+                        return f"{avg_d} ({n_int}d{d_int}) de daño por {td}" if td else f"{avg_d} ({n_int}d{d_int}) de daño"
+                    return f"{avg_d} ({n_int}d{d_int}) {td} damage" if td else f"{avg_d} ({n_int}d{d_int}) damage"
+        return "daño" if lang == "es" else "damage"
+
+    text = re.sub(r'\[\[/damage average activity=([a-zA-Z0-9]+)\]\]', replace_damage_activity, text)
+
+    dmg_base = sys.get("damage", {}).get("base", {})
+    raw_den = dmg_base.get("denomination")
+    raw_num = dmg_base.get("number", 1)
+    types = dmg_base.get("types", [])
+    t_str = types[0] if types else ""
+
+    try:
+        den = int(raw_den) if raw_den is not None and str(raw_den).strip() != "" else None
+    except (ValueError, TypeError):
+        den = None
+    try:
+        num = int(raw_num) if raw_num is not None and str(raw_num).strip() != "" else 1
+    except (ValueError, TypeError):
+        num = 1
+
+    if not den:
+        for aid, act in activities.items():
+            parts = act.get("damage", {}).get("parts", [])
+            if parts and isinstance(parts, list):
+                p = parts[0]
+                if isinstance(p, dict):
+                    p_den = p.get("denomination")
+                    p_num = p.get("number", 1)
+                    t_list = p.get("types", [])
+                    t_str = t_list[0] if t_list else ""
+                    try:
+                        den = int(p_den) if p_den is not None and str(p_den).strip() != "" else None
+                    except (ValueError, TypeError):
+                        den = None
+                    try:
+                        num = int(p_num) if p_num is not None and str(p_num).strip() != "" else 1
+                    except (ValueError, TypeError):
+                        num = 1
+                    if den:
+                        break
+
+    t_disp = t_es_map.get(t_str.lower(), t_str) if lang == "es" else t_str
+    if den:
+        avg = int((num or 1) * (den + 1) / 2)
+        formula = f"{num}d{den}"
+        if lang == "es":
+            hit_str = f"**Impacto:** {avg} ({formula}) de daño {t_disp}" if t_disp else f"**Impacto:** {avg} ({formula}) de daño"
+        else:
+            hit_str = f"**Hit:** {avg} ({formula}) {t_disp} damage" if t_disp else f"**Hit:** {avg} ({formula}) damage"
+    else:
+        hit_str = "**Impacto:** daño" if lang == "es" else "**Hit:** damage"
+
+    atk_str = "**Ataque CaC:**" if lang == "es" else "**Melee Attack:**"
+    text = re.sub(r'\[\[/attack(?:\s+extended)?\]\]\.?', atk_str, text)
+    text = re.sub(r'\[\[/damage(?:\s+[a-zA-Z0-9_\.\s]+)?\]\]\.?', hit_str, text)
+
+    # Limpieza final de corchetes de macro sin resolver
+    text = re.sub(r'\[\[lookup @[a-zA-Z0-9_\.]+(?:\s+[^\]]+)?\]\]', '', text)
+    text = re.sub(r'\[\[.*?\]\]', '', text)
+    return text.strip()
+
+
 def translate_monster_name(name_en: str) -> str:
-    """Traduce el nombre de un monstruo de inglés a español."""
+    """Traduce el nombre de un monstruo de inglés a español preservando nombres universales."""
     norm = name_en.strip().lower()
     if norm in MONSTER_NOUNS:
         return MONSTER_NOUNS[norm]
+
+    # Verificar patrones de enjambre: Swarm of Bats -> Enjambre de Murciélagos
+    if norm.startswith("swarm of "):
+        rest = norm[len("swarm of "):].strip()
+        rest_es = MONSTER_NOUNS.get(rest, rest.title())
+        return f"Enjambre de {rest_es}"
 
     # Verificar si empieza con adjetivo (Adult Black Dragon -> Dragón Negro Adulto)
     for adj_en, adj_es in MONSTER_ADJECTIVES.items():
@@ -368,11 +816,23 @@ def translate_monster_name(name_en: str) -> str:
 
 
 def translate_item_name(name_en: str) -> str:
-    """Traduce el nombre de un objeto de inglés a español."""
+    """Traduce el nombre de un objeto de inglés a español usando diccionario y patrones."""
     norm = name_en.strip().lower()
     if norm in ITEM_NAMES_TRANSLATION:
         return ITEM_NAMES_TRANSLATION[norm]
-    # Buscar coincidencia parcial
+
+    for pat, tmpl in ITEM_PATTERNS:
+        m = pat.match(norm)
+        if m:
+            groups = m.groups()
+            sub1_raw = groups[0].strip()
+            sub1 = ITEM_NAMES_TRANSLATION.get(sub1_raw, sub1_raw.title())
+            if len(groups) == 1:
+                return tmpl.format(sub1)
+            elif len(groups) == 2:
+                return tmpl.format(sub1, groups[1])
+
+    # Buscar coincidencia parcial directa
     for k, v in ITEM_NAMES_TRANSLATION.items():
         if k in norm:
             return norm.replace(k, v).title()
@@ -483,7 +943,15 @@ def normalize_foundry_monster(
         if isinstance(data, dict):
             abilities[ab.lower()] = int(data.get("value", 10))
 
-    # Rasgos y acciones
+    # Edición canónica
+    edition_tag = "2024" if edition in ("5.5e", "2024") else "5e"
+    base_slug = re.sub(r'[^a-z0-9]+', '_', name_en.lower()).strip('_')
+    entity_id = f"{base_slug}_{edition_tag}_{lang}"
+
+    is_es = (lang == "es")
+    display_name = translate_monster_name(name_en) if is_es else name_en
+
+    # Rasgos y acciones (con resolución de macros Foundry y traducción de nombres/descripciones)
     traits = []
     actions = []
     reactions = []
@@ -492,8 +960,10 @@ def normalize_foundry_monster(
     for it in raw.get("items", []):
         if not isinstance(it, dict):
             continue
-        it_name = it.get("name", "Action")
-        it_desc = clean_html(it.get("system", {}).get("description", {}).get("value", ""))
+        raw_it_name = it.get("name", "Action")
+        it_name = translate_monster_action_name(raw_it_name, lang) if is_es else raw_it_name
+        raw_desc = clean_html(it.get("system", {}).get("description", {}).get("value", ""))
+        it_desc = clean_foundry_syntax(raw_desc, name_en, display_name, it, raw, lang)
         act_type = it.get("system", {}).get("activation", {}).get("type", "")
         entry = {"name": it_name, "desc": it_desc}
         if act_type == "reaction":
@@ -504,14 +974,6 @@ def normalize_foundry_monster(
             legendary.append(entry)
         else:
             traits.append(entry)
-
-    # Edición canónica
-    edition_tag = "2024" if edition in ("5.5e", "2024") else "5e"
-    base_slug = re.sub(r'[^a-z0-9]+', '_', name_en.lower()).strip('_')
-    entity_id = f"{base_slug}_{edition_tag}_{lang}"
-
-    is_es = (lang == "es")
-    display_name = translate_monster_name(name_en) if is_es else name_en
 
     details = {
         "abilities": abilities,
@@ -697,18 +1159,32 @@ def normalize_foundry_item(
     item_type_en = ITEM_TYPE_TRANSLATIONS.get(item_type_code, raw_type.capitalize())
     item_type_es = ITEM_TYPE_TRANSLATIONS.get(item_type_code, item_type_en)
 
-    dmg_base = sys.get("damage", {}).get("base", {})
+    is_weapon = (raw_type == "weapon" or "weapon" in item_type_code or "martial" in item_type_code or "simple" in item_type_code)
+
     dmg_formula = ""
     dmg_type_str = ""
-    if isinstance(dmg_base, dict):
-        num = dmg_base.get("number", 1)
-        den = dmg_base.get("denomination", 8)
-        if den:
-            dmg_formula = f"{num}d{den}"
-        types = dmg_base.get("types", [])
-        dmg_type_str = ", ".join(types)
+    if is_weapon:
+        dmg_data = sys.get("damage") or {}
+        dmg_base = dmg_data.get("base") if isinstance(dmg_data, dict) else None
+        if isinstance(dmg_base, dict):
+            num = dmg_base.get("number")
+            den = dmg_base.get("denomination")
+            bonus = dmg_base.get("bonus")
+            if num and den:
+                dmg_formula = f"{num}d{den}"
+                if bonus:
+                    dmg_formula += f" + {bonus}"
+            types = dmg_base.get("types", [])
+            dmg_type_str = ", ".join(types)
 
-    dmg_type_es = dmg_type_str.replace("slashing", "cortante").replace("piercing", "perforante").replace("bludgeoning", "contundente")
+        dmg_vers = dmg_data.get("versatile") if isinstance(dmg_data, dict) else None
+        if isinstance(dmg_vers, dict):
+            v_num = dmg_vers.get("number")
+            v_den = dmg_vers.get("denomination")
+            if v_num and v_den:
+                dmg_formula += f" ({v_num}d{v_den})"
+
+    dmg_type_es = dmg_type_str.replace("slashing", "cortante").replace("piercing", "perforante").replace("bludgeoning", "contundente").replace("fire", "fuego").replace("cold", "frío").replace("acid", "ácido").replace("lightning", "relámpago").replace("poison", "veneno").replace("force", "fuerza")
 
     # CA
     armor_data = sys.get("armor", {})
@@ -716,13 +1192,14 @@ def normalize_foundry_item(
     if isinstance(armor_data, dict):
         ac_bonus = int(armor_data.get("value", 0) or 0)
 
-    desc_en = clean_html(sys.get("description", {}).get("value", ""))
+    desc_raw = clean_html(sys.get("description", {}).get("value", ""))
+    is_es = (lang == "es")
+    desc_final = translate_item_description(desc_raw) if is_es else desc_raw
 
     edition_tag = "2024" if edition in ("5.5e", "2024") else "5e"
     base_slug = re.sub(r'[^a-z0-9]+', '_', name_en.lower()).strip('_')
     entity_id = f"{base_slug}_{edition_tag}_{lang}"
 
-    is_es = (lang == "es")
     name_display = translate_item_name(name_en) if is_es else name_en
     mastery_display = MASTERY_TRANSLATIONS.get(mastery.lower(), mastery) if is_es else mastery
 
@@ -747,7 +1224,7 @@ def normalize_foundry_item(
         "ac_bonus": ac_bonus,
         "edition": edition,
         "language": lang,
-        "description": desc_en,
+        "description": desc_final,
         "data_json": json.dumps(details, ensure_ascii=False),
     }
 
@@ -1164,4 +1641,95 @@ class CompendiumImporter:
             cnt = self.ingest_foundry_pack(items14_path, category="items", edition="5e", bilingue=bilingue)
             results["items_2014"] = cnt
 
+        # 3. Entidades OKF (Clases, Subclases, Especies, Linajes, Trasfondos, Dotes, Reglas)
+        okf_cnt = self.ingest_okf_entities()
+        results["okf_entities"] = okf_cnt
+
         return results
+
+    def ingest_okf_entities(self, okf_dir: Optional[str] = None) -> int:
+        """Ingesta las entidades OKF (clases, subclases, especies, trasfondos, dotes, reglas) a compendium_entities en SQLite."""
+        if not okf_dir:
+            base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            okf_dir = os.path.join(base_dir, "okf_dnd5e")
+
+        meta_path = os.path.join(okf_dir, "index_metadata.json")
+        if not os.path.exists(meta_path):
+            print(f"[CompendiumImporter] No se encontró {meta_path}")
+            return 0
+
+        with open(meta_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        entities = data.get("entities", [])
+        valid_types = {"clase", "subclase", "especie", "especie_linaje", "trasfondo", "dote", "regla"}
+        count = 0
+
+        for e in entities:
+            tipo = e.get("tipo")
+            if tipo not in valid_types:
+                continue
+
+            entity_id = e.get("id")
+            name = e.get("nombre", entity_id)
+            name_en = e.get("nombre_ingles", name)
+            lang = e.get("idioma", "es")
+            edition = "5.5e"
+
+            snippet_parts = [e.get("fuente", "PHB 2024")]
+            if e.get("nivel") is not None:
+                snippet_parts.append(f"Level {e['nivel']}" if lang == "en" else f"Nivel {e['nivel']}")
+            if e.get("escuela"):
+                snippet_parts.append(str(e["escuela"]))
+            if e.get("dado_golpe"):
+                snippet_parts.append(f"HD: {e['dado_golpe']}" if lang == "en" else f"DG: {e['dado_golpe']}")
+            if e.get("dote_concedida"):
+                snippet_parts.append(f"Feat: {e['dote_concedida']}" if lang == "en" else f"Dote: {e['dote_concedida']}")
+            if e.get("caracteristicas_clave"):
+                snippet_parts.append(str(e["caracteristicas_clave"]))
+            snippet = " • ".join(snippet_parts)
+
+            rel_path = e.get("path")
+            content_md = ""
+            full_meta = dict(e)
+            if rel_path:
+                full_p = os.path.join(okf_dir, rel_path)
+                if os.path.exists(full_p):
+                    try:
+                        with open(full_p, "r", encoding="utf-8") as mf:
+                            raw_txt = mf.read()
+                            if "---" in raw_txt:
+                                parts = raw_txt.split("---", 2)
+                                if len(parts) >= 3:
+                                    content_md = parts[2].strip()
+                                    try:
+                                        frontmatter = yaml.safe_load(parts[1])
+                                        if isinstance(frontmatter, dict):
+                                            full_meta.update(frontmatter)
+                                    except Exception:
+                                        pass
+                            else:
+                                content_md = raw_txt.strip()
+                    except Exception:
+                        pass
+
+            if not content_md:
+                content_md = e.get("descripcion", "")
+
+            entity_dict = {
+                "entity_id": entity_id,
+                "name": name,
+                "name_en": name_en,
+                "category": tipo,
+                "edition": edition,
+                "language": lang,
+                "snippet": snippet,
+                "content_markdown": content_md,
+                "data_json": json.dumps(full_meta, ensure_ascii=False),
+            }
+
+            self.db.upsert_compendium_entity(entity_dict)
+            count += 1
+
+        print(f"[CompendiumImporter] Ingestadas {count} entidades OKF a SQLite (compendium_entities).")
+        return count

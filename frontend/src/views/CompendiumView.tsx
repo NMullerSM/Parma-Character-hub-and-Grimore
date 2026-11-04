@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { api } from "../api/client";
 import { useTranslation } from "../i18n";
+import { useCharacter } from "../context/CharacterContext";
 import type {
   CompendiumCategory,
   CompendiumSearchResult,
@@ -13,17 +14,30 @@ import { MarkdownViewer } from "../components/MarkdownViewer";
 
 export const CompendiumView: React.FC = () => {
   const { t, language, translateCategory, translateSpellName } = useTranslation();
+  const { dndEdition } = useCharacter();
+
   const [categories, setCategories] = useState<CompendiumCategory[]>([]);
   const [selectedCat, setSelectedCat] = useState<string>("");
+  const [selectedEdition, setSelectedEdition] = useState<string>(dndEdition || "5.5e");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [results, setResults] = useState<CompendiumSearchResult[]>([]);
   const [selectedEntry, setSelectedEntry] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
+  // Referencias para evitar condiciones de carrera por resolución asíncrona desordenada
+  const lastSearchIdRef = useRef<number>(0);
+  const lastLoadIdRef = useRef<number>(0);
+
+  useEffect(() => {
+    if (dndEdition) {
+      setSelectedEdition(dndEdition);
+    }
+  }, [dndEdition]);
+
   useEffect(() => {
     async function loadCategories() {
       try {
-        const cats = await api.getCompendiumCategories(language);
+        const cats = await api.getCompendiumCategories(language, selectedEdition || undefined);
         setCategories(cats);
         if (cats.length > 0 && !selectedCat) setSelectedCat(cats[0].id);
       } catch (e) {
@@ -31,16 +45,19 @@ export const CompendiumView: React.FC = () => {
       }
     }
     loadCategories();
-  }, [language]);
+  }, [language, selectedEdition]);
 
   useEffect(() => {
     const timer = setTimeout(async () => {
+      const searchId = ++lastSearchIdRef.current;
       setLoading(true);
       try {
         const queryToRun = searchQuery.trim();
+        const edFilter = selectedEdition || undefined;
 
         if (selectedCat === "monstruos") {
-          const res = await api.searchMonsters(queryToRun, null, null, null, null, null, language, 1, 150);
+          const res = await api.searchMonsters(queryToRun, null, null, null, null, edFilter, language, 1, 150);
+          if (searchId !== lastSearchIdRef.current) return;
           const mapped: CompendiumSearchResult[] = res.items.map((m) => ({
             id: m.entity_id,
             name: language === "en" && m.name_en ? m.name_en : m.name,
@@ -55,7 +72,8 @@ export const CompendiumView: React.FC = () => {
             setSelectedEntry(null);
           }
         } else if (selectedCat === "conjuros") {
-          const res = await api.searchSpells(queryToRun, null, null, null, null, null, null, null, language, 1, 150);
+          const res = await api.searchSpells(queryToRun, null, null, null, null, null, null, edFilter, language, 1, 150);
+          if (searchId !== lastSearchIdRef.current) return;
           const mapped: CompendiumSearchResult[] = res.items.map((s) => ({
             id: s.entity_id,
             name: language === "en" && s.name_en ? s.name_en : s.name,
@@ -70,7 +88,8 @@ export const CompendiumView: React.FC = () => {
             setSelectedEntry(null);
           }
         } else if (selectedCat === "equipo_y_armamento") {
-          const res = await api.searchItems(queryToRun, null, null, null, null, language, 1, 150);
+          const res = await api.searchItems(queryToRun, null, null, null, edFilter, language, 1, 150);
+          if (searchId !== lastSearchIdRef.current) return;
           const mapped: CompendiumSearchResult[] = res.items.map((it) => ({
             id: it.entity_id,
             name: language === "en" && it.name_en ? it.name_en : it.name,
@@ -85,8 +104,9 @@ export const CompendiumView: React.FC = () => {
             setSelectedEntry(null);
           }
         } else {
-          // OKF y búsqueda general
-          const data = await api.searchCompendium(queryToRun, selectedCat || undefined, language);
+          // OKF y compendium_entities en SQLite
+          const data = await api.searchCompendium(queryToRun, selectedCat || undefined, language, edFilter);
+          if (searchId !== lastSearchIdRef.current) return;
           setResults(data);
           if (data.length > 0) {
             loadEntry(data[0].category, data[0].name, data[0].id);
@@ -95,19 +115,25 @@ export const CompendiumView: React.FC = () => {
           }
         }
       } catch (e) {
-        console.error("Error searching compendium:", e);
+        if (searchId === lastSearchIdRef.current) {
+          console.error("Error searching compendium:", e);
+        }
       } finally {
-        setLoading(false);
+        if (searchId === lastSearchIdRef.current) {
+          setLoading(false);
+        }
       }
     }, 200);
 
     return () => clearTimeout(timer);
-  }, [searchQuery, selectedCat, language]);
+  }, [searchQuery, selectedCat, language, selectedEdition]);
 
   const loadEntry = async (category: string, name: string, id?: string) => {
+    const loadId = ++lastLoadIdRef.current;
     try {
       if (category === "monstruos") {
         const monster = await api.getMonsterById(id || name);
+        if (loadId !== lastLoadIdRef.current) return;
         if (monster) {
           setSelectedEntry({
             id: monster.entity_id,
@@ -121,6 +147,7 @@ export const CompendiumView: React.FC = () => {
 
       if (category === "conjuros") {
         const spell = await api.getSpellById(id || name);
+        if (loadId !== lastLoadIdRef.current) return;
         if (spell) {
           setSelectedEntry({
             id: spell.entity_id,
@@ -135,6 +162,7 @@ export const CompendiumView: React.FC = () => {
 
       if (category === "equipo_y_armamento") {
         const item = await api.getItemById(id || name);
+        if (loadId !== lastLoadIdRef.current) return;
         if (item) {
           setSelectedEntry({
             id: item.entity_id,
@@ -148,9 +176,12 @@ export const CompendiumView: React.FC = () => {
       }
 
       const entry = await api.getCompendiumEntry(category, id || name, language);
+      if (loadId !== lastLoadIdRef.current) return;
       setSelectedEntry(entry);
     } catch (e) {
-      console.error("Error loading entry:", e);
+      if (loadId === lastLoadIdRef.current) {
+        console.error("Error loading entry:", e);
+      }
     }
   };
 
@@ -161,23 +192,53 @@ export const CompendiumView: React.FC = () => {
 
   return (
     <div className="h-full flex flex-col p-4 md:p-6 space-y-4 max-w-7xl mx-auto overflow-hidden">
-      {/* 1. Header del Compendio y Buscador Central */}
+      {/* 1. Header del Compendio, Filtro de Edición y Buscador Central */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-border-iron pb-3 shrink-0">
         <div>
           <h1 className="font-display font-bold text-2xl text-gold">{t("compendium.title")}</h1>
           <p className="text-xs text-muted">{t("compendium.subtitle")}</p>
         </div>
 
-        {/* Input de Búsqueda */}
-        <div className="relative w-full md:w-80">
-          <Search className="w-4 h-4 absolute left-3 top-2.5 text-muted pointer-events-none" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t("compendium.searchPlaceholder")}
-            className="w-full bg-input text-main border border-border-iron rounded-lg pl-9 pr-3 py-1.5 text-sm focus:border-gold outline-none transition-colors"
-          />
+        <div className="flex flex-wrap items-center gap-2.5">
+          {/* Selector de Edición D&D */}
+          <div className="flex items-center bg-card border border-border-iron rounded-lg p-0.5 text-xs">
+            <button
+              onClick={() => setSelectedEdition("5.5e")}
+              className={`px-2.5 py-1 rounded font-medium transition-colors ${
+                selectedEdition === "5.5e" ? "bg-gold text-canvas font-bold" : "text-muted hover:text-main"
+              }`}
+            >
+              2024 (5.5e)
+            </button>
+            <button
+              onClick={() => setSelectedEdition("5e")}
+              className={`px-2.5 py-1 rounded font-medium transition-colors ${
+                selectedEdition === "5e" ? "bg-gold text-canvas font-bold" : "text-muted hover:text-main"
+              }`}
+            >
+              2014 (5e)
+            </button>
+            <button
+              onClick={() => setSelectedEdition("")}
+              className={`px-2 py-1 rounded font-medium transition-colors ${
+                selectedEdition === "" ? "bg-gold text-canvas font-bold" : "text-muted hover:text-main"
+              }`}
+            >
+              {language === "en" ? "All" : "Todas"}
+            </button>
+          </div>
+
+          {/* Input de Búsqueda */}
+          <div className="relative w-full md:w-72">
+            <Search className="w-4 h-4 absolute left-3 top-2.5 text-muted pointer-events-none" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={t("compendium.searchPlaceholder")}
+              className="w-full bg-input text-main border border-border-iron rounded-lg pl-9 pr-3 py-1.5 text-sm focus:border-gold outline-none transition-colors"
+            />
+          </div>
         </div>
       </div>
 

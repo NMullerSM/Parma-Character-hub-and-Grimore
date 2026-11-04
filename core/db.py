@@ -318,6 +318,31 @@ class DatabaseManager:
 
                 cursor.execute("PRAGMA user_version = 2;")
 
+            # Migración a versión 3: Tabla compendium_entities (clases, especies, trasfondos, etc.)
+            if current_version < 3:
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS compendium_entities (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        entity_id TEXT NOT NULL UNIQUE,
+                        name TEXT NOT NULL,
+                        name_en TEXT,
+                        category TEXT NOT NULL,
+                        edition TEXT NOT NULL DEFAULT '5.5e',
+                        language TEXT NOT NULL DEFAULT 'es',
+                        snippet TEXT DEFAULT '',
+                        content_markdown TEXT NOT NULL DEFAULT '',
+                        data_json TEXT NOT NULL DEFAULT '{}',
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    );
+                """)
+                cursor.execute("CREATE INDEX IF NOT EXISTS idx_entities_cat_lang ON compendium_entities(category, language);")
+                cursor.execute("CREATE INDEX IF NOT EXISTS idx_entities_name ON compendium_entities(name);")
+                cursor.execute("CREATE INDEX IF NOT EXISTS idx_entities_edition_lang ON compendium_entities(edition, language);")
+                cursor.execute("CREATE INDEX IF NOT EXISTS idx_entities_entity_id ON compendium_entities(entity_id);")
+
+                cursor.execute("PRAGMA user_version = 3;")
+
             conn.commit()
 
     def get_active_character(self) -> Optional[CharacterSheet]:
@@ -1232,19 +1257,157 @@ class DatabaseManager:
                 res["details"] = {}
             return res
 
-    def count_compendium_entries(self, category: str, edition: Optional[str] = None, language: str = "en") -> int:
-        """Retorna el conteo total de entradas en una tabla del compendio."""
-        table_map = {
-            "monsters": "compendium_monsters",
-            "spells": "compendium_spells",
-            "items": "compendium_items",
-        }
-        tbl = table_map.get(category.lower())
-        if not tbl:
-            return 0
+    def upsert_compendium_entity(self, entity_data: Dict[str, Any]) -> str:
+        """Inserta o actualiza una entidad de compendio (clase, especie, trasfondo, dote, regla)."""
+        entity_id = entity_data.get("entity_id") or entity_data.get("id") or entity_data["name"].lower().replace(" ", "_")
+        name = entity_data["name"]
+        name_en = entity_data.get("name_en")
+        category = entity_data.get("category", "regla")
+        edition = str(entity_data.get("edition", "5.5e"))
+        language = str(entity_data.get("language", "es"))
+        snippet = str(entity_data.get("snippet", ""))
+        content_md = str(entity_data.get("content_markdown") or entity_data.get("content") or entity_data.get("description", ""))
+        raw_json = entity_data.get("data_json")
+        if isinstance(raw_json, str):
+            data_json = raw_json
+        elif isinstance(raw_json, dict):
+            data_json = json.dumps(raw_json, ensure_ascii=False)
+        else:
+            data_json = json.dumps(entity_data, ensure_ascii=False)
 
-        sql = f"SELECT COUNT(*) FROM {tbl} WHERE 1=1"
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO compendium_entities (
+                    entity_id, name, name_en, category, edition,
+                    language, snippet, content_markdown, data_json, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                ON CONFLICT(entity_id) DO UPDATE SET
+                    name = excluded.name,
+                    name_en = excluded.name_en,
+                    category = excluded.category,
+                    edition = excluded.edition,
+                    language = excluded.language,
+                    snippet = excluded.snippet,
+                    content_markdown = excluded.content_markdown,
+                    data_json = excluded.data_json,
+                    updated_at = CURRENT_TIMESTAMP;
+            """, (
+                entity_id, name, name_en, category, edition,
+                language, snippet, content_md, data_json
+            ))
+            conn.commit()
+            return entity_id
+
+    def search_compendium_entities(
+        self,
+        query: str = "",
+        category: Optional[str] = None,
+        categories: Optional[List[str]] = None,
+        language: str = "es",
+        edition: Optional[str] = None,
+        limit: int = 150,
+        offset: int = 0,
+    ) -> List[Dict[str, Any]]:
+        """Búsqueda y listado de entidades en compendium_entities (clases, especies, trasfondos, etc.)."""
+        sql = "SELECT id, entity_id, name, name_en, category, edition, language, snippet, content_markdown, data_json FROM compendium_entities WHERE 1=1"
         params: List[Any] = []
+
+        if query:
+            sql += " AND (name LIKE ? OR name_en LIKE ? OR content_markdown LIKE ? OR snippet LIKE ?)"
+            q_like = f"%{query}%"
+            params.extend([q_like, q_like, q_like, q_like])
+
+        if category:
+            sql += " AND LOWER(category) = LOWER(?)"
+            params.append(category)
+        elif categories:
+            placeholders = ",".join("?" for _ in categories)
+            sql += f" AND LOWER(category) IN ({placeholders})"
+            params.extend([c.lower() for c in categories])
+
+        if edition:
+            if edition in ("5.5e", "2024"):
+                sql += " AND edition IN ('5.5e', '2024')"
+            elif edition in ("5e", "2014"):
+                sql += " AND edition IN ('5e', '2014')"
+            else:
+                sql += " AND edition = ?"
+                params.append(edition)
+
+        if language:
+            sql += " AND language = ?"
+            params.append(language)
+
+        sql += " ORDER BY name ASC LIMIT ? OFFSET ?;"
+        params.extend([limit, offset])
+
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(sql, params)
+            rows = []
+            for r in cursor.fetchall():
+                d = dict(r)
+                try:
+                    d["metadata"] = json.loads(d.get("data_json") or "{}")
+                except Exception:
+                    d["metadata"] = {}
+                rows.append(d)
+            return rows
+
+    def get_compendium_entity_by_id(self, entity_id: str) -> Optional[Dict[str, Any]]:
+        """Obtiene una entidad de compendio por su entity_id, name o name_en."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT * FROM compendium_entities 
+                WHERE entity_id = ? OR name = ? OR name_en = ? 
+                   OR LOWER(entity_id) = LOWER(?) OR LOWER(name) = LOWER(?)
+                LIMIT 1;
+            """, (entity_id, entity_id, entity_id, entity_id, entity_id))
+            row = cursor.fetchone()
+            if not row:
+                return None
+            res = dict(row)
+            try:
+                res["details"] = json.loads(res.get("data_json") or "{}")
+            except Exception:
+                res["details"] = {}
+            return res
+
+    def count_compendium_entries(
+        self,
+        category: str,
+        categories: Optional[List[str]] = None,
+        edition: Optional[str] = None,
+        language: Optional[str] = None
+    ) -> int:
+        """Retorna el conteo total de entradas en una tabla del compendio o por categoría."""
+        cat_lower = category.lower() if category else ""
+        if cat_lower in ("monsters", "monstruos"):
+            tbl = "compendium_monsters"
+            sql = f"SELECT COUNT(*) FROM {tbl} WHERE 1=1"
+            params: List[Any] = []
+        elif cat_lower in ("spells", "conjuros"):
+            tbl = "compendium_spells"
+            sql = f"SELECT COUNT(*) FROM {tbl} WHERE 1=1"
+            params: List[Any] = []
+        elif cat_lower in ("items", "equipo", "equipo_y_armamento"):
+            tbl = "compendium_items"
+            sql = f"SELECT COUNT(*) FROM {tbl} WHERE 1=1"
+            params: List[Any] = []
+        else:
+            tbl = "compendium_entities"
+            sql = f"SELECT COUNT(*) FROM {tbl} WHERE 1=1"
+            params = []
+            if categories:
+                placeholders = ",".join("?" for _ in categories)
+                sql += f" AND LOWER(category) IN ({placeholders})"
+                params.extend([c.lower() for c in categories])
+            elif category and cat_lower not in ("all", "entities"):
+                sql += " AND LOWER(category) = LOWER(?)"
+                params.append(category)
+
         if edition:
             if edition in ("5.5e", "2024"):
                 sql += " AND edition IN ('5.5e', '2024')"
