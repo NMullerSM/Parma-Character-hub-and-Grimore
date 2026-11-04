@@ -346,6 +346,7 @@ export const en: Translations = {
     catClasses: "Classes and Subclasses",
     catSpecies: "Species and Lineages",
     catSpells: "Spell Grimoire",
+    catMonsters: "Monsters & Bestiary",
     catBackgrounds: "Backgrounds",
     catFeats: "Character Feats",
     catEquipment: "Equipment and Armory",

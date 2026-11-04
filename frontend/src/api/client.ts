@@ -10,6 +10,14 @@ import type {
   PdfPageRenderResult,
   CompendiumCategory,
   CompendiumSearchResult,
+  CompendiumMonsterSummary,
+  CompendiumMonsterDetail,
+  CompendiumSpellSummary,
+  CompendiumSpellDetail,
+  CompendiumItemSummary,
+  CompendiumItemDetail,
+  CompendiumPaginatedResult,
+  CompendiumCounts,
   AppSettings,
   ThemeOption,
   BuilderCatalog,
@@ -63,6 +71,44 @@ declare global {
         get_compendium_categories: (lang?: string) => Promise<CompendiumCategory[]>;
         search_compendium: (query: string, category?: string, lang?: string) => Promise<CompendiumSearchResult[]>;
         get_compendium_entry: (category: string, entryName: string, lang?: string) => Promise<any>;
+        search_monsters: (
+          query: string,
+          cr_min?: number | null,
+          cr_max?: number | null,
+          type_filter?: string | null,
+          size?: string | null,
+          edition?: string | null,
+          language?: string,
+          page?: number,
+          page_size?: number
+        ) => Promise<CompendiumPaginatedResult<CompendiumMonsterSummary>>;
+        get_monster_by_id: (entity_id: string) => Promise<CompendiumMonsterDetail | null>;
+        search_spells: (
+          query: string,
+          level?: number | null,
+          max_level?: number | null,
+          school?: string | null,
+          class_name?: string | null,
+          is_concentration?: boolean | null,
+          is_ritual?: boolean | null,
+          edition?: string | null,
+          language?: string,
+          page?: number,
+          page_size?: number
+        ) => Promise<CompendiumPaginatedResult<CompendiumSpellSummary>>;
+        get_spell_by_id: (entity_id: string) => Promise<CompendiumSpellDetail | null>;
+        search_items: (
+          query: string,
+          item_type?: string | null,
+          rarity?: string | null,
+          weapon_mastery?: string | null,
+          edition?: string | null,
+          language?: string,
+          page?: number,
+          page_size?: number
+        ) => Promise<CompendiumPaginatedResult<CompendiumItemSummary>>;
+        get_item_by_id: (entity_id: string) => Promise<CompendiumItemDetail | null>;
+        get_compendium_counts: (edition?: string | null, language?: string) => Promise<CompendiumCounts>;
         get_class_spells: (className: string, maxLevel?: number, lang?: string) => Promise<SpellItemData[]>;
         get_available_spells: (
           className: string | null,
@@ -654,6 +700,246 @@ export const api = {
       name: entryName,
       category,
       content: `# ${entryName}\n\nDescripción detallada de reglas simulada para previsualización web.`,
+    };
+  },
+
+  // --- Compendio Relacional SQLite (Monstruos, Conjuros, Equipo) ---
+  async searchMonsters(
+    query: string = "",
+    crMin?: number | null,
+    crMax?: number | null,
+    typeFilter?: string | null,
+    size?: string | null,
+    edition?: string | null,
+    language: string = "en",
+    page: number = 1,
+    pageSize: number = 25
+  ): Promise<CompendiumPaginatedResult<CompendiumMonsterSummary>> {
+    if (this.isNative() && window.pywebview?.api?.search_monsters) {
+      return await window.pywebview.api.search_monsters(query, crMin, crMax, typeFilter, size, edition, language, page, pageSize);
+    }
+    const mockList: CompendiumMonsterSummary[] = [
+      {
+        entity_id: "young_red_dragon_55e",
+        name: "Dragón Rojo Joven",
+        name_en: "Young Red Dragon",
+        cr: 10,
+        cr_text: "10",
+        size: "Large",
+        monster_type: "Dragon",
+        alignment: "Caótico Malvado",
+        ac: 18,
+        hp_avg: 178,
+        hp_formula: "17d10 + 85",
+        speed: "40 ft., fly 80 ft., climb 40 ft.",
+        edition: "5.5e",
+        language,
+      },
+      {
+        entity_id: "goblin_warrior_55e",
+        name: "Goblin Guerrero",
+        name_en: "Goblin Warrior",
+        cr: 0.25,
+        cr_text: "1/4",
+        size: "Small",
+        monster_type: "Humanoid",
+        alignment: "Neutral Malvado",
+        ac: 15,
+        hp_avg: 7,
+        hp_formula: "2d6",
+        speed: "30 ft.",
+        edition: "5.5e",
+        language,
+      },
+    ];
+    const filtered = mockList.filter(
+      (m) =>
+        (!query || m.name.toLowerCase().includes(query.toLowerCase()) || (m.name_en && m.name_en.toLowerCase().includes(query.toLowerCase()))) &&
+        (crMin === null || crMin === undefined || m.cr >= crMin) &&
+        (crMax === null || crMax === undefined || m.cr <= crMax) &&
+        (!typeFilter || m.monster_type.toLowerCase() === typeFilter.toLowerCase())
+    );
+    return {
+      items: filtered,
+      total: filtered.length,
+      page,
+      page_size: pageSize,
+      has_more: false,
+    };
+  },
+
+  async getMonsterById(entityId: string): Promise<CompendiumMonsterDetail | null> {
+    if (this.isNative() && window.pywebview?.api?.get_monster_by_id) {
+      return await window.pywebview.api.get_monster_by_id(entityId);
+    }
+    return {
+      entity_id: entityId,
+      name: "Dragón Rojo Joven",
+      name_en: "Young Red Dragon",
+      cr: 10,
+      cr_text: "10",
+      size: "Large",
+      monster_type: "Dragon",
+      alignment: "Caótico Malvado",
+      ac: 18,
+      hp_avg: 178,
+      hp_formula: "17d10 + 85",
+      speed: "40 ft., fly 80 ft., climb 40 ft.",
+      edition: "5.5e",
+      language: "es",
+      details: {
+        str: 23,
+        dex: 10,
+        con: 21,
+        int: 14,
+        wis: 11,
+        cha: 19,
+        actions: [
+          { name: "Multiataque", desc: "El dragón realiza tres ataques: uno con la mordedura y dos con las garras." },
+          { name: "Mordedura", desc: "+10 al impacto, alcance 10 pies. Impacto: 17 (2d10 + 6) daño perforante más 3 (1d6) daño de fuego." },
+          { name: "Aliento de Fuego (Recarga 5-6)", desc: "El dragón exhala fuego en un cono de 30 pies. Cada criatura debe superar una tirada de salvación de DES CD 17 o recibir 56 (16d6) daño de fuego." },
+        ],
+      },
+    };
+  },
+
+  async searchSpells(
+    query: string = "",
+    level?: number | null,
+    maxLevel?: number | null,
+    school?: string | null,
+    className?: string | null,
+    isConcentration?: boolean | null,
+    isRitual?: boolean | null,
+    edition?: string | null,
+    language: string = "en",
+    page: number = 1,
+    pageSize: number = 25
+  ): Promise<CompendiumPaginatedResult<CompendiumSpellSummary>> {
+    if (this.isNative() && window.pywebview?.api?.search_spells) {
+      return await window.pywebview.api.search_spells(query, level, maxLevel, school, className, isConcentration, isRitual, edition, language, page, pageSize);
+    }
+    const mockSpells: CompendiumSpellSummary[] = [
+      {
+        entity_id: "fireball_55e",
+        name: "Bola de Fuego",
+        name_en: "Fireball",
+        level: 3,
+        school: "Evocación",
+        casting_time: "1 acción",
+        range_area: "150 pies (esfera de 20 pies)",
+        components: "V, S, M",
+        duration: "Instantáneo",
+        is_concentration: false,
+        is_ritual: false,
+        classes: "Mago, Hechicero",
+        edition: "5.5e",
+        language,
+        description: "Una brillante llamarada surge de tu dedo hasta un punto que elijas y luego estalla con un rugido ensordecedor.",
+      },
+    ];
+    return {
+      items: mockSpells,
+      total: mockSpells.length,
+      page,
+      page_size: pageSize,
+      has_more: false,
+    };
+  },
+
+  async getSpellById(entityId: string): Promise<CompendiumSpellDetail | null> {
+    if (this.isNative() && window.pywebview?.api?.get_spell_by_id) {
+      return await window.pywebview.api.get_spell_by_id(entityId);
+    }
+    return {
+      entity_id: entityId,
+      name: "Bola de Fuego",
+      name_en: "Fireball",
+      level: 3,
+      school: "Evocación",
+      casting_time: "1 acción",
+      range_area: "150 pies (esfera de 20 pies)",
+      components: "V, S, M",
+      duration: "Instantáneo",
+      is_concentration: false,
+      is_ritual: false,
+      classes: "Mago, Hechicero",
+      edition: "5.5e",
+      language: "es",
+      description: "Una brillante llamarada surge de tu dedo hasta un punto que elijas y luego estalla con un rugido ensordecedor causando 8d6 de daño por fuego.",
+      details: {},
+    };
+  },
+
+  async searchItems(
+    query: string = "",
+    itemType?: string | null,
+    rarity?: string | null,
+    weaponMastery?: string | null,
+    edition?: string | null,
+    language: string = "en",
+    page: number = 1,
+    pageSize: number = 25
+  ): Promise<CompendiumPaginatedResult<CompendiumItemSummary>> {
+    if (this.isNative() && window.pywebview?.api?.search_items) {
+      return await window.pywebview.api.search_items(query, itemType, rarity, weaponMastery, edition, language, page, pageSize);
+    }
+    const mockItems: CompendiumItemSummary[] = [
+      {
+        entity_id: "longsword_55e",
+        name: "Espada Larga",
+        name_en: "Longsword",
+        item_type: "Arma Marcial CaC",
+        rarity: "Común",
+        cost: "15 po",
+        weight: "3 lb",
+        weapon_mastery: "Sap",
+        damage: "1d8",
+        damage_type: "Cortante",
+        edition: "5.5e",
+        language,
+        description: "Un arma versátil predilecta por caballeros y paladines. Dominio de arma: Sap (Incapacitar).",
+      },
+    ];
+    return {
+      items: mockItems,
+      total: mockItems.length,
+      page,
+      page_size: pageSize,
+      has_more: false,
+    };
+  },
+
+  async getItemById(entityId: string): Promise<CompendiumItemDetail | null> {
+    if (this.isNative() && window.pywebview?.api?.get_item_by_id) {
+      return await window.pywebview.api.get_item_by_id(entityId);
+    }
+    return {
+      entity_id: entityId,
+      name: "Espada Larga",
+      name_en: "Longsword",
+      item_type: "Arma Marcial CaC",
+      rarity: "Común",
+      cost: "15 po",
+      weight: "3 lb",
+      weapon_mastery: "Sap",
+      damage: "1d8",
+      damage_type: "Cortante",
+      edition: "5.5e",
+      language: "es",
+      description: "Un arma versátil predilecta por caballeros y paladines. Dominio de arma: Sap (Incapacitar).",
+      details: {},
+    };
+  },
+
+  async getCompendiumCounts(edition?: string | null, language: string = "en"): Promise<CompendiumCounts> {
+    if (this.isNative() && window.pywebview?.api?.get_compendium_counts) {
+      return await window.pywebview.api.get_compendium_counts(edition, language);
+    }
+    return {
+      monsters: 2,
+      spells: 1,
+      items: 1,
     };
   },
 
