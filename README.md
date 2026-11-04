@@ -142,7 +142,8 @@ Para consultar las decisiones de diseño, contratos de datos y especificaciones 
 
 ---
 
-## ⚖️ Licencia
+## ⚖️ Licencia y Atribución
 
-Distribuido bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.  
+Distribuido bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles sobre el código del proyecto.  
+El compendio de reglas, monstruos, conjuros y equipo utiliza material del SRD 5.1 y SRD 5.2 de Wizards of the Coast bajo licencia **Creative Commons CC-BY-4.0** y paquetes abiertos de Foundry VTT dnd5e (MIT / CC-BY-4.0). Para la declaración completa de licencias y atribución legal, consulta **[docs/LEGAL_ATTRIBUTION.md](docs/LEGAL_ATTRIBUTION.md)**.  
 *Dungeons & Dragons, D&D y sus contenidos asociados son marcas comerciales de Wizards of the Coast LLC.*

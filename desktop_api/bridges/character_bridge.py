@@ -1124,48 +1124,111 @@ class CharacterBridgeMixin:
     # =========================================================================
 
     def get_compendium_categories(self, lang: str = "es") -> List[Dict[str, Any]]:
-        """Lista las categorías disponibles en el compendio OKF y SQLite con su conteo por idioma."""
+        """Lista las categorías disponibles en el compendio SQLite (monstruos, conjuros, equipo) y OKF (clases, especies, reglas) con su conteo por idioma."""
         target_lang = "en" if (lang or "").lower().startswith("en") else "es"
         
-        # Conteo SQLite
+        # Conteo SQLite canónico
         sql_monsters = self._db.count_compendium_entries("monsters", language=target_lang)
         sql_spells = self._db.count_compendium_entries("spells", language=target_lang)
         sql_items = self._db.count_compendium_entries("items", language=target_lang)
-
-        # Conteo OKF
-        okf_spells = self._okf.count_entities("conjuro", lang=target_lang)
-        okf_items = self._okf.count_entities("equipo", lang=target_lang)
-
-        spells_count = sql_spells if sql_spells > 0 else okf_spells
-        items_count = sql_items if sql_items > 0 else okf_items
 
         if target_lang == "en":
             return [
                 {"id": "clases", "label": "Classes & Subclasses", "count": self._okf.count_entities(["clase", "subclase"], lang=target_lang)},
                 {"id": "especies_y_linajes", "label": "Species & Lineages", "count": self._okf.count_entities(["especie", "linaje"], lang=target_lang)},
-                {"id": "conjuros", "label": "Spell Grimoire", "count": spells_count},
+                {"id": "conjuros", "label": "Spell Grimoire", "count": sql_spells},
                 {"id": "monstruos", "label": "Monsters & Bestiary", "count": sql_monsters},
                 {"id": "trasfondos", "label": "Backgrounds", "count": self._okf.count_entities("trasfondo", lang=target_lang)},
                 {"id": "dotes", "label": "Character Feats", "count": self._okf.count_entities("dote", lang=target_lang)},
-                {"id": "equipo_y_armamento", "label": "Equipment & Weapons", "count": items_count},
+                {"id": "equipo_y_armamento", "label": "Equipment & Weapons", "count": sql_items},
                 {"id": "reglas_y_mecanicas", "label": "Rules & Mechanics", "count": self._okf.count_entities("regla", lang=target_lang)},
             ]
         return [
             {"id": "clases", "label": "Clases y Subclases", "count": self._okf.count_entities(["clase", "subclase"], lang=target_lang)},
             {"id": "especies_y_linajes", "label": "Especies y Linajes", "count": self._okf.count_entities(["especie", "linaje"], lang=target_lang)},
-            {"id": "conjuros", "label": "Grimorio de Conjuros", "count": spells_count},
+            {"id": "conjuros", "label": "Grimorio de Conjuros", "count": sql_spells},
             {"id": "monstruos", "label": "Monstruos y Bestiario", "count": sql_monsters},
             {"id": "trasfondos", "label": "Trasfondos", "count": self._okf.count_entities("trasfondo", lang=target_lang)},
             {"id": "dotes", "label": "Dotes de Personaje", "count": self._okf.count_entities("dote", lang=target_lang)},
-            {"id": "equipo_y_armamento", "label": "Equipo y Armamento", "count": items_count},
+            {"id": "equipo_y_armamento", "label": "Equipo y Armamento", "count": sql_items},
             {"id": "reglas_y_mecanicas", "label": "Reglas y Mecánicas", "count": self._okf.count_entities("regla", lang=target_lang)},
         ]
 
+    def _format_monster_entry(self, m: Dict[str, Any], entry_name: str) -> Dict[str, Any]:
+        """Formatea un registro de monstruo de SQLite en una entrada estructurada de compendio con markdown."""
+        cr_str = m.get("cr_text", "0")
+        md_content = f"### {m.get('name')}\n\n*{m.get('size', '')} {m.get('monster_type', '')}, {m.get('alignment', '')}*\n\n"
+        md_content += f"- **Clase de Armadura:** {m.get('ac')}\n"
+        md_content += f"- **Puntos de Golpe:** {m.get('hp_avg')} ({m.get('hp_formula', '')})\n"
+        md_content += f"- **Velocidad:** {m.get('speed')}\n"
+        md_content += f"- **Desafío (CR):** {cr_str}\n"
+        details = m.get("details", {})
+        if isinstance(details, dict):
+            if "str" in details or "fuerza" in details:
+                md_content += f"\n| FUE | DES | CON | INT | SAB | CAR |\n| :---: | :---: | :---: | :---: | :---: | :---: |\n"
+                md_content += f"| {details.get('str', 10)} | {details.get('dex', 10)} | {details.get('con', 10)} | {details.get('int', 10)} | {details.get('wis', 10)} | {details.get('cha', 10)} |\n\n"
+            traits = details.get("trait") or details.get("special_abilities") or []
+            if traits:
+                md_content += "#### Rasgos\n"
+                for t in traits:
+                    if isinstance(t, dict):
+                        md_content += f"**{t.get('name')}:** {t.get('desc', t.get('entries', ''))}\n\n"
+            actions = details.get("action") or details.get("actions") or []
+            if actions:
+                md_content += "#### Acciones\n"
+                for a in actions:
+                    if isinstance(a, dict):
+                        md_content += f"**{a.get('name')}:** {a.get('desc', a.get('entries', ''))}\n\n"
+        return {
+            "id": m.get("entity_id", ""),
+            "name": m.get("name", entry_name),
+            "category": "monstruos",
+            "content": md_content,
+            "metadata": m,
+        }
+
+    def _format_spell_entry(self, s: Dict[str, Any], entry_name: str) -> Dict[str, Any]:
+        """Formatea un conjuro de SQLite en una entrada estructurada de compendio con markdown."""
+        md_content = f"### {s.get('name')}\n\n*{s.get('school')} • Nivel {s.get('level')}*\n\n"
+        md_content += f"- **Tiempo de Lanzamiento:** {s.get('casting_time')}\n"
+        md_content += f"- **Alcance / Área:** {s.get('range_area')}\n"
+        md_content += f"- **Componentes:** {s.get('components')}\n"
+        md_content += f"- **Duración:** {s.get('duration')}\n\n"
+        md_content += s.get("description", "")
+        return {
+            "id": s.get("entity_id", ""),
+            "name": s.get("name", entry_name),
+            "category": "conjuros",
+            "content": md_content,
+            "metadata": s,
+        }
+
+    def _format_item_entry(self, it: Dict[str, Any], entry_name: str) -> Dict[str, Any]:
+        """Formatea un objeto/arma/armadura de SQLite en una entrada estructurada de compendio con markdown."""
+        md_content = f"### {it.get('name')}\n\n*{it.get('item_type')} • {it.get('rarity')}*\n\n"
+        if it.get("weapon_mastery"):
+            md_content += f"- **Weapon Mastery (2024):** {it.get('weapon_mastery')}\n"
+        if it.get("damage"):
+            md_content += f"- **Daño:** {it.get('damage')} ({it.get('damage_type', '')})\n"
+        if it.get("cost"):
+            md_content += f"- **Precio:** {it.get('cost')}\n"
+        if it.get("weight"):
+            md_content += f"- **Peso:** {it.get('weight')}\n\n"
+        md_content += it.get("description", "")
+        return {
+            "id": it.get("entity_id", ""),
+            "name": it.get("name", entry_name),
+            "category": "equipo_y_armamento",
+            "content": md_content,
+            "metadata": it,
+        }
+
     def search_compendium(self, query: str = "", category: Optional[str] = None, lang: str = "es") -> List[Dict[str, Any]]:
-        """Búsqueda de texto o listado por categoría en el compendio OKF según idioma."""
+        """Búsqueda de texto o listado por categoría en el compendio SQLite (monstruos, conjuros, equipo) y OKF (clases, especies, reglas, etc.)."""
         query_clean = (query or "").strip()
         target_lang = "en" if (lang or "").lower().startswith("en") else "es"
 
+        # Categoría Monstruos (SQLite)
         if category == "monstruos":
             monsters = self._db.search_compendium_monsters(query=query_clean, language=target_lang, limit=150)
             return [
@@ -1179,17 +1242,47 @@ class CharacterBridgeMixin:
                 for m in monsters
             ]
 
+        # Categoría Conjuros (SQLite)
+        if category == "conjuros":
+            spells = self._db.search_compendium_spells(query=query_clean, language=target_lang, limit=150)
+            lvl_lbl = "Level" if target_lang == "en" else "Nivel"
+            return [
+                {
+                    "id": s.get("entity_id", ""),
+                    "name": s.get("name", ""),
+                    "category": "conjuros",
+                    "snippet": f"{lvl_lbl} {s.get('level', 0)} • {s.get('school', '')} • {s.get('casting_time', '')}",
+                    "path": "sqlite:compendium_spells",
+                }
+                for s in spells
+            ]
+
+        # Categoría Equipo y Armamento (SQLite)
+        if category in ("equipo_y_armamento", "equipo", "items"):
+            items = self._db.search_compendium_items(query=query_clean, language=target_lang, limit=150)
+            return [
+                {
+                    "id": it.get("entity_id", ""),
+                    "name": it.get("name", ""),
+                    "category": "equipo_y_armamento",
+                    "snippet": f"{it.get('item_type', '')} • {it.get('rarity', '')}" + (f" • {it.get('weapon_mastery')}" if it.get("weapon_mastery") else ""),
+                    "path": "sqlite:compendium_items",
+                }
+                for it in items
+            ]
+
+        # Categorías OKF (clases, especies, trasfondos, dotes, reglas)
         category_type_map = {
             "clases": ["clase", "subclase"],
             "especies_y_linajes": ["especie", "linaje", "especie_linaje"],
-            "conjuros": "conjuro",
             "trasfondos": "trasfondo",
             "dotes": "dote",
-            "equipo_y_armamento": "equipo",
             "reglas_y_mecanicas": "regla",
         }
 
-        tipo_filter = category_type_map.get(category) if category else None
+        tipo_filter = category_type_map.get(category) if category else [
+            "clase", "subclase", "especie", "linaje", "especie_linaje", "trasfondo", "dote", "regla"
+        ]
         entities = self._okf.search_entities(query=query_clean, tipo=tipo_filter, limit=150, lang=target_lang)
 
         results = []
@@ -1215,8 +1308,9 @@ class CharacterBridgeMixin:
                 "path": item.get("path", ""),
             })
 
+        # Búsqueda global agregada (sin categoría): sumar muestras de SQLite
         if not category and query_clean:
-            monsters = self._db.search_compendium_monsters(query=query_clean, language=target_lang, limit=25)
+            monsters = self._db.search_compendium_monsters(query=query_clean, language=target_lang, limit=20)
             for m in monsters:
                 results.append({
                     "id": m.get("entity_id", ""),
@@ -1225,13 +1319,53 @@ class CharacterBridgeMixin:
                     "snippet": f"{m.get('size', '')} {m.get('monster_type', '')} • CR {m.get('cr_text', '0')} • CA {m.get('ac', 10)} • PG {m.get('hp_avg', 10)}",
                     "path": "sqlite:compendium_monsters",
                 })
+            spells = self._db.search_compendium_spells(query=query_clean, language=target_lang, limit=20)
+            lvl_lbl = "Level" if target_lang == "en" else "Nivel"
+            for s in spells:
+                results.append({
+                    "id": s.get("entity_id", ""),
+                    "name": s.get("name", ""),
+                    "category": "conjuros",
+                    "snippet": f"{lvl_lbl} {s.get('level', 0)} • {s.get('school', '')} • {s.get('casting_time', '')}",
+                    "path": "sqlite:compendium_spells",
+                })
+            items = self._db.search_compendium_items(query=query_clean, language=target_lang, limit=20)
+            for it in items:
+                results.append({
+                    "id": it.get("entity_id", ""),
+                    "name": it.get("name", ""),
+                    "category": "equipo_y_armamento",
+                    "snippet": f"{it.get('item_type', '')} • {it.get('rarity', '')}" + (f" • {it.get('weapon_mastery')}" if it.get("weapon_mastery") else ""),
+                    "path": "sqlite:compendium_items",
+                })
 
         return results
 
     def get_compendium_entry(self, category: str, entry_name: str, lang: str = "es") -> Optional[Dict[str, Any]]:
-        """Obtiene una entrada completa del compendio OKF con su markdown en el idioma solicitado."""
+        """Obtiene una entrada completa del compendio desde SQLite (monstruos, conjuros, equipo) u OKF (reglas, clases, etc.) con formato markdown."""
         target_lang = "en" if (lang or "").lower().startswith("en") else "es"
         query_id = entry_name.strip()
+
+        # Rutas canónicas directas para tablas SQLite
+        if category == "monstruos":
+            m = self._db.get_compendium_monster_by_id(query_id)
+            if m:
+                return self._format_monster_entry(m, entry_name)
+            return None
+
+        if category == "conjuros":
+            s = self._db.get_compendium_spell_by_id(query_id)
+            if s:
+                return self._format_spell_entry(s, entry_name)
+            return None
+
+        if category in ("equipo_y_armamento", "equipo", "items"):
+            it = self._db.get_compendium_item_by_id(query_id)
+            if it:
+                return self._format_item_entry(it, entry_name)
+            return None
+
+        # Para categorías OKF (clases, trasfondos, dotes, especies, reglas)
         clean = query_id.lower()
         clean_slug = clean.replace(" ", "_")
         clean_en = f"{clean_slug}_en"
@@ -1264,76 +1398,16 @@ class CharacterBridgeMixin:
             )
 
         if not matched:
-            # Fallback a compendio SQLite (monstruos, conjuros, equipo)
+            # Fallback de seguridad cruzado a compendio SQLite
             m = self._db.get_compendium_monster_by_id(query_id)
             if m:
-                cr_str = m.get("cr_text", "0")
-                md_content = f"### {m.get('name')}\n\n*{m.get('size', '')} {m.get('monster_type', '')}, {m.get('alignment', '')}*\n\n"
-                md_content += f"- **Clase de Armadura:** {m.get('ac')}\n"
-                md_content += f"- **Puntos de Golpe:** {m.get('hp_avg')} ({m.get('hp_formula', '')})\n"
-                md_content += f"- **Velocidad:** {m.get('speed')}\n"
-                md_content += f"- **Desafío (CR):** {cr_str}\n"
-                details = m.get("details", {})
-                if isinstance(details, dict):
-                    if "str" in details or "fuerza" in details:
-                        md_content += f"\n| FUE | DES | CON | INT | SAB | CAR |\n| :---: | :---: | :---: | :---: | :---: | :---: |\n"
-                        md_content += f"| {details.get('str', 10)} | {details.get('dex', 10)} | {details.get('con', 10)} | {details.get('int', 10)} | {details.get('wis', 10)} | {details.get('cha', 10)} |\n\n"
-                    traits = details.get("trait") or details.get("special_abilities") or []
-                    if traits:
-                        md_content += "#### Rasgos\n"
-                        for t in traits:
-                            if isinstance(t, dict):
-                                md_content += f"**{t.get('name')}:** {t.get('desc', t.get('entries', ''))}\n\n"
-                    actions = details.get("action") or details.get("actions") or []
-                    if actions:
-                        md_content += "#### Acciones\n"
-                        for a in actions:
-                            if isinstance(a, dict):
-                                md_content += f"**{a.get('name')}:** {a.get('desc', a.get('entries', ''))}\n\n"
-                return {
-                    "id": m.get("entity_id", ""),
-                    "name": m.get("name", entry_name),
-                    "category": "monstruos",
-                    "content": md_content,
-                    "metadata": m,
-                }
-
+                return self._format_monster_entry(m, entry_name)
             s = self._db.get_compendium_spell_by_id(query_id)
             if s:
-                md_content = f"### {s.get('name')}\n\n*{s.get('school')} • Nivel {s.get('level')}*\n\n"
-                md_content += f"- **Tiempo de Lanzamiento:** {s.get('casting_time')}\n"
-                md_content += f"- **Alcance / Área:** {s.get('range_area')}\n"
-                md_content += f"- **Componentes:** {s.get('components')}\n"
-                md_content += f"- **Duración:** {s.get('duration')}\n\n"
-                md_content += s.get("description", "")
-                return {
-                    "id": s.get("entity_id", ""),
-                    "name": s.get("name", entry_name),
-                    "category": "conjuros",
-                    "content": md_content,
-                    "metadata": s,
-                }
-
+                return self._format_spell_entry(s, entry_name)
             it = self._db.get_compendium_item_by_id(query_id)
             if it:
-                md_content = f"### {it.get('name')}\n\n*{it.get('item_type')} • {it.get('rarity')}*\n\n"
-                if it.get("weapon_mastery"):
-                    md_content += f"- **Weapon Mastery (2024):** {it.get('weapon_mastery')}\n"
-                if it.get("damage"):
-                    md_content += f"- **Daño:** {it.get('damage')} ({it.get('damage_type', '')})\n"
-                if it.get("cost"):
-                    md_content += f"- **Precio:** {it.get('cost')}\n"
-                if it.get("weight"):
-                    md_content += f"- **Peso:** {it.get('weight')}\n\n"
-                md_content += it.get("description", "")
-                return {
-                    "id": it.get("entity_id", ""),
-                    "name": it.get("name", entry_name),
-                    "category": "equipo_y_armamento",
-                    "content": md_content,
-                    "metadata": it,
-                }
-
+                return self._format_item_entry(it, entry_name)
             return None
 
         rel_path = matched.get("path")
