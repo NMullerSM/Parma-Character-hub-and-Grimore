@@ -708,7 +708,6 @@ export const es = {
       subtitleWelcome: "Tu suite definitiva de escritorio para jugadores y Directores de Juego de D&D 5e y Reglas 2024.",
       stepLabel: "Paso",
       sectionGuide: "Guía de Sección",
-      btnSkip: "Saltar tutorial",
       btnSkipAll: "Saltar todo el onboarding",
       btnSkipSection: "Saltar esta sección",
       btnNext: "Siguiente",

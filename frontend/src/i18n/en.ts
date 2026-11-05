@@ -710,7 +710,6 @@ export const en: Translations = {
       subtitleWelcome: "Your definitive desktop suite for D&D 5e and 2024 Rules players and Dungeon Masters.",
       stepLabel: "Step",
       sectionGuide: "Section Guide",
-      btnSkip: "Skip tour",
       btnSkipAll: "Skip entire onboarding",
       btnSkipSection: "Skip this section",
       btnNext: "Next",

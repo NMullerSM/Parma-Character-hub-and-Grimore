@@ -521,7 +521,6 @@ export const AppContent: React.FC = () => {
       {/* 8. Tarjeta de Novedades de la Versión (What's New) al Actualizar */}
       {isWhatsNewOpen && (
         <OnboardingModal
-          mode="whats_new"
           version={APP_VERSION}
           onClose={handleCloseWhatsNew}
         />
