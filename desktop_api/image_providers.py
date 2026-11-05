@@ -110,7 +110,7 @@ class AIHordeProvider(BaseImageProvider):
         headers = {
             "Content-Type": "application/json",
             "apikey": self.API_KEY,
-            "Client-Agent": "Parma:1.0.4:github.com/NMullerSM/Parma",
+            "Client-Agent": "Parma:1.0.5:github.com/NMullerSM/Parma",
         }
 
         try:
