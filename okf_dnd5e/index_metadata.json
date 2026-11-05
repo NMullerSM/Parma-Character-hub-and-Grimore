@@ -20332,7 +20332,7 @@
         "Brujo",
         "Mago"
       ],
-      "fuente": "PHB 2024",
+      "fuente": "Caldero de Tasha para Todo",
       "tags": [
         "conjuración",
         "nivel_6",
@@ -20363,7 +20363,7 @@
         "Warlock",
         "Wizard"
       ],
-      "fuente": "PHB 2024",
+      "fuente": "Caldero de Tasha para Todo",
       "tags": [
         "english",
         "en",
@@ -20371,10 +20371,11 @@
       ],
       "path": "conjuros/nivel_6/caldero_burbujeante_de_tasha_en.md",
       "tiempo_lanzamiento": "1 action",
-      "alcance": "1,5 m",
+      "alcance": "5 feet",
       "duracion": "10 minutes",
       "concentracion": false,
-      "ritual": false
+      "ritual": false,
+      "componentes": "V, S, M (a gilded ladle worth at least 500 gp)"
     },
     {
       "id": "circulo_de_muerte",
