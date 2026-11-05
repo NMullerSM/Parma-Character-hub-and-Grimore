@@ -6,7 +6,7 @@
 ![CI/CD Develop](https://img.shields.io/github/actions/workflow/status/NMullerSM/Parma-Character-hub-and-Grimore/build-and-release.yml?branch=develop&label=CI%2FCD%20develop&style=for-the-badge)
 ![Platforms](https://img.shields.io/badge/Plataformas-Windows%20%7C%20Linux-blue?style=for-the-badge&logo=linux&logoColor=white)
 [![GitHub release](https://img.shields.io/github/v/release/NMullerSM/Parma-Character-hub-and-Grimore?style=for-the-badge&color=gold&label=%C3%9Altima%20Versi%C3%B3n)](https://github.com/NMullerSM/Parma-Character-hub-and-Grimore/releases/latest)
-![Frontend](https://img.shields.io/badge/Frontend-React%2018%20%2B%20Vite%208-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Frontend](https://img.shields.io/badge/Frontend-React%2019%20%2B%20Vite%208-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![Backend](https://img.shields.io/badge/Backend-Python%203.12%20%2B%20PyWebView-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Database](https://img.shields.io/badge/Base%20de%20Datos-SQLite%20ACID-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
 ![TaleSpire](https://img.shields.io/badge/Integraci%C3%B3n-TaleSpire%203D%20Symbiote-8A2BE2?style=for-the-badge)
@@ -136,7 +136,7 @@ Para consultar las decisiones de diseño, contratos de datos y especificaciones 
 
 * 🧭 **[docs/PARMA_MASTER_CONTEXT_AND_ARCHITECTURE.md](docs/PARMA_MASTER_CONTEXT_AND_ARCHITECTURE.md)** — **Documento Maestro Integral**: Origen, alcance, arquitectura de código, APIs, conectores, requisitos (RF/RNF), ADRs y hoja de ruta a futuro.
 * 🏛️ **[docs/BACKEND.md](docs/BACKEND.md)** — Arquitectura Python, SQLite, compendio OKF, puente TaleSpire y servidor de sesiones.
-* 🎨 **[docs/FRONTEND.md](docs/FRONTEND.md)** — Arquitectura React 18, Vite 8, Tailwind v4, Contexto y contratos de tipado estricto.
+* 🎨 **[docs/FRONTEND.md](docs/FRONTEND.md)** — Arquitectura React 19, Vite 8, Tailwind v4, Contexto y contratos de tipado estricto.
 * 🚀 **[docs/CICD.md](docs/CICD.md)** — Flujo GitHub Actions, empaquetado Inno Setup / Debian y catálogo de problemas resueltos.
 * 📋 **[docs/ADR.md](docs/ADR.md)** — Registros de Decisiones de Arquitectura (Architecture Decision Records) de Parma (ADR-001 a ADR-012).
 
