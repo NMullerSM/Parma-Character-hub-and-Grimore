@@ -45,6 +45,7 @@ from core.rules import (
     perform_long_rest,
     compute_dynamic_features,
     get_class_progression_limits,
+    CLASS_NAMES_EN_TO_ES,
 )
 from core.srd_importer import SrdImporter
 
@@ -744,8 +745,43 @@ class CharacterBridgeMixin:
             "all_skills": all_skill_names,
         }
 
+    def _spell_row_to_dict(self, row: Dict[str, Any], lang: str = "es") -> Dict[str, Any]:
+        """Convierte una fila de compendium_spells (SQLite) al formato de salida de conjuros del frontend."""
+        classes_list = [c.strip() for c in str(row.get("classes") or "").split(",") if c.strip()]
+        # Reusa el formateo de casillas/turnos ya validado en OkfEngine (son @staticmethod, sin estado propio).
+        range_fmt = self._okf._format_range_with_tiles(row.get("range_area", "18 m"), lang=lang)
+        duration_fmt = self._okf._format_duration_with_turns(row.get("duration", "Instantáneo"), lang=lang)
+        return {
+            "id": row.get("entity_id"),
+            "name": row.get("name", ""),
+            "name_en": row.get("name_en", row.get("name", "")),
+            "level": int(row.get("level", 0)),
+            "school": row.get("school", "Evocación"),
+            "cast_time": row.get("casting_time", "1 acción"),
+            "casting_time": row.get("casting_time", "1 acción"),
+            "range_area": range_fmt,
+            "range": range_fmt,
+            "components": row.get("components", "V, S"),
+            "duration": duration_fmt,
+            "concentration": bool(row.get("is_concentration", 0)),
+            "ritual": bool(row.get("is_ritual", 0)),
+            "classes": classes_list,
+            "prepared": True,
+            "notes": row.get("description", ""),
+            "description": row.get("description", ""),
+            "source": row.get("source", ""),
+        }
+
     def get_class_spells(self, class_name: str, max_level: int = 1, lang: str = "es") -> List[Dict[str, Any]]:
-        """Obtiene los trucos y conjuros disponibles para una clase desde OkfEngine con soporte multilingüe."""
+        """Obtiene los trucos y conjuros disponibles para una clase desde SQLite con fallback a OkfEngine."""
+        c_raw = (class_name or "").strip()
+        c_clean = CLASS_NAMES_EN_TO_ES.get(c_raw.lower(), c_raw)
+        ed = self._db.get_setting("dnd_edition", "5.5e")
+        rows = self._db.search_compendium_spells(class_name=c_clean, max_level=max_level, language=lang, edition=ed, limit=200)
+        if rows:
+            return [self._spell_row_to_dict(r, lang=lang) for r in rows]
+
+        # Fallback a OKF si la tabla no tiene datos para esta combinación (no debería pasar en la práctica)
         items = self._okf.get_spells_for_class(class_name, max_spell_level=max_level, min_spell_level=0, lang=lang)
         return [
             {
@@ -789,15 +825,24 @@ class CharacterBridgeMixin:
         limit: int = 150,
         lang: str = "es"
     ) -> List[Dict[str, Any]]:
-        """Busca conjuros enriquecidos en OKF con filtros combinados y soporte multilingüe."""
+        """Busca conjuros enriquecidos en SQLite (compendium_spells) con fallback a OkfEngine."""
+        c_clean = None
+        if class_name:
+            c_raw = class_name.strip()
+            c_clean = CLASS_NAMES_EN_TO_ES.get(c_raw.lower(), c_raw)
+        ed = self._db.get_setting("dnd_edition", "5.5e")
+
+        rows = self._db.search_compendium_spells(
+            query=query, class_name=c_clean, level=level, max_level=max_level,
+            school=school, language=lang, edition=ed, limit=limit
+        )
+        if rows:
+            return [self._spell_row_to_dict(r, lang=lang) for r in rows]
+
+        # Fallback a OKF si la tabla no tiene datos para esta combinación
         return self._okf.search_available_spells(
-            query=query,
-            class_name=class_name,
-            level=level,
-            max_level=max_level,
-            school=school,
-            limit=limit,
-            lang=lang
+            query=query, class_name=class_name, level=level, max_level=max_level,
+            school=school, limit=limit, lang=lang
         )
 
     def add_spell_to_character(self, char_id: int, spell_data: Dict[str, Any]) -> Dict[str, Any]:
