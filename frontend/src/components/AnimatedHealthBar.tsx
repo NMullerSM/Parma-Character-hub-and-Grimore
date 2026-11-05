@@ -87,24 +87,24 @@ export const AnimatedHealthBar: React.FC<AnimatedHealthBarProps> = ({
           }}
         />
 
-        {/* 2. Barra Activa de Salud Actual (Con efecto Verde de Curación o Rojo de Daño) */}
+        {/* 2. Barra Activa de Salud Actual (Con efecto Verde de Curación o Rojo de Daño suavizados) */}
         <div
           className={`absolute left-0 top-0 h-full rounded-full transition-all duration-200 ease-out ${
             isHealing
-              ? "bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.85)] brightness-110"
+              ? "bg-emerald-600/90 shadow-sm"
               : isDying
-              ? "bg-crimson/50"
+              ? "bg-rose-900/60"
               : isBloodied
-              ? "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]"
-              : "bg-crimson shadow-[0_0_6px_rgba(239,68,68,0.4)]"
+              ? "bg-amber-600/90 shadow-sm"
+              : "bg-rose-600/90 shadow-sm"
           }`}
           style={{ width: `${currentPct}%` }}
         />
 
-        {/* 3. Segmento de Puntos de Golpe Temporales (Dorado) */}
+        {/* 3. Segmento de Puntos de Golpe Temporales / Escudo (Plateado / Slate) */}
         {tempPct > 0 && (
           <div
-            className="absolute top-0 h-full bg-gold/90 border-l border-surface/80 rounded-r-full shadow-xs transition-all duration-300"
+            className="absolute top-0 h-full bg-slate-300 dark:bg-slate-300/90 border-l border-surface/80 rounded-r-full shadow-xs transition-all duration-300"
             style={{
               left: `${currentPct}%`,
               width: `${Math.min(100 - currentPct, tempPct)}%`,
@@ -118,13 +118,13 @@ export const AnimatedHealthBar: React.FC<AnimatedHealthBarProps> = ({
       {showText && (
         <div className="flex items-center justify-between text-[11px] font-stat font-semibold text-muted mt-1 px-0.5">
           <span className="flex items-center gap-1">
-            <span className={isDying ? "text-crimson font-bold animate-pulse" : isBloodied ? "text-amber-400" : "text-main"}>
+            <span className={isDying ? "text-rose-500 font-bold animate-pulse" : isBloodied ? "text-amber-400" : "text-main"}>
               {currentHp}
             </span>
             <span className="text-muted/70">/ {maxHp} HP</span>
           </span>
           {tempHp > 0 && (
-            <span className="text-gold font-bold bg-gold/10 px-1.5 py-0.2 rounded border border-gold/30 text-[10px]">
+            <span className="text-slate-200 font-bold bg-slate-400/20 px-1.5 py-0.2 rounded border border-slate-400/40 text-[10px]">
               +{tempHp} Temp
             </span>
           )}

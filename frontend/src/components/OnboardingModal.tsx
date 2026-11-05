@@ -11,7 +11,8 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
   version,
   onClose,
 }) => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
+  const isEn = language === "en";
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -66,9 +67,13 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
               <BellRing className="w-4 h-4" />
             </div>
             <div className="space-y-0.5 text-xs">
-              <div className="font-bold text-main">Notificador de Actualizaciones en GitHub</div>
+              <div className="font-bold text-main">
+                {isEn ? "GitHub Update Notifications" : "Notificador de Actualizaciones en GitHub"}
+              </div>
               <div className="text-muted leading-relaxed">
-                Aviso discreto en la esquina inferior izquierda cuando se publique una nueva versión, con descarga directa para Windows y Linux.
+                {isEn
+                  ? "Unobtrusive notifications in the lower corner when a new release is available, with direct download for Windows and Linux."
+                  : "Aviso discreto en la esquina inferior izquierda cuando se publique una nueva versión, con descarga directa para Windows y Linux."}
               </div>
             </div>
           </div>
@@ -78,9 +83,13 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
               <Layers className="w-4 h-4" />
             </div>
             <div className="space-y-0.5 text-xs">
-              <div className="font-bold text-main">Onboarding Inteligente por Versión</div>
+              <div className="font-bold text-main">
+                {isEn ? "Smart Version Onboarding" : "Onboarding Inteligente por Versión"}
+              </div>
               <div className="text-muted leading-relaxed">
-                Tutorial guiado interactivo para jugadores nuevos y resumen selectivo de novedades tras cada actualización.
+                {isEn
+                  ? "Interactive guided tour for new players and curated highlights overview after each update."
+                  : "Tutorial guiado interactivo para jugadores nuevos y resumen selectivo de novedades tras cada actualización."}
               </div>
             </div>
           </div>
@@ -90,9 +99,13 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
               <Flame className="w-4 h-4" />
             </div>
             <div className="space-y-0.5 text-xs">
-              <div className="font-bold text-main">Estabilidad Multiplataforma</div>
+              <div className="font-bold text-main">
+                {isEn ? "Cross-Platform Stability" : "Estabilidad Multiplataforma"}
+              </div>
               <div className="text-muted leading-relaxed">
-                Soporte Inno Setup oficial para Windows (.exe), paquetes nativos Debian (.deb) y portables con persistencia SQLite asegurada.
+                {isEn
+                  ? "Official Windows installer (.exe), Debian native packages (.deb), and portable builds with guaranteed SQLite persistence."
+                  : "Soporte Inno Setup oficial para Windows (.exe), paquetes nativos Debian (.deb) y portables con persistencia SQLite asegurada."}
               </div>
             </div>
           </div>

@@ -16,7 +16,8 @@ export const UpdateNotificationPill: React.FC<UpdateNotificationPillProps> = ({
   onDismiss,
   progress,
 }) => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
+  const isEn = language === "en";
 
   const isDownloading = progress?.status === "downloading";
   const isReady = progress?.status === "ready_to_restart";
@@ -44,10 +45,10 @@ export const UpdateNotificationPill: React.FC<UpdateNotificationPillProps> = ({
 
         <span className="font-semibold text-main tracking-tight">
           {isReady
-            ? "¡Actualización lista!"
+            ? (isEn ? "Update ready!" : "¡Actualización lista!")
             : isDownloading
-            ? `Descargando... ${progress.percent}%`
-            : t("updates.newVersionAvailable", "¡Nueva versión!")}
+            ? (isEn ? `Downloading... ${progress.percent}%` : `Descargando... ${progress.percent}%`)
+            : (isEn ? "New version available!" : t("updates.newVersionAvailable", "¡Nueva versión!"))}
         </span>
 
         <span
@@ -71,15 +72,19 @@ export const UpdateNotificationPill: React.FC<UpdateNotificationPillProps> = ({
               : "bg-gold hover:bg-gold-hover text-canvas"
           }`}
         >
-          {isReady ? "Reiniciar" : isDownloading ? "Ver progreso" : t("updates.updateBtn", "Actualizar")}
+          {isReady
+            ? (isEn ? "Restart" : "Reiniciar")
+            : isDownloading
+            ? (isEn ? "View progress" : "Ver progreso")
+            : (isEn ? "Update" : t("updates.updateBtn", "Actualizar"))}
         </button>
 
         {!isDownloading && !isReady && (
           <button
             type="button"
             onClick={onDismiss}
-            title={t("updates.dismiss", "Descartar")}
-            aria-label={t("updates.dismiss", "Descartar")}
+            title={isEn ? "Dismiss" : t("updates.dismiss", "Descartar")}
+            aria-label={isEn ? "Dismiss" : t("updates.dismiss", "Descartar")}
             className="p-1 rounded-lg text-muted hover:text-main hover:bg-surface/80 active:scale-90 transition-all cursor-pointer"
           >
             <X className="w-3.5 h-3.5" />

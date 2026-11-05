@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useCharacter } from "../context/CharacterContext";
 import { useTranslation } from "../i18n";
-import { Download, Upload, Sparkles, Wand2, User, X, Trash2 } from "lucide-react";
+import { Download, Upload, Sparkles, Wand2, User, X, Trash2, Shield, Plus } from "lucide-react";
 import { api } from "../api/client";
 import { FeatureDetailModal } from "../components/FeatureDetailModal";
 import { AiPortraitModal } from "../components/AiPortraitModal";
 import { AnimatedHealthBar } from "../components/AnimatedHealthBar";
+import { EquipmentManagerModal } from "../components/EquipmentManagerModal";
 import type { FeatureItemData } from "../api/types";
 import { formatRangeWithTiles } from "../utils/formatters";
 
@@ -20,8 +21,12 @@ export const SheetView: React.FC<SheetViewProps> = ({ onNavigateForge }) => {
     saveCurrentCharacter,
     openDiceDrawer,
     showToast,
+    addItem,
+    removeItem,
     language,
   } = useCharacter();
+
+  const [isEquipmentModalOpen, setIsEquipmentModalOpen] = useState(false);
 
   const {
     t,
@@ -111,8 +116,26 @@ export const SheetView: React.FC<SheetViewProps> = ({ onNavigateForge }) => {
   } = activeCharacter;
 
   const handleHpChange = (delta: number) => {
-    const nextHp = Math.max(0, Math.min(hp_max + 50, hp_current + delta));
+    if (delta < 0 && (hp_temp || 0) > 0) {
+      const dmg = Math.abs(delta);
+      const currentTemp = hp_temp || 0;
+      if (currentTemp >= dmg) {
+        updateActiveCharacter({ hp_temp: currentTemp - dmg });
+        return;
+      } else {
+        const leftover = dmg - currentTemp;
+        const nextHp = Math.max(0, hp_current - leftover);
+        updateActiveCharacter({ hp_temp: 0, hp_current: nextHp });
+        return;
+      }
+    }
+    const nextHp = delta > 0 ? Math.min(hp_max, hp_current + delta) : Math.max(0, hp_current + delta);
     updateActiveCharacter({ hp_current: nextHp });
+  };
+
+  const handleTempHpDelta = (amount: number) => {
+    const nextTemp = Math.max(0, (hp_temp || 0) + amount);
+    updateActiveCharacter({ hp_temp: nextTemp });
   };
 
   const handleUploadPortrait = async () => {
@@ -333,22 +356,31 @@ export const SheetView: React.FC<SheetViewProps> = ({ onNavigateForge }) => {
         <div className="col-span-2 bg-card border border-border-iron rounded-lg p-3 flex flex-col justify-between">
           <div className="flex items-center justify-between text-xs text-muted font-semibold uppercase tracking-wider">
             <span>{t("sheet.hp")}</span>
-            <span>{hp_max} {t("sheet.hpMax")}</span>
+            <div className="flex items-center gap-2">
+              {hp_temp > 0 && (
+                <span className="text-[10px] text-slate-200 font-bold bg-slate-400/20 px-1.5 py-0.5 rounded border border-slate-400/40">
+                  +{hp_temp} {language === "en" ? "Shield" : "Escudo"}
+                </span>
+              )}
+              <span>{hp_max} {t("sheet.hpMax")}</span>
+            </div>
           </div>
           <div className="flex items-center justify-between my-2">
             <button
               onClick={() => handleHpChange(-1)}
-              className="w-8 h-8 rounded border border-border-iron hover:border-crimson text-crimson font-stat font-bold text-lg flex items-center justify-center bg-surface"
+              className="w-8 h-8 rounded border border-border-iron hover:border-rose-500 text-rose-400 font-stat font-bold text-lg flex items-center justify-center bg-surface transition-colors"
+              title={language === "en" ? "-1 HP (damage)" : "-1 PG (daño)"}
             >
               -
             </button>
             <div className="text-center">
               <span className="font-stat font-bold text-3xl text-main">{hp_current}</span>
-              {hp_temp > 0 && <span className="text-xs text-gold ml-1">+{hp_temp}</span>}
+              {hp_temp > 0 && <span className="text-xs text-slate-300 ml-1 font-semibold">+{hp_temp}</span>}
             </div>
             <button
               onClick={() => handleHpChange(1)}
-              className="w-8 h-8 rounded border border-border-iron hover:border-emerald-500 text-emerald-400 font-stat font-bold text-lg flex items-center justify-center bg-surface"
+              className="w-8 h-8 rounded border border-border-iron hover:border-emerald-500 text-emerald-400 font-stat font-bold text-lg flex items-center justify-center bg-surface transition-colors"
+              title={language === "en" ? "+1 HP (heal)" : "+1 PG (curar)"}
             >
               +
             </button>
@@ -359,6 +391,35 @@ export const SheetView: React.FC<SheetViewProps> = ({ onNavigateForge }) => {
             tempHp={hp_temp}
             heightClass="h-2"
           />
+          {/* Botones de Escudo (HP Temporal) */}
+          <div className="flex items-center justify-between gap-1.5 mt-2.5 pt-2 border-t border-border-iron/50 text-[10px]">
+            <span className="text-muted font-semibold">{language === "en" ? "Shield:" : "Escudo:"}</span>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => handleTempHpDelta(5)}
+                className="px-2 py-0.5 rounded border border-border-iron hover:border-slate-300 bg-surface text-slate-300 hover:text-white font-stat font-semibold transition-colors"
+                title={language === "en" ? "+5 Temp HP" : "+5 Puntos de Escudo"}
+              >
+                +5
+              </button>
+              <button
+                onClick={() => handleTempHpDelta(10)}
+                className="px-2 py-0.5 rounded border border-border-iron hover:border-slate-300 bg-surface text-slate-300 hover:text-white font-stat font-semibold transition-colors"
+                title={language === "en" ? "+10 Temp HP" : "+10 Puntos de Escudo"}
+              >
+                +10
+              </button>
+              {hp_temp > 0 && (
+                <button
+                  onClick={() => updateActiveCharacter({ hp_temp: 0 })}
+                  className="px-1.5 py-0.5 rounded border border-border-iron hover:border-rose-500 bg-surface text-muted hover:text-rose-400 font-stat transition-colors"
+                  title={language === "en" ? "Clear Shield" : "Quitar Escudo"}
+                >
+                  0
+                </button>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Clase de Armadura */}
@@ -451,7 +512,17 @@ export const SheetView: React.FC<SheetViewProps> = ({ onNavigateForge }) => {
         {/* Columna Izquierda: Acciones de Arma */}
         <div className="md:col-span-2 space-y-3">
           <h2 className="font-display font-semibold text-lg text-gold flex items-center justify-between">
-            <span>{t("sheet.combatActionsTitle")}</span>
+            <div className="flex items-center gap-3">
+              <span>{t("sheet.combatActionsTitle")}</span>
+              <button
+                onClick={() => setIsEquipmentModalOpen(true)}
+                className="px-2.5 py-1 rounded bg-gold/15 hover:bg-gold hover:text-canvas border border-gold/40 text-gold text-xs font-semibold flex items-center gap-1.5 transition-all shadow-xs"
+                title={language === "en" ? "Add Weapon or Armor from Compendium" : "Añadir Arma o Armadura del Compendio"}
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>{language === "en" ? "Add Equipment" : "Añadir Equipo"}</span>
+              </button>
+            </div>
             <span className="text-xs text-muted font-sans font-normal">
               {t("sheet.combatActionsHint")}
             </span>
@@ -494,6 +565,39 @@ export const SheetView: React.FC<SheetViewProps> = ({ onNavigateForge }) => {
               </div>
             )}
           </div>
+
+          {/* Inventario y Equipo Adicional (Armaduras, Pociones, Objetos Mágicos) */}
+          {activeCharacter?.equipment && activeCharacter.equipment.some((eq) => !weapon_actions.some((w) => w.name.toLowerCase() === eq.name.toLowerCase())) && (
+            <div className="pt-2">
+              <h3 className="text-xs font-semibold text-gold uppercase tracking-wider mb-2 flex items-center justify-between">
+                <span>{language === "en" ? "Equipped Armor & Gear" : "Armaduras y Equipo en Mochila"}</span>
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {activeCharacter.equipment
+                  .filter((eq) => !weapon_actions.some((w) => w.name.toLowerCase() === eq.name.toLowerCase()))
+                  .map((eq, idx) => (
+                    <div
+                      key={idx}
+                      className="bg-card border border-border-iron hover:border-gold/50 rounded-lg p-2.5 flex items-center justify-between text-xs transition-colors"
+                    >
+                      <div className="min-w-0 flex-1 pr-2">
+                        <div className="font-semibold text-main truncate">{eq.name}</div>
+                        <div className="text-[11px] text-muted truncate">
+                          {eq.item_type} {eq.cost ? `• ${eq.cost}` : ""} {eq.weight ? `• ${eq.weight}` : ""}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => removeItem(eq.name, "gear")}
+                        className="p-1 rounded text-muted hover:text-rose-400 hover:bg-rose-500/10 transition-colors shrink-0"
+                        title={language === "en" ? "Remove" : "Eliminar"}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
 
           {/* Rasgos y Dotes de Clase */}
           <h2 className="font-display font-semibold text-lg text-gold pt-2">
@@ -845,6 +949,15 @@ export const SheetView: React.FC<SheetViewProps> = ({ onNavigateForge }) => {
           updateActiveCharacter({ portrait_base64: newImg });
           showToast(t("sheet.portraitInSheetUpdated"), "success");
         }}
+      />
+
+      {/* Modal de Gestión de Equipo y Armas desde Compendio */}
+      <EquipmentManagerModal
+        isOpen={isEquipmentModalOpen}
+        onClose={() => setIsEquipmentModalOpen(false)}
+        currentEquipment={activeCharacter?.equipment || []}
+        onAddItem={addItem}
+        onRemoveItem={removeItem}
       />
     </div>
   );
