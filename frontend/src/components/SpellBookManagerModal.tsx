@@ -15,6 +15,12 @@ interface SpellBookManagerModalProps {
   characterClass: string;
   characterLevel: number;
   currentSpells: SpellItemData[];
+  spellLimits?: {
+    cantrips_max: number;
+    cantrips_current: number;
+    spells_prepared_max: number;
+    spells_prepared_current: number;
+  };
   onAddSpell: (spell: SpellItemData) => Promise<boolean>;
   onRemoveSpell: (spellName: string) => Promise<boolean>;
 }
@@ -50,6 +56,7 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
   characterClass,
   characterLevel,
   currentSpells,
+  spellLimits,
   onAddSpell,
   onRemoveSpell,
 }) => {
@@ -122,6 +129,14 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
       .map((s) => String(s.name).toLowerCase().trim())
   );
 
+  const cantripsCurrent = safeCurrentSpells.filter((s) => Number(s.level) === 0).length;
+  const preparedCurrent = safeCurrentSpells.filter((s) => Number(s.level) > 0).length;
+  const cantripsMax = spellLimits?.cantrips_max ?? 0;
+  const preparedMax = spellLimits?.spells_prepared_max ?? 0;
+
+  const isCantripLimitReached = cantripsMax > 0 && cantripsCurrent >= cantripsMax;
+  const isPreparedLimitReached = preparedMax > 0 && preparedCurrent >= preparedMax;
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-canvas/85 backdrop-blur-sm animate-fade-in"
@@ -136,9 +151,37 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
           <div className="flex items-center gap-2.5">
             <BookOpen className="w-5 h-5 text-gold" />
             <div>
-              <h2 className="font-display font-bold text-lg text-gold">
-                {t("modals.spellManager.title")}
-              </h2>
+              <div className="flex items-center gap-3">
+                <h2 className="font-display font-bold text-lg text-gold">
+                  {t("modals.spellManager.title")}
+                </h2>
+                <div className="flex items-center gap-1.5">
+                  {cantripsMax > 0 && (
+                    <span
+                      className={`text-[10px] px-2 py-0.5 rounded font-stat ${
+                        isCantripLimitReached
+                          ? "bg-crimson/20 border border-crimson/40 text-crimson font-bold"
+                          : "bg-surface border border-border-iron text-muted"
+                      }`}
+                    >
+                      {language === "en" ? "Cantrips: " : "Trucos: "}
+                      <strong className={isCantripLimitReached ? "text-crimson" : "text-gold"}>{cantripsCurrent}</strong>/{cantripsMax}
+                    </span>
+                  )}
+                  {preparedMax > 0 && (
+                    <span
+                      className={`text-[10px] px-2 py-0.5 rounded font-stat ${
+                        isPreparedLimitReached
+                          ? "bg-crimson/20 border border-crimson/40 text-crimson font-bold"
+                          : "bg-surface border border-border-iron text-muted"
+                      }`}
+                    >
+                      {language === "en" ? "Prepared: " : "Preparados: "}
+                      <strong className={isPreparedLimitReached ? "text-crimson" : "text-gold"}>{preparedCurrent}</strong>/{preparedMax}
+                    </span>
+                  )}
+                </div>
+              </div>
               <p className="text-xs text-muted">
                 {t("modals.spellManager.subtitle", {
                   count: safeCurrentSpells.length,
@@ -302,13 +345,31 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
                           </button>
                         </div>
                       ) : (
-                        <button
-                          onClick={() => onAddSpell(sp)}
-                          className="px-2.5 py-1 rounded bg-gold hover:bg-gold-hover text-canvas font-semibold text-xs flex items-center gap-1 transition-all active:scale-95 shadow-xs"
-                        >
-                          <Plus className="w-3.5 h-3.5" />
-                          <span>{t("modals.spellManager.add")}</span>
-                        </button>
+                        (() => {
+                          const isCantrip = Number(sp.level) === 0;
+                          const isBlocked = (isCantrip && isCantripLimitReached) || (!isCantrip && isPreparedLimitReached);
+                          return (
+                            <button
+                              onClick={() => !isBlocked && onAddSpell(sp)}
+                              disabled={isBlocked}
+                              className={`px-2.5 py-1 rounded font-semibold text-xs flex items-center gap-1 transition-all ${
+                                isBlocked
+                                  ? "bg-surface/50 border border-border-iron text-muted/50 cursor-not-allowed opacity-60"
+                                  : "bg-gold hover:bg-gold-hover text-canvas active:scale-95 shadow-xs"
+                              }`}
+                              title={
+                                isBlocked
+                                  ? (isCantrip
+                                      ? (language === "en" ? `Cantrip limit reached (${cantripsMax})` : `Límite de trucos alcanzado (${cantripsMax})`)
+                                      : (language === "en" ? `Prepared spell limit reached (${preparedMax})` : `Límite de preparados alcanzado (${preparedMax})`))
+                                  : t("modals.spellManager.add")
+                              }
+                            >
+                              <Plus className="w-3.5 h-3.5" />
+                              <span>{isBlocked ? (language === "en" ? "Full" : "Lleno") : t("modals.spellManager.add")}</span>
+                            </button>
+                          );
+                        })()
                       )}
                     </div>
                   </div>

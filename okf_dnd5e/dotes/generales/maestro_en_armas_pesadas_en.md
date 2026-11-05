@@ -15,19 +15,14 @@ nombre_ingles: Maestro En Armas Pesadas
 nombre_original: Maestro En Armas Pesadas
 ---
 
-# Maestro En Armas Pesadas
+# Heavy Weapon Master
 
-*Dote general (requisitos: nivel 4 o más, Fuerza 13 o más)*
+*General Feat (Prerequisite: Level 4+, Strength 13+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación 
-de Fuerza en 1, hasta un máximo de 20. 
-Maestría con armas pesadas. Cuando golpeas a una 
-criatura con un arma que tenga la propiedad “pesada” 
-como parte de la acción de atacar en tu turno, puedes 
-hacer que el arma cause daño adicional al objetivo. Este 
-daño adicional es igual a tu bonificador por competencia. 
-Avasallar. Inmediatamente después de causar un crítico 
-con un arma cuerpo a cuerpo o de reducir a una criatura 
-a 0 hit points con una, puedes hacer un ataque con 
-el mismo arma As a bonus action.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Strength score by 1, to a maximum of 20.
+
+Heavy Weapon Mastery. When you hit a creature with a weapon that has the Heavy property as part of the Attack action on your turn, you can make the weapon deal extra damage to the target. The extra damage equals your Proficiency Bonus.
+
+Overwhelm. Immediately after you score a critical hit with a melee weapon, or reduce a creature to 0 hit points with one, you can make an attack with the same weapon as a bonus action.

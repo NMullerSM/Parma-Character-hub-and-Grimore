@@ -14,7 +14,7 @@ tags:
 - español
 tipo: trasfondo
 idioma: es
-nombre_ingles: Campesino
+nombre_ingles: Peasant
 ---
 
 # Trasfondo: Campesino

@@ -3,7 +3,7 @@ id: explorador_cazador_en
 nombre: Hunter
 nombre_ingles: Hunter
 tipo: subclase
-clase_padre: Explorador
+clase_padre: Ranger
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Cazador
 ---
 
 # Hunter
-**Clase Base:** Explorador  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Ranger  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
-Especialista consumado en abatir las amenazas más peligrosas del mundo, castigando presas heridas con daño d8 adicional continuo.
+## Archetype Summary
+A consummate specialist in defeating the most dangerous threats in the world, punishing wounded prey with continuous extra d8 damage.

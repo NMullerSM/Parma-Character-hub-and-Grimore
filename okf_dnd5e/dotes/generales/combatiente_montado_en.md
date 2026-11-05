@@ -15,24 +15,16 @@ nombre_ingles: Combatiente Montado
 nombre_original: Combatiente Montado
 ---
 
-# Combatiente Montado
+# Mounted Combatant
 
-*Dote general (requisitos: nivel 4 o más)*
+*General Feat (Prerequisite: Level 4+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación de 
-Fuerza, Destreza o Sabiduría en 1, hasta un máximo de 20. 
-Golpe montado. Mientras estés montando, tienes ventaja 
-en las attack rolls contra las criaturas que no estén 
-montando situadas within 5 feet o menos de tu montura si 
-su tamaño es, al menos, una categoría inferior al de la 
-montura. 
-Esquivar de un salto. Si tu montura sufre un efecto que 
-le permita hacer una Destreza saving throw para 
-sufrir solo la mitad de daño, no recibe ningún daño si la 
-supera y solo sufre la mitad si la falla. Para que la montura 
-consiga este beneficio, debes estar montándola y ninguno 
-de los dos puede tener el estado de incapacitado. 
-Girar bruscamente. Mientras estés montando, puedes 
-hacer que un ataque que acierte a tu montura te acierte 
-a ti en su lugar si no tienes el estado de incapacitado.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Strength, Dexterity, or Wisdom score by 1, to a maximum of 20.
+
+Mounted Strike. While you are mounted, you have advantage on attack rolls against unmounted creatures within 5 feet (1.5 m) of your mount, provided the creature is at least one size smaller than the mount.
+
+Evasive Leap. If your mount is subjected to an effect that allows it to make a Dexterity saving throw to take only half damage, it takes no damage if it succeeds and only half damage if it fails. For the mount to gain this benefit, you must be mounting it, and neither of you can be Incapacitated.
+
+Sharp Turn. While you are mounted, you can make an attack that hits your mount instead hit you, provided you are not Incapacitated.

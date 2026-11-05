@@ -15,21 +15,16 @@ nombre_ingles: Apresador
 nombre_original: Apresador
 ---
 
-# Apresador
+# Grappler
 
-*Dote general (requisitos: nivel 4 o más, Fuerza o Destreza 13*
+*General Feat (Prerequisite: Level 4+, Strength or Dexterity 13+)*
 
-omás) 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación 
-de Fuerza o Destreza en 1, hasta un máximo de 20. 
-Golpear 
-y agarrar. Cuando aciertes a una criatura con 
-un ataque sin armas como parte de la acción de atacar en 
-tu turno, puedes utilizar las opciones de daño y agarre. 
-Solo puedes usar este beneficio once per turn. 
-Ventaja al atacar. Tienes ventaja en las attack rolls 
-contra una criatura a la que estés agarrando. 
-Luchador rápido. No tienes que invertir movimiento 
-adicional para mover a una criatura a la que estés agarrando 
-si la criatura es de tu tamaño o más pequeña.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Strength or Dexterity score by 1, to a maximum of 20.
+
+Punch and Grab. When you hit a creature with an unarmed strike as part of the Attack action on your turn, you can use the damage and grapple options. You can use this benefit only once per turn.
+
+Advantage on Attacks. You have advantage on attack rolls against a creature you are grappling.
+
+Fast Wrestler. You don't need to spend extra movement to move a creature you are grappling if the creature is your size or smaller.

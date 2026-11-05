@@ -3,9 +3,9 @@ id: guerrero_caballero_runico_en
 nombre: Rune Knight
 nombre_ingles: Rune Knight
 tipo: subclase
-clase_padre: Guerrero
+clase_padre: Fighter
 nivel_desbloqueo: 3
-fuente: Caldero de Tasha para Todo
+fuente: Tasha's Cauldron of Everything
 tags:
 - english
 - en
@@ -15,9 +15,9 @@ nombre_original: Caballero Rúnico
 ---
 
 # Rune Knight
-**Clase Base:** Guerrero  
-**Manual / Fuente:** Caldero de Tasha para Todo  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Fighter  
+**Source:** Tasha's Cauldron of Everything  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
-Graba runas de los gigantes en sus pertrechos y crece mágicamente a tamaño Grande, ganando ventaja en pruebas de Fuerza y daño masivo.
+## Archetype Summary
+They carve giant runes into their gear and magically grow to Large size, gaining advantage on Strength checks and dealing massive damage.

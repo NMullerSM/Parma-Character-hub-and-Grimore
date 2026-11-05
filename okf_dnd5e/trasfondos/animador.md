@@ -14,7 +14,7 @@ tags:
 - español
 tipo: trasfondo
 idioma: es
-nombre_ingles: Animador
+nombre_ingles: Entertainer
 ---
 
 # Trasfondo: Animador

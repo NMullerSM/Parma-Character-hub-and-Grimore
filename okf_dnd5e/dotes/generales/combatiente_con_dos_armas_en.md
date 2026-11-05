@@ -15,27 +15,14 @@ nombre_ingles: Combatiente Con Dos Armas
 nombre_original: Combatiente Con Dos Armas
 ---
 
-# Combatiente Con Dos Armas
+# Dual Wielder
 
-*Dote general (requisitos: nivel 4 o más, Fuerza o Destreza 13*
+*General Feat (Prerequisite: Level 4+, Strength or Dexterity 13+)*
 
-o más) 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación de 
-Fuerza o Destreza en 1, hasta un máximo de 20. 
-Manejo doble mejorado. Cuando lleves a cabo la acción 
-de atacar en tu turno y ataques con un arma que tenga la 
-propiedad “ligera”, podrás realizar un ataque extra como 
-acción adicional más adelante en el mismo turno con un 
-arma distinta, que deberá ser un arma cuerpo a cuerpo sin 
-la propiedad “a dos manos”. No sumarás tu modificador 
-por característica al daño del ataque extra salvo que el 
-modificador sea negativo. 
-Desenvainar rápido. Desenvainas o envainas dos armas 
-sin la propiedad “a dos manos” cuando normalmente solo 
-podrías desenvainar o envainar una. 
-CAPÍTULO 5 | DOTES 
-203 
+You gain the following benefits.
 
+Ability Score Improvement. Increase your Strength or Dexterity score by 1, to a maximum of 20.
 
-204
+Enhanced Dual Wielding. When you take the Attack action on your turn and attack with a weapon that has the Light property, you can use a bonus action later on the same turn to make an extra attack with a different melee weapon that lacks the Two-Handed property. You don't add your ability modifier to the damage of that extra attack unless the modifier is negative.
+
+Quick Draw. You can draw or stow two weapons that lack the Two-Handed property when you normally could draw or stow only one.

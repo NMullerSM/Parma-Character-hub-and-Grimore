@@ -15,12 +15,12 @@ nombre_ingles: Entrenamiento Con Armas Marciales
 nombre_original: Entrenamiento Con Armas Marciales
 ---
 
-# Entrenamiento Con Armas Marciales
+# Martial Weapon Training
 
-*Dote general (requisitos: nivel 4 o más)*
+*General Feat (Prerequisite: Level 4+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación 
-de Fuerza o Destreza en 1, hasta un máximo de 20. 
-Competencia con armas. Obtienes competencia con 
-armas marciales.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Strength or Dexterity score by 1, to a maximum of 20.
+
+Weapon Proficiency. You gain proficiency with martial weapons.

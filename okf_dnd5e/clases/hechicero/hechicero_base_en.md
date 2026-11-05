@@ -1,16 +1,16 @@
 ---
 id: hechicero_en
 nombre: Sorcerer
-caracteristica_principal: CAR
+caracteristica_principal: CHA
 dado_golpe: 1d6
 salvaciones_competentes:
 - CON
-- CAR
+- CHA
 subclases_oficiales:
-- Magia Salvaje
-- Linaje Dracónico
-- Hechicería Aberrante
-- Hechicería Mecánica
+- Wild Magic
+- Draconic Sorcery
+- Aberrant Mind
+- Clockwork Soul
 fuente: PHB 2024
 pagina: 128
 tags:
@@ -25,12 +25,12 @@ nombre_original: Hechicero
 
 # Sorcerer
 
-- **Primary Ability**: CAR
-- **Hit Die**: 1d6 por nivel de hechicero
-- **Saving Throw Proficiencies**: CON, CAR
+- **Primary Ability**: CHA
+- **Hit Die**: 1d6 per Sorcerer level
+- **Saving Throw Proficiencies**: CON, CHA
 
 ## Available Subclasses
-- Magia Salvaje
-- Linaje Dracónico
-- Hechicería Aberrante
-- Hechicería Mecánica
+- Wild Magic
+- Draconic Sorcery
+- Aberrant Mind
+- Clockwork Soul

@@ -23,33 +23,16 @@ nombre_original: Enano
 
 # Dwarf
 
-- **Tipo de Criatura**: humanoide
-- **Tamaño**: Mediano
-- **Velocidad**: 9 m
-- **Sentidos**: darkvision 36 m
+- **Creature Type**: Humanoid
+- **Size**: Medium
+- **Speed**: 9 m
+- **Senses**: darkvision 36 m
 
-## Rasgos de la Especie
-190 
-ENANO 
-Los enanos emergieron de la tierra en los primeros tiempos 
-de la mano de una deidad de la forja que recibía diversos 
-nombres en los distintos mundos, como Moradin o Reorx, 
-entre otros, y que otorgó a los enanos una afinidad por la 
-piedra, el metal y la vida en el subsuelo. La deidad también 
-los hizo firmes como las montañas, con una esperanza de 
-vida de unos 350 años. 
-Los enanos originales, achaparrados y normalmente 
-barbudos, labraban sus ciudades y bastiones en las laderas 
-de las montañas y bajo tierra. Sus leyendas más antiguas 
-hablan de conflictos con los monstruos de las cumbres 
-y la Infraoscuridad, que podían ser desde gigantes 
-descomunales hasta horrores subterráneos. Inspirados 
-en estas historias, los enanos de cualquier cultura suelen 
-cantar sus valerosas hazañas, en especial las que tratan 
-de cómo los más pequeños derrotaban a los poderosos. 
-En algunos mundos del multiverso, los primeros 
-asentamientos de enanos se construyeron en colinas 
-o montañas, y las familias cuyos antepasados vivían 
-en estos lugares se hacen llamar enanos de las colinas 
-o enanos de las montañas, respectivamente. Los escenarios 
-de Greyhawk y Dragonlance cuentan con es
+## Species Traits
+
+### Dwarf
+Dwarves emerged from the earth in the earliest times, shaped by a god of the forge who went by different names across the worlds, such as Moradin or Reorx, among others. This deity gave dwarves an affinity for stone, metal, and life underground. The god also made them as firm as the mountains, with a lifespan of about 350 years.
+
+The original dwarves, stout and usually bearded, carved their cities and strongholds into mountainsides and underground. Their oldest legends speak of conflicts with the monsters of the peaks and the Underdark, which could be anything from colossal giants to subterranean horrors. Inspired by these stories, dwarves of every culture tend to sing of their valiant deeds, especially those in which the smallest defeated the powerful.
+
+On some worlds of the multiverse, the first dwarven settlements were built in hills or mountains, and the families whose ancestors lived in those places call themselves hill dwarves or mountain dwarves, respectively.

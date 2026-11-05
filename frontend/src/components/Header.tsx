@@ -3,6 +3,7 @@ import { useCharacter } from "../context/CharacterContext";
 import { useTheme } from "../context/ThemeContext";
 import { useTranslation } from "../i18n";
 import { api } from "../api/client";
+import { safeStorage } from "../utils/storage";
 import {
   Dice5,
   Settings as SettingsIcon,
@@ -40,6 +41,8 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
     setUserRole,
     activeSessionId,
     setActiveSessionId,
+    remoteTunnelUrl,
+    setRemoteTunnelUrl,
     sessionScopeActive,
     showToast,
   } = useCharacter();
@@ -58,12 +61,12 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
   const tabs = [
     { id: "sheet", label: t("header.tabSheet") },
     { id: "combat", label: t("header.tabCombat") },
-    { id: "spells", label: t("header.tabSpells") },
     { id: "journal", label: t("header.tabJournal") },
     { id: "network", label: t("header.tabNetwork") },
-    { id: "pdf", label: t("header.tabPdf") },
+    { id: "spells", label: t("header.tabSpells") },
     { id: "compendium", label: t("header.tabCompendium") },
     { id: "forge", label: t("header.tabForge") },
+    { id: "pdf", label: t("header.tabPdf") },
   ];
 
   const handlePasteClipboard = async () => {
@@ -86,15 +89,18 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
     setIsConnecting(true);
     try {
       let resolvedId = sessionInput.trim();
+      let remoteOrigin: string | null = null;
+
       // Si el usuario pegó una URL completa, extraer el ID si viene como parámetro o usar el host
       if (resolvedId.includes("http://") || resolvedId.includes("https://")) {
         try {
           const parsed = new URL(resolvedId);
+          remoteOrigin = parsed.origin;
           const sessParam = parsed.searchParams.get("session") || parsed.searchParams.get("session_id");
           if (sessParam) {
             resolvedId = sessParam;
           } else {
-            // Intentar consultar sesión al endpoint del túnel
+            // Consultar sesión al endpoint del túnel
             const res = await fetch(`${parsed.origin}/api/session/info`);
             if (res.ok) {
               const data = await res.json();
@@ -102,6 +108,29 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
             }
           }
         } catch (_) {}
+      }
+
+      // Si se conectó mediante un túnel remoto, registrar al jugador con el host
+      if (remoteOrigin) {
+        let playerToken = safeStorage.getItem("parma_player_token");
+        if (!playerToken) {
+          playerToken = `p_${Math.random().toString(36).substring(2, 10)}`;
+          safeStorage.setItem("parma_player_token", playerToken);
+        }
+        try {
+          await fetch(`${remoteOrigin}/api/player/join`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              token: playerToken,
+              character: activeCharacter || undefined,
+              character_name: activeCharacter?.name || "Aventurero",
+            }),
+          });
+        } catch (err) {
+          console.warn("Aviso en registro /api/player/join:", err);
+        }
+        setRemoteTunnelUrl(remoteOrigin);
       }
 
       setActiveSessionId(resolvedId);
@@ -125,6 +154,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
 
   const handleDisconnectSession = () => {
     setActiveSessionId(null);
+    setRemoteTunnelUrl(null);
     showToast("Te has desconectado de la sesión online.", "info");
     setIsJoinModalOpen(false);
   };

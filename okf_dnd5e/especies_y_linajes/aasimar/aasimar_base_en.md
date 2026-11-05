@@ -23,37 +23,21 @@ nombre_original: Aasimar
 
 # Aasimar
 
-- **Tipo de Criatura**: humanoide
-- **Tamaño**: Mediano o Pequeño
-- **Velocidad**: 9 m
-- **Sentidos**: darkvision 18 m
+- **Creature Type**: Humanoid
+- **Size**: Medium or Small
+- **Speed**: 9 m
+- **Senses**: darkvision 18 m
 
-## Rasgos de la Especie
-DESCRIPCIONES 
-DE LAS ESPECIES 
-En esta sección se presentan diez especies ordenadas 
-alfabéticamente: aasimar, dracónido, elfo, enano, gnomo, 
-goliat, humano, mediano, orco y tiefling. 
-AASIMAR 
-Los aasimars son mortales cuyas almas albergan una 
-chispa de los Planos Superiores. Tanto si descienden de 
-un ser angelical como si están imbuidos de poder celestial, 
-pueden encender esa chispa para traer la luz, la curación 
-y la furia divina. 
-Los aasimars pueden surgir entre cualquier población 
-de mortales. Se parecen a sus padres, pero viven hasta 
-160 años y tienen rasgos que insinúan su herencia celestial, 
-como pecas metálicas, ojos brillantes, un halo o el color 
-de piel de un ángel (plateada, verde opalescente o roja 
-cobriza). Al principio, estos rasgos son sutiles, pero se van 
-haciendo evidentes cuando los aasimars aprenden a revelar 
-toda su naturaleza celestial. 
-ATRIBUTOS DE LOS AASIMARS 
-Tipo de criatura: humanoide 
-Tamaño: Mediano (entre 1,2 y 2,1 m de altura) o Pequeño 
-(entre 60 cm y 1,2 m de altura), elegido al seleccionar 
-la especie 
-Velocidad: 9 m 
-Como aasimar, tienes estos atributos especiales: 
-Manos curativas. As an action de magia, tocas a una 
-criatura y tir
+## Species Traits
+
+### Aasimar
+Aasimars are mortals whose souls harbor a spark of the Upper Planes. Whether they descend from an angelic being or are imbued with celestial power, they can kindle that spark to bring light, healing, and divine fury.
+
+Aasimars can arise from any mortal population. They resemble their parents, but they live up to 160 years and have traits that hint at their celestial heritage, such as metallic freckles, glowing eyes, a halo, or the skin color of an angel (silver, opalescent green, or copper red). At first these traits are subtle, but they become more evident as aasimars learn to reveal their full celestial nature.
+
+### Aasimar Attributes
+Creature Type: Humanoid
+
+Size: Medium (between 4 and 7 feet tall) or Small (between 2 and 4 feet tall), chosen when you select your species
+
+Speed: 9 m (30 feet)

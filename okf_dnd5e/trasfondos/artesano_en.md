@@ -1,9 +1,9 @@
 ---
 id: artesano_en
-nombre: Artesano
-caracteristicas_clave: Fuerza, Destreza, Inteligencia
-dote_concedida: Fabricante
-habilidades_competentes: Investigación, Persuasión
+nombre: Artisan
+caracteristicas_clave: Strength, Dexterity, Intelligence
+dote_concedida: Crafter
+habilidades_competentes: Investigation, Persuasion
 fuente: PHB 2024
 pagina: 180
 tags:
@@ -12,12 +12,12 @@ tags:
 - trasfondo
 tipo: trasfondo
 idioma: en
-nombre_ingles: Artesano
+nombre_ingles: Artisan
 nombre_original: Artesano
 ---
 
-# Artesano
+# Artisan
 
-- **Puntuaciones de Característica**: Fuerza, Destreza, Inteligencia
-- **Origin Feat**: Fabricante
-- **Habilidades con Competencia**: Investigación, Persuasión
+- **Ability Scores**: Strength, Dexterity, Intelligence
+- **Origin Feat**: Crafter
+- **Skill Proficiencies**: Investigation, Persuasion

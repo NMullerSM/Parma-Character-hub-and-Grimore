@@ -2,7 +2,7 @@
 id: enano_colinas_en
 nombre: Hill Dwarf
 nombre_ingles: Hill Dwarf
-fuente: Manual del Jugador 2024
+fuente: PHB 2024
 pagina: 186
 tipo: especie_linaje
 velocidad: 9 m (30 pies)
@@ -18,10 +18,10 @@ nombre_original: Enano de las Colinas
 
 # Hill Dwarf
 
-Poseen una intuición profunda y una resistencia física legendaria frente a cualquier adversidad.
+Hill dwarves have deep intuition and legendary physical resilience in the face of any adversity.
 
-## Rasgos de Linaje
-- **Dureza Enana:** Tus hit points máximos aumentan en 1 por cada nivel que poseas (incluyendo el nivel 1).
-- **Resistencia Enana:** Tienes ventaja en saving throws contra veneno y resistencia al poison damage.
-- **Sentido de la Piedra:** Sumas el doble de tu bonificador por competencia a las pruebas de Historia relacionadas con cantería o construcciones de roca.
-- **Entrenamiento en Herramientas:** Competencia con herramientas de herrero, albañil o cervecero.
+## Lineage Traits
+- **Dwarven Toughness:** Your hit point maximum increases by 1 for each level you have, including level 1.
+- **Dwarven Resilience:** You have advantage on saving throws against poison, and you have resistance to poison damage.
+- **Stonecunning:** You add twice your Proficiency Bonus to History checks related to stonework or rock construction.
+- **Tool Proficiency:** You have proficiency with smith's tools, mason's tools, or brewer's supplies.

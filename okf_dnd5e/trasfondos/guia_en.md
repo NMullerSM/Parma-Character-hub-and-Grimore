@@ -1,9 +1,9 @@
 ---
 id: guia_en
 nombre: Guide
-caracteristicas_clave: Destreza, Constitución, Sabiduría
-dote_concedida: Iniciado en la magia (Druida)
-habilidades_competentes: Sigilo, Supervivencia
+caracteristicas_clave: Dexterity, Constitution, Wisdom
+dote_concedida: Magic Initiate (Druid)
+habilidades_competentes: Stealth, Survival
 fuente: PHB 2024
 pagina: 185
 tags:
@@ -18,6 +18,6 @@ nombre_original: Guía
 
 # Guide
 
-- **Puntuaciones de Característica**: Destreza, Constitución, Sabiduría
-- **Origin Feat**: Iniciado en la magia (Druida)
-- **Habilidades con Competencia**: Sigilo, Supervivencia
+- **Ability Scores**: Dexterity, Constitution, Wisdom
+- **Origin Feat**: Magic Initiate (Druid)
+- **Skill Proficiencies**: Stealth, Survival

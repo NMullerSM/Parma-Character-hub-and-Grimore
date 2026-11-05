@@ -1,9 +1,9 @@
 ---
 id: acolito_en
 nombre: Acolyte
-caracteristicas_clave: Sabiduría, Inteligencia, Carisma
-dote_concedida: Iniciado en la magia (Clérigo)
-habilidades_competentes: Perspicacia, Religión
+caracteristicas_clave: Wisdom, Intelligence, Charisma
+dote_concedida: Magic Initiate (Cleric)
+habilidades_competentes: Insight, Religion
 fuente: PHB 2024
 pagina: 178
 tags:
@@ -18,6 +18,6 @@ nombre_original: Acólito
 
 # Acolyte
 
-- **Puntuaciones de Característica**: Sabiduría, Inteligencia, Carisma
-- **Origin Feat**: Iniciado en la magia (Clérigo)
-- **Habilidades con Competencia**: Perspicacia, Religión
+- **Ability Scores**: Wisdom, Intelligence, Charisma
+- **Origin Feat**: Magic Initiate (Cleric)
+- **Skill Proficiencies**: Insight, Religion

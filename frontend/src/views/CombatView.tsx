@@ -112,7 +112,7 @@ export const CombatView: React.FC = () => {
         return;
       }
     }
-    const next = Math.max(0, Math.min(hp_max + 100, hp_current + delta));
+    const next = Math.max(0, Math.min(hp_max, hp_current + delta));
     updateActiveCharacter({ hp_current: next });
   };
 
@@ -191,20 +191,28 @@ export const CombatView: React.FC = () => {
               {hp_current}
             </span>
             <div className="flex flex-col items-start gap-1">
-              <span className="font-stat font-bold text-sm text-gold border border-gold/40 px-2 py-0.5 rounded bg-surface">
+              <span className="font-stat font-bold text-sm text-slate-200 border border-slate-400/40 px-2 py-0.5 rounded bg-surface">
                 {t("combat.tempHp", { temp: hp_temp || 0 })}
               </span>
               <div className="flex gap-1">
                 <button
                   onClick={() => handleTempHpDelta(5)}
-                  className="px-1.5 py-0.5 rounded border border-border-iron hover:border-gold text-[10px] font-stat text-muted hover:text-gold bg-surface"
+                  className="px-1.5 py-0.5 rounded border border-border-iron hover:border-slate-300 text-[10px] font-stat text-slate-300 hover:text-white bg-surface"
+                  title="+5 Escudo"
                 >
-                  {t("combat.tempButton")}
+                  +5
+                </button>
+                <button
+                  onClick={() => handleTempHpDelta(10)}
+                  className="px-1.5 py-0.5 rounded border border-border-iron hover:border-slate-300 text-[10px] font-stat text-slate-300 hover:text-white bg-surface"
+                  title="+10 Escudo"
+                >
+                  +10
                 </button>
                 {hp_temp > 0 && (
                   <button
                     onClick={() => updateActiveCharacter({ hp_temp: 0 })}
-                    className="px-1.5 py-0.5 rounded border border-border-iron hover:border-crimson text-[10px] font-stat text-muted hover:text-crimson bg-surface"
+                    className="px-1.5 py-0.5 rounded border border-border-iron hover:border-rose-500 text-[10px] font-stat text-muted hover:text-rose-400 bg-surface"
                   >
                     {t("combat.clearTemp")}
                   </button>

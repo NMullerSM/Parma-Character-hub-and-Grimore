@@ -3,7 +3,7 @@ id: paladin_venganza_en
 nombre: Oath of Vengeance
 nombre_ingles: Oath of Vengeance
 tipo: subclase
-clase_padre: Paladín
+clase_padre: Paladin
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Juramento de Venganza
 ---
 
 # Oath of Vengeance
-**Clase Base:** Paladín  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Paladin  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
-Jura castigar a los culpables sin piedad, marcando a un enemigo con Voto de Enemistad para ganar ventaja permanente en ataques.
+## Archetype Summary
+Swears to punish the guilty without mercy, marking an enemy with a Vow of Enmity to gain permanent advantage on attacks.

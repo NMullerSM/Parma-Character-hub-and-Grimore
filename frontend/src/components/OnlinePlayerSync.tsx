@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { useCharacter } from "../context/CharacterContext";
+import { safeStorage } from "../utils/storage";
 
 /**
  * OnlinePlayerSync:
  * Escucha eventos en tiempo real cuando el jugador o el DM están conectados a través del túnel o WebSocket.
+ * - Conecta a túnel remoto si remoteTunnelUrl está configurado (modo App-a-App), o al host del navegador.
  * - Recibe órdenes de Daño del DM -> activa el halo rojo cinemático (.vignette-damage) y descuenta HP.
  * - Recibe órdenes de Curación del DM -> activa el halo verde cinemático (.vignette-heal) y suma HP.
  * - Recibe objetos Homebrew del DM -> los inyecta en el inventario del personaje activo.
@@ -15,28 +17,50 @@ export const OnlinePlayerSync: React.FC = () => {
     updateActiveCharacter,
     triggerVignetteFlash,
     showToast,
+    remoteTunnelUrl,
   } = useCharacter();
 
   const socketRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    // Solo conectar WebSocket si estamos en un navegador web o túnel (no empaquetado local puro de pywebview)
+    // Solo conectar WebSocket si el entorno tiene soporte de ventanas y redes
     if (typeof window === "undefined") return;
 
-    // Obtener token persistente de jugador o generar uno
-    let playerToken = localStorage.getItem("parma_player_token");
+    // Obtener token persistente de jugador o generar uno criptográficamente seguro (CSPRNG)
+    let playerToken = safeStorage.getItem("parma_player_token");
     if (!playerToken) {
-      playerToken = `p_${Math.random().toString(36).substring(2, 10)}`;
-      localStorage.setItem("parma_player_token", playerToken);
+      if (typeof window !== "undefined" && window.crypto?.getRandomValues) {
+        const randomBytes = new Uint8Array(16);
+        window.crypto.getRandomValues(randomBytes);
+        playerToken = `p_${Array.from(randomBytes).map((b) => b.toString(16).padStart(2, "0")).join("")}`;
+      } else {
+        playerToken = `p_${Math.random().toString(36).substring(2, 10)}`;
+      }
+      safeStorage.setItem("parma_player_token", playerToken);
     }
 
-    // Determinar URL de WebSocket
-    const isHttps = window.location.protocol === "https:";
-    const wsProto = isHttps ? "wss:" : "ws:";
-    const host = window.location.host;
+    // Extraer token de invitación de la URL si se ingresó mediante enlace/QR
+    const inviteParam = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("invite") : null;
+    const inviteQuery = inviteParam ? `&invite=${encodeURIComponent(inviteParam)}` : "";
 
-    // Si estamos en localhost dev puro sin backend WebSocket, omitir error ruidoso
-    const wsUrl = `${wsProto}//${host}/ws?token=${playerToken}&role=player`;
+    // Determinar URL de WebSocket: túnel remoto (App-a-App) vs host web local/túnel directo
+    let wsUrl = "";
+    if (remoteTunnelUrl) {
+      try {
+        const parsed = new URL(remoteTunnelUrl);
+        const wsProto = parsed.protocol === "https:" ? "wss:" : "ws:";
+        wsUrl = `${wsProto}//${parsed.host}/ws?token=${playerToken}&role=player${inviteQuery}`;
+      } catch {
+        const isHttps = window.location.protocol === "https:";
+        const wsProto = isHttps ? "wss:" : "ws:";
+        wsUrl = `${wsProto}//${window.location.host}/ws?token=${playerToken}&role=player${inviteQuery}`;
+      }
+    } else {
+      const isHttps = window.location.protocol === "https:";
+      const wsProto = isHttps ? "wss:" : "ws:";
+      const host = window.location.host;
+      wsUrl = `${wsProto}//${host}/ws?token=${playerToken}&role=player${inviteQuery}`;
+    }
 
     let ws: WebSocket;
     try {
@@ -58,7 +82,21 @@ export const OnlinePlayerSync: React.FC = () => {
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          if (data.type === "DM_APPLY_DAMAGE") {
+          if (data.type === "PENDING_DM_APPROVAL") {
+            showToast(data.message || "Esperando aprobación del Dungeon Master...", "warn");
+          } else if (data.type === "DM_APPROVAL_GRANTED") {
+            showToast(data.message || "¡Aprobado por el Dungeon Master!", "success");
+            if (activeCharacter) {
+              ws.send(
+                JSON.stringify({
+                  type: "SHEET_SYNC",
+                  character: activeCharacter,
+                })
+              );
+            }
+          } else if (data.type === "APPROVAL_TIMEOUT") {
+            showToast(data.message || "Tiempo de espera agotado sin aprobación del DM.", "warn");
+          } else if (data.type === "DM_APPLY_DAMAGE") {
             const delta = Number(data.delta) || 1;
             triggerVignetteFlash("damage");
             if (activeCharacter) {
@@ -120,7 +158,7 @@ export const OnlinePlayerSync: React.FC = () => {
         socketRef.current.close();
       }
     };
-  }, [activeCharacter?.id]);
+  }, [activeCharacter?.id, remoteTunnelUrl]);
 
   return null;
 };

@@ -1,16 +1,16 @@
 ---
 id: barbaro_en
 nombre: Barbarian
-caracteristica_principal: FUE
+caracteristica_principal: STR
 dado_golpe: 1d12
 salvaciones_competentes:
-- FUE
+- STR
 - CON
 subclases_oficiales:
-- Camino del Bersérker
-- Camino del Corazón Salvaje
-- Camino del Árbol del Mundo
-- Camino del Fanático
+- Path of the Berserker
+- Path of the Wild Heart
+- Path of the World Tree
+- Path of the Zealot
 fuente: PHB 2024
 pagina: 48
 tags:
@@ -25,12 +25,12 @@ nombre_original: Bárbaro
 
 # Barbarian
 
-- **Primary Ability**: FUE
-- **Hit Die**: 1d12 por nivel de bárbaro
-- **Saving Throw Proficiencies**: FUE, CON
+- **Primary Ability**: STR
+- **Hit Die**: 1d12 per Barbarian level
+- **Saving Throw Proficiencies**: STR, CON
 
 ## Available Subclasses
-- Camino del Bersérker
-- Camino del Corazón Salvaje
-- Camino del Árbol del Mundo
-- Camino del Fanático
+- Path of the Berserker
+- Path of the Wild Heart
+- Path of the World Tree
+- Path of the Zealot

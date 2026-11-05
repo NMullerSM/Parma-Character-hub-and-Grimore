@@ -17,15 +17,10 @@ nombre_original: Duelista Defensivo
 
 # Defensive Duelist
 
-*Dote general (requisitos: nivel 4 o más, Destreza 13 o más)*
+*General Feat (Prerequisite: Level 4+, Dexterity 13+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación 
-de Destreza en 1, hasta un máximo de 20. 
-Parada. Si empuñas un arma sutil y otra criatura te 
-acierta con un ataque cuerpo a cuerpo, puedes llevar 
-a cabo una reacción para sumar tu bonificador por 
-competencia a tu clase de armadura, lo que podría hacer 
-que el ataque falle. Ganas este bonificador a tu CA contra 
-los ataques cuerpo a cuerpo hasta el principio de tu 
-siguiente turno.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Dexterity score by 1, to a maximum of 20.
+
+Parry. If you wield a finesse weapon and another creature hits you with a melee attack, you can use your reaction to add your Proficiency Bonus to your AC against that attack, which could cause it to miss. You gain this bonus to your AC against melee attacks until the start of your next turn.

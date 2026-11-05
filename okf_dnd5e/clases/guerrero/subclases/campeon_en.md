@@ -3,7 +3,7 @@ id: guerrero_campeon_en
 nombre: Champion
 nombre_ingles: Champion
 tipo: subclase
-clase_padre: Guerrero
+clase_padre: Fighter
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Campeón
 ---
 
 # Champion
-**Clase Base:** Guerrero  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Fighter  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
-La cúspide de la potencia física bruta, obtiene golpes críticos con 19 y 20 natural, inspiración heroica adicional y regeneración en combate.
+## Archetype Summary
+The pinnacle of raw physical power, they score critical hits on a roll of 19 or 20, gain additional Heroic Inspiration, and regenerate in combat.

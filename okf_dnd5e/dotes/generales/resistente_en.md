@@ -15,16 +15,14 @@ nombre_ingles: Resistente
 nombre_original: Resistente
 ---
 
-# Resistente
+# Resistant
 
-*Dote general (requisitos: nivel 4 o más)*
+*General Feat (Prerequisite: Level 4+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación 
-de Constitución en 1, hasta un máximo de 20. 
-Desafiar a la muerte. Tienes ventaja en las tiradas 
-de salvación contra muerte. 
-Recuperación rápida. As a bonus action, puedes 
-gastar uno de tus dados de hit points, tirarlo 
-y recuperar una cantidad de hit points igual 
-al resultado.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Constitution score by 1, to a maximum of 20.
+
+Defy Death. You have advantage on death saving throws.
+
+Quick Recovery. As a bonus action, you can spend one of your Hit Dice, roll it, and regain hit points equal to the result.

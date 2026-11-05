@@ -3,7 +3,7 @@ id: brujo_feerico_ancestral_en
 nombre: Archfey Patron
 nombre_ingles: Archfey Patron
 tipo: subclase
-clase_padre: Brujo
+clase_padre: Warlock
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: El Feérico Ancestral
 ---
 
 # Archfey Patron
-**Clase Base:** Brujo  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Warlock  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
-Pacto con un señor de las Cortes Feéricas, teleportándose con Paso Brumoso continuo y fascinando a grupos enteros de criaturas.
+## Archetype Summary
+A pact with a lord of the Feywild Courts, teleporting with a continuous Misty Step and charming entire groups of creatures.

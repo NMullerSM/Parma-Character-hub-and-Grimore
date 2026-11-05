@@ -17,13 +17,12 @@ nombre_original: Don De La Velocidad
 
 # Boon of Speed
 
-*Dote de don épico (requisito: nivel 19 o más)*
+*Epic Boon Feat (Prerequisite: Level 19+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta una puntuación de 
-característica de tu elección en 1, hasta un máximo de 0 
-€ 
-Artista escapista. As a bonus action, puedes llevar 
-a cabo la acción de destrabarse, lo que también pone fin 
-al estado de agarrado sobre ti. 
-Celeridad. Tu velocidad aumenta en 9 m.
+You gain the following benefits.
+
+Ability Score Improvement. Increase one ability score of your choice by 1, to a maximum of 30.
+
+Escape Artist. As a bonus action, you can take the Disengage action, which also ends the Grappled condition on you.
+
+Speed. Your Speed increases by 30 feet (9 m).

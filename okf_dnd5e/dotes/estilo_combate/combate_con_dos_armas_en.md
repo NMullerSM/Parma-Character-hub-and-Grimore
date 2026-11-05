@@ -17,9 +17,6 @@ nombre_original: Combate Con Dos Armas
 
 # Two-Weapon Fighting
 
-*Dote de estilo de combate (requisitos: rasgo Estilo de combate)*
+*Fighting Style Feat (Prerequisite: Fighting Style feature)*
 
-Cuando haces un ataque extra como resultado de utilizar 
-un arma con la propiedad “ligera”, puedes sumar tu 
-modificador por característica al daño de ese ataque 
-si no lo estás sumando ya al daño.
+When you make an extra attack as a result of using a weapon that has the Light property, you can add your ability modifier to the damage of that attack, if you aren't already adding it to the damage.

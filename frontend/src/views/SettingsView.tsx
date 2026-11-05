@@ -16,7 +16,6 @@ export const SettingsView: React.FC<{
   onResetSectionTours,
 }) => {
   const {
-    theme,
     isDark,
     activeFamily,
     themeFamilies,
@@ -42,15 +41,24 @@ export const SettingsView: React.FC<{
     theme: "dark-obsidian",
     talespire_mode: "dm",
     talespire_enabled: true,
+    talespire_auto_throw: true,
     okf_path: "okf_dnd5e",
     custom_themes_dir: "themes",
   });
+
+  const [autoThrow, setAutoThrow] = useState<boolean>(true);
+  const [showIpcDetails, setShowIpcDetails] = useState<boolean>(false);
+  const [showCalibration, setShowCalibration] = useState<boolean>(false);
+  const [showGuideModal, setShowGuideModal] = useState<boolean>(false);
 
   useEffect(() => {
     async function load() {
       try {
         const s = await api.getSettings();
         setSettings(s);
+        if (typeof s.talespire_auto_throw === "boolean") {
+          setAutoThrow(s.talespire_auto_throw);
+        }
       } catch (e) {
         console.error("Error loading settings:", e);
       }
@@ -58,20 +66,41 @@ export const SettingsView: React.FC<{
     load();
   }, []);
 
-  // Ley de Hick: Salida rápida con tecla Escape
+  // Ley de Hick: Salida rápida con tecla Escape (cierra primero modal de guía si está abierto)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        onClose();
+        if (showGuideModal) {
+          setShowGuideModal(false);
+        } else {
+          onClose();
+        }
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onClose]);
+  }, [onClose, showGuideModal]);
 
   const handleModeChange = async (mode: "dm" | "player") => {
     setSettings((prev) => ({ ...prev, talespire_mode: mode }));
     await setUserRole(mode);
+  };
+
+  const handleThrowModeChange = async (auto: boolean) => {
+    setAutoThrow(auto);
+    setSettings((prev) => ({ ...prev, talespire_auto_throw: auto }));
+    await api.setSetting("talespire_auto_throw", auto ? "true" : "false");
+    showToast(
+      auto
+        ? (t("settings.throwModeAuto") || "Lanzamiento automático activado")
+        : (t("settings.throwModeManual") || "Bandeja manual activada"),
+      "info"
+    );
+  };
+
+  const handleLanguageChange = async (lang: "es" | "en") => {
+    await setLanguage(lang);
+    await api.setSetting("language", lang);
   };
 
   const handleTestGesture = async () => {
@@ -161,7 +190,7 @@ export const SettingsView: React.FC<{
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded text-muted hover:text-main hover:bg-card transition-colors"
+            className="p-1.5 rounded-lg text-muted hover:text-main hover:bg-card transition-colors cursor-pointer"
             title={`${t("common.close")} (Esc)`}
           >
             <X className="w-5 h-5" />
@@ -170,41 +199,19 @@ export const SettingsView: React.FC<{
 
         {/* Contenido con Scroll */}
         <div className="p-6 overflow-y-auto space-y-6">
-          {/* 1. Selector de Tema Visual (Combobox unificado con soporte Homebrew y alternancia Claro/Oscuro) */}
-          <section className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted flex items-center gap-2">
-                <Palette className="w-3.5 h-3.5 text-gold" />
-                <span>{t("settings.visualTheme")}</span>
-              </h3>
-              <button
-                onClick={toggleTheme}
-                className="flex items-center gap-1.5 px-3 py-1 text-xs rounded-lg border border-border-iron bg-card/60 hover:bg-card hover:border-gold/60 text-main transition-colors shadow-xs"
-                title="Alternar entre variante Clara y Oscura de la familia seleccionada"
-              >
-                {isDark ? (
-                  <>
-                    <Sun className="w-3.5 h-3.5 text-amber-300" />
-                    <span>Variante: <strong>Oscuro</strong></span>
-                  </>
-                ) : (
-                  <>
-                    <Moon className="w-3.5 h-3.5 text-sky-400" />
-                    <span>Variante: <strong>Claro</strong></span>
-                  </>
-                )}
-              </button>
-            </div>
+          {/* 1. Selector de Tema Visual (Combobox unificado con toggle compacto Sol/Luna) */}
+          <section className="space-y-2">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted flex items-center gap-2">
+              <Palette className="w-3.5 h-3.5 text-gold" />
+              <span>{t("settings.visualTheme")}</span>
+            </h3>
 
-            <div className="space-y-1.5">
-              <label className="text-xs text-muted block">
-                Familia visual o tema personalizado (incluye temas creados en la carpeta <code className="text-gold font-mono">themes/</code>):
-              </label>
-              <div className="relative">
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
                 <select
                   value={activeFamily}
                   onChange={(e) => setActiveFamily(e.target.value)}
-                  className="w-full bg-card text-main border border-border-iron rounded-xl px-4 py-3 text-sm font-semibold focus:border-gold outline-none transition-colors appearance-none cursor-pointer pr-10 shadow-xs"
+                  className="w-full bg-card text-main border border-border-iron rounded-xl px-4 py-2.5 text-sm font-semibold focus:border-gold outline-none transition-colors appearance-none cursor-pointer pr-10 shadow-xs"
                 >
                   {themeFamilies.map((fam) => (
                     <option key={fam.id} value={fam.id} className="bg-surface text-main py-1.5">
@@ -216,70 +223,65 @@ export const SettingsView: React.FC<{
                   ▼
                 </div>
               </div>
-            </div>
 
-            <div className="p-3 rounded-xl bg-card/40 border border-border-iron text-xs text-muted flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-              <div>
-                Tema activo: <span className="font-semibold text-main">{theme}</span>
-              </div>
-              <div className="text-[11px] text-muted">
-                💡 Alterna claro/oscuro fácilmente con el botón de sol/luna ☀️/🌙 en la barra superior.
-              </div>
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="p-2.5 rounded-xl border border-border-iron bg-card/60 hover:bg-card hover:border-gold/60 text-main transition-colors shadow-xs flex items-center justify-center shrink-0 cursor-pointer"
+                title={isDark ? "Cambiar a variante Clara" : "Cambiar a variante Oscura"}
+              >
+                {isDark ? (
+                  <Sun className="w-4 h-4 text-amber-300" />
+                ) : (
+                  <Moon className="w-4 h-4 text-sky-400" />
+                )}
+              </button>
             </div>
           </section>
 
-          {/* Selector de Idioma de la Interfaz & Compendio (ES / EN) */}
-          <section className="space-y-3 pt-3 border-t border-border-iron">
+          {/* 2. Selector de Idioma de la Interfaz & Compendio (Segmented Switch) */}
+          <section className="space-y-2 pt-3 border-t border-border-iron">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
               {t("settings.languageSectionTitle")}
             </h3>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="flex gap-2">
               <button
-                onClick={() => setLanguage("es")}
-                className={`p-3 rounded-lg border text-left transition-all ${
+                type="button"
+                onClick={() => handleLanguageChange("es")}
+                className={`flex-1 py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
                   language === "es"
-                    ? "border-gold bg-card ring-1 ring-gold shadow-sm"
-                    : "border-border-iron bg-card/40 hover:bg-card hover:border-gold/50"
+                    ? "bg-card border-gold text-gold shadow-xs ring-1 ring-gold/40"
+                    : "bg-surface/60 border-border-iron text-muted hover:text-main hover:bg-card"
                 }`}
               >
-                <div className="font-semibold text-sm text-main flex items-center justify-between">
-                  <span>{t("settings.langEsTitle")}</span>
-                  {language === "es" && (
-                    <span className="text-[10px] text-gold font-bold">
-                      {t("settings.langActiveBadge")}
-                    </span>
-                  )}
-                </div>
-                <div className="text-xs text-muted mt-0.5">{t("settings.langEsDesc")}</div>
+                <span>🇪🇸</span>
+                <span>Español (ES)</span>
+                {language === "es" && <span className="w-1.5 h-1.5 rounded-full bg-gold shrink-0" />}
               </button>
               <button
-                onClick={() => setLanguage("en")}
-                className={`p-3 rounded-lg border text-left transition-all ${
+                type="button"
+                onClick={() => handleLanguageChange("en")}
+                className={`flex-1 py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
                   language === "en"
-                    ? "border-gold bg-card ring-1 ring-gold shadow-sm"
-                    : "border-border-iron bg-card/40 hover:bg-card hover:border-gold/50"
+                    ? "bg-card border-gold text-gold shadow-xs ring-1 ring-gold/40"
+                    : "bg-surface/60 border-border-iron text-muted hover:text-main hover:bg-card"
                 }`}
               >
-                <div className="font-semibold text-sm text-main flex items-center justify-between">
-                  <span>{t("settings.langEnTitle")}</span>
-                  {language === "en" && (
-                    <span className="text-[10px] text-gold font-bold">
-                      {t("settings.langActiveBadge")}
-                    </span>
-                  )}
-                </div>
-                <div className="text-xs text-muted mt-0.5">{t("settings.langEnDesc")}</div>
+                <span>🇬🇧</span>
+                <span>English (EN)</span>
+                {language === "en" && <span className="w-1.5 h-1.5 rounded-full bg-gold shrink-0" />}
               </button>
             </div>
           </section>
 
-          {/* 2. Integración con TaleSpire */}
+          {/* 3. Integración con TaleSpire */}
           <section className="space-y-3 pt-3 border-t border-border-iron">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
               {t("settings.talespireTitle")}
             </h3>
 
             <div className="p-4 rounded-xl border border-border-iron bg-card space-y-3">
+              {/* Estado y Conexión */}
               <div className="flex items-center justify-between">
                 <div>
                   <div className="text-sm font-semibold text-main">{t("settings.ipcStatus")}</div>
@@ -295,182 +297,274 @@ export const SettingsView: React.FC<{
                   </div>
                 </div>
                 <button
+                  type="button"
                   onClick={connectTaleSpire}
-                  className="px-3 py-1.5 rounded bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-semibold text-main transition-colors"
+                  className="px-3 py-1.5 rounded-lg bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-semibold text-main transition-colors cursor-pointer"
                 >
                   {t("settings.connectRefresh")}
                 </button>
               </div>
 
-              {/* Leyenda Visual de Estados LED */}
+              {/* Conmutador de Modo de Lanzamiento (Automático vs Manual) */}
               <div className="pt-2 border-t border-border-iron/40 space-y-2">
-                <div className="text-xs font-semibold text-main">{t("settings.talespireLegendTitle")}</div>
-                <div className="grid grid-cols-1 gap-1.5 text-[11px] text-muted">
-                  <div className="flex items-start gap-2 bg-surface/40 p-2 rounded border border-border-iron/50">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.7)] shrink-0 mt-0.5" />
-                    <span>{t("settings.talespireLegendGreen")}</span>
-                  </div>
-                  <div className="flex items-start gap-2 bg-surface/40 p-2 rounded border border-border-iron/50">
-                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shrink-0 mt-0.5" />
-                    <span>{t("settings.talespireLegendAmber")}</span>
-                  </div>
-                  <div className="flex items-start gap-2 bg-surface/40 p-2 rounded border border-border-iron/50">
-                    <span className="w-2.5 h-2.5 rounded-full bg-slate-500 shrink-0 mt-0.5" />
-                    <span>{t("settings.talespireLegendGray")}</span>
-                  </div>
+                <label className="text-xs font-semibold text-main block">
+                  {t("settings.talespireThrowMode") || "Modo de Lanzamiento en TaleSpire"}
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleThrowModeChange(true)}
+                    className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                      autoThrow
+                        ? "border-gold bg-surface ring-1 ring-gold/40 shadow-xs"
+                        : "border-border-iron bg-card/40 hover:bg-card text-muted hover:text-main"
+                    }`}
+                  >
+                    <div className="text-xs font-semibold flex items-center gap-1.5">
+                      <span>⚡</span>
+                      <span className={autoThrow ? "text-gold" : "text-main"}>
+                        {t("settings.throwModeAuto") || "Automático (Micro-gesto 3D)"}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-muted mt-1 leading-snug">
+                      {t("settings.throwModeAutoDesc") || "Coloca los dados en la bandeja y ejecuta el lanzamiento físico automático hacia la mesa."}
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleThrowModeChange(false)}
+                    className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                      !autoThrow
+                        ? "border-gold bg-surface ring-1 ring-gold/40 shadow-xs"
+                        : "border-border-iron bg-card/40 hover:bg-card text-muted hover:text-main"
+                    }`}
+                  >
+                    <div className="text-xs font-semibold flex items-center gap-1.5">
+                      <span>✋</span>
+                      <span className={!autoThrow ? "text-gold" : "text-main"}>
+                        {t("settings.throwModeManual") || "Bandeja Manual (Oficial)"}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-muted mt-1 leading-snug">
+                      {t("settings.throwModeManualDesc") || "Coloca en bandeja; tú decides cuándo lanzar haciendo clic o arrastrando con el ratón."}
+                    </div>
+                  </button>
                 </div>
               </div>
 
-              {/* Explicación de Funcionamiento del Symbiote */}
-              <div className="p-3 rounded-lg bg-surface/60 border border-border-iron text-xs text-muted flex items-center gap-2.5">
-                <div className="p-2 rounded-lg bg-gold/10 text-gold shrink-0">🎲</div>
-                <div>{t("settings.talespireSymbioteHint")}</div>
-              </div>
+              {/* Detalles Técnicos & Estados LED (Acordeón desplegable) */}
+              <div className="pt-2 border-t border-border-iron/40">
+                <button
+                  type="button"
+                  onClick={() => setShowIpcDetails(!showIpcDetails)}
+                  className="w-full flex items-center justify-between py-1 text-xs text-muted hover:text-gold transition-colors cursor-pointer"
+                >
+                  <span className="flex items-center gap-1.5 font-medium">
+                    <span>{showIpcDetails ? "▼" : "▶"}</span>
+                    <span>{t("settings.ipcDetailsToggle") || "Detalles Técnicos & Estados LED"}</span>
+                  </span>
+                  <span className="text-[10px] uppercase font-mono text-muted">{showIpcDetails ? "Ocultar" : "Mostrar"}</span>
+                </button>
 
-              {/* Carga y Detección Automática del Symbiote */}
-              <div className="pt-2 border-t border-border-iron/40 space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="text-xs font-semibold text-main flex items-center gap-1.5">
-                    <CheckCircle2 className={`w-3.5 h-3.5 ${talespireStatus.symbiote_folder_installed ? "text-emerald-400" : "text-muted"}`} />
-                    <span>{t("settings.talespireAutoInstallTitle")}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      onClick={handleReinstallSymbiote}
-                      className="px-2 py-1 rounded bg-surface hover:bg-card border border-border-iron hover:border-gold text-[11px] font-medium text-main flex items-center gap-1 transition-colors"
-                      title="Sincronizar y forzar actualización del Symbiote en TaleSpire"
-                    >
-                      <RefreshCw className="w-3 h-3 text-gold" />
-                      <span>{t("settings.talespireBtnReinstall")}</span>
-                    </button>
-                    {talespireStatus.symbiote_install_path && (
-                      <button
-                        onClick={handleOpenSymbiotesFolder}
-                        className="px-2 py-1 rounded bg-surface hover:bg-card border border-border-iron hover:border-gold text-[11px] font-medium text-main flex items-center gap-1 transition-colors"
-                        title="Abrir la carpeta oficial de Symbiotes en el explorador de archivos"
-                      >
-                        <FolderOpen className="w-3 h-3 text-sky-400" />
-                        <span>{t("settings.talespireBtnOpenFolder")}</span>
-                      </button>
+                {showIpcDetails && (
+                  <div className="mt-3 space-y-3 pt-2 border-t border-border-iron/30">
+                    {/* Leyenda Visual de Estados LED */}
+                    <div className="grid grid-cols-1 gap-1.5 text-[11px] text-muted">
+                      <div className="flex items-start gap-2 bg-surface/40 p-2 rounded-lg border border-border-iron/50">
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.7)] shrink-0 mt-0.5" />
+                        <span>{t("settings.talespireLegendGreen")}</span>
+                      </div>
+                      <div className="flex items-start gap-2 bg-surface/40 p-2 rounded-lg border border-border-iron/50">
+                        <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shrink-0 mt-0.5" />
+                        <span>{t("settings.talespireLegendAmber")}</span>
+                      </div>
+                      <div className="flex items-start gap-2 bg-surface/40 p-2 rounded-lg border border-border-iron/50">
+                        <span className="w-2.5 h-2.5 rounded-full bg-slate-500 shrink-0 mt-0.5" />
+                        <span>{t("settings.talespireLegendGray")}</span>
+                      </div>
+                    </div>
+
+                    {/* Explicación del Symbiote */}
+                    <div className="p-3 rounded-lg bg-surface/60 border border-border-iron text-xs text-muted flex items-center gap-2.5">
+                      <div className="p-2 rounded-lg bg-gold/10 text-gold shrink-0">🎲</div>
+                      <div>{t("settings.talespireSymbioteHint")}</div>
+                    </div>
+
+                    {/* Detección y Sincronización del Symbiote */}
+                    <div className="flex items-center justify-between">
+                      <div className="text-xs font-semibold text-main flex items-center gap-1.5">
+                        <CheckCircle2 className={`w-3.5 h-3.5 ${talespireStatus.symbiote_folder_installed ? "text-emerald-400" : "text-muted"}`} />
+                        <span>{t("settings.talespireAutoInstallTitle")}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={handleReinstallSymbiote}
+                          className="px-2 py-1 rounded-lg bg-surface hover:bg-card border border-border-iron hover:border-gold text-[11px] font-medium text-main flex items-center gap-1 transition-colors cursor-pointer"
+                          title="Sincronizar y forzar actualización del Symbiote en TaleSpire"
+                        >
+                          <RefreshCw className="w-3 h-3 text-gold" />
+                          <span>{t("settings.talespireBtnReinstall")}</span>
+                        </button>
+                        {talespireStatus.symbiote_install_path && (
+                          <button
+                            type="button"
+                            onClick={handleOpenSymbiotesFolder}
+                            className="px-2 py-1 rounded-lg bg-surface hover:bg-card border border-border-iron hover:border-gold text-[11px] font-medium text-main flex items-center gap-1 transition-colors cursor-pointer"
+                            title="Abrir la carpeta oficial de Symbiotes en el explorador de archivos"
+                          >
+                            <FolderOpen className="w-3 h-3 text-sky-400" />
+                            <span>{t("settings.talespireBtnOpenFolder")}</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {talespireStatus.symbiote_folder_installed ? (
+                      <div className="bg-surface/40 p-2.5 rounded-lg border border-border-iron/60 text-[11px] space-y-1">
+                        <div className="text-emerald-400 font-semibold flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                          <span>{t("settings.talespireAutoInstalled")}</span>
+                        </div>
+                        <div className="text-muted font-stat text-[10px] break-all bg-card/60 p-1.5 rounded border border-border-iron/40 select-all">
+                          {talespireStatus.symbiote_install_path}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="bg-surface/30 p-2.5 rounded-lg border border-border-iron/40 text-[11px] text-muted">
+                        {t("settings.talespireNotDetectedHint")}
+                      </div>
                     )}
-                  </div>
-                </div>
-
-                {talespireStatus.symbiote_folder_installed ? (
-                  <div className="bg-surface/40 p-2.5 rounded border border-border-iron/60 text-[11px] space-y-1">
-                    <div className="text-emerald-400 font-semibold flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                      <span>{t("settings.talespireAutoInstalled")}</span>
-                    </div>
-                    <div className="text-muted font-stat text-[10px] break-all bg-card/60 p-1.5 rounded border border-border-iron/40 select-all">
-                      {talespireStatus.symbiote_install_path}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="bg-surface/30 p-2.5 rounded border border-border-iron/40 text-[11px] text-muted">
-                    {t("settings.talespireNotDetectedHint")}
                   </div>
                 )}
               </div>
 
-              {/* Modo de Altura del Cursor */}
+              {/* Opciones Avanzadas de Calibración de Cursor (Acordeón desplegable) */}
               <div className="pt-2 border-t border-border-iron/40">
-                <label className="block text-xs text-muted mb-1.5 font-medium">
-                  {t("settings.calibrationLabel")}
-                </label>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleModeChange("dm")}
-                    className={`flex-1 py-1.5 rounded border text-xs font-semibold transition-colors ${
-                      settings.talespire_mode === "dm"
-                        ? "bg-gold text-canvas border-gold"
-                        : "border-border-iron bg-surface text-muted"
-                    }`}
-                  >
-                    {t("settings.dmMode")}
-                  </button>
-                  <button
-                    onClick={() => handleModeChange("player")}
-                    className={`flex-1 py-1.5 rounded border text-xs font-semibold transition-colors ${
-                      settings.talespire_mode === "player"
-                        ? "bg-gold text-canvas border-gold"
-                        : "border-border-iron bg-surface text-muted"
-                    }`}
-                  >
-                    {t("settings.playerMode")}
-                  </button>
-                </div>
-              </div>
-
-              <div className="pt-2 flex justify-end">
                 <button
-                  onClick={handleTestGesture}
-                  className="text-xs text-gold hover:underline font-medium"
+                  type="button"
+                  onClick={() => setShowCalibration(!showCalibration)}
+                  className="w-full flex items-center justify-between py-1 text-xs text-muted hover:text-gold transition-colors cursor-pointer"
                 >
-                  {t("settings.testGesture")}
+                  <span className="flex items-center gap-1.5 font-medium">
+                    <span>{showCalibration ? "▼" : "▶"}</span>
+                    <span>⚙️ {t("settings.calibrationAdvanced") || "Calibración de Altura (Modo DM / Jugador)"}</span>
+                  </span>
+                  <span className="text-[10px] uppercase font-mono text-muted">{showCalibration ? "Ocultar" : "Mostrar"}</span>
                 </button>
+
+                {showCalibration && (
+                  <div className="mt-3 space-y-2 pt-2 border-t border-border-iron/30">
+                    <label className="block text-xs text-muted font-medium">
+                      {t("settings.calibrationLabel")}
+                    </label>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleModeChange("dm")}
+                        className={`flex-1 py-1.5 rounded-lg border text-xs font-semibold transition-colors cursor-pointer ${
+                          settings.talespire_mode === "dm"
+                            ? "bg-gold text-canvas border-gold"
+                            : "border-border-iron bg-surface text-muted hover:text-main"
+                        }`}
+                      >
+                        {t("settings.dmMode")}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleModeChange("player")}
+                        className={`flex-1 py-1.5 rounded-lg border text-xs font-semibold transition-colors cursor-pointer ${
+                          settings.talespire_mode === "player"
+                            ? "bg-gold text-canvas border-gold"
+                            : "border-border-iron bg-surface text-muted hover:text-main"
+                        }`}
+                      >
+                        {t("settings.playerMode")}
+                      </button>
+                    </div>
+                    <div className="flex justify-end pt-1">
+                      <button
+                        type="button"
+                        onClick={handleTestGesture}
+                        className="text-xs text-gold hover:underline font-medium cursor-pointer"
+                      >
+                        {t("settings.testGesture")}
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </section>
 
-          {/* 3. Fuentes de Datos OKF */}
+          {/* 4. Guías & Aprendizaje (Modal y Reinicio de Tours) */}
           <section className="space-y-3 pt-3 border-t border-border-iron">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
-              {t("settings.okfTitle")}
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted flex items-center gap-2">
+              <BookOpen className="w-3.5 h-3.5 text-gold" />
+              <span>{t("settings.guideSectionTitle") || "Guías & Aprendizaje"}</span>
             </h3>
-
-            <div className="p-4 rounded-xl border border-border-iron bg-card space-y-3">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-muted">{t("settings.okfPath")}</span>
-                <span className="font-stat text-main bg-surface px-2 py-0.5 rounded border border-border-iron">
-                  {settings.okf_path}
-                </span>
+            <div className="p-4 rounded-xl border border-border-iron bg-card flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="text-xs text-muted max-w-sm">
+                {t("settings.guideSectionDesc")}
               </div>
-            </div>
-          </section>
-
-          {/* Guía y Tutorial Interactivo */}
-          {onReplayTour && (
-            <section className="space-y-3 pt-3 border-t border-border-iron">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted flex items-center gap-2">
-                <BookOpen className="w-3.5 h-3.5 text-gold" />
-                <span>{t("onboarding.replayTour")}</span>
-              </h3>
-              <div className="p-4 rounded-xl border border-border-iron bg-card flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div className="text-xs text-muted max-w-sm">
-                  {t("onboarding.subtitleWelcome")}
-                </div>
-                <div className="flex flex-wrap items-center gap-2 shrink-0">
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setShowGuideModal(true)}
+                  className="px-3 py-1.5 rounded-lg bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-semibold text-main flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <BookOpen className="w-3.5 h-3.5 text-gold" />
+                  <span>{t("settings.openGuideModal") || "Ver Guía de Parma"}</span>
+                </button>
+                {onReplayTour && (
                   <button
                     type="button"
                     onClick={() => {
                       onClose();
                       onReplayTour();
                     }}
-                    className="px-3 py-1.5 rounded-lg bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-semibold text-main flex items-center gap-1.5 transition-colors cursor-pointer"
+                    className="px-3 py-1.5 rounded-lg bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-semibold text-muted hover:text-main flex items-center gap-1.5 transition-colors cursor-pointer"
+                    title="Repetir el tour guiado por la aplicación"
                   >
-                    <BookOpen className="w-3.5 h-3.5 text-gold" />
-                    <span>{t("onboarding.replayTour")}</span>
+                    <RefreshCw className="w-3.5 h-3.5 text-gold" />
+                    <span>{t("onboarding.replayTour") || "Tour de Bienvenida"}</span>
                   </button>
-                  {onResetSectionTours && (
-                    <button
-                      type="button"
-                      onClick={() => {
+                )}
+                {onResetSectionTours && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (window.confirm(t("settings.resetToursConfirm") || "¿Deseas restablecer los tutoriales y guías interactivas para volver a verlos?")) {
                         onResetSectionTours();
                         showToast(t("onboarding.sectionToursResetSuccess") || "Tutoriales reiniciados", "success");
-                      }}
-                      className="px-3 py-1.5 rounded-lg bg-surface hover:bg-card border border-border-iron hover:border-border-gold/50 text-xs font-semibold text-muted hover:text-main flex items-center gap-1.5 transition-colors cursor-pointer"
-                    >
-                      <RefreshCw className="w-3.5 h-3.5 text-muted" />
-                      <span>{t("onboarding.resetSectionTours") || "Reiniciar guías"}</span>
-                    </button>
-                  )}
-                </div>
+                      }
+                    }}
+                    className="px-2.5 py-1.5 rounded-lg bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-semibold text-muted hover:text-main flex items-center gap-1 transition-colors cursor-pointer"
+                    title="Reiniciar los tutoriales de secciones individuales"
+                  >
+                    <RefreshCw className="w-3 h-3 text-muted" />
+                    <span>{t("onboarding.resetSectionTours") || "Reiniciar guías"}</span>
+                  </button>
+                )}
               </div>
-            </section>
-          )}
+            </div>
+          </section>
 
-          {/* 4. Gestión e Importación de Personajes */}
+          {/* 5. Fuentes de Datos OKF (Reubicado limpiamente al final) */}
+          <section className="space-y-3 pt-3 border-t border-border-iron">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
+              {t("settings.okfTitle")}
+            </h3>
+
+            <div className="p-3.5 rounded-xl border border-border-iron bg-card/60 flex items-center justify-between text-xs">
+              <span className="text-muted">{t("settings.okfPath")}</span>
+              <span className="font-stat text-main bg-surface px-2.5 py-1 rounded-lg border border-border-iron text-[11px] truncate max-w-[280px]">
+                {settings.okf_path}
+              </span>
+            </div>
+          </section>
+
+          {/* 6. Gestión e Importación de Personajes (Reubicado limpiamente al final) */}
           <section className="space-y-3 pt-3 border-t border-border-iron">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
@@ -478,15 +572,17 @@ export const SettingsView: React.FC<{
               </h3>
               <div className="flex items-center gap-2">
                 <button
+                  type="button"
                   onClick={handleImportPdf}
-                  className="px-2.5 py-1 rounded bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-medium text-muted hover:text-main flex items-center gap-1.5 transition-colors"
+                  className="px-2.5 py-1 rounded-lg bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-medium text-muted hover:text-main flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <Upload className="w-3.5 h-3.5" />
                   <span>{t("settings.importPdf")}</span>
                 </button>
                 <button
+                  type="button"
                   onClick={handleImportJson}
-                  className="px-2.5 py-1 rounded bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-medium text-muted hover:text-main flex items-center gap-1.5 transition-colors"
+                  className="px-2.5 py-1 rounded-lg bg-surface hover:bg-card border border-border-iron hover:border-gold text-xs font-medium text-muted hover:text-main flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <Upload className="w-3.5 h-3.5" />
                   <span>{t("settings.importJson")}</span>
@@ -495,33 +591,41 @@ export const SettingsView: React.FC<{
             </div>
 
             <div className="bg-card border border-border-iron rounded-xl divide-y divide-border-iron/60 overflow-hidden">
-              {characters.map((c) => (
-                <div key={c.id} className="p-3 flex items-center justify-between text-xs">
-                  <div>
-                    <span className="font-semibold text-main">{c.name}</span>
-                    <span className="text-muted ml-2">
-                      {t("header.levelShort")} {c.level} {translateClass(c.char_class)}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => {
-                        selectCharacter(c.id);
-                        onClose();
-                      }}
-                      className="px-2.5 py-1 rounded bg-surface border border-border-iron hover:border-gold text-muted hover:text-main"
-                    >
-                      {t("settings.load")}
-                    </button>
-                    <button
-                      onClick={() => handleDeleteCharacter(c.id, c.name)}
-                      className="px-2 py-1 rounded text-crimson hover:bg-crimson/10 border border-transparent hover:border-crimson/40"
-                    >
-                      {t("settings.delete")}
-                    </button>
-                  </div>
+              {characters.length === 0 ? (
+                <div className="p-4 text-center text-xs text-muted">
+                  No hay personajes guardados en la base de datos local.
                 </div>
-              ))}
+              ) : (
+                characters.map((c) => (
+                  <div key={c.id} className="p-3 flex items-center justify-between text-xs">
+                    <div>
+                      <span className="font-semibold text-main">{c.name}</span>
+                      <span className="text-muted ml-2">
+                        {t("header.levelShort")} {c.level} {translateClass(c.char_class)}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          selectCharacter(c.id);
+                          onClose();
+                        }}
+                        className="px-2.5 py-1 rounded-lg bg-surface border border-border-iron hover:border-gold text-muted hover:text-main cursor-pointer"
+                      >
+                        {t("settings.load")}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteCharacter(c.id, c.name)}
+                        className="px-2 py-1 rounded-lg text-crimson hover:bg-crimson/10 border border-transparent hover:border-crimson/40 cursor-pointer"
+                      >
+                        {t("settings.delete")}
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </section>
         </div>
@@ -529,13 +633,112 @@ export const SettingsView: React.FC<{
         {/* Footer del Modal */}
         <div className="px-6 py-3 border-t border-border-iron flex justify-end bg-card/40">
           <button
+            type="button"
             onClick={onClose}
-            className="px-5 py-1.5 rounded bg-gold hover:bg-gold-hover text-canvas font-semibold text-xs transition-colors shadow-sm"
+            className="px-5 py-1.5 rounded-xl bg-gold hover:bg-gold-hover text-canvas font-semibold text-xs transition-colors shadow-sm cursor-pointer"
           >
             {t("settings.acceptClose")}
           </button>
         </div>
       </div>
+
+      {/* Modal Implícito de Guía de Parma */}
+      {showGuideModal && (
+        <div className="fixed inset-0 z-60 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-xs" onClick={() => setShowGuideModal(false)} />
+          <div className="relative w-full max-w-xl bg-surface border border-border-iron rounded-2xl shadow-2xl flex flex-col max-h-[80vh] z-10 overflow-hidden select-none">
+            {/* Cabecera de la Guía */}
+            <div className="px-6 py-4 border-b border-border-iron flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <span className="p-2 rounded-lg bg-gold/10 text-gold text-base">📖</span>
+                <div>
+                  <h3 className="font-display font-bold text-lg text-gold">{t("settings.guideModalTitle") || "Guía Rápida de Parma D&D"}</h3>
+                  <p className="text-xs text-muted">{t("settings.guideModalSubtitle")}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowGuideModal(false)}
+                className="p-1.5 rounded-lg text-muted hover:text-main hover:bg-card transition-colors cursor-pointer"
+                title={t("settings.guideCloseTitle")}
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Contenido Desplazable de la Guía */}
+            <div className="p-6 overflow-y-auto space-y-4 text-xs">
+              <div className="p-3.5 rounded-xl bg-card border border-border-iron/80 space-y-1.5">
+                <div className="font-semibold text-main text-sm flex items-center gap-2">
+                  <span>🛡️</span>
+                  <span>{t("settings.guideSheetTitle")}</span>
+                </div>
+                <p className="text-muted leading-relaxed">
+                  {t("settings.guideSheetDesc")}
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-card border border-border-iron/80 space-y-1.5">
+                <div className="font-semibold text-main text-sm flex items-center gap-2">
+                  <span>⚡</span>
+                  <span>{t("settings.guideRulesTitle")}</span>
+                </div>
+                <p className="text-muted leading-relaxed">
+                  {t("settings.guideRulesDesc")}
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-card border border-border-iron/80 space-y-1.5">
+                <div className="font-semibold text-main text-sm flex items-center gap-2">
+                  <span>🔮</span>
+                  <span>{t("settings.guideGrimoireTitle")}</span>
+                </div>
+                <p className="text-muted leading-relaxed">
+                  {t("settings.guideGrimoireDesc")}
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-card border border-border-iron/80 space-y-1.5">
+                <div className="font-semibold text-main text-sm flex items-center gap-2">
+                  <span>🎲</span>
+                  <span>{t("settings.guideDiceTitle")}</span>
+                </div>
+                <p className="text-muted leading-relaxed">
+                  {t("settings.guideDiceDesc")}
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-card border border-border-iron/80 space-y-1.5">
+                <div className="font-semibold text-main text-sm flex items-center gap-2">
+                  <span>⌨️</span>
+                  <span>{t("settings.guideShortcutsTitle")}</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 pt-1 text-[11px]">
+                  <div className="flex items-center gap-2 bg-surface/50 p-2 rounded-lg border border-border-iron/50">
+                    <kbd className="px-2 py-0.5 rounded bg-card border border-border-iron font-mono text-gold font-bold">{t("settings.guideShortcutSpaceKey")}</kbd>
+                    <span className="text-muted">{t("settings.guideShortcutDiceTray")}</span>
+                  </div>
+                  <div className="flex items-center gap-2 bg-surface/50 p-2 rounded-lg border border-border-iron/50">
+                    <kbd className="px-2 py-0.5 rounded bg-card border border-border-iron font-mono text-gold font-bold">Esc</kbd>
+                    <span className="text-muted">{t("settings.guideShortcutCloseModals")}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer de la Guía */}
+            <div className="px-6 py-3 border-t border-border-iron flex justify-end bg-card/40">
+              <button
+                type="button"
+                onClick={() => setShowGuideModal(false)}
+                className="px-5 py-1.5 rounded-xl bg-gold hover:bg-gold-hover text-canvas font-semibold text-xs transition-colors shadow-sm cursor-pointer"
+              >
+                {t("settings.closeGuideModal") || "Entendido, Cerrar Guía"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

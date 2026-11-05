@@ -39,9 +39,11 @@ autosave_*.json
 *.db
 *.db-wal
 *.db-shm
+*.bak*
 data/*.db
 data/*.db-wal
 data/*.db-shm
+data/*.bak*
 data/characters/portraits/
 data/bin/
 
@@ -56,3 +58,12 @@ character_export_*.pdf
 frontend/node_modules/
 frontend/.vite/
 frontend/dist/
+
+# Worktrees aislados para agentes concurrentes (MCP2P)
+.worktrees/
+
+# Documentos internos de contexto de agentes
+CLAUDE.md
+docs/PARMA_MASTER_CONTEXT_AND_ARCHITECTURE.md
+docs/Parma 1.0.4 — Plan de Hardening.md
+

@@ -3,7 +3,7 @@ id: clerigo_vida_en
 nombre: Life Domain
 nombre_ingles: Life Domain
 tipo: subclase
-clase_padre: Clérigo
+clase_padre: Cleric
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Dominio de la Vida
 ---
 
 # Life Domain
-**Clase Base:** Clérigo  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Cleric  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
-El conducto supremo de energía restauradora divina, maximiza cada conjuro curativo y protege con armaduras pesadas.
+## Archetype Summary
+The supreme conduit of divine restorative energy, they maximize every healing spell and protect with heavy armor.

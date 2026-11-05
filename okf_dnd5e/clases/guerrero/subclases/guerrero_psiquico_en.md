@@ -3,7 +3,7 @@ id: guerrero_psiquico_en
 nombre: Psi Warrior
 nombre_ingles: Psi Warrior
 tipo: subclase
-clase_padre: Guerrero
+clase_padre: Fighter
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Guerrero Psíquico
 ---
 
 # Psi Warrior
-**Clase Base:** Guerrero  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Fighter  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
-Manipula energía psiónica para impulsar sus golpes con telequinesis, proyectar escudos de fuerza y mover objetos o criaturas con la mente.
+## Archetype Summary
+Manipulates psionic energy to power their strikes with telekinesis, project force shields, and move objects or creatures with the mind.

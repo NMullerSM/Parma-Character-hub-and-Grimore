@@ -8,7 +8,10 @@ import re
 import sys
 import time
 import shutil
+import hashlib
+import hmac
 import platform
+import socket
 import subprocess
 import threading
 import urllib.request
@@ -27,10 +30,16 @@ except ImportError:
 class CloudflareTunnelManager:
     """Administra la descarga, ejecución y captura de URL de cloudflared."""
 
+    CLOUDFLARED_VERSION = "2024.12.2"
     CLOUDFLARED_URLS = {
-        "Windows": "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe",
-        "Linux": "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64",
-        "Darwin": "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-darwin-amd64",
+        "Windows": f"https://github.com/cloudflare/cloudflared/releases/download/{CLOUDFLARED_VERSION}/cloudflared-windows-amd64.exe",
+        "Linux": f"https://github.com/cloudflare/cloudflared/releases/download/{CLOUDFLARED_VERSION}/cloudflared-linux-amd64",
+        "Darwin": f"https://github.com/cloudflare/cloudflared/releases/download/{CLOUDFLARED_VERSION}/cloudflared-darwin-amd64",
+    }
+    CLOUDFLARED_SHA256 = {
+        "Windows": "c2f4a3c3ea4c62eed562ede027d586a6044d35517e335e642f4e9783e651e4a3",
+        "Linux": "5237675a5e806120729acc78c5be02f9db5f406717699587abfa72b49b39fe40",
+        "Darwin": "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5",
     }
 
     def __init__(self, base_dir: Optional[str] = None):
@@ -49,11 +58,21 @@ class CloudflareTunnelManager:
         exe_name = "cloudflared.exe" if self.os_type == "Windows" else "cloudflared"
         # 1. Verificar si existe en user_data_dir/bin
         local_bin = os.path.join(self.bin_dir, exe_name)
+        if self.os_type != "Windows" and os.path.isfile(local_bin) and not os.access(local_bin, os.X_OK):
+            try:
+                os.chmod(local_bin, 0o755)
+            except Exception:
+                pass
         if os.path.isfile(local_bin) and os.access(local_bin, os.X_OK if self.os_type != "Windows" else os.R_OK):
             return local_bin
 
         # 2. Verificar si existe en bundle_dir/data/bin
         bundle_bin = os.path.join(self.base_dir, "data", "bin", exe_name)
+        if self.os_type != "Windows" and os.path.isfile(bundle_bin) and not os.access(bundle_bin, os.X_OK):
+            try:
+                os.chmod(bundle_bin, 0o755)
+            except Exception:
+                pass
         if os.path.isfile(bundle_bin) and os.access(bundle_bin, os.X_OK if self.os_type != "Windows" else os.R_OK):
             return bundle_bin
 
@@ -70,10 +89,27 @@ class CloudflareTunnelManager:
         return os.path.isfile(path) or bool(shutil.which("cloudflared"))
 
     def download_binary(self, progress_callback: Optional[Callable[[str], None]] = None) -> bool:
-        """Descarga el binario oficial de Cloudflare si no existe."""
+        """Descarga el binario oficial de Cloudflare y valida su hash SHA256 antes de instalar."""
         dest = self.get_binary_path()
+        expected_hash = self.CLOUDFLARED_SHA256.get(self.os_type)
+
+        # Si ya existe en dest, verificar integridad si tenemos hash esperado
         if os.path.exists(dest) and os.path.getsize(dest) > 1000000:
-            return True
+            if expected_hash:
+                hasher = hashlib.sha256()
+                with open(dest, "rb") as f:
+                    while chunk := f.read(65536):
+                        hasher.update(chunk)
+                if hmac.compare_digest(hasher.hexdigest().lower(), expected_hash.lower()):
+                    return True
+                else:
+                    # Archivo corrupto o alterado, se elimina y redescarga
+                    try:
+                        os.remove(dest)
+                    except Exception:
+                        pass
+            else:
+                return True
 
         url = self.CLOUDFLARED_URLS.get(self.os_type)
         if not url:
@@ -83,12 +119,26 @@ class CloudflareTunnelManager:
 
         try:
             if progress_callback:
-                progress_callback(f"Descargando cloudflared oficial ({self.os_type})...")
-            
-            # Descargar archivo temporal y luego mover
+                progress_callback(f"Descargando cloudflared {self.CLOUDFLARED_VERSION} oficial ({self.os_type})...")
+
+            # Descargar archivo temporal
             tmp_dest = f"{dest}.tmp"
-            urllib.request.urlretrieve(url, tmp_dest)
-            
+            hasher = hashlib.sha256()
+            with urllib.request.urlopen(url, timeout=60) as resp, open(tmp_dest, "wb") as out:
+                while chunk := resp.read(65536):
+                    out.write(chunk)
+                    hasher.update(chunk)
+
+            # Verificación de integridad SHA256 estricta
+            calc_hash = hasher.hexdigest().lower()
+            if expected_hash and not hmac.compare_digest(calc_hash, expected_hash.lower()):
+                if os.path.exists(tmp_dest):
+                    os.remove(tmp_dest)
+                err_msg = f"Fallo de integridad: hash SHA256 de cloudflared no coincide ({calc_hash} != {expected_hash})"
+                if progress_callback:
+                    progress_callback(err_msg)
+                return False
+
             if os.path.exists(dest):
                 try:
                     os.remove(dest)
@@ -97,13 +147,18 @@ class CloudflareTunnelManager:
             os.rename(tmp_dest, dest)
 
             if self.os_type != "Windows":
-                # Otorgar permisos de ejecución en Linux y Mac
+                # Otorgar permisos de ejecución en Linux y Mac solo tras verificar el hash
                 os.chmod(dest, 0o755)
 
             if progress_callback:
-                progress_callback("cloudflared descargado e instalado con éxito.")
+                progress_callback("cloudflared verificado e instalado con éxito.")
             return True
         except Exception as e:
+            if os.path.exists(f"{dest}.tmp"):
+                try:
+                    os.remove(f"{dest}.tmp")
+                except Exception:
+                    pass
             if progress_callback:
                 progress_callback(f"Error al descargar cloudflared: {e}")
             return False
@@ -207,6 +262,37 @@ class CloudflareTunnelManager:
             self.process = None
         self.is_running = False
         self.tunnel_url = None
+
+    def get_lan_ip(self) -> str:
+        """
+        Detecta la IP real de la interfaz de red local activa del host (no 127.0.0.1),
+        para poder exponer el servidor a otros dispositivos de la misma LAN cuando
+        no hay internet o el DM elige modo LAN explícito.
+        """
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+                s.settimeout(0.5)
+                # No se envían datos: solo se usa para que el SO resuelva la interfaz
+                # de salida activa hacia una red externa.
+                s.connect(("8.8.8.8", 80))
+                ip = s.getsockname()[0]
+                if ip and not ip.startswith("127."):
+                    return ip
+        except OSError:
+            pass
+
+        try:
+            ip = socket.gethostbyname(socket.gethostname())
+            if ip and not ip.startswith("127."):
+                return ip
+        except OSError:
+            pass
+
+        return "127.0.0.1"
+
+    def get_lan_url(self, local_port: int) -> str:
+        """Construye la URL http://IP_LAN:puerto para unirse desde la misma red local."""
+        return f"http://{self.get_lan_ip()}:{local_port}"
 
     def generate_qr_base64(self, url: str) -> str:
         """Genera un código QR en base64 para que los jugadores lo escaneen."""

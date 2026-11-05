@@ -15,14 +15,12 @@ nombre_ingles: Maestro En Armaduras Medias
 nombre_original: Maestro En Armaduras Medias
 ---
 
-# Maestro En Armaduras Medias
+# Medium Armor Master
 
-*Dote general (requisitos: nivel 4 o más, entrenamiento*
+*General Feat (Prerequisite: Level 4+, Medium Armor Training)*
 
-con armaduras medias) 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación 
-de Fuerza o Destreza en 1, hasta un máximo de 20. 
-Portador diestro. Mientras lleves puesta una armadura 
-media, puedes sumar 3 en lugar de 2 atu CA si tu 
-puntuación de Destreza es de 16 o más.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Strength or Dexterity score by 1, to a maximum of 20.
+
+Nimble Wearer. While you wear medium armor, you can add 3 instead of 2 to your AC if your Dexterity score is 16 or higher.

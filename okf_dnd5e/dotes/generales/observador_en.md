@@ -17,15 +17,12 @@ nombre_original: Observador
 
 # Observant
 
-*Dote general (requisitos: nivel 4 o más, Inteligencia*
+*General Feat (Prerequisite: Level 4+, Intelligence or Wisdom 13+)*
 
-o Sabiduría 13 o más) 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación de 
-Inteligencia o Sabiduría en 1, hasta un máximo de 20. 
-Observador perspicaz. Elige una de las siguientes 
-habilidades: Investigación, Percepción o Perspicacia. 
-Si no tienes competencia en la habilidad elegida, 
-la consigues, y si ya la tienes, ganas pericia en ella. 
-Búsqueda rápida. Puedes llevar a cabo la acción 
-de buscar As a bonus action.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Intelligence or Wisdom score by 1, to a maximum of 20.
+
+Sharp Observer. Choose one of the following skills: Investigation, Perception, or Insight. If you lack proficiency in the chosen skill, you gain it. If you already have proficiency in it, you gain expertise in it.
+
+Quick Search. You can take the Search action as a bonus action.

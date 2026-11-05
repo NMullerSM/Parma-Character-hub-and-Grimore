@@ -17,8 +17,6 @@ nombre_original: Duelo
 
 # Dueling
 
-*Dote de estilo de combate (requisitos: rasgo Estilo de combate)*
+*Fighting Style Feat (Prerequisite: Fighting Style feature)*
 
-Cuando empuñes un arma cuerpo a cuerpo con una mano 
-y ninguna en la otra, recibes un bonificador de +2 a tus 
-tiradas de daño con esa arma.
+When you wield a melee weapon in one hand and no other weapon in the other hand, you gain a +2 bonus to damage rolls with that weapon.

@@ -15,16 +15,12 @@ nombre_ingles: Maestro De Armas
 nombre_original: Maestro De Armas
 ---
 
-# Maestro De Armas
+# Weapon Master
 
-*Dote general (requisitos: nivel 4 o más)*
+*General Feat (Prerequisite: Level 4+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación 
-de Fuerza o Destreza en 1, hasta un máximo de 20. 
-Propiedad de maestría. Tu entrenamiento con armas 
-te permite utilizar la propiedad de maestría con un tipo 
-de arma sencilla o marcial de tu elección, siempre que 
-tengas competencia con ella. Tras finalizar un descanso 
-largo, puedes cambiar el tipo de arma elegida por otra 
-que cumpla el requisito.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Strength or Dexterity score by 1, to a maximum of 20.
+
+Mastery Property. Your weapon training lets you use the mastery property of one simple or martial weapon of your choice, provided you have proficiency with it. After you finish a Long Rest, you can change the weapon you chose to another weapon that meets the requirement.

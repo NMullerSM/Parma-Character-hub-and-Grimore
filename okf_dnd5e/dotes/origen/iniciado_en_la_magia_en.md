@@ -15,27 +15,16 @@ nombre_ingles: Iniciado En La Magia
 nombre_original: Iniciado En La Magia
 ---
 
-# Iniciado En La Magia
+# Magic Initiate
 
 *Origin Feat*
 
-Obtienes los siguientes beneficios: 
-Dos trucos. Aprendes dos trucos de tu elección 
-escogidos de entre los de la lista de conjuros de clérigo, 
-druida o mago. Tu aptitud mágica para los conjuros de 
-esta dote es la Inteligencia, la Sabiduría o el Carisma 
-(elígela cuando selecciones esta dote). 
-Conjuro de nivel 1. Elige un conjuro de nivel 1 de la 
-misma lista que seleccionaste para los trucos de esta dote. 
-Siempre tienes ese conjuro preparado. Puedes lanzarlo 
-una vez sin gastar un espacio de conjuro y recuperas 
-la capacidad de hacerlo de esta forma tras finalizar un 
-Long Rest. También puedes lanzar el conjuro usando 
-cualquier espacio de conjuro que tengas. 
-Cambiar conjuro. Cada vez que subas un nivel, puedes 
-reemplazar uno de los conjuros que elijas con esta dote 
-por un conjuro distinto del mismo nivel de la lista de 
-conjuros seleccionada. 
-Repetible. Puedes elegir esta dote más de una vez, 
-pero debes elegir una lista de conjuros distinta cada vez. 
-CAPÍTULO 5 | DOTES
+You gain the following benefits.
+
+Two Cantrips. You learn two cantrips of your choice from the Cleric, Druid, or Wizard spell list. Your spellcasting ability for these spells is Intelligence, Wisdom, or Charisma (choose one when you select this feat).
+
+Level 1 Spell. Choose a 1st-level spell from the same list you chose your cantrips from. You always have that spell prepared. You can cast it once without expending a spell slot, and you regain the ability to do so when you finish a Long Rest. You can also cast the spell using any spell slot you have.
+
+Swap Spell. Whenever you gain a level, you can replace one of the spells you chose with this feat with a different spell of the same level from the same spell list.
+
+Repeatable. You can take this feat more than once, but you must choose a different spell list each time.

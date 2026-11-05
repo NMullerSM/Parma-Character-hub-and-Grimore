@@ -166,11 +166,6 @@
       margin-bottom: 14px;
     }
 
-    .btn-group {
-      display: flex;
-      gap: 6px;
-    }
-
     button {
       flex: 1;
       background: var(--bg-card);
@@ -291,11 +286,10 @@
   <!-- Pruebas de Bandeja Manuales -->
   <div class="test-actions">
     <div class="info-card-title">Prueba de Bandeja 3D</div>
-    <div class="btn-group">
-      <button onclick="testTrayRoll('1d20+5')">1d20 + 5</button>
-      <button onclick="testTrayRoll('2d6+3')">2d6 + 3</button>
-      <button onclick="testTrayRoll('4d6')">4d6</button>
-    </div>
+    <button onclick="testTrayRoll('1d20+5')" class="btn-primary" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+      <span>🎲</span>
+      <span>Test (1d20 + 5)</span>
+    </button>
   </div>
 
   <!-- Registro en Vivo -->

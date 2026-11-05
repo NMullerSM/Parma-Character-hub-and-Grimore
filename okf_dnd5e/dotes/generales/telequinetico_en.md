@@ -17,22 +17,12 @@ nombre_original: Telequinético
 
 # Telekinetic
 
-*Dote general (requisitos: nivel 4 o más)*
+*General Feat (Prerequisite: Level 4+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación de 
-Inteligencia, Sabiduría o Carisma en 1, hasta un máximo 
-de 20. 
-Telequinesis menor. Aprendes el conjuro mano de mago. 
-Puedes lanzarlo sin componentes verbales o somáticos, 
-puedes hacer que la mano espectral sea invisible y su 
-alcance y la distancia a la que puede estar de ti aumentan 
-en 9 m cuando lo lances. La aptitud mágica del conjuro 
-es la característica aumentada por esta dote. 
-Empellón telequinético. As a bonus action, 
-puedes empujar telepáticamente a una criatura que 
-puedas ver within 30 feet o menos de ti. Si lo haces, el objetivo 
-deberá superar una Fuerza saving throw 
-(CD 8 más tu modificador por característica de la 
-puntuación aumentada por esta dota y tu bonificador 
-por competencia) o se moverá 1,5 m hacia ti o lejos de ti.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Intelligence, Wisdom, or Charisma score by 1, to a maximum of 20.
+
+Minor Telekinesis. You learn the Mage Hand cantrip. You can cast it without verbal or somatic components, you can make the spectral hand invisible, and its range and the distance it can be from you each increase by 30 feet (9 m) when you cast it. The spellcasting ability for the cantrip is the ability increased by this feat.
+
+Telekinetic Shove. As a bonus action, you can telepathically push a creature you can see within 30 feet (9 m) of you. If you do, the target must succeed on a Strength saving throw (DC 8 plus the modifier of the ability increased by this feat and your Proficiency Bonus) or be moved 5 feet (1.5 m) toward you or away from you.

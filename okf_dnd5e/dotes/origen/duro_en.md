@@ -15,13 +15,8 @@ nombre_ingles: Duro
 nombre_original: Duro
 ---
 
-# Duro
+# Tough
 
 *Origin Feat*
 
-Tus hit points máximos aumentan en una 
-cantidad igual al doble del nivel de tu personaje 
-cuando adquieres esta dote. A partir de entonces, 
-cada vez que subas un nivel de personaje, tus puntos 
-de golpe máximos aumentan en 2 hit points 
-adicionales.
+Your hit point maximum increases by an amount equal to twice your character level when you acquire this feat. After that, each time you gain a character level, your hit point maximum increases by an additional 2 hit points.

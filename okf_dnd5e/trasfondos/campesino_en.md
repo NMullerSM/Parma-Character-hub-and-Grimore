@@ -1,9 +1,9 @@
 ---
 id: campesino_en
-nombre: Campesino
-caracteristicas_clave: Fuerza, Constitución, Sabiduría
-dote_concedida: Duro
-habilidades_competentes: Supervivencia, Trato con Animales
+nombre: Peasant
+caracteristicas_clave: Strength, Constitution, Wisdom
+dote_concedida: Tough
+habilidades_competentes: Survival, Animal Handling
 fuente: PHB 2024
 pagina: 181
 tags:
@@ -12,12 +12,12 @@ tags:
 - trasfondo
 tipo: trasfondo
 idioma: en
-nombre_ingles: Campesino
+nombre_ingles: Peasant
 nombre_original: Campesino
 ---
 
-# Campesino
+# Peasant
 
-- **Puntuaciones de Característica**: Fuerza, Constitución, Sabiduría
-- **Origin Feat**: Duro
-- **Habilidades con Competencia**: Supervivencia, Trato con Animales
+- **Ability Scores**: Strength, Constitution, Wisdom
+- **Origin Feat**: Tough
+- **Skill Proficiencies**: Survival, Animal Handling

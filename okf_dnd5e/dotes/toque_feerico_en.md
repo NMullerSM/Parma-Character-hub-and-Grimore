@@ -2,7 +2,7 @@
 id: dote_toque_feerico_en
 nombre: Fey Touched
 nombre_ingles: Fey Touched
-fuente: Caldero de Tasha para Todo
+fuente: Tasha's Cauldron of Everything
 pagina: 82
 tipo: dote
 categoria: Mejora de Característica / Feat
@@ -17,9 +17,9 @@ nombre_original: Toque Feérico
 
 # Fey Touched
 
-Tu exposición a la magia de la Selva Feérica (*Feywild*) te ha otorgado capacidades sobrenaturales.
+Your exposure to the magic of the Feywild has granted you supernatural abilities.
 
-## Beneficios
-- **Mejora:** Aumenta tu puntuación de Inteligencia, Sabiduría o Carisma en +1 (hasta un máximo de 20).
-- **Paso Brumoso:** Aprendes el conjuro *Paso Brumoso*. Puedes lanzarlo 1 vez por Long Rest gratis sin gastar espacio de conjuro, y también con tus espacios normales de nivel 2+.
-- **Conjuro Adicional de 1.er Nivel:** Aprendes un conjuro de 1.er nivel de la escuela de Adivinación o Encantamiento (como *Risa Espantosa de Tasha*). Puedes lanzarlo 1 vez por Long Rest gratis, y también con tus espacios normales.
+## Benefits
+- **Ability Score Increase:** Increase your Intelligence, Wisdom, or Charisma score by 1 (to a maximum of 20).
+- **Misty Step:** You learn the *Misty Step* spell. You can cast it once per Long Rest without expending a spell slot, and you can also cast it using your normal spell slots of level 2 or higher.
+- **Extra 1st-Level Spell:** You learn a 1st-level spell from the Divination or Enchantment school, such as *Tasha's Hideous Laughter*. You can cast it once per Long Rest for free, and you can also cast it using your normal spell slots.

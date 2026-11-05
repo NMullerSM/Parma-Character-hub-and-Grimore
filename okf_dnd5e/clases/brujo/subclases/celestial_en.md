@@ -3,7 +3,7 @@ id: brujo_celestial_en
 nombre: Celestial Patron
 nombre_ingles: Celestial Patron
 tipo: subclase
-clase_padre: Brujo
+clase_padre: Warlock
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: El Celestial
 ---
 
 # Celestial Patron
-**Clase Base:** Brujo  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Warlock  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
-Alianza con un unicornio, solar o empíreo, disponiendo de una reserva de dados de sanación d6 que no consumen espacios de pacto.
+## Archetype Summary
+An alliance with a unicorn, a solar, or an empyrean, granting a pool of d6 healing dice that don't consume Pact Magic spell slots.

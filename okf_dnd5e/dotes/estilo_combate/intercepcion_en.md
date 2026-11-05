@@ -17,15 +17,6 @@ nombre_original: Intercepción
 
 # Interception
 
-*Dote de estilo de combate (requisitos: rasgo Estilo de combate)*
+*Fighting Style Feat (Prerequisite: Fighting Style feature)*
 
-Cuando una criatura que puedas ver acierte a otra 
-criatura que esté within 5 feet o menos de ti con una tirada de 
-ataque, puedes llevar a cabo una reacción para reducir 
-el daño causado al objetivo en 1d10 más tu bonificador 
-por competencia. Para usar esta reacción, debes estar 
-embrazando un escudo o empuñando un arma sencilla 
-o marcial. 
-
-
-210
+When a creature you can see hits another creature within 5 feet (1.5 m) of you with an attack roll, you can use your reaction to reduce the damage the target takes by 1d10 plus your Proficiency Bonus. To use this reaction, you must be holding a shield or wielding a simple or martial weapon.

@@ -5,7 +5,11 @@ a jugadores conectarse mediante navegadores web a través de Cloudflare Tunnels.
 """
 import os
 import json
+import time
 import socket
+import secrets
+import hashlib
+import hmac
 import asyncio
 import threading
 from typing import Dict, List, Optional, Any
@@ -14,6 +18,18 @@ from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+
+
+def is_local_request(client_host: str, headers: Dict[str, str]) -> bool:
+    """
+    Determina si la conexión se origina en el loopback local sin pasar por proxies/túneles.
+    Si incluye cabeceras de Cloudflare (cf-connecting-ip, cf-ray), se trata como remoto.
+    """
+    if "cf-connecting-ip" in headers or "cf-ray" in headers:
+        return False
+    if client_host in ("127.0.0.1", "::1", "localhost", "testclient"):
+        return True
+    return False
 
 
 class ConnectionManager:
@@ -120,21 +136,126 @@ class DmSessionServer:
         self.server: Optional[uvicorn.Server] = None
         self.thread: Optional[threading.Thread] = None
         self.loop: Optional[asyncio.AbstractEventLoop] = None
+        
+        # Hardening 1.0.4: Autenticación, invitaciones y rate limiting
+        self.current_invite_token: Optional[str] = None
+        self.session_approved_hashes: set = set()
+        self.pending_approvals: Dict[str, Dict[str, Any]] = {}
+        self.approval_events: Dict[str, asyncio.Event] = {}
+        self.msg_rate_records: Dict[str, List[float]] = {}
+        
         self.app = self._create_app()
+
+    def check_rate_limit(self, identifier: str, max_per_second: int = 25) -> bool:
+        """Rate limiter por token/IP para evitar saturación de mensajes."""
+        now = time.time()
+        records = self.msg_rate_records.setdefault(identifier, [])
+        records = [t for t in records if now - t < 1.0]
+        if len(records) >= max_per_second:
+            self.msg_rate_records[identifier] = records
+            return False
+        records.append(now)
+        self.msg_rate_records[identifier] = records
+        return True
+
+    def create_invite(self, expires_seconds: int = 7200) -> str:
+        """Genera y registra una invitación de un solo uso para la sesión actual."""
+        token = secrets.token_urlsafe(16)
+        self.current_invite_token = token
+        if self.current_session_id:
+            self.db.create_invitation(self.current_session_id, token, expires_seconds)
+        return token
+
+    def approve_player(self, token_hash: str) -> bool:
+        """Aprueba un jugador en espera desde la consola del DM."""
+        self.session_approved_hashes.add(token_hash)
+        self.db.approve_trusted_player(token_hash)
+        self.pending_approvals.pop(token_hash, None)
+        event = self.approval_events.pop(token_hash, None)
+        if event and self.loop and not self.loop.is_closed():
+            self.loop.call_soon_threadsafe(event.set)
+        return True
+
+    def revoke_player(self, token_hash: str) -> bool:
+        """Revoca a un jugador y cierra cualquier conexión activa."""
+        self.session_approved_hashes.discard(token_hash)
+        self.db.revoke_trusted_player(token_hash)
+        self.pending_approvals.pop(token_hash, None)
+        event = self.approval_events.pop(token_hash, None)
+        if event and self.loop and not self.loop.is_closed():
+            self.loop.call_soon_threadsafe(event.set)
+        for tok, ws in list(self.manager.active_players.items()):
+            h = hashlib.sha256(tok.encode("utf-8")).hexdigest()
+            if h == token_hash:
+                coro = ws.close(code=4403, reason="Acceso revocado por el DM")
+                self.execute_async(coro)
+                self.manager.disconnect_player(tok)
+        return True
+
+    def get_pending_approvals(self) -> List[Dict[str, Any]]:
+        """Lista las solicitudes de jugadores pendientes de aprobación."""
+        return [
+            {
+                "token_hash": h,
+                "name": data.get("name", "Aventurero"),
+                "connected_at": data.get("connected_at", 0),
+                "player_token": data.get("token", ""),
+            }
+            for h, data in self.pending_approvals.items()
+        ]
 
     def _create_app(self) -> FastAPI:
         app = FastAPI(title="Parma DM Online Hub")
 
         app.add_middleware(
             CORSMiddleware,
-            allow_origins=["*"],
+            allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1|.*\.trycloudflare\.com)(:\d+)?$",
             allow_credentials=True,
             allow_methods=["*"],
             allow_headers=["*"],
         )
 
+        def _check_remote_access(
+            request: Request,
+            key: Optional[str] = None,
+            token: Optional[str] = None,
+            invite: Optional[str] = None
+        ) -> bool:
+            client_host = request.client.host if request.client else "unknown"
+            headers = {k.lower(): v for k, v in request.headers.items()}
+            if is_local_request(client_host, headers):
+                return True
+
+            # Chequeo para accesos remotos vía túnel o proxy
+            auth_token = key or token or request.query_params.get("key") or request.query_params.get("token") or headers.get("x-session-token")
+            if auth_token:
+                token_hash = hashlib.sha256(auth_token.encode("utf-8")).hexdigest()
+                trusted = self.db.get_trusted_player_by_hash(token_hash)
+                if trusted and trusted.get("approved_by_dm") and not trusted.get("is_revoked"):
+                    return True
+
+            inv_code = invite or request.query_params.get("invite") or headers.get("x-invite-code")
+            if inv_code:
+                if self.current_invite_token and inv_code == self.current_invite_token:
+                    return True
+                inv = self.db.get_invitation(inv_code)
+                if inv:
+                    return True
+
+            return False
+
         @app.get("/api/session/info")
-        async def session_info():
+        async def session_info(
+            request: Request,
+            key: Optional[str] = None,
+            token: Optional[str] = None,
+            invite: Optional[str] = None
+        ):
+            if not _check_remote_access(request, key, token, invite):
+                return JSONResponse(
+                    status_code=401,
+                    content={"error": "Acceso no autorizado", "is_active": self.current_session_id is not None}
+                )
             return {
                 "session_id": self.current_session_id,
                 "session_name": self.session_name,
@@ -144,81 +265,226 @@ class DmSessionServer:
             }
 
         @app.get("/api/session/players")
-        async def session_players():
+        async def session_players(
+            request: Request,
+            key: Optional[str] = None,
+            token: Optional[str] = None,
+            invite: Optional[str] = None
+        ):
+            if not _check_remote_access(request, key, token, invite):
+                return JSONResponse(
+                    status_code=401,
+                    content={"error": "Acceso no autorizado al listado de jugadores"}
+                )
             if not self.current_session_id:
                 return []
             return self.db.get_session_players(self.current_session_id)
 
         @app.post("/api/player/join")
         async def player_join(request: Request):
+            client_host = request.client.host if request.client else "unknown"
+            headers = {k.lower(): v for k, v in request.headers.items()}
+            is_local = is_local_request(client_host, headers)
+
             data = await request.json()
-            token = data.get("token") or f"usr_{os.urandom(4).hex()}"
+            token = data.get("token") or f"usr_{secrets.token_hex(4)}"
+            invite = data.get("invite")
             char = data.get("character") or {}
             char_name = char.get("name") or data.get("character_name") or "Aventurero Desconocido"
+
+            token_hash = hashlib.sha256(token.encode("utf-8")).hexdigest()
+
+            # Validación de seguridad para jugadores remotos
+            if not is_local:
+                trusted = self.db.get_trusted_player_by_hash(token_hash)
+                if trusted and trusted.get("is_revoked"):
+                    return JSONResponse(status_code=403, content={"success": False, "error": "Acceso revocado por el DM"})
+
+                if not trusted:
+                    if invite:
+                        inv = self.db.get_invitation(invite)
+                        if not inv:
+                            return JSONResponse(status_code=401, content={"success": False, "error": "Invitación inválida o expirada"})
+                        self.db.register_trusted_player(char_name, token_hash, approved=False)
+                        self.db.mark_invitation_used(invite, token_hash)
+                    elif token.startswith("p_"):
+                        # Retrocompatibilidad para tokens existentes de 1.0.3
+                        self.db.register_trusted_player(char_name, token_hash, approved=False)
+                    else:
+                        return JSONResponse(status_code=401, content={"success": False, "error": "Se requiere invitación válida o credencial registrada"})
+
+            # Sanitización de rangos numéricos
+            lvl = max(1, min(30, int(char.get("level", 1) or 1)))
+            hp_max = max(1, min(9999, int(char.get("hp_max", 10) or 10)))
+            hp_cur = max(0, min(hp_max, int(char.get("hp_current", hp_max) or hp_max)))
+            ac = max(0, min(100, int(char.get("ac", 10) or 10)))
 
             if self.current_session_id:
                 self.db.upsert_session_player(
                     session_id=self.current_session_id,
                     player_token=token,
-                    character_name=char_name,
+                    character_name=char_name[:100],
                     character_id=char.get("id"),
-                    character_class=char.get("char_class", ""),
-                    character_level=int(char.get("level", 1)),
-                    hp_current=int(char.get("hp_current", 10)),
-                    hp_max=int(char.get("hp_max", 10)),
-                    ac=int(char.get("ac", 10)),
+                    character_class=str(char.get("char_class", ""))[:50],
+                    character_level=lvl,
+                    hp_current=hp_cur,
+                    hp_max=hp_max,
+                    ac=ac,
                     status="ALIVE",
                     data_json=json.dumps(char, ensure_ascii=False),
                 )
                 self.db.log_session_event(
                     session_id=self.current_session_id,
                     event_type="PLAYER_JOIN",
-                    actor_name=char_name,
-                    details={"token": token, "level": char.get("level", 1)},
+                    actor_name=char_name[:100],
+                    details={"token": token, "level": lvl},
                 )
                 # Notificar a la consola DM
                 await self.manager.send_to_dm({
                     "type": "PLAYER_JOINED",
                     "player_token": token,
-                    "character_name": char_name,
+                    "character_name": char_name[:100],
                     "character": char,
                 })
 
             return {"success": True, "token": token, "session_id": self.current_session_id}
 
         @app.websocket("/ws")
-        async def websocket_endpoint(websocket: WebSocket, token: Optional[str] = None, role: str = "player"):
+        async def websocket_endpoint(
+            websocket: WebSocket,
+            token: Optional[str] = None,
+            invite: Optional[str] = None,
+            role: str = "player"
+        ):
+            client_host = websocket.client.host if websocket.client else "unknown"
+            headers = {k.lower(): v for k, v in websocket.headers.items()}
+            is_local = is_local_request(client_host, headers)
+
+            # Blindaje 1: El rol 'dm' solo puede conectarse desde loopback local
             if role == "dm":
+                if not is_local:
+                    await websocket.close(code=4403, reason="Acceso DM denegado desde red externa")
+                    return
                 await self.manager.connect_dm(websocket)
                 try:
                     while True:
                         msg_text = await websocket.receive_text()
+                        if len(msg_text) > 65536:
+                            continue
                         msg = json.loads(msg_text)
                         await self._handle_dm_ws_message(msg)
                 except WebSocketDisconnect:
                     self.manager.disconnect_dm(websocket)
+                return
+
+            # Para jugadores:
+            player_token = token or f"p_{secrets.token_hex(8)}"
+            token_hash = hashlib.sha256(player_token.encode("utf-8")).hexdigest()
+
+            # Blindaje 2: Si es remoto, autenticación obligatoria y aprobación del DM
+            if not is_local:
+                trusted = self.db.get_trusted_player_by_hash(token_hash)
+                if trusted and trusted.get("is_revoked"):
+                    await websocket.close(code=4403, reason="Acceso revocado por el DM")
+                    return
+
+                if not trusted:
+                    if invite:
+                        inv = self.db.get_invitation(invite)
+                        if not inv:
+                            await websocket.close(code=4401, reason="Invitación inválida o expirada")
+                            return
+                        self.db.register_trusted_player("Aventurero", token_hash, approved=False)
+                        self.db.mark_invitation_used(invite, token_hash)
+                    elif player_token.startswith("p_"):
+                        # Compatibilidad con token existente 1.0.3
+                        self.db.register_trusted_player("Aventurero 1.0.3", token_hash, approved=False)
+                    else:
+                        await websocket.close(code=4401, reason="Credencial requerida")
+                        return
+
+                # Flujo de aprobación obligatoria por el DM
+                if token_hash not in self.session_approved_hashes:
+                    approval_event = asyncio.Event()
+                    self.approval_events[token_hash] = approval_event
+                    self.pending_approvals[token_hash] = {
+                        "websocket": websocket,
+                        "token": player_token,
+                        "token_hash": token_hash,
+                        "name": trusted.get("name") if trusted else "Aventurero",
+                        "connected_at": time.time(),
+                    }
+
+                    await websocket.accept()
+                    await websocket.send_text(json.dumps({
+                        "type": "PENDING_DM_APPROVAL",
+                        "message": "Esperando aprobación del Dungeon Master...",
+                    }, ensure_ascii=False))
+
+                    await self.manager.send_to_dm({
+                        "type": "PLAYER_APPROVAL_REQUEST",
+                        "token_hash": token_hash,
+                        "player_token": player_token,
+                        "character_name": trusted.get("name") if trusted else "Aventurero",
+                    })
+
+                    try:
+                        await asyncio.wait_for(approval_event.wait(), timeout=120.0)
+                    except asyncio.TimeoutError:
+                        self.pending_approvals.pop(token_hash, None)
+                        self.approval_events.pop(token_hash, None)
+                        try:
+                            await websocket.send_text(json.dumps({
+                                "type": "APPROVAL_TIMEOUT",
+                                "message": "Tiempo agotado sin confirmación del DM.",
+                            }, ensure_ascii=False))
+                            await websocket.close(code=4408, reason="Tiempo de aprobación agotado")
+                        except Exception:
+                            pass
+                        return
+
+                    self.manager.active_players[player_token] = websocket
+                    await websocket.send_text(json.dumps({
+                        "type": "DM_APPROVAL_GRANTED",
+                        "message": "¡Aprobado por el Dungeon Master! Bienvenido a la sesión.",
+                    }, ensure_ascii=False))
+                else:
+                    await self.manager.connect_player(player_token, websocket)
             else:
-                player_token = token or f"p_{os.urandom(4).hex()}"
+                # Conexión local sin barreras adicionales
                 await self.manager.connect_player(player_token, websocket)
-                # Notificar a DM que el socket está en línea
+
+            # Notificar al DM que el socket está en línea
+            await self.manager.send_to_dm({
+                "type": "PLAYER_SOCKET_ONLINE",
+                "player_token": player_token,
+            })
+
+            try:
+                while True:
+                    msg_text = await websocket.receive_text()
+                    if len(msg_text) > 65536:
+                        continue
+                    if not self.check_rate_limit(player_token):
+                        continue
+                    msg = json.loads(msg_text)
+                    await self._handle_player_ws_message(player_token, msg)
+            except WebSocketDisconnect:
+                self.manager.disconnect_player(player_token)
                 await self.manager.send_to_dm({
-                    "type": "PLAYER_SOCKET_ONLINE",
+                    "type": "PLAYER_SOCKET_OFFLINE",
                     "player_token": player_token,
                 })
-                try:
-                    while True:
-                        msg_text = await websocket.receive_text()
-                        msg = json.loads(msg_text)
-                        await self._handle_player_ws_message(player_token, msg)
-                except WebSocketDisconnect:
-                    self.manager.disconnect_player(player_token)
-                    await self.manager.send_to_dm({
-                        "type": "PLAYER_SOCKET_OFFLINE",
-                        "player_token": player_token,
-                    })
 
         @app.websocket("/ws/talespire")
         async def talespire_websocket_endpoint(websocket: WebSocket):
+            client_host = websocket.client.host if websocket.client else "unknown"
+            headers = {k.lower(): v for k, v in websocket.headers.items()}
+            # Blindaje 3: TaleSpire solo alcanzable por loopback local
+            if not is_local_request(client_host, headers):
+                await websocket.close(code=4403, reason="TaleSpire Symbiote solo permitido en loopback local")
+                return
+
             await self.manager.connect_symbiote(websocket)
             await self.manager.send_to_dm({
                 "type": "TALESPIRE_SYMBIOTE_STATUS",
@@ -227,6 +493,8 @@ class DmSessionServer:
             try:
                 while True:
                     msg_text = await websocket.receive_text()
+                    if len(msg_text) > 65536:
+                        continue
                     msg = json.loads(msg_text)
                     await self._handle_symbiote_ws_message(msg)
             except WebSocketDisconnect:
@@ -238,6 +506,23 @@ class DmSessionServer:
 
         # Servir build estática de frontend para los jugadores que entran por el túnel
         dist_dir = os.path.join(self.base_dir, "frontend", "dist")
+        if not os.path.isdir(dist_dir):
+            alt_dist = os.path.join(self.base_dir, "dist_ui")
+            if os.path.isdir(alt_dist):
+                dist_dir = alt_dist
+            else:
+                try:
+                    from core.paths import get_bundle_dir
+                    bundle_base = get_bundle_dir()
+                    cand1 = os.path.join(bundle_base, "frontend", "dist")
+                    cand2 = os.path.join(bundle_base, "dist_ui")
+                    if os.path.isdir(cand1):
+                        dist_dir = cand1
+                    elif os.path.isdir(cand2):
+                        dist_dir = cand2
+                except Exception:
+                    pass
+
         if os.path.isdir(dist_dir):
             assets_dir = os.path.join(dist_dir, "assets")
             if os.path.isdir(assets_dir):
@@ -251,6 +536,10 @@ class DmSessionServer:
                     return FileResponse(target)
                 if os.path.isfile(index_path):
                     return FileResponse(index_path)
+                return HTMLResponse("<h1>Parma D&D — Servidor Activo</h1><p>Conectando con el DM...</p>")
+        else:
+            @app.get("/{full_path:path}")
+            async def serve_spa_fallback(full_path: str):
                 return HTMLResponse("<h1>Parma D&D — Servidor Activo</h1><p>Conectando con el DM...</p>")
 
         return app
@@ -428,34 +717,36 @@ class DmSessionServer:
     # Acciones disparadas por el DM hacia los jugadores
     def apply_damage(self, player_token: str, delta: int, actor_name: str = "DM") -> bool:
         """Ordena al jugador descontar vida (activa destello rojo de daño)."""
+        safe_delta = max(1, min(9999, abs(int(delta))))
         if self.current_session_id:
             self.db.log_session_event(
                 session_id=self.current_session_id,
                 event_type="DAMAGE",
                 actor_name=actor_name,
-                details={"delta": delta, "player_token": player_token},
+                details={"delta": safe_delta, "player_token": player_token},
             )
         coro = self.manager.send_to_player(player_token, {
             "type": "DM_APPLY_DAMAGE",
-            "delta": delta,
-            "message": f"El DM te ha infligido {delta} puntos de daño.",
+            "delta": safe_delta,
+            "message": f"El DM te ha infligido {safe_delta} puntos de daño.",
         })
         self.execute_async(coro)
         return True
 
     def apply_heal(self, player_token: str, delta: int, actor_name: str = "DM") -> bool:
         """Ordena al jugador sumar vida (activa destello verde de curación)."""
+        safe_delta = max(1, min(9999, abs(int(delta))))
         if self.current_session_id:
             self.db.log_session_event(
                 session_id=self.current_session_id,
                 event_type="HEAL",
                 actor_name=actor_name,
-                details={"delta": delta, "player_token": player_token},
+                details={"delta": safe_delta, "player_token": player_token},
             )
         coro = self.manager.send_to_player(player_token, {
             "type": "DM_APPLY_HEAL",
-            "delta": delta,
-            "message": f"El DM te ha curado {delta} puntos de golpe.",
+            "delta": safe_delta,
+            "message": f"El DM te ha curado {safe_delta} puntos de golpe.",
         })
         self.execute_async(coro)
         return True

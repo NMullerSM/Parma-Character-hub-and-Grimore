@@ -17,16 +17,14 @@ nombre_original: Acechador
 
 # Skulker
 
-*Dote general (requisitos: nivel 4 o más, Destreza 13 o más)*
+*General Feat (Prerequisite: Level 4+, Dexterity 13+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación 
-de Destreza en 1, hasta un máximo de 20. 
-Visión ciega. Tienes visión ciega hasta 3 m. 
-Niebla de guerra. Aprovechas las distracciones de la 
-batalla, lo que te da ventaja en las pruebas de Destreza 
-(Sigilo) que hagas como parte de la acción de esconderse 
-durante el combate. 
-En la sombra. Si haces una attack roll mientras 
-estás escondido y no acierta, la tirada no revelará tu 
-ubicación.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Dexterity score by 1, to a maximum of 20.
+
+Blindsight. You have Blindsight out to 10 feet (3 m).
+
+Fog of War. You take advantage of the distractions of battle, which gives you advantage on Dexterity (Stealth) checks you make as part of the Hide action during combat.
+
+In the Shadows. If you make an attack roll while you are hidden and miss, the roll doesn't reveal your location.

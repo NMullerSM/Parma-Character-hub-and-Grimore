@@ -17,15 +17,14 @@ nombre_original: Atleta
 
 # Athlete
 
-*Dote general (requisitos: nivel 4 o más, Fuerza o Destreza 13*
+*General Feat (Prerequisite: Level 4+, Strength or Dexterity 13+)*
 
-omás) 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación 
-de Fuerza o Destreza en 1, hasta un máximo de 20. 
-Velocidad trepando. Obtienes una velocidad trepando 
-igual a tu velocidad. 
-Levantarse de un salto. Si tienes el estado de derribado, 
-puedes ponerte de pie con solo 1,5 m de movimiento. 
-Saltar. Puedes hacer un salto de longitud o de altura 
-con carrerilla tras moverte solo 1,5 m.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Strength or Dexterity score by 1, to a maximum of 20.
+
+Climbing Speed. You gain a Climb Speed equal to your Speed.
+
+Leap to Your Feet. If you are Prone, you can stand up using only 5 feet (1.5 m) of movement.
+
+Running Jump. You can make a long jump or a high jump with a running start after moving only 5 feet (1.5 m).

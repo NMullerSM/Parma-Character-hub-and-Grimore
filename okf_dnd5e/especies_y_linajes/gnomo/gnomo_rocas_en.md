@@ -2,7 +2,7 @@
 id: gnomo_rocas_en
 nombre: Rock Gnome
 nombre_ingles: Rock Gnome
-fuente: Manual del Jugador 2024
+fuente: PHB 2024
 pagina: 193
 tipo: especie_linaje
 velocidad: 9 m (30 pies)
@@ -18,9 +18,9 @@ nombre_original: Gnomo de las Rocas
 
 # Rock Gnome
 
-Ingeniosos artesanos e inventores mecánicos que dominan el engranaje y los mecanismos relojeros.
+Ingenious artisans and mechanical inventors who master gears and clockwork mechanisms.
 
-## Rasgos de Linaje
-- **Conocimiento de Artífice:** Doble de bonificador de competencia en pruebas de Historia sobre objetos mágicos, armas tecnológicas o dispositivos mecánicos.
-- **Relojero Inventor:** Con herramientas de manitas y 1 hora de trabajo, puedes construir un mecanismo diminuto (juguete de relojería, encendedor de fuego o caja de música) que funciona durante 24 horas.
-- **Astucia Gnoma:** Ventaja en todas las saving throws de Inteligencia, Sabiduría y Carisma contra magia.
+## Lineage Traits
+- **Artificer's Lore:** You double your Proficiency Bonus on History checks related to magic items, technological weapons, or mechanical devices.
+- **Tinkerer:** With tinker's tools and 1 hour of work, you can build a tiny mechanism (a clockwork toy, a fire starter, or a music box) that operates for 24 hours.
+- **Gnome Cunning:** You have advantage on all Intelligence, Wisdom, and Charisma saving throws against magic.

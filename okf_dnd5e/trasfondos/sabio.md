@@ -14,7 +14,7 @@ tags:
 - español
 tipo: trasfondo
 idioma: es
-nombre_ingles: Sabio
+nombre_ingles: Sage
 ---
 
 # Trasfondo: Sabio

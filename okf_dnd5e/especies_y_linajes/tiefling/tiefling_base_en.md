@@ -22,39 +22,20 @@ nombre_original: Tiefling
 
 # Tiefling
 
-- **Tipo de Criatura**: humanoide
-- **Tamaño**: Mediano o Pequeño
-- **Velocidad**: 9 m
-- **Sentidos**: darkvision 18 m
+- **Creature Type**: Humanoid
+- **Size**: Medium or Small
+- **Speed**: 9 m
+- **Senses**: darkvision 18 m
 
-## Rasgos de la Especie
-TIEFLING 
-CTÓNICO 
-TIEFLING 
-ABISAL 
-TIEFLING 
-INFERNAL 
-“TIEFLING 
-Los tieflings pueden nacer en los Planos Inferiores o tener 
-antepasados infernales procedentes de allí. Un tiefling 
-(pronunciado TII-flin) guarda un vínculo de sangre con 
-un diablo, demonio u algún otro infernal. Esta conexión 
-con los Planos Inferiores es el legado infernal del tiefling 
-y conlleva una promesa de poder aunque no influya en 
-la moralidad del tiefling. 
-Los tieflings escogen si aceptar o lamentar su legado 
-infernal. Los tres legados se describen a continuación. 
-ABISAL 
-La entropía del Abismo, el caos de Pandemónium y la 
-desesperación de Carceri atraen a los tieflings del legado 
-abisal. Los cuernos, el pelaje, los colmillos y un aroma 
-peculiar son los rasgos físicos habituales de estos tieflings, 
-por cuyas venas corre la sangre de demonios. 
-CTÓNICO 
-Los tieflings del legado ctónico no solo sienten la llamada 
-de Carceri, sino también la codicia de Gehenna y la 
-melancolía de Hades. Algunos de estos tieflings tienen 
-aspecto cadavérico. Otros poseen la belleza sobrenatural 
-de una súcubo o comparten rasgos físicos con una saga 
-de la noche, un yugoloth o algún otro antepasado infernal 
-neutr
+## Species Traits
+
+### Tiefling
+Tieflings may be born in the Lower Planes or have infernal ancestors from there. A tiefling (pronounced TIE-fling) shares a blood bond with a devil, a demon, or some other fiend. This connection to the Lower Planes is the tiefling's infernal legacy, and it carries a promise of power, although it does not determine the tiefling's morality.
+
+Tieflings choose whether to embrace or lament their infernal legacy. The three legacies are described below.
+
+#### Abyssal Legacy
+The entropy of the Abyss, the chaos of Pandemonium, and the despair of Carceri attract tieflings of the abyssal legacy. Horns, fur, fangs, and a peculiar scent are the usual physical traits of these tieflings, through whose veins the blood of demons runs.
+
+#### Chthonic Legacy
+Tieflings of the chthonic legacy feel not only the call of Carceri but also the greed of Gehenna and the melancholy of Hades. Some of these tieflings look corpselike. Others possess the otherworldly beauty of a succubus or share physical traits with a night hag or a yugoloth.

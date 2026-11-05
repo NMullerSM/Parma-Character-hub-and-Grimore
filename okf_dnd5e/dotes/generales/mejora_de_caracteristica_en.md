@@ -15,11 +15,10 @@ nombre_ingles: Mejora De Característica
 nombre_original: Mejora De Característica
 ---
 
-# Mejora De Característica
+# Ability Score Improvement
 
-*Dote general (requisitos: nivel 4 o más)*
+*General Feat (Prerequisite: Level 4+)*
 
-Aumenta en 2 una puntuación de característica que elijas 
-o aumenta dos en 1 cada una. Esta dote no puede aumentar 
-una puntuación de característica por encima de 20. 
-Repetible. Puedes elegir esta dote más de una vez.
+Increase one ability score of your choice by 2, or increase two ability scores of your choice by 1 each. This feat can't increase an ability score above 20.
+
+Repeatable. You can take this feat more than once.

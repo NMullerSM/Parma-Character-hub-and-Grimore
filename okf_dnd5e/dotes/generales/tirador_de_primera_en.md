@@ -15,33 +15,28 @@ nombre_ingles: Tirador De Primera
 nombre_original: Tirador De Primera
 ---
 
-# Tirador De Primera
+# Sharpshooter
 
-*Dote general (requisitos: nivel 4 o más, Destreza 13 o más)*
+*General Feat (Prerequisite: Level 4+, Dexterity 13+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación de 
-Destreza en 1, hasta un máximo de 20. 
-Sortear la cobertura. Tus ataques a distancia con armas 
-ignoran las coberturas media y tres cuartos. 
-Disparar cuerpo a cuerpo. Estar within 5 feet o menos de un 
-enemigo no impone desventaja en tus attack rolls 
-con armas a distancia. 
-Tiros lejanos. Al atacar con alcance largo, tus tiradas 
-de ataque no tendrán desventaja con las armas a distancia. 
-“TRITURADOR 
-Dote general (requisitos: nivel 4 o más) 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación de 
-Fuerza o Constitución en 1, hasta un máximo de 20. 
+You gain the following benefits.
 
+Ability Score Improvement. Increase your Dexterity score by 1, to a maximum of 20.
 
-Empujar. once per turn, cuando aciertes a una 
-criatura con un ataque que cause bludgeoning damage, 
-podrás moverla 1,5 m a un espacio sin ocupar, siempre que 
-el tamaño del objetivo esté, como mucho, una categoría 
-por encima de la tuya. 
-Crítico potenciado. Cuando causes un crítico que inflija 
-bludgeoning damage a una criatura, las attack rolls 
-contra esa criatura tendrán ventaja hasta el principio 
-de tu siguiente turno.
+Bypass Cover. Your ranged weapon attacks ignore half cover and three-quarters cover.
+
+Point-Blank Shooting. Being within 5 feet (1.5 m) of an enemy doesn't impose disadvantage on your ranged weapon attack rolls.
+
+Long-Range Shot. When you attack at long range, your attack rolls with ranged weapons don't have disadvantage.
+
+## Crusher
+
+*General Feat (Prerequisite: Level 4+)*
+
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Strength or Constitution score by 1, to a maximum of 20.
+
+Shove. Once per turn, when you hit a creature with an attack that deals bludgeoning damage, you can move it 5 feet (1.5 m) to an unoccupied space, provided the target is no more than one size larger than you.
+
+Enhanced Critical. When you score a critical hit that deals bludgeoning damage to a creature, attack rolls against that creature have advantage until the start of your next turn.

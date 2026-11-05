@@ -1,7 +1,7 @@
 ---
 id: equipo_armaduras_escudos_en
 nombre: Armaduras y Escudos (Ligeras, Medias y Pesadas)
-fuente: Manual del Jugador 2024
+fuente: PHB 2024
 pagina: 215
 tipo: equipo
 subtipo: Armaduras

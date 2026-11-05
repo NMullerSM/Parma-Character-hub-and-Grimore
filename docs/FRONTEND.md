@@ -40,7 +40,7 @@ frontend/src/
 │   └── CharacterContext.tsx   # Estado global reactivo y bus de eventos
 ├── i18n/                      # Motor de internacionalización y traducción D&D
 │   ├── dndTranslations.ts     # Diccionario canónico de términos D&D (ES / EN)
-│   └── en.ts / es.ts          # Diccionarios de interfaz de usuario
+│   ├── en.ts / es.ts          # Diccionarios de interfaz de usuario
 │   └── index.ts               # Hook useTranslation() con saneamiento de claves dinámicas
 ├── utils/
 │   └── storage.ts             # Abstracción safeStorage con fallback en memoria resiliente a WebKitGTK

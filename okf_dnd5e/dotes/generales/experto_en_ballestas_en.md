@@ -15,23 +15,16 @@ nombre_ingles: Experto En Ballestas
 nombre_original: Experto En Ballestas
 ---
 
-# Experto En Ballestas
+# Crossbow Expert
 
-*Dote general (requisitos: nivel 4 o más, Destreza 13 o más)*
+*General Feat (Prerequisite: Level 4+, Dexterity 13+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación 
-de Destreza en 1, hasta un máximo de 20. 
-Ignorar la recarga. Ignoras la propiedad de recarga de 
-las ballestas de mano, ballestas ligeras y ballestas pesadas 
-(englobadas como “ballestas” en esta dote). Si empuñas 
-una de ellas, puedes cargar una unidad de munición 
-aunque no tengas ninguna mano libre. 
-Disparar cuerpo a cuerpo. Estar within 5 feet o menos de un 
-enemigo no impone desventaja en tus attack rolls 
-con ballestas. 
-Manejo doble. Cuando hagas el ataque extra de la 
-propiedad “ligera”, puedes sumar tu modificador por 
-característica al daño del ataque extra si lo realizas 
-con una ballesta con la propiedad “ligera” y no lo estás 
-sumando ya al daño.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Dexterity score by 1, to a maximum of 20.
+
+Ignore Loading. You ignore the Loading property of hand crossbows, light crossbows, and heavy crossbows (collectively called crossbows in this feat). If you wield one of them, you can load a piece of ammunition for it even if you don't have a free hand.
+
+Point-Blank Shooting. Being within 5 feet (1.5 m) of an enemy doesn't impose disadvantage on your attack rolls with crossbows.
+
+Dual Wielding. When you make the extra attack of the Light property, you can add your ability modifier to the damage of that attack if you make it with a crossbow that has the Light property and you aren't already adding the modifier to the damage.

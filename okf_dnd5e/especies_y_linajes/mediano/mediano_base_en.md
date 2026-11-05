@@ -23,33 +23,16 @@ nombre_original: Mediano
 
 # Halfling
 
-- **Tipo de Criatura**: humanoide
-- **Tamaño**: Pequeño
-- **Velocidad**: 9 m
-- **Sentidos**: Normal
+- **Creature Type**: Humanoid
+- **Size**: Small
+- **Speed**: 9 m
+- **Senses**: Normal
 
-## Rasgos de la Especie
-MEDIANO 
-Los medianos, valorados y guiados por los dioses que 
-aprecian la vida, el hogar y la tranquilidad, se sienten 
-atraídos por lugares bucólicos en los que la familia y la 
-comunidad ayuden a hilvanar sus vidas. No obstante, 
-muchos medianos tienen un espíritu valiente y aventurero 
-que les lleva a emprender viajes de descubrimiento 
-para explorar el mundo que los rodea y entablar nuevas 
-amistades por el camino. Su tamaño, que es similar al de 
-un niño humano, les ayuda a pasar desapercibidos entre 
-la gente y colarse por espacios estrechos. 
-Todo aquel que ha pasado algún tiempo con los medianos, 
-en especial con aventureros medianos, probablemente 
-haya presenciado la famosa “suerte de los medianos” en 
-acción. Cuando un mediano se encuentra en peligro mortal, 
-una fuerza invisible parece intervenir a su favor. Muchos 
-medianos creen en la buena fortuna y atribuyen este don 
-inusual a uno o varios de sus benévolos dioses, como 
-Yondalla, Brandobaris y Charmalaine. Este mismo don 
-puede ser la causa de su prolongada esperanza de vida 
-(unos 150 años). 
-Hay muchos tipos de comunidades de medianos. 
-Por cada comarca aislada en alguna parte inmaculada 
-del mundo, existe una o
+## Species Traits
+
+### Halfling
+Halflings, valued and guided by gods who cherish life, home, and tranquility, are drawn to bucolic places where family and community help weave their lives together. Still, many halflings have a brave and adventurous spirit that leads them to set out on journeys of discovery to explore the world around them and make new friends along the way. Their size, similar to that of a human child, helps them go unnoticed among people and slip through narrow spaces.
+
+Anyone who has spent time with halflings, especially adventurous ones, has probably witnessed the famous halfling luck in action. When a halfling is in mortal danger, an invisible force seems to intervene on their behalf. Many halflings believe in good fortune and attribute this unusual gift to one or more of their benevolent gods, such as Yondalla, Brandobaris, and Charmalaine. This same gift may be the reason for their long life expectancy, about 150 years.
+
+There are many kinds of halfling communities.

@@ -24,37 +24,25 @@ nombre_original: Dracónido
 
 # Dragonborn
 
-- **Tipo de Criatura**: humanoide
-- **Tamaño**: Mediano
-- **Velocidad**: 9 m
-- **Sentidos**: darkvision 18 m
+- **Creature Type**: Humanoid
+- **Size**: Medium
+- **Speed**: 9 m
+- **Senses**: darkvision 18 m
 
-## Rasgos de la Especie
-DRACÓNIDO 
-Los antepasados de los dracónidos eclosionaron de los 
-huevos de los dragones cromáticos y metálicos. Una historia 
-cuenta que los dioses dragones Bahamut y Tiamat habían 
-bendecido estos huevos, ya que querían poblar el multiverso 
-con criaturas hechas a su imagen y semejanza. Otro relato 
-afirma que los dragones crearon a los primeros dracónidos 
-sin las bendiciones de los dioses. Sea cual sea su origen, 
-esta especie se ha asentado en el Plano Material. 
-Los dracónidos tienen el aspecto de dragones bípedos 
-sin alas: tienen la piel cubierta de escamas, unos ojos 
-brillantes, una densa osamenta y cuernos en la cabeza. 
-Además, sus diversos colores y otros rasgos recuerdan 
-alos de sus antepasados dracónicos. 
-ATRIBUTOS DE LOS DRACÓNIDOS 
-Tipo de criatura: humanoide 
-Tamaño: Mediano (entre 1,5 y 2,1 m de altura) 
-Velocidad: 9 m 
-Como dracónido, tienes estos atributos especiales: 
-Linaje dracónico. Tu linaje proviene de un progenitor 
-dragón. Elige el tipo de dragón en la tabla “Ancestros 
-dracónicos”. Tu elección afectará a tus atributos Ataque 
-de aliento y Resistencia al daño además de a tu aspecto. 
-ANCESTROS DRACÓNICOS 
-Dragón 
-Tipo de daño 
-Dragón — Tipo de daño 
-A
+## Species Traits
+
+### Dragonborn
+Dragonborn ancestors hatched from the eggs of chromatic and metallic dragons. One legend holds that the dragon gods Bahamut and Tiamat blessed these eggs, because they wanted to populate the multiverse with creatures made in their image. Another account claims that the dragons created the first dragonborn without the blessings of the gods. Whatever their origin, the species has settled on the Material Plane.
+
+Dragonborn look like bipedal dragons without wings. Their skin is covered in scales, they have bright eyes, dense bones, and horns on their heads. Their varied colors and other features also recall the dragon ancestors they descend from.
+
+### Dragonborn Attributes
+Creature Type: Humanoid
+
+Size: Medium (between 5 and 7 feet tall)
+
+Speed: 9 m (30 feet)
+
+As a dragonborn, you have the following special traits.
+
+Draconic Lineage. Your lineage comes from a dragon ancestor. Choose the dragon type from the Draconic Ancestors table. Your choice affects your Breath Weapon and Damage Resistance traits as well as your appearance.

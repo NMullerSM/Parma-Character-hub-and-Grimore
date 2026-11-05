@@ -23,35 +23,25 @@ nombre_original: Goliat
 
 # Goliath
 
-- **Tipo de Criatura**: humanoide
-- **Tamaño**: Mediano
-- **Velocidad**: 10,5 m
-- **Sentidos**: Normal
+- **Creature Type**: Humanoid
+- **Size**: Medium
+- **Speed**: 10.5 m
+- **Senses**: Normal
 
-## Rasgos de la Especie
-192 
-GOLIAT 
-Los goliats son descendientes lejanos de los gigantes 
-y sobrepasan en altura a la mayoría de especies. Todos los 
-goliats disfrutan de los favores de los primeros gigantes, 
-lo que se manifiesta a modo de diversos beneficios 
-sobrenaturales, como la capacidad de crecer de forma 
-súbita y alcanzar temporalmente la altura de sus parientes 
-gigantescos. 
-Los goliats tienen características físicas que evocan a sus 
-antepasados. Por ejemplo, algunos goliats se parecen a los 
-gigantes de piedra, mientras que otros tienen semejanza 
-con los gigantes de fuego. Independientemente de sus 
-parentescos, los goliats se han forjado su propio camino 
-en el multiverso, sin la carga de los conflictos internos 
-que han asolado a los gigantes durante siglos, y aspiran 
-a encumbrarse por encima de sus antepasados. 
-ATRIBUTOS DE LOS GOLIATS 
-Tipo de criatura: humanoide 
-Tamaño: Mediano (entre 2,1 y 2,4 m de altura) 
-Velocidad: 10,5 m 
-Como goliat, tienes estos atributos especiales: 
-Constitución poderosa. Tienes ventaja en cualquier 
-prueba de característica que hagas para poner fin al estado 
-de agarrado. Además, al determinar tu capacidad de carga, 
-cuentas como si tuvieras un tamaño un
+## Species Traits
+
+### Goliath
+Goliaths are distant descendants of giants and surpass the height of most species. All goliaths enjoy the favor of the first giants, which manifests as various supernatural benefits, such as the ability to grow suddenly and temporarily reach the height of their giant relatives.
+
+Goliaths have physical features that evoke their ancestors. For example, some goliaths resemble stone giants, while others have a likeness to fire giants. Regardless of their kinship, goliaths have forged their own path in the multiverse, free of the internal conflicts that have plagued the giants for centuries, and they aspire to rise above their ancestors.
+
+### Goliath Attributes
+Creature Type: Humanoid
+
+Size: Medium (between 7 and 8 feet tall)
+
+Speed: 10.5 m (35 feet)
+
+As a goliath, you have the following special traits.
+
+Powerful Build. You have advantage on any ability check you make to end the Grappled condition.

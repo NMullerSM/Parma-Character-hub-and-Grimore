@@ -15,14 +15,14 @@ nombre_ingles: Experto En Habilidades
 nombre_original: Experto En Habilidades
 ---
 
-# Experto En Habilidades
+# Skill Expert
 
-*Dote general (requisitos: nivel 4 o más)*
+*General Feat (Prerequisite: Level 4+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta una puntuación de 
-característica de tu elección en 1, hasta un máximo de 20. 
-Competencia en una habilidad. Ganas competencia en 
-una habilidad de tu elección. 
-Pericia. Elige una habilidad en la que tengas competencia 
-pero te falte pericia. Ganas pericia en dicha habilidad.
+You gain the following benefits.
+
+Ability Score Improvement. Increase one ability score of your choice by 1, to a maximum of 20.
+
+Skill Proficiency. You gain proficiency in one skill of your choice.
+
+Expertise. Choose a skill in which you have proficiency but lack expertise. You gain expertise in that skill.

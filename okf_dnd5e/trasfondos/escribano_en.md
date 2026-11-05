@@ -1,9 +1,9 @@
 ---
 id: escribano_en
-nombre: Escribano
-caracteristicas_clave: Inteligencia, Sabiduría, Carisma
-dote_concedida: Habilidoso
-habilidades_competentes: Historia, Investigación
+nombre: Scribe
+caracteristicas_clave: Intelligence, Wisdom, Charisma
+dote_concedida: Skilled
+habilidades_competentes: History, Investigation
 fuente: PHB 2024
 pagina: 183
 tags:
@@ -12,12 +12,12 @@ tags:
 - trasfondo
 tipo: trasfondo
 idioma: en
-nombre_ingles: Escribano
+nombre_ingles: Scribe
 nombre_original: Escribano
 ---
 
-# Escribano
+# Scribe
 
-- **Puntuaciones de Característica**: Inteligencia, Sabiduría, Carisma
-- **Origin Feat**: Habilidoso
-- **Habilidades con Competencia**: Historia, Investigación
+- **Ability Scores**: Intelligence, Wisdom, Charisma
+- **Origin Feat**: Skilled
+- **Skill Proficiencies**: History, Investigation

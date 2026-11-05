@@ -15,17 +15,16 @@ nombre_ingles: Veloz
 nombre_original: Veloz
 ---
 
-# Veloz
+# Swift
 
-*Dote general (requisitos: nivel 4 o más, Destreza o Constitución 13*
+*General Feat (Prerequisite: Level 4+, Dexterity or Constitution 13+)*
 
-o más) 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación de 
-Destreza o Constitución en 1, hasta un máximo de 20. 
-Aumento de velocidad. Tu velocidad aumenta en 3 m. 
-Correr por terreno difícil. Cuando realizas la acción 
-de correr en tu turno, el terreno difícil no te cuesta 
-movimiento adicional durante el resto de ese turno. 
-Movimiento ágil. Los ataques de oportunidad tienen 
-desventaja contra ti.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Dexterity or Constitution score by 1, to a maximum of 20.
+
+Speed Increase. Your Speed increases by 10 feet (3 m).
+
+Difficult Terrain Dash. When you take the Dash action on your turn, difficult terrain doesn't cost you extra movement for the rest of that turn.
+
+Agile Movement. Opportunity attacks have disadvantage against you.

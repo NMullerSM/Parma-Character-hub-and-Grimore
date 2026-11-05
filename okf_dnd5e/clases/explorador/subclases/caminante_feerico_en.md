@@ -3,7 +3,7 @@ id: explorador_caminante_feerico_en
 nombre: Fey Wanderer
 nombre_ingles: Fey Wanderer
 tipo: subclase
-clase_padre: Explorador
+clase_padre: Ranger
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Caminante Feérico
 ---
 
 # Fey Wanderer
-**Clase Base:** Explorador  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Ranger  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
-Bendecido con la magia de las cortes feéricas, suma Sabiduría a pruebas de Carisma e infunde sus flechas con psychic damage.
+## Archetype Summary
+Blessed with the magic of the fey courts, they add Wisdom to Charisma checks and infuse their arrows with psychic damage.

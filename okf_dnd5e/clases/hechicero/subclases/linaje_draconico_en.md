@@ -3,7 +3,7 @@ id: hechicero_linaje_draconico_en
 nombre: Draconic Sorcery
 nombre_ingles: Draconic Sorcery
 tipo: subclase
-clase_padre: Hechicero
+clase_padre: Sorcerer
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Linaje Dracónico
 ---
 
 # Draconic Sorcery
-**Clase Base:** Hechicero  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Sorcerer  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
-La sangre de los dragones antiguos late en sus venas, otorgando CA 13+DES sin armadura, hit points extra y alas mágicas.
+## Archetype Summary
+The blood of ancient dragons runs in their veins, granting AC 13 + Dexterity modifier without armor, extra hit points, and magical wings.

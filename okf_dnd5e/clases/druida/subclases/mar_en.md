@@ -3,7 +3,7 @@ id: druida_mar_en
 nombre: Circle of the Sea
 nombre_ingles: Circle of the Sea
 tipo: subclase
-clase_padre: Druida
+clase_padre: Druid
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Círculo del Mar
 ---
 
 # Circle of the Sea
-**Clase Base:** Druida  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Druid  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
-Canalizan la furia del océano y la tempestad, rodeándose de una tormenta de spray y olas que empuja enemigos y absorbe frío/rayo.
+## Archetype Summary
+They channel the fury of the ocean and the storm, surrounding themselves with a tempest of spray and waves that pushes enemies and absorbs cold and lightning damage.

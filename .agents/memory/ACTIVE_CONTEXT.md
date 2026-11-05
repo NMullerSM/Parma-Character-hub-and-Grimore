@@ -27,10 +27,10 @@
 ## 🛠️ Decisiones Técnicas y Cambios Recientes
 
 ### 1. Saneamiento i18n y Layout Anti-Colisión (Fases 1 y 2) — Branch `feature/onboarding-spotlight-fix`
-- **Componente [`frontend/src/i18n/index.ts`](frontend/src/i18n/index.ts)**:
+- **Componente [`frontend/src/i18n/index.ts`](file:///home/nathanielwrk/Documentos/Proyects/Dnd_Player_Dashboard/frontend/src/i18n/index.ts)**:
   - `translate(path, defaultText)` retorna `""` cuando una clave no existe en lugar de devolver el nombre crudo de la ruta. Esto permite que expresiones `{t("key") || "Texto"}` evalúen limpiamente sus fallbacks en español e inglés sin filtrar nombres como `onboarding.global.step_batch`.
   - Agregadas todas las claves canónicas y alias planos/anidados en `es.ts` y `en.ts` (`button_next`, `btnNext`, `button_prev`, `btnPrev`, `button_skip_section`, `btnSkipSection`, `button_skip_all`, `btnSkipAll`, etc.).
-- **Componente [`frontend/src/components/SpotlightTour.tsx`](frontend/src/components/SpotlightTour.tsx)**:
+- **Componente [`frontend/src/components/SpotlightTour.tsx`](file:///home/nathanielwrk/Documentos/Proyects/Dnd_Player_Dashboard/frontend/src/components/SpotlightTour.tsx)**:
   - Botón `Saltar todo el onboarding` reubicado a `fixed bottom-4 right-4 z-40`, despejando totalmente el sector superior derecho del header (`#tour-dice`, `#tour-talespire`, `#tour-settings`).
   - Tarjeta de coach marks forzada a colocarse abajo (`placement: "bottom"`) siempre que el objetivo esté en la barra superior (`y < 140`), evitando que quede fuera de pantalla.
   - Dimensionamiento elástico `w-[min(380px,calc(100vw-32px))]` y `max-h-[calc(100vh-32px)] overflow-y-auto`.
@@ -38,7 +38,7 @@
   - Removido `backdrop-blur-xs` del `<rect>` SVG para compatibilidad plena con WebKitGTK 2.40+ en Linux.
 
 ### 2. Protocolo de Actualización Automática In-App (Fases 3 y 4) — Branch `feature/auto-updater-protocol`
-- **Módulo [`desktop_api/auto_updater.py`](desktop_api/auto_updater.py)**:
+- **Módulo [`desktop_api/auto_updater.py`](file:///home/nathanielwrk/Documentos/Proyects/Dnd_Player_Dashboard/desktop_api/auto_updater.py)**:
   - `AutoUpdateManager` descarga el binario en trozos de 64KB en un hilo secundario (`threading.Thread`) hacia `{user_data_dir}/updates/`.
   - Mide y expone `percent`, `downloaded_mb` y `total_mb` en tiempo real.
   - Ejecuta el reinicio silencioso en Windows invocando el instalador con `subprocess.Popen([installer_path, "/SILENT", "/CLOSEAPPLICATIONS", "/RESTARTAPPLICATIONS"])`, cerrando de inmediato la ventana de PyWebView para dar paso al instalador oficial de Inno Setup.
@@ -48,13 +48,13 @@
   - `desktop_api/bridge.py` expone `start_auto_update`, `get_update_progress` y `apply_update_and_restart`.
   - `frontend/src/api/client.ts` y `frontend/src/api/types.ts` incorporan los contratos `UpdateProgress` y llamadas asíncronas tipadas.
   - `frontend/src/App.tsx` realiza sondeo reactivo a intervalos de 450ms únicamente mientras haya una descarga en curso.
-- **Componente [`frontend/src/components/UpdateModal.tsx`](frontend/src/components/UpdateModal.tsx)**:
+- **Componente [`frontend/src/components/UpdateModal.tsx`](file:///home/nathanielwrk/Documentos/Proyects/Dnd_Player_Dashboard/frontend/src/components/UpdateModal.tsx)**:
   - Reemplaza el enlace a la web de GitHub por el flujo directo in-app:
     - Barra de progreso animada con visualización de `%` y `MB / Total MB`.
     - Botón `"Descargar en segundo plano"` para cerrar el modal y seguir jugando mientras se descarga.
     - Botón verde pulsante `"Reiniciar para actualizar"` tras finalizar la descarga.
     - Botón `"Ignorar esta versión"`.
-- **Componente [`frontend/src/components/UpdateNotificationPill.tsx`](frontend/src/components/UpdateNotificationPill.tsx)**:
+- **Componente [`frontend/src/components/UpdateNotificationPill.tsx`](file:///home/nathanielwrk/Documentos/Proyects/Dnd_Player_Dashboard/frontend/src/components/UpdateNotificationPill.tsx)**:
   - Si la descarga está activa en segundo plano, la píldora muestra el spinner y el porcentaje actual.
   - Si la descarga está completa, la píldora se torna verde esmeralda y ofrece un botón directo `"Reiniciar"`.
 
@@ -78,19 +78,42 @@
   - Polyfill síncrono en `frontend/index.html` ejecutado antes de cualquier script.
   - Configuración nativa `settings.set_enable_html5_local_storage(True)` en `desktop_app.py`.
 
+### 6. Sincronización Bidireccional de Túneles DM y Enrutamiento Remoto WebSocket (Linux <-> Windows)
+- **Causa Raíz de Asimetría (Linux Host vs Windows Host)**:
+  1. *Ruta `dist` del servidor FastAPI*: `bridge.py` pasaba `self._user_data_dir` (`data/`) a `DmSessionServer`. `session_server.py` intentaba servir `os.path.join(self.base_dir, "frontend", "dist")` resolviendo a `data/frontend/dist` (inexistente). Al conectarse un jugador remoto vía Cloudflare Tunnel a un host Linux, recibía 404/página en blanco y la SPA nunca iniciaba.
+  2. *Enrutamiento de WebSocket en App-a-App*: Cuando un cliente de escritorio (PyWebView en Windows) se conectaba ingresando la URL del túnel remoto en `Header.tsx`, consultaba `/api/session/info` pero descartaba el host remoto. `OnlinePlayerSync.tsx` conectaba por defecto a `window.location.host` (`127.0.0.1:8765`), conectándose a su propio backend local en lugar del host remoto en Linux.
+  3. *Permisos de ejecución de `cloudflared`*: En sistemas Linux/macOS, el binario descargado requiere `0o755` para evitar `PermissionError`.
+- **Solución Aplicada**:
+  - `desktop_api/bridge.py`: Inicializa `CloudflareTunnelManager` y `DmSessionServer` con `self._base_dir`.
+  - `desktop_api/session_server.py`: Detección multi-ruta resiliente de `dist` (`frontend/dist`, `dist_ui`, `bundle_dir`).
+  - `desktop_api/tunnel_manager.py`: Asegura permisos `chmod 0o755` automáticos sobre binarios locales y de bundle en plataformas no-Windows.
+  - `frontend/src/context/CharacterContext.tsx`: Agregado estado `remoteTunnelUrl` y persistencia con `safeStorage`.
+  - `frontend/src/components/Header.tsx`: Notifica al host remoto en `/api/player/join` y almacena `remoteTunnelUrl`.
+  - `frontend/src/components/OnlinePlayerSync.tsx`: Enruta la conexión WebSocket dinámicamente hacia el host del túnel remoto (`wss://.../ws?token=...&role=player`) cuando `remoteTunnelUrl` está presente.
+
 ---
 
 ## 🔀 Integración y Estado de Ramas
 - `feature/onboarding-spotlight-fix`: Mergeada en `develop` vía PR #8 (`fca495684aec2ad4b1e9b64e9ad95558ec9bd3d4`).
 - `feature/auto-updater-protocol`: Mergeada en `develop` vía PR #9 (`2aea5ec4f312400720f6c57ea5c61768147262fb`).
-- Rama actual de trabajo consolidada: **`develop`** (Versión 1.0.3 establecida en `core/version.py`, `frontend/src/version.ts`, `frontend/package.json` y `parma_setup.iss`).
+- `feature/settings-streamline-dice-bridge`: Mergeada en `develop` vía PR #12 (`5cac9934489c662c6a68c2d9970aa0dbca37ef40`).
+- **Fix de Sintaxis en Linux (develop)**: Commit `1655c60e` corrigió caracteres de escape literales (`\n` y `\"`) en `frontend/src/views/SettingsView.tsx` (líneas 216 y 419) que provocaban fallo en `npm run build` al ejecutar `./iniciar.sh`.
+- Rama actual de trabajo consolidada: **`develop`** (v1.0.3).
+  - **Dual Throw Modes**: Alternancia entre lanzamiento físico automatizado (micro-gesto calibrado) y manual en bandeja oficial de TaleSpire (`talespire_auto_throw`).
+  - **Settings Streamlined**: Conmutador compacto Sol/Luna de temas, segmented control de idioma, acordeón técnico para estados de puente IPC y calibración de gestos, modal de Guía Rápida de Parma (`[ 📖 Ver Guía de Parma ]`), y aislamiento al pie de OKF y SQLite.
+  - **Symbiote Reconnection & HUD**: Auto-inicio garantizado del servidor WebSocket (`ensure_running()`), llamada booleana a `is_symbiote_connected()` y botón unificado `[ 🎲 Test (1d20 + 5) ]` en el HUD.
 - Documentación y ADRs exhaustivos formalizados en `README.md`, `docs/BACKEND.md`, `docs/FRONTEND.md`, `docs/CICD.md` y `docs/ADR.md`.
-- Corrección de pipeline Inno Setup en Windows: ruta de origen corregida a `..\Parma\*` y protección de macro `#ifndef MyAppVersion`.
-- Sincronización final: Despliegue de la versión 1.0.3 a la rama `main` para activar el workflow de publicación oficial en GitHub Actions.
 
 ---
 
-## 📋 Tareas Pendientes / Siguiente Paso (Fase 5)
-1. **Publicación Oficial (Merge a `main`)**: Desplegar los 32 archivos consolidados y verificados a `main` para activar el pipeline de release `v1.0.3`.
-2. **Cierre de PR #10**: Cerrar el PR #10 con nota de release limpia.
-3. **Limpieza de Ramas**: Eliminar las ramas remotas obsoletas `feature/onboarding-spotlight-fix` y `feature/auto-updater-protocol`.
+## 📋 Tareas Pendientes / Siguiente Paso
+1. **Pull en PC de Escritorio**: En el entorno Windows/desktop, ejecutar `git pull origin develop` para recibir los últimos cambios de `develop`.
+2. **Pruebas de Conexión DM (Windows <-> Linux)**:
+   - Iniciar sesión DM en Linux con Quick Tunnel.
+   - En Windows (aplicación de escritorio o navegador web), pegar el enlace de trycloudflare.
+   - Verificar que el jugador aparezca en vivo en la consola DM de Linux y sincronice su ficha y tiradas.
+   - Probar en sentido inverso (Windows Host -> Linux Guest).
+3. **Pruebas en TaleSpire**:
+   - Verificar la auto-conexión del Symbiote (debe mostrarse conectado sin reconexiones infinitas).
+   - Probar el modo manual en bandeja vs modo automático con micro-gesto físico.
+4. **Limpieza de Ramas Obsoletas**: Eliminar en GitHub las ramas remotas mergeadas `feature/onboarding-spotlight-fix`, `feature/auto-updater-protocol` y `feature/settings-streamline-dice-bridge`.

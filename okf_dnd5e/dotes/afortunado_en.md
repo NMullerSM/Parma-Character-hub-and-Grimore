@@ -2,7 +2,7 @@
 id: dote_afortunado_en
 nombre: Lucky
 nombre_ingles: Lucky
-fuente: Manual del Jugador 2024
+fuente: PHB 2024
 pagina: 201
 tipo: dote
 categoria: Dote de Origen / General
@@ -18,9 +18,9 @@ nombre_original: Afortunado
 
 # Lucky
 
-Tienes una suerte inexplicable que suele intervenir en los momentos más oportunos.
+You have an inexplicable luck that often comes into play at the most opportune moments.
 
-## Beneficios
-- **Puntos de Suerte:** Tu reserva de puntos de suerte es igual a tu **Bonificador de Competencia (PB)** (2 puntos a nivel 1-4, 3 a nivel 5-8, 4 a nivel 9-12, etc.). Recuperas todos tras un Long Rest.
-- **Ventaja Propia:** Cuando tires 1d20 para una prueba, ataque o saving throw, puedes gastar 1 punto de suerte para otorgarte ventaja.
-- **Desventaja Enemiga:** Cuando una criatura tire 1d20 para atacarte, puedes gastar 1 punto de suerte para imponerle desventaja en su tirada.
+## Benefits
+- **Luck Points:** Your pool of luck points equals your **Proficiency Bonus (PB)** (2 at levels 1-4, 3 at levels 5-8, 4 at levels 9-12, and so on). You regain all of them after a Long Rest.
+- **Own Advantage:** When you roll a 1d20 for an ability check, attack roll, or saving throw, you can spend 1 luck point to give yourself advantage on the roll.
+- **Enemy Disadvantage:** When a creature rolls a 1d20 to attack you, you can spend 1 luck point to impose disadvantage on its roll.

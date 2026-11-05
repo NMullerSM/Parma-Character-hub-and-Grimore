@@ -17,19 +17,12 @@ nombre_original: Centinela
 
 # Sentinel
 
-*Dote general (requisitos: nivel 4 o más, Fuerza o Destreza 13*
+*General Feat (Prerequisite: Level 4+, Strength or Dexterity 13+)*
 
-o más) 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación 
-de Fuerza o Destreza en 1, hasta un máximo de 20. 
-Guardián. Inmediatamente después de que una 
-criatura que esté within 5 feet o menos de ti realice la acción de 
-destrabarse o acierte a un objetivo que no seas tú con un 
-ataque, podrás hacer un ataque de oportunidad contra 
-a esa criatura. 
-Detener. Cuando aciertes a una criatura con un ataque 
-de oportunidad, su velocidad pasará a ser O para el resto 
-| 
-del turno actual. 
-|
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Strength or Dexterity score by 1, to a maximum of 20.
+
+Guardian. Immediately after a creature within 5 feet (1.5 m) of you takes the Disengage action or hits a target other than you with an attack, you can make an opportunity attack against that creature.
+
+Stop. When you hit a creature with an opportunity attack, its Speed becomes 0 for the rest of the current turn.

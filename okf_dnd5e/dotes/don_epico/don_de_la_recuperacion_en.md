@@ -17,19 +17,12 @@ nombre_original: Don De La Recuperación
 
 # Boon of Recovery
 
-*Dote de don épico (requisito: nivel 19 o más)*
+*Epic Boon Feat (Prerequisite: Level 19+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta una puntuación de 
-característica de tu elección en 1, hasta un máximo de 30. 
-Última defensa. Cuando tus hit points fueran 
-a reducirse a O, puedes quedarte con 1 punto de golpe 
-y recuperar una cantidad de hit points igual a la 
-mitad de tus hit points máximos. Cuando uses este 
-beneficio, no podrás volver a hacerlo hasta que finalices 
-un Long Rest. 
-Recuperar vitalidad. Tienes una reserva de 10d10. 
-As a bonus action, puedes gastar dados de la reserva, 
-tirarlos y recuperar una cantidad de hit points igual 
-al resultado total de la tirada. Recuperas todos los dados 
-gastados tras finalizar un Long Rest.
+You gain the following benefits.
+
+Ability Score Improvement. Increase one ability score of your choice by 1, to a maximum of 30.
+
+Last Stand. When your hit points would be reduced to 0, you can instead drop to 1 hit point and regain hit points equal to half your hit point maximum. Once you use this benefit, you can't use it again until you finish a Long Rest.
+
+Recover Vitality. You have a pool of 10d10. As a bonus action, you can spend dice from the pool, roll them, and regain hit points equal to the total of the roll. You regain all expended dice when you finish a Long Rest.

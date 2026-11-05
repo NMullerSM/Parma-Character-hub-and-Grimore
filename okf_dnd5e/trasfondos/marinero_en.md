@@ -1,9 +1,9 @@
 ---
 id: marinero_en
 nombre: Sailor
-caracteristicas_clave: Fuerza, Destreza, Sabiduría
-dote_concedida: Luchador de taberna
-habilidades_competentes: Atletismo, Percepción
+caracteristicas_clave: Strength, Dexterity, Wisdom
+dote_concedida: Tavern Brawler
+habilidades_competentes: Athletics, Perception
 fuente: PHB 2024
 pagina: 186
 tags:
@@ -18,6 +18,6 @@ nombre_original: Marinero
 
 # Sailor
 
-- **Puntuaciones de Característica**: Fuerza, Destreza, Sabiduría
-- **Origin Feat**: Luchador de taberna
-- **Habilidades con Competencia**: Atletismo, Percepción
+- **Ability Scores**: Strength, Dexterity, Wisdom
+- **Origin Feat**: Tavern Brawler
+- **Skill Proficiencies**: Athletics, Perception

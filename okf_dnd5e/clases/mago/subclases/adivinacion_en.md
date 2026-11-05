@@ -3,7 +3,7 @@ id: mago_adivinacion_en
 nombre: School of Divination
 nombre_ingles: School of Divination
 tipo: subclase
-clase_padre: Mago
+clase_padre: Wizard
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Escuela de Adivinación
 ---
 
 # School of Divination
-**Clase Base:** Mago  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Wizard  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
-Vislumbra el tejido del futuro; tira 2 dados d20 al amanecer (Portento) y sustituye cualquier tirada aliada o enemiga por estos resultados.
+## Archetype Summary
+Glimpses the fabric of the future: they roll two d20s at dawn (Portent) and substitute those results for any ally's or enemy's roll.

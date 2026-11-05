@@ -23,8 +23,7 @@ nombre_ingles: Boon of Speed
 
 Obtienes los siguientes beneficios: 
 Mejora de característica. Aumenta una puntuación de 
-característica de tu elección en 1, hasta un máximo de 0 
-€ 
+característica de tu elección en 1, hasta un máximo de 30. 
 Artista escapista. Como acción adicional, puedes llevar 
 a cabo la acción de destrabarse, lo que también pone fin 
 al estado de agarrado sobre ti. 

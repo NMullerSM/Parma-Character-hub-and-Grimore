@@ -14,7 +14,7 @@ tags:
 - es
 - español
 idioma: es
-nombre_ingles: Condiciones de Estado
+nombre_ingles: Conditions & States
 ---
 
 # Condiciones de Estado Oficiales (D&D 5e)

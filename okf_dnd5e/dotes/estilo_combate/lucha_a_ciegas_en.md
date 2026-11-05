@@ -17,6 +17,6 @@ nombre_original: Lucha A Ciegas
 
 # Blind Fighting
 
-*Dote de estilo de combate (requisitos: rasgo Estilo de combate)*
+*Fighting Style Feat (Prerequisite: Fighting Style feature)*
 
-Tienes visión ciega hasta 3 m.
+You have Blindsight out to 10 feet (3 m).

@@ -1,9 +1,9 @@
 ---
 id: noble_en
 nombre: Noble
-caracteristicas_clave: Fuerza, Inteligencia, Carisma
-dote_concedida: Habilidoso
-habilidades_competentes: Historia, Persuasión
+caracteristicas_clave: Strength, Intelligence, Charisma
+dote_concedida: Skilled
+habilidades_competentes: History, Persuasion
 fuente: PHB 2024
 pagina: 186
 tags:
@@ -18,6 +18,6 @@ nombre_original: Noble
 
 # Noble
 
-- **Puntuaciones de Característica**: Fuerza, Inteligencia, Carisma
-- **Origin Feat**: Habilidoso
-- **Habilidades con Competencia**: Historia, Persuasión
+- **Ability Scores**: Strength, Intelligence, Charisma
+- **Origin Feat**: Skilled
+- **Skill Proficiencies**: History, Persuasion

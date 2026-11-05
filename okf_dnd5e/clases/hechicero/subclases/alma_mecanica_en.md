@@ -3,7 +3,7 @@ id: hechicero_alma_mecanica_en
 nombre: Clockwork Soul
 nombre_ingles: Clockwork Soul
 tipo: subclase
-clase_padre: Hechicero
+clase_padre: Sorcerer
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Alma Mecánica
 ---
 
 # Clockwork Soul
-**Clase Base:** Hechicero  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Sorcerer  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
-Conectado al plano de Mechanus y el orden cósmico absoluto, anula ventajas/desventajas enemigas y proyecta escudos de fuerza ordenados.
+## Archetype Summary
+Connected to the plane of Mechanus and absolute cosmic order, they cancel enemy advantages and disadvantages and project ordered force shields.

@@ -17,25 +17,12 @@ nombre_original: Telepático
 
 # Telepathic
 
-*Dote general (requisitos: nivel 4 o más)*
+*General Feat (Prerequisite: Level 4+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación de 
-Inteligencia, Sabiduría o Carisma en 1, hasta un máximo 
-de 20. 
-AN 
-CAPÍTULO 5 | 
-ES 
-Habla telepática. Puedes hablarle telepáticamente 
-a cualquier criatura que puedas ver within 60 feet o menos de 
-ti. Hablas telepáticamente en un idioma que conoces y la 
-criatura solo te entiende si también conoce dicho idioma. 
-Tu comunicación no concede a la criatura la capacidad 
-de responder telepáticamente. 
-Detectar pensamientos. Siempre tienes el conjuro detectar 
-pensamientos preparado. Puedes lanzarlo sin gastar un 
-espacio de conjuro ni componentes y debes finalizar 
-un Long Rest antes de poder volver a lanzarlo de 
-este modo. También puedes lanzarlo usando espacios de 
-conjuro que tengas del nivel apropiado. La aptitud mágica 
-del conjuro es la característica aumentada por esta dote.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Intelligence, Wisdom, or Charisma score by 1, to a maximum of 20.
+
+Telepathic Speech. You can speak telepathically to any creature you can see within 60 feet (18 m) of you. You speak telepathically in a language you know, and the creature understands you only if it also knows that language. Your communication doesn't give the creature the ability to respond telepathically.
+
+Detect Thoughts. You always have the Detect Thoughts spell prepared. You can cast it without expending a spell slot or any components, and you must finish a Long Rest before you can cast it this way again. You can also cast it using spell slots of the appropriate level that you have. The spellcasting ability for the spell is the ability increased by this feat.

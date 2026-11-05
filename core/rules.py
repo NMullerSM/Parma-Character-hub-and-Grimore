@@ -602,63 +602,109 @@ def compute_dynamic_features(char: CharacterSheet, lang: str = "es") -> List[Any
     return features
 
 
+FULL_CASTER_SLOTS_2024: Dict[int, Dict[str, Any]] = {
+    1: {"slots": {"1": 2}, "max_lvl": 1},
+    2: {"slots": {"1": 3}, "max_lvl": 1},
+    3: {"slots": {"1": 4, "2": 2}, "max_lvl": 2},
+    4: {"slots": {"1": 4, "2": 3}, "max_lvl": 2},
+    5: {"slots": {"1": 4, "2": 3, "3": 2}, "max_lvl": 3},
+    6: {"slots": {"1": 4, "2": 3, "3": 3}, "max_lvl": 3},
+    7: {"slots": {"1": 4, "2": 3, "3": 3, "4": 1}, "max_lvl": 4},
+    8: {"slots": {"1": 4, "2": 3, "3": 3, "4": 2}, "max_lvl": 4},
+    9: {"slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 1}, "max_lvl": 5},
+    10: {"slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2}, "max_lvl": 5},
+    11: {"slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1}, "max_lvl": 6},
+    12: {"slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1}, "max_lvl": 6},
+    13: {"slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1}, "max_lvl": 7},
+    14: {"slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1}, "max_lvl": 7},
+    15: {"slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1, "8": 1}, "max_lvl": 8},
+    16: {"slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1, "8": 1}, "max_lvl": 8},
+    17: {"slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1, "8": 1, "9": 1}, "max_lvl": 9},
+    18: {"slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 3, "6": 1, "7": 1, "8": 1, "9": 1}, "max_lvl": 9},
+    19: {"slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 3, "6": 2, "7": 1, "8": 1, "9": 1}, "max_lvl": 9},
+    20: {"slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 3, "6": 2, "7": 2, "8": 1, "9": 1}, "max_lvl": 9},
+}
+
+FULL_CASTER_PREPARED_2024 = {
+    1: 4, 2: 5, 3: 6, 4: 7, 5: 9, 6: 10, 7: 11, 8: 12, 9: 14, 10: 15,
+    11: 16, 12: 16, 13: 17, 14: 17, 15: 18, 16: 18, 17: 19, 18: 20, 19: 21, 20: 22
+}
+
+HALF_CASTER_PREPARED_2024 = {
+    1: 2, 2: 3, 3: 4, 4: 5, 5: 6, 6: 6, 7: 7, 8: 7, 9: 9, 10: 9,
+    11: 10, 12: 10, 13: 11, 14: 11, 15: 12, 16: 12, 17: 14, 18: 14, 19: 15, 20: 15
+}
+
+HALF_CASTER_SLOTS_2024 = {
+    1: {"slots": {"1": 2}, "max_lvl": 1},
+    2: {"slots": {"1": 2}, "max_lvl": 1},
+    3: {"slots": {"1": 3}, "max_lvl": 1},
+    4: {"slots": {"1": 3}, "max_lvl": 1},
+    5: {"slots": {"1": 4, "2": 2}, "max_lvl": 2},
+    6: {"slots": {"1": 4, "2": 2}, "max_lvl": 2},
+    7: {"slots": {"1": 4, "2": 3}, "max_lvl": 2},
+    8: {"slots": {"1": 4, "2": 3}, "max_lvl": 2},
+    9: {"slots": {"1": 4, "2": 3, "3": 2}, "max_lvl": 3},
+    10: {"slots": {"1": 4, "2": 3, "3": 2}, "max_lvl": 3},
+    11: {"slots": {"1": 4, "2": 3, "3": 3}, "max_lvl": 3},
+    12: {"slots": {"1": 4, "2": 3, "3": 3}, "max_lvl": 3},
+    13: {"slots": {"1": 4, "2": 3, "3": 3, "4": 1}, "max_lvl": 4},
+    14: {"slots": {"1": 4, "2": 3, "3": 3, "4": 1}, "max_lvl": 4},
+    15: {"slots": {"1": 4, "2": 3, "3": 3, "4": 2}, "max_lvl": 4},
+    16: {"slots": {"1": 4, "2": 3, "3": 3, "4": 2}, "max_lvl": 4},
+    17: {"slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 1}, "max_lvl": 5},
+    18: {"slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 1}, "max_lvl": 5},
+    19: {"slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2}, "max_lvl": 5},
+    20: {"slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2}, "max_lvl": 5},
+}
+
 # Tablas canónicas de Progresión D&D 5.5e (2024) y 5e (2014)
-# Mapeo: nivel (1-20) -> (cantrips, prepared_spells, slots_dict, max_spell_level)
+# Mapeo: clase -> nivel (1-20) -> (cantrips, prepared_spells, slots_dict, max_spell_level)
 PROGRESSION_TABLES_2024: Dict[str, Dict[int, Dict[str, Any]]] = {
     "Bardo": {
-        1: {"cantrips": 2, "prepared": 4, "slots": {"1": 2}, "max_lvl": 1},
-        2: {"cantrips": 2, "prepared": 5, "slots": {"1": 3}, "max_lvl": 1},
-        3: {"cantrips": 2, "prepared": 6, "slots": {"1": 4, "2": 2}, "max_lvl": 2},
-        4: {"cantrips": 3, "prepared": 7, "slots": {"1": 4, "2": 3}, "max_lvl": 2},
-        5: {"cantrips": 3, "prepared": 9, "slots": {"1": 4, "2": 3, "3": 2}, "max_lvl": 3},
-        6: {"cantrips": 3, "prepared": 10, "slots": {"1": 4, "2": 3, "3": 3}, "max_lvl": 3},
-        7: {"cantrips": 3, "prepared": 11, "slots": {"1": 4, "2": 3, "3": 3, "4": 1}, "max_lvl": 4},
-        8: {"cantrips": 3, "prepared": 12, "slots": {"1": 4, "2": 3, "3": 3, "4": 2}, "max_lvl": 4},
-        9: {"cantrips": 3, "prepared": 14, "slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 1}, "max_lvl": 5},
-        10: {"cantrips": 4, "prepared": 15, "slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2}, "max_lvl": 5},
-        11: {"cantrips": 4, "prepared": 16, "slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1}, "max_lvl": 6},
-        12: {"cantrips": 4, "prepared": 16, "slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1}, "max_lvl": 6},
-        13: {"cantrips": 4, "prepared": 17, "slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1}, "max_lvl": 7},
-        14: {"cantrips": 4, "prepared": 17, "slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1}, "max_lvl": 7},
-        15: {"cantrips": 4, "prepared": 18, "slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1, "8": 1}, "max_lvl": 8},
-        16: {"cantrips": 4, "prepared": 18, "slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1, "8": 1}, "max_lvl": 8},
-        17: {"cantrips": 4, "prepared": 19, "slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1, "8": 1, "9": 1}, "max_lvl": 9},
-        18: {"cantrips": 4, "prepared": 20, "slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 3, "6": 1, "7": 1, "8": 1, "9": 1}, "max_lvl": 9},
-        19: {"cantrips": 4, "prepared": 21, "slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 3, "6": 2, "7": 1, "8": 1, "9": 1}, "max_lvl": 9},
-        20: {"cantrips": 4, "prepared": 22, "slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 3, "6": 2, "7": 2, "8": 1, "9": 1}, "max_lvl": 9},
+        lvl: {
+            "cantrips": 2 if lvl < 4 else (3 if lvl < 10 else 4),
+            "prepared": FULL_CASTER_PREPARED_2024[lvl],
+            "slots": FULL_CASTER_SLOTS_2024[lvl]["slots"],
+            "max_lvl": FULL_CASTER_SLOTS_2024[lvl]["max_lvl"],
+        }
+        for lvl in range(1, 21)
     },
     "Clérigo": {
-        1: {"cantrips": 3, "prepared": 4, "slots": {"1": 2}, "max_lvl": 1},
-        2: {"cantrips": 3, "prepared": 5, "slots": {"1": 3}, "max_lvl": 1},
-        3: {"cantrips": 3, "prepared": 6, "slots": {"1": 4, "2": 2}, "max_lvl": 2},
-        4: {"cantrips": 4, "prepared": 7, "slots": {"1": 4, "2": 3}, "max_lvl": 2},
-        5: {"cantrips": 4, "prepared": 9, "slots": {"1": 4, "2": 3, "3": 2}, "max_lvl": 3},
-        6: {"cantrips": 4, "prepared": 10, "slots": {"1": 4, "2": 3, "3": 3}, "max_lvl": 3},
-        7: {"cantrips": 4, "prepared": 11, "slots": {"1": 4, "2": 3, "3": 3, "4": 1}, "max_lvl": 4},
-        8: {"cantrips": 4, "prepared": 12, "slots": {"1": 4, "2": 3, "3": 3, "4": 2}, "max_lvl": 4},
-        9: {"cantrips": 4, "prepared": 14, "slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 1}, "max_lvl": 5},
-        10: {"cantrips": 5, "prepared": 15, "slots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2}, "max_lvl": 5},
+        lvl: {
+            "cantrips": 3 if lvl < 4 else (4 if lvl < 10 else 5),
+            "prepared": FULL_CASTER_PREPARED_2024[lvl],
+            "slots": FULL_CASTER_SLOTS_2024[lvl]["slots"],
+            "max_lvl": FULL_CASTER_SLOTS_2024[lvl]["max_lvl"],
+        }
+        for lvl in range(1, 21)
     },
     "Druida": {
-        1: {"cantrips": 2, "prepared": 4, "slots": {"1": 2}, "max_lvl": 1},
-        2: {"cantrips": 2, "prepared": 5, "slots": {"1": 3}, "max_lvl": 1},
-        3: {"cantrips": 2, "prepared": 6, "slots": {"1": 4, "2": 2}, "max_lvl": 2},
-        4: {"cantrips": 3, "prepared": 7, "slots": {"1": 4, "2": 3}, "max_lvl": 2},
-        5: {"cantrips": 3, "prepared": 9, "slots": {"1": 4, "2": 3, "3": 2}, "max_lvl": 3},
+        lvl: {
+            "cantrips": 2 if lvl < 4 else (3 if lvl < 10 else 4),
+            "prepared": FULL_CASTER_PREPARED_2024[lvl],
+            "slots": FULL_CASTER_SLOTS_2024[lvl]["slots"],
+            "max_lvl": FULL_CASTER_SLOTS_2024[lvl]["max_lvl"],
+        }
+        for lvl in range(1, 21)
     },
     "Mago": {
-        1: {"cantrips": 3, "prepared": 4, "slots": {"1": 2}, "max_lvl": 1},
-        2: {"cantrips": 3, "prepared": 5, "slots": {"1": 3}, "max_lvl": 1},
-        3: {"cantrips": 3, "prepared": 6, "slots": {"1": 4, "2": 2}, "max_lvl": 2},
-        4: {"cantrips": 4, "prepared": 7, "slots": {"1": 4, "2": 3}, "max_lvl": 2},
-        5: {"cantrips": 4, "prepared": 9, "slots": {"1": 4, "2": 3, "3": 2}, "max_lvl": 3},
+        lvl: {
+            "cantrips": 3 if lvl < 4 else (4 if lvl < 10 else 5),
+            "prepared": FULL_CASTER_PREPARED_2024[lvl],
+            "slots": FULL_CASTER_SLOTS_2024[lvl]["slots"],
+            "max_lvl": FULL_CASTER_SLOTS_2024[lvl]["max_lvl"],
+        }
+        for lvl in range(1, 21)
     },
     "Hechicero": {
-        1: {"cantrips": 4, "prepared": 2, "slots": {"1": 2}, "max_lvl": 1},
-        2: {"cantrips": 4, "prepared": 4, "slots": {"1": 3}, "max_lvl": 1},
-        3: {"cantrips": 4, "prepared": 6, "slots": {"1": 4, "2": 2}, "max_lvl": 2},
-        4: {"cantrips": 5, "prepared": 7, "slots": {"1": 4, "2": 3}, "max_lvl": 2},
-        5: {"cantrips": 5, "prepared": 9, "slots": {"1": 4, "2": 3, "3": 2}, "max_lvl": 3},
+        lvl: {
+            "cantrips": 4 if lvl < 4 else (5 if lvl < 10 else 6),
+            "prepared": 2 if lvl == 1 else (4 if lvl == 2 else FULL_CASTER_PREPARED_2024[lvl]),
+            "slots": FULL_CASTER_SLOTS_2024[lvl]["slots"],
+            "max_lvl": FULL_CASTER_SLOTS_2024[lvl]["max_lvl"],
+        }
+        for lvl in range(1, 21)
     },
     "Brujo": {
         1: {"cantrips": 2, "prepared": 2, "slots": {"1": 1}, "max_lvl": 1},
@@ -666,21 +712,56 @@ PROGRESSION_TABLES_2024: Dict[str, Dict[int, Dict[str, Any]]] = {
         3: {"cantrips": 2, "prepared": 4, "slots": {"2": 2}, "max_lvl": 2},
         4: {"cantrips": 3, "prepared": 5, "slots": {"2": 2}, "max_lvl": 2},
         5: {"cantrips": 3, "prepared": 6, "slots": {"3": 2}, "max_lvl": 3},
+        6: {"cantrips": 3, "prepared": 7, "slots": {"3": 2}, "max_lvl": 3},
+        7: {"cantrips": 3, "prepared": 8, "slots": {"4": 2}, "max_lvl": 4},
+        8: {"cantrips": 3, "prepared": 9, "slots": {"4": 2}, "max_lvl": 4},
+        9: {"cantrips": 3, "prepared": 10, "slots": {"5": 2}, "max_lvl": 5},
+        10: {"cantrips": 4, "prepared": 10, "slots": {"5": 2}, "max_lvl": 5},
+        11: {"cantrips": 4, "prepared": 11, "slots": {"5": 3}, "max_lvl": 5},
+        12: {"cantrips": 4, "prepared": 11, "slots": {"5": 3}, "max_lvl": 5},
+        13: {"cantrips": 4, "prepared": 12, "slots": {"5": 3}, "max_lvl": 5},
+        14: {"cantrips": 4, "prepared": 12, "slots": {"5": 3}, "max_lvl": 5},
+        15: {"cantrips": 4, "prepared": 13, "slots": {"5": 3}, "max_lvl": 5},
+        16: {"cantrips": 4, "prepared": 13, "slots": {"5": 3}, "max_lvl": 5},
+        17: {"cantrips": 4, "prepared": 14, "slots": {"5": 4}, "max_lvl": 5},
+        18: {"cantrips": 4, "prepared": 14, "slots": {"5": 4}, "max_lvl": 5},
+        19: {"cantrips": 4, "prepared": 15, "slots": {"5": 4}, "max_lvl": 5},
+        20: {"cantrips": 4, "prepared": 15, "slots": {"5": 4}, "max_lvl": 5},
     },
     "Paladín": {
-        1: {"cantrips": 0, "prepared": 2, "slots": {"1": 2}, "max_lvl": 1},
-        2: {"cantrips": 0, "prepared": 3, "slots": {"1": 2}, "max_lvl": 1},
-        3: {"cantrips": 0, "prepared": 4, "slots": {"1": 3}, "max_lvl": 1},
-        4: {"cantrips": 0, "prepared": 5, "slots": {"1": 3}, "max_lvl": 1},
-        5: {"cantrips": 0, "prepared": 6, "slots": {"1": 4, "2": 2}, "max_lvl": 2},
+        lvl: {
+            "cantrips": 0,
+            "prepared": HALF_CASTER_PREPARED_2024[lvl],
+            "slots": HALF_CASTER_SLOTS_2024[lvl]["slots"],
+            "max_lvl": HALF_CASTER_SLOTS_2024[lvl]["max_lvl"],
+        }
+        for lvl in range(1, 21)
     },
     "Explorador": {
-        1: {"cantrips": 0, "prepared": 2, "slots": {"1": 2}, "max_lvl": 1},
-        2: {"cantrips": 0, "prepared": 3, "slots": {"1": 2}, "max_lvl": 1},
-        3: {"cantrips": 0, "prepared": 4, "slots": {"1": 3}, "max_lvl": 1},
-        4: {"cantrips": 0, "prepared": 5, "slots": {"1": 3}, "max_lvl": 1},
-        5: {"cantrips": 0, "prepared": 6, "slots": {"1": 4, "2": 2}, "max_lvl": 2},
+        lvl: {
+            "cantrips": 0,
+            "prepared": HALF_CASTER_PREPARED_2024[lvl],
+            "slots": HALF_CASTER_SLOTS_2024[lvl]["slots"],
+            "max_lvl": HALF_CASTER_SLOTS_2024[lvl]["max_lvl"],
+        }
+        for lvl in range(1, 21)
     },
+}
+
+# Alias en inglés para PROGRESSION_TABLES_2024
+CLASS_NAMES_EN_TO_ES = {
+    "bard": "Bardo",
+    "cleric": "Clérigo",
+    "druid": "Druida",
+    "wizard": "Mago",
+    "sorcerer": "Hechicero",
+    "warlock": "Brujo",
+    "paladin": "Paladín",
+    "ranger": "Explorador",
+    "fighter": "Guerrero",
+    "rogue": "Pícaro",
+    "barbarian": "Bárbaro",
+    "monk": "Monje",
 }
 
 # Límites de Dominio de Armas (Weapon Mastery) en 2024
@@ -704,7 +785,8 @@ def get_class_progression_limits(
     Devuelve los límites canónicos exactos de conjuros conocidos/preparados,
     ranuras mágicas, y maestrías de armas para la clase y nivel especificados.
     """
-    c_clean = class_name.capitalize().strip()
+    c_raw = (class_name or "").strip()
+    c_clean = CLASS_NAMES_EN_TO_ES.get(c_raw.lower(), c_raw.capitalize())
     lvl = max(1, min(20, level))
     is_2024 = "5.5" in edition or "2024" in edition
 

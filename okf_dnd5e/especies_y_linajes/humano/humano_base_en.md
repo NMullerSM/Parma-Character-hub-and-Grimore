@@ -23,35 +23,29 @@ nombre_original: Humano
 
 # Human
 
-- **Tipo de Criatura**: humanoide
-- **Tamaño**: Mediano o Pequeño
-- **Velocidad**: 9 m
-- **Sentidos**: Normal
+- **Creature Type**: Humanoid
+- **Size**: Medium or Small
+- **Speed**: 9 m
+- **Senses**: Normal
 
-## Rasgos de la Especie
-HUMANO 
-Los humanos, que están repartidos por todo el multiverso, 
-son tan variados como numerosos y tratan de lograr todo 
-lo posible en el tiempo que viven. Su ambición e ingenio 
-son encomiables, respetados y temidos en muchos mundos. 
-Los humanos presentan aspectos tan diversos como 
-entre la población de la Tierra y tienen muchos dioses. 
-Los eruditos debaten el origen de la humanidad, pero se 
-dice que una de las primeras concentraciones humanas 
-conocidas tuvo lugar en Sigil, la ciudad toroidal situada 
-en el centro del multiverso y el lugar en el que nació la 
-lengua común. Desde ahí, los humanos podrían haberse 
-dispersado por todos los rincones del multiverso y llevado 
-consigo el cosmopolitismo de la Ciudad de las Puertas. 
-ATRIBUTOS DE LOS HUMANOS 
-Tipo de criatura: humanoide 
-Tamaño: Mediano (entre 1,2 y 2,1 m de altura) o Pequeño 
-(entre 60 cm y 1,2 m de altura), elegido al seleccionar la especie 
-Velocidad: 9 m 
-Como humano, tienes estos atributos especiales: 
-Diestro. Ganas competencia en una habilidad de tu 
-elección. 
-Ingenioso. Obtienes inspiración heroica tras finalizar 
-un Long Rest. 
-Versátil. Obtienes una dote de origen de tu elección 
-(consulta el capít
+## Species Traits
+
+### Human
+Humans, spread throughout the multiverse, are as varied as they are numerous, and they strive to achieve everything possible in the time they live. Their ambition and ingenuity are admirable, respected and feared in many worlds. Humans display appearances as diverse as the population of Earth, and they worship many gods.
+
+Scholars debate the origin of humanity, but it is said that one of the earliest known human settlements arose in Sigil, the toroidal city at the center of the multiverse and the place where Common was born. From there, humans may have spread to every corner of the multiverse, carrying with them the cosmopolitanism of the City of Doors.
+
+### Human Attributes
+Creature Type: Humanoid
+
+Size: Medium (between 4 and 7 feet tall) or Small (between 2 and 4 feet tall), chosen when you select your species
+
+Speed: 9 m (30 feet)
+
+As a human, you have the following special traits.
+
+Skillful. You gain proficiency in one skill of your choice.
+
+Resourceful. You gain Heroic Inspiration whenever you finish a Long Rest.
+
+Versatile. You gain an origin feat of your choice.

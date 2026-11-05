@@ -17,14 +17,8 @@ nombre_original: Combate Sin Armas
 
 # Unarmed Fighting
 
-*Dote de estilo de combate (requisitos: rasgo Estilo de combate)*
+*Fighting Style Feat (Prerequisite: Fighting Style feature)*
 
-Cuando aciertes con tu ataque sin armas y causes daño, 
-puedes infligir una cantidad de bludgeoning damage igual 
-a 1d6 más tu modificador por Fuerza en lugar del daño 
-habitual de un ataque sin armas. Si no estás empuñando 
-armas ni embrazando un escudo al hacer la tirada de 
-ataque, el d6 se convierte en un d8. 
-Al principio de cada uno de tus turnos, puedes infligir 
-1d4 de bludgeoning damage a una criatura a la que tengas 
-agarrada.
+When you hit with an unarmed strike and deal damage, you can deal bludgeoning damage equal to 1d6 plus your Strength modifier instead of the usual damage of an unarmed strike. If you aren't wielding a weapon or holding a shield when you make the attack roll, the d6 becomes a d8.
+
+At the start of each of your turns, you can deal 1d4 bludgeoning damage to one creature you are grappling.

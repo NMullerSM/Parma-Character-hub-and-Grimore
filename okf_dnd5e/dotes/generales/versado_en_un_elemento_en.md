@@ -15,23 +15,14 @@ nombre_ingles: Versado En Un Elemento
 nombre_original: Versado En Un Elemento
 ---
 
-# Versado En Un Elemento
+# Elemental Adept
 
-*Dote general (requisitos: nivel 4 o más, rasgo Lanzamiento*
+*General Feat (Prerequisite: Level 4+, Spellcasting or Pact Magic feature)*
 
-de conjuros o Magia del pacto) 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación de 
-Inteligencia, Sabiduría o Carisma en 1, hasta un máximo 
-de 20. 
-Dominio de la energía. Elige uno de los siguientes tipos de 
-daño: ácido, frío, fuego, relámpago o trueno. Los conjuros 
-que lances ignoran la resistencia al daño del tipo que elijas. 
-Además, cuando tires el daño de un conjuro que hayas 
-lanzado y cause daño de ese tipo, podrás tratar cualquier 1 
-en los dados de daño como un 2. 
-Repetible. Puedes elegir esta dote más de una vez, pero 
-debes elegir un tipo de daño distinto cada vez para el 
-dominio de la energía. 
-DOTES DE ESTILO DE COMBATE 
-Estas dotes pertenecen a la categoría de estilo de combate.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Intelligence, Wisdom, or Charisma score by 1, to a maximum of 20.
+
+Energy Mastery. Choose one of the following damage types: acid, cold, fire, lightning, or thunder. Spells you cast ignore resistance to damage of the type you chose. Also, when you roll the damage for a spell you cast that deals damage of that type, you can treat any 1 on a damage die as a 2.
+
+Repeatable. You can take this feat more than once, but you must choose a different damage type each time for Energy Mastery.

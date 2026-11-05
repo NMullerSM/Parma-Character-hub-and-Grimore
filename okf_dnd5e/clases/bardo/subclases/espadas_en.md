@@ -3,9 +3,9 @@ id: bardo_espadas_en
 nombre: College of Swords
 nombre_ingles: College of Swords
 tipo: subclase
-clase_padre: Bardo
+clase_padre: Bard
 nivel_desbloqueo: 3
-fuente: Guia de Xanathar Para Todo
+fuente: Xanathar's Guide to Everything
 tags:
 - english
 - en
@@ -15,9 +15,9 @@ nombre_original: Colegio de las Espadas
 ---
 
 # College of Swords
-**Clase Base:** Bardo  
-**Manual / Fuente:** Guia de Xanathar Para Todo  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Bard  
+**Source:** Xanathar's Guide to Everything  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
-Duelistas acrobáticos que convierten su propia arma en un foco arcano, ejecutando Florituras de Espada que incrementan su CA y daño.
+## Archetype Summary
+Acrobatic duelists who turn their own weapon into an arcane focus, performing Blade Flourishes that increase their AC and damage.

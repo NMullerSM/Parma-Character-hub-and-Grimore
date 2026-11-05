@@ -17,8 +17,6 @@ nombre_original: Combate Con Armas Arrojadizas
 
 # Thrown Weapon Fighting
 
-*Dote de estilo de combate (requisitos: rasgo Estilo de combate)*
+*Fighting Style Feat (Prerequisite: Fighting Style feature)*
 
-Cuando aciertas con una attack roll a distancia con 
-un arma que tenga la propiedad “arrojadiza”, obtienes un 
-bonificador de +2 a la tirada de daño.
+When you hit with a ranged attack roll using a weapon that has the Thrown property, you gain a +2 bonus to the damage roll.

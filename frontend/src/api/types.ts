@@ -58,6 +58,21 @@ export interface SpellItemData {
   snippet?: string;
 }
 
+export interface EquipmentItemData {
+  id?: string;
+  name: string;
+  name_en?: string;
+  item_type: string;
+  quantity?: number;
+  weight?: string;
+  cost?: string;
+  rarity?: string;
+  description?: string;
+  notes?: string;
+  ac_bonus?: number;
+  equipped?: boolean;
+}
+
 export interface FeatureItemData {
   id?: string;
   name: string;
@@ -152,6 +167,13 @@ export interface CharacterSheetData {
   abilities: Record<string, AbilityScoreData>;
   skills: Record<string, { proficient: boolean; bonus: number; expertise: boolean }>;
   spells: SpellItemData[];
+  equipment?: EquipmentItemData[];
+  spell_limits?: {
+    cantrips_max: number;
+    cantrips_current: number;
+    spells_prepared_max: number;
+    spells_prepared_current: number;
+  };
   spell_slots_total: Record<string, number>;
   spell_slots_used: Record<string, number>;
   spell_stats?: SpellStatsData;
@@ -281,14 +303,108 @@ export interface CompendiumSearchResult {
   category: string;
   snippet: string;
   path: string;
+  source?: string;
+  expansion_tag?: string;
+}
+
+export interface CompendiumMonsterSummary {
+  id?: number;
+  entity_id: string;
+  name: string;
+  name_en?: string;
+  cr: number;
+  cr_text: string;
+  size: string;
+  monster_type: string;
+  alignment: string;
+  ac: number;
+  hp_avg: number;
+  hp_formula: string;
+  speed: string;
+  edition: string;
+  language: string;
+  source?: string;
+  expansion_tag?: string;
+}
+
+export interface CompendiumMonsterDetail extends CompendiumMonsterSummary {
+  data_json?: string;
+  details?: Record<string, any>;
+}
+
+export interface CompendiumSpellSummary {
+  id?: number;
+  entity_id: string;
+  name: string;
+  name_en?: string;
+  level: number;
+  school: string;
+  casting_time: string;
+  range_area: string;
+  components: string;
+  duration: string;
+  is_concentration: number | boolean;
+  is_ritual: number | boolean;
+  classes: string;
+  edition: string;
+  language: string;
+  description: string;
+  source?: string;
+  expansion_tag?: string;
+}
+
+export interface CompendiumSpellDetail extends CompendiumSpellSummary {
+  data_json?: string;
+  details?: Record<string, any>;
+}
+
+export interface CompendiumItemSummary {
+  id?: number;
+  entity_id: string;
+  name: string;
+  name_en?: string;
+  item_type: string;
+  rarity: string;
+  cost: string;
+  weight: string;
+  weapon_mastery?: string;
+  damage?: string;
+  damage_type?: string;
+  ac_bonus?: number;
+  edition: string;
+  language: string;
+  description: string;
+  source?: string;
+  expansion_tag?: string;
+}
+
+export interface CompendiumItemDetail extends CompendiumItemSummary {
+  data_json?: string;
+  details?: Record<string, any>;
+}
+
+export interface CompendiumPaginatedResult<T> {
+  items: T[];
+  total: number;
+  page: number;
+  page_size: number;
+  has_more: boolean;
+}
+
+export interface CompendiumCounts {
+  monsters: number;
+  spells: number;
+  items: number;
 }
 
 export interface AppSettings {
   theme: string;
   dnd_edition?: string;
+  active_expansions?: string | string[];
   language?: "es" | "en";
   talespire_mode: "dm" | "player";
   talespire_enabled: boolean;
+  talespire_auto_throw?: boolean;
   okf_path: string;
   custom_themes_dir: string;
   last_seen_version?: string;

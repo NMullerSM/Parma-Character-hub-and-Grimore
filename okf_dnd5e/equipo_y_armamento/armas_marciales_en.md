@@ -1,7 +1,7 @@
 ---
 id: equipo_armas_marciales_en
 nombre: Armas Marciales (Cuerpo a Cuerpo y Distancia)
-fuente: Manual del Jugador 2024
+fuente: PHB 2024
 pagina: 214
 tipo: equipo
 subtipo: Armas

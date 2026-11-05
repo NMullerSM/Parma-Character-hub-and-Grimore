@@ -2334,6 +2334,10 @@ export const BACKGROUNDS_REVERSE_MAP: Record<string, string> = {
   "soldier": "Soldado",
   "Wayfarer": "Vagabundo",
   "wayfarer": "Vagabundo",
+  "Vagrant": "Vagabundo",
+  "vagrant": "Vagabundo",
+  "Peasant": "Campesino",
+  "peasant": "Campesino",
   "Urchin": "Huerfano",
   "urchin": "Huerfano"
 };

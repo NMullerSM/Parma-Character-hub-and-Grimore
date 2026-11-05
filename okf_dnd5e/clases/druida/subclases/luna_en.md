@@ -3,7 +3,7 @@ id: druida_luna_en
 nombre: Circle of the Moon
 nombre_ingles: Circle of the Moon
 tipo: subclase
-clase_padre: Druida
+clase_padre: Druid
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Círculo de la Luna
 ---
 
 # Circle of the Moon
-**Clase Base:** Druida  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Druid  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
-Protectores feroces del equilibrio que asumen formas salvajes poderosas As a bonus action, absorbiendo castigo y desgarrando enemigos.
+## Archetype Summary
+Fierce protectors of the balance who take on powerful wild forms. As a bonus action, they absorb punishment and tear into enemies.

@@ -3,7 +3,7 @@ id: bardo_valor_en
 nombre: College of Valor
 nombre_ingles: College of Valor
 tipo: subclase
-clase_padre: Bardo
+clase_padre: Bard
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Colegio del Valor
 ---
 
 # College of Valor
-**Clase Base:** Bardo  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Bard  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
-Héroes del frente de batalla que cantan hazañas heroicas, ganan competencia con armaduras medias, escudos y armas marciales con Ataque Adicional.
+## Archetype Summary
+Front-line heroes who sing of heroic deeds, they gain proficiency with medium armor, shields, and martial weapons, and they get Extra Attack.

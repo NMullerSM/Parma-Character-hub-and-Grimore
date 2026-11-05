@@ -1,0 +1,26 @@
+MIT License
+
+Copyright (c) 2026 Nathaniel Muller
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+### Aviso Legal sobre Propiedad Intelectual de Terceros
+Dungeons & Dragons, D&D, Wizards of the Coast, y sus respectivos logotipos son marcas registradas de Wizards of the Coast LLC en los Estados Unidos y otros países. Este proyecto es una herramienta de asistencia independiente de código abierto y no está afiliado, respaldado ni patrocinado por Wizards of the Coast. Cualquier manual de referencia incluido en `data/manuals/` se preserva con fines de uso personal, privado y de mesa de juego sin fines comerciales.

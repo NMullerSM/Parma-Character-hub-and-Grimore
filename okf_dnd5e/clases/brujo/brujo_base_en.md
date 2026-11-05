@@ -1,16 +1,16 @@
 ---
 id: brujo_en
 nombre: Warlock
-caracteristica_principal: CAR
+caracteristica_principal: CHA
 dado_golpe: 1d8
 salvaciones_competentes:
-- SAB
-- CAR
+- WIS
+- CHA
 subclases_oficiales:
-- Patrón Feérico
-- Patrón Infernal
-- Patrón Celestial
-- Patrón de los Grandes Antiguos
+- Archfey Patron
+- Fiend Patron
+- Celestial Patron
+- Great Old One Patron
 fuente: PHB 2024
 pagina: 66
 tags:
@@ -25,12 +25,12 @@ nombre_original: Brujo
 
 # Warlock
 
-- **Primary Ability**: CAR
-- **Hit Die**: 1d8 por nivel de brujo
-- **Saving Throw Proficiencies**: SAB, CAR
+- **Primary Ability**: CHA
+- **Hit Die**: 1d8 per Warlock level
+- **Saving Throw Proficiencies**: WIS, CHA
 
 ## Available Subclasses
-- Patrón Feérico
-- Patrón Infernal
-- Patrón Celestial
-- Patrón de los Grandes Antiguos
+- Archfey Patron
+- Fiend Patron
+- Celestial Patron
+- Great Old One Patron

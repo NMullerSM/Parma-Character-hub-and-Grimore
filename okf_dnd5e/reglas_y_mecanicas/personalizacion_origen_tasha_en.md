@@ -3,7 +3,7 @@ id: regla_personalizacion_tasha_en
 nombre: Customizing Your Origin (Tasha's Cauldron)
 nombre_ingles: Customizing Your Origin (Tasha's Cauldron)
 tipo: regla
-fuente: Caldero de Tasha para Todo
+fuente: Tasha's Cauldron of Everything
 pagina: 7
 tags:
 - english
@@ -15,6 +15,6 @@ nombre_original: Opciones de Personalización de Linaje (Tasha)
 
 # Customizing Your Origin (Tasha's Cauldron)
 
-Permite separar los incrementos fijos tradicionales de característica de la especie:
-- Si una especie otorgaba tradicionalmente +2 FUE / +1 CON, el jugador puede reasignar libremente **+2 a cualquier característica** y **+1 a otra distinta**, o bien asignar **+1 / +1 / +1** a tres características diferentes.
-- Permite cambiar competencias de idiomas y armas por herramientas o habilidades alternativas.
+This rule separates the traditional fixed ability score increases from the species:
+- If a species traditionally granted +2 Strength / +1 Constitution, the player can freely reassign **+2 to any ability** and **+1 to a different ability**, or assign **+1 / +1 / +1** to three different abilities.
+- It allows you to swap language and weapon proficiencies for alternative tools or skills.

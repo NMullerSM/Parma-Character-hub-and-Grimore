@@ -3,7 +3,7 @@ id: paladin_gloria_en
 nombre: Oath of Glory
 nombre_ingles: Oath of Glory
 tipo: subclase
-clase_padre: Paladín
+clase_padre: Paladin
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Juramento de Gloria
 ---
 
 # Oath of Glory
-**Clase Base:** Paladín  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Paladin  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
-Héroes legendarios destinados a la épica, inspiran velocidad a sus aliados con Aura de Presteza y realizan proezas atléticas milagrosas.
+## Archetype Summary
+Legendary heroes destined for epic deeds, they inspire speed in their allies with the Aura of Alacrity and perform miraculous athletic feats.

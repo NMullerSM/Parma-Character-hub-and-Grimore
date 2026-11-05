@@ -3,7 +3,7 @@ id: clerigo_guerra_en
 nombre: War Domain
 nombre_ingles: War Domain
 tipo: subclase
-clase_padre: Clérigo
+clase_padre: Cleric
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Dominio de la Guerra
 ---
 
 # War Domain
-**Clase Base:** Clérigo  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Cleric  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
-Paladines de la disciplina marcial sagrada, obtienen ataques adicionales de acción adicional y añaden +10 a tiradas de impacto.
+## Archetype Summary
+Paladins of sacred martial discipline, they gain additional attacks with their bonus action and add +10 to their attack rolls.

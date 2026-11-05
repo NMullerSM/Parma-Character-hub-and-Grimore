@@ -19,14 +19,10 @@ nombre_original: Afortunado
 
 *Origin Feat*
 
-Obtienes los siguientes beneficios: 
-Puntos de suerte. Tienes una cantidad de puntos de 
-suerte igual a tu bonificador por competencia y puedes 
-gastarlos en los siguientes beneficios. Recuperas los 
-puntos de suerte gastados tras finalizar un Long Rest. 
-Ventaja. Cuando tires 1420 para realizar una prueba 
-con d20, puedes gastar 1 punto de suerte para otorgarte 
-ventaja en la tirada. 
-Desventaja. Cuando una criatura tire 1420 en una tirada 
-de ataque contra ti, puedes gastar 1 punto de suerte para 
-imponerle desventaja en esa tirada.
+You gain the following benefits.
+
+Luck Points. You have a number of luck points equal to your Proficiency Bonus, and you can spend them on the following benefits. You regain all spent luck points when you finish a Long Rest.
+
+Advantage. When you roll a 1d20 for an ability check, you can spend 1 luck point to give yourself advantage on that roll.
+
+Disadvantage. When a creature rolls a 1d20 for an attack roll against you, you can spend 1 luck point to impose disadvantage on that roll.

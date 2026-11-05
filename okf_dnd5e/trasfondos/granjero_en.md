@@ -1,9 +1,9 @@
 ---
 id: granjero_en
 nombre: Farmer
-caracteristicas_clave: Fuerza, Constitución, Sabiduría
-dote_concedida: Duro
-habilidades_competentes: Naturaleza, Trato con Animales
+caracteristicas_clave: Strength, Constitution, Wisdom
+dote_concedida: Tough
+habilidades_competentes: Nature, Animal Handling
 fuente: PHB 2024
 pagina: 184
 tags:
@@ -18,6 +18,6 @@ nombre_original: Granjero
 
 # Farmer
 
-- **Puntuaciones de Característica**: Fuerza, Constitución, Sabiduría
-- **Origin Feat**: Duro
-- **Habilidades con Competencia**: Naturaleza, Trato con Animales
+- **Ability Scores**: Strength, Constitution, Wisdom
+- **Origin Feat**: Tough
+- **Skill Proficiencies**: Nature, Animal Handling

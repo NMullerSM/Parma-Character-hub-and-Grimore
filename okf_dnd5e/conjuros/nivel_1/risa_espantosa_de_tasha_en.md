@@ -31,11 +31,13 @@ nombre_original: Risa Espantosa de Tasha
 
 # Tasha's Hideous Laughter
 
-> *Encantamiento de 1.er nivel*  
-> **Tiempo de lanzamiento:** 1 acción  
-> **Alcance:** 9 m (30 pies)  
-> **Componentes:** V, S, M (pequeñas tartas y una pluma)  
-> **Duración:** Concentración, hasta 1 minuto  
+> *1st-level Enchantment*  
+> **Casting Time:** 1 action  
+> **Range:** 30 feet  
+> **Components:** V, S, M (tiny tarts and a feather)  
+> **Duration:** Concentration, up to 1 minute  
 
-### Descripción
-Una criatura de tu elección que puedas ver dentro del alcance percibe todo como hilarantemente cómico y cae en un ataque de risa incontrolable. El objetivo debe superar una saving throw de Sabiduría o caer derribado (prono), quedando incapacitado e incapaz de levantarse durante la duración. Las criaturas con Inteligencia de 4 o menos no se ven afectadas.
+### Description
+A creature of your choice that you can see within range perceives everything as hilariously funny and falls into fits of laughter if this spell affects it. The target must succeed on a Wisdom saving throw or fall Prone, becoming Incapacitated and unable to stand up for the duration. A creature with an Intelligence score of 4 or less isn't affected.
+
+At the end of each of its turns, and each time it takes damage, the target can make another Wisdom saving throw. The target has Advantage on the saving throw if it's triggered by damage. On a successful save, the spell ends.

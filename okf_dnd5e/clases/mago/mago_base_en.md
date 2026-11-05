@@ -5,7 +5,7 @@ caracteristica_principal: INT
 dado_golpe: 1d6
 salvaciones_competentes:
 - INT
-- SAB
+- WIS
 subclases_oficiales:
 - Escuela de Abjuración
 - Escuela de Adivinación
@@ -26,11 +26,11 @@ nombre_original: Mago
 # Wizard
 
 - **Primary Ability**: INT
-- **Hit Die**: 1d6 por nivel de mago
-- **Saving Throw Proficiencies**: INT, SAB
+- **Hit Die**: 1d6 per Wizard level
+- **Saving Throw Proficiencies**: INT, WIS
 
 ## Available Subclasses
-- Escuela de Abjuración
-- Escuela de Adivinación
-- Escuela de Evocación
-- Escuela de Ilusionismo
+- School of Abjuration
+- School of Divination
+- School of Evocation
+- School of Illusion

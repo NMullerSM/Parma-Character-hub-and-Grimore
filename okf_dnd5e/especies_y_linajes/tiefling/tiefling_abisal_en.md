@@ -2,7 +2,7 @@
 id: tiefling_abisal_en
 nombre: Abyssal Tiefling
 nombre_ingles: Abyssal Tiefling
-fuente: Manual del Jugador 2024
+fuente: PHB 2024
 pagina: 198
 tipo: especie_linaje
 velocidad: 9 m (30 pies)
@@ -18,12 +18,12 @@ nombre_original: Tiefling (Linaje Abisal)
 
 # Abyssal Tiefling
 
-Descendientes imbuidos por el caos tumultuoso y la furia destructiva del Abismo.
+Descendants imbued with the tumultuous chaos and destructive fury of the Abyss.
 
-## Rasgos de Linaje
-- **Resistencia Abisal:** Resistencia al poison damage y ventaja en salvaciones contra la condición Envenenado.
-- **Legado del Abismo:**
-  - Nivel 1: Truco *Rociada Venenosa*.
-  - Nivel 3: Conjuro *Rayo de Enfermedad* (1/Long Rest como conjuro de nivel 2).
-  - Nivel 5: Conjuro *Resistencia a la Energía* (1/Long Rest).
-- **darkvision:** 18 metros (60 pies).
+## Lineage Traits
+- **Abyssal Resistance:** Resistance to poison damage, and advantage on saving throws against the Poisoned condition.
+- **Abyssal Legacy:**
+  - Level 1: *Poison Spray* cantrip.
+  - Level 3: *Ray of Sickness* spell (once per Long Rest as a 2nd-level spell).
+  - Level 5: *Protection from Energy* spell (once per Long Rest).
+- **Darkvision:** 60 feet (18 m).

@@ -3,7 +3,7 @@ id: bardo_glamour_en
 nombre: College of Glamour
 nombre_ingles: College of Glamour
 tipo: subclase
-clase_padre: Bardo
+clase_padre: Bard
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Colegio del Glamour
 ---
 
 # College of Glamour
-**Clase Base:** Bardo  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Bard  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
-Tejido con la belleza hipnótica de las Tierras Feéricas, cautiva a multitudes, reposiciona a sus aliados en combate y comanda voluntades.
+## Archetype Summary
+Woven with the hypnotic beauty of the Feywild, they captivate crowds, reposition their allies in combat, and command wills.

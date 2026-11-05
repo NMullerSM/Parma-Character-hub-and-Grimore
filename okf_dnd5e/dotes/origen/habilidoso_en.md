@@ -15,10 +15,10 @@ nombre_ingles: Habilidoso
 nombre_original: Habilidoso
 ---
 
-# Habilidoso
+# Skilled
 
 *Origin Feat*
 
-Ganas competencia en cualquier combinación de tres 
-habilidades o herramientas que elijas. 
-Repetible. Puedes elegir esta dote más de una vez.
+You gain proficiency in any combination of three skills or tools of your choice.
+
+Repeatable. You can take this feat more than once.

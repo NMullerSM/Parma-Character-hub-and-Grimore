@@ -1,9 +1,9 @@
 ---
 id: animador_en
-nombre: Animador
-caracteristicas_clave: Fuerza, Destreza, Carisma
-dote_concedida: Músico
-habilidades_competentes: Acrobacias, Interpretación
+nombre: Entertainer
+caracteristicas_clave: Strength, Dexterity, Charisma
+dote_concedida: Musician
+habilidades_competentes: Acrobatics, Performance
 fuente: PHB 2024
 pagina: 180
 tags:
@@ -12,12 +12,12 @@ tags:
 - trasfondo
 tipo: trasfondo
 idioma: en
-nombre_ingles: Animador
+nombre_ingles: Entertainer
 nombre_original: Animador
 ---
 
-# Animador
+# Entertainer
 
-- **Puntuaciones de Característica**: Fuerza, Destreza, Carisma
-- **Origin Feat**: Músico
-- **Habilidades con Competencia**: Acrobacias, Interpretación
+- **Ability Scores**: Strength, Dexterity, Charisma
+- **Origin Feat**: Musician
+- **Skill Proficiencies**: Acrobatics, Performance
