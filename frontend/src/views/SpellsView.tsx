@@ -10,6 +10,27 @@ import {
   formatDurationWithTurns,
 } from "../utils/formatters";
 
+/**
+ * Quita sintaxis markdown para la vista previa de 2 líneas de la lista.
+ * No usar MarkdownViewer aquí: genera bloques (tablas, encabezados) y rompería el line-clamp.
+ */
+const stripMarkdownForPreview = (text: string): string =>
+  text
+    .split(/\r?\n/)
+    // Filas separadoras de tabla (|---|:---:|) y reglas horizontales (---)
+    .filter((line) => !/^\s*\|?[\s:|-]*-[\s:|-]*\|?\s*$/.test(line))
+    .map((line) =>
+      line
+        .replace(/^\s*#{1,6}\s+/, "") // encabezados al inicio de línea
+        .replace(/\|/g, " ") // celdas de tabla
+    )
+    .join(" ")
+    .replace(/\*\*(.+?)\*\*/g, "$1") // negrita
+    .replace(/\*([^*\n]+)\*/g, "$1") // cursiva
+    .replace(/`([^`\n]+)`/g, "$1") // código inline
+    .replace(/\s+/g, " ")
+    .trim();
+
 export const SpellsView: React.FC = () => {
   const {
     activeCharacter,
@@ -390,9 +411,9 @@ export const SpellsView: React.FC = () => {
                     </div>
                   </div>
 
-                  {translateSpellDescription(spell, language) && (
+                  {stripMarkdownForPreview(translateSpellDescription(spell, language)) && (
                     <p className="text-xs text-muted/90 line-clamp-2 leading-relaxed pt-1">
-                      {translateSpellDescription(spell, language)}
+                      {stripMarkdownForPreview(translateSpellDescription(spell, language))}
                     </p>
                   )}
                 </div>

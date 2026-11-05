@@ -35,12 +35,20 @@ export const CompendiumView: React.FC = () => {
   // Referencias para evitar condiciones de carrera por resolución asíncrona desordenada
   const lastSearchIdRef = useRef<number>(0);
   const lastLoadIdRef = useRef<number>(0);
+  // Contenedor del panel de detalle: se resetea a la cima al cambiar de entrada
+  const detailScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (dndEdition) {
       setSelectedEdition(dndEdition);
     }
   }, [dndEdition]);
+
+  useEffect(() => {
+    if (detailScrollRef.current) {
+      detailScrollRef.current.scrollTop = 0;
+    }
+  }, [selectedEntry?.id, selectedEntry?.name]);
 
   useEffect(() => {
     async function loadCategories() {
@@ -242,34 +250,33 @@ export const CompendiumView: React.FC = () => {
             </button>
           </div>
 
-          {/* Selector de Expansiones Activas */}
-          <div className="flex items-center bg-card border border-border-iron rounded-lg p-0.5 text-xs gap-1">
-            <span className="text-[10px] uppercase font-stat text-muted px-1.5 hidden sm:inline">
-              {language === "en" ? "Expansions:" : "Expansiones:"}
-            </span>
+          {/* Selector de Expansiones Activas: chips compactos (nombre completo en title) */}
+          <div className="flex items-center bg-card border border-border-iron rounded-lg p-0.5 text-[11px] gap-0.5">
             <button
               type="button"
+              aria-pressed={!!activeExpansions?.includes("xge")}
               onClick={() => toggleExpansion("xge")}
               title="Xanathar's Guide to Everything"
-              className={`px-2 py-1 rounded font-medium transition-colors ${
+              className={`px-1.5 py-0.5 rounded font-stat font-semibold border transition-colors ${
                 activeExpansions?.includes("xge")
-                  ? "bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold"
-                  : "text-muted hover:text-main opacity-50"
+                  ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
+                  : "text-muted hover:text-main border-transparent opacity-50"
               }`}
             >
-              XGtE (Xanathar)
+              XGtE
             </button>
             <button
               type="button"
+              aria-pressed={!!activeExpansions?.includes("tce")}
               onClick={() => toggleExpansion("tce")}
               title="Tasha's Cauldron of Everything"
-              className={`px-2 py-1 rounded font-medium transition-colors ${
+              className={`px-1.5 py-0.5 rounded font-stat font-semibold border transition-colors ${
                 activeExpansions?.includes("tce")
-                  ? "bg-purple-500/20 text-purple-300 border border-purple-500/40 font-bold"
-                  : "text-muted hover:text-main opacity-50"
+                  ? "bg-purple-500/20 text-purple-300 border-purple-500/40"
+                  : "text-muted hover:text-main border-transparent opacity-50"
               }`}
             >
-              TCoE (Tasha)
+              TCoE
             </button>
           </div>
 
@@ -347,7 +354,7 @@ export const CompendiumView: React.FC = () => {
         </div>
 
         {/* Visor de Contenido Detallado */}
-        <div className="md:col-span-2 bg-card border border-border-iron rounded-xl p-5 overflow-y-auto space-y-4">
+        <div ref={detailScrollRef} className="md:col-span-2 bg-card border border-border-iron rounded-xl p-5 overflow-y-auto space-y-4">
           {selectedEntry ? (
             <div>
               {/* Header de la Entrada */}

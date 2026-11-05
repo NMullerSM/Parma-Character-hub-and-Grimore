@@ -61,12 +61,12 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openSet
   const tabs = [
     { id: "sheet", label: t("header.tabSheet") },
     { id: "combat", label: t("header.tabCombat") },
-    { id: "spells", label: t("header.tabSpells") },
     { id: "journal", label: t("header.tabJournal") },
     { id: "network", label: t("header.tabNetwork") },
-    { id: "pdf", label: t("header.tabPdf") },
+    { id: "spells", label: t("header.tabSpells") },
     { id: "compendium", label: t("header.tabCompendium") },
     { id: "forge", label: t("header.tabForge") },
+    { id: "pdf", label: t("header.tabPdf") },
   ];
 
   const handlePasteClipboard = async () => {
