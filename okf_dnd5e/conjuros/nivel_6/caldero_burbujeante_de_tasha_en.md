@@ -7,12 +7,12 @@ clases:
 - Warlock
 - Wizard
 tiempo_lanzamiento: 1 action
-alcance: 1,5 m
-componentes: V, S, M (un cucharón bañado en oro que  valga al menos 500 po)
+alcance: 5 feet
+componentes: V, S, M (a gilded ladle worth at least 500 gp)
 duracion: 10 minutes
 concentracion: false
 ritual: false
-fuente: PHB 2024
+fuente: Caldero de Tasha para Todo
 pagina: 252
 tags:
 - english
@@ -26,21 +26,8 @@ nombre_original: Caldero Burbujeante De Tasha
 
 # Tasha's Bubbling Cauldron
 
-Conjuras un caldero con patas de garra y lleno de un líquido 
-burbujeante, que aparecerá en un espacio sin ocupar en 
-el suelo within 5 feet de ti y permanecerá hasta que termine el 
-conjuro. El caldero no se puede mover y desaparece cuando 
-termine el conjuro junto con el líquido que contiene. 
-El líquido del caldero copia las propiedades de una 
-poción común o infrecuente que elijas (por ejemplo, de una 
-poción de curación). As a bonus action, un aliado o tú 
-podéis meter la mano en el caldero y extraer una poción 
-de ese tipo. La poción viene en un vial que desaparece 
-tras consumirla. El caldero puede producir una cantidad 
+You conjure a claw-footed cauldron filled with bubbling liquid. The cauldron appears in an unoccupied space on the ground within 5 feet of you and lasts for the duration. The cauldron can't be moved and disappears when the spell ends, along with the bubbling liquid inside it.
 
+The liquid in the cauldron duplicates the properties of a Common or an Uncommon potion of your choice (such as a Potion of Healing). As a Bonus Action, you or an ally can reach into the cauldron and withdraw one potion of that kind. The potion is contained in a vial that disappears when the potion is consumed. The cauldron can produce a number of these potions equal to your spellcasting ability modifier (minimum 1). When the last of these potions is withdrawn from the cauldron, the cauldron disappears, and the spell ends.
 
-de pociones de ese tipo igual a tu modificador por aptitud 
-mágica (mínimo 1). Cuando se extrae la última poción del 
-caldero, este desaparece y el conjuro termina. 
-Las pociones obtenidas del caldero que no se consuman 
-desaparecerán cuando vuelvas a lanzar el conjuro.
+Potions obtained from the cauldron that aren't consumed disappear when you cast this spell again.

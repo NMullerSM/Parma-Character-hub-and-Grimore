@@ -12,7 +12,7 @@ componentes: V, S, M (un cucharón bañado en oro que  valga al menos 500 po)
 duracion: 10 minutos
 concentracion: false
 ritual: false
-fuente: PHB 2024
+fuente: Caldero de Tasha para Todo
 pagina: 252
 tags:
 - conjuración

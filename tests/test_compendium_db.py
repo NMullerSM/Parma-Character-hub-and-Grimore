@@ -355,3 +355,62 @@ def test_expansions_schema_and_filtering():
 
     count_xge = db.count_compendium_entries("subclase", expansions=["xge"])
     assert count_xge == 1
+
+
+def test_card_parma_17_zero_artifacts_zero_spanglish_and_tasha():
+    """Verifica criterios de CARD-PARMA-17: cero artefactos Foundry/HTML, cero Spanglish y etiquetado tce de Tasha."""
+    from core.compendium_importer import (
+        clean_html,
+        clean_foundry_syntax,
+        translate_monster_name,
+        translate_item_name,
+    )
+    from core.compendium_translations import translate_monster_description, ENGLISH_LEAK_RE
+
+    # 1. Traducción ampliada de monstruos e ítems
+    assert translate_monster_name("Owlbear") == "Oso Lechuza"
+    assert translate_monster_name("Acolyte") == "Acólito"
+    assert translate_monster_name("Animated Armor") == "Armadura Animada"
+    assert translate_monster_name("Ankheg") == "Ankheg"
+    assert translate_item_name("Studded Leather Armor") != "Studded Leather Armor"
+
+    # 2. Limpieza de @Embed, @UUID, &Reference, [[lookup]], [[/damage]], [[/save]], [[/check]] y entidades HTML
+    raw_html = (
+        "<p>The [[lookup @name lowercase]]{monster} makes two [[/item .mmClaw0000000]]{Claw} attacks &amp; "
+        "uses @Embed[Compendium.dnd5e.equipment24.Item.dmgDeckOfIllusio inline] or "
+        "@UUID[Compendium.dnd5e.spells24.Item.phbsplFireball00]{Fireball} with &amp;Reference[Concentration}.</p>"
+    )
+    cleaned_es = clean_foundry_syntax(clean_html(raw_html), "Mage", "Mago", {}, {}, "es")
+    for token in ("@Embed", "@UUID", "&Reference", "[[lookup", "[[/item", "&amp;"):
+        assert token not in cleaned_es
+    assert "Baraja de las Ilusiones" in cleaned_es
+
+    # 3. Cero mezcla de idiomas (Spanglish) en oraciones de rasgos/acciones
+    raw_multi = "The [[lookup @name lowercase]]{monster} makes two [[/item .mmClaw]]{Claw} attacks."
+    d_en = clean_foundry_syntax(raw_multi, "Owlbear", "Owlbear", {}, {}, "en")
+    d_es = clean_foundry_syntax(raw_multi, "Owlbear", "Oso Lechuza", {}, {}, "es")
+    trans_multi = translate_monster_description(d_es, d_en, "Owlbear", "Oso Lechuza")
+    assert trans_multi == "El oso lechuza realiza dos ataques de Garra."
+    assert not ENGLISH_LEAK_RE.search(trans_multi)
+
+    # Oración compleja no cubierta por plantilla debe conservarse 100% en inglés limpio sin mezclar palabras en español
+    complex_raw = "If the [[lookup @name lowercase]]{monster} is targeted by magic missile, it reflects the darts."
+    c_en = clean_foundry_syntax(complex_raw, "Tarrasque", "Tarrasque", {}, {}, "en")
+    c_es = clean_foundry_syntax(complex_raw, "Tarrasque", "Tarasca", {}, {}, "es")
+    trans_complex = translate_monster_description(c_es, c_en, "Tarrasque", "Tarasca")
+    assert trans_complex == c_en
+    assert "tarasca" not in trans_complex.lower()
+
+    # 4. Ingesta OKF de Tasha's Bubbling Cauldron con expansion_tag == 'tce'
+    fd, path = tempfile.mkstemp(suffix=".db")
+    os.close(fd)
+    db = DatabaseManager(db_path=path)
+    importer = CompendiumImporter(db)
+    importer.ingest_okf_entities()
+
+    tce_spells = db.search_compendium_spells("Cauldron", language="en", expansions=["tce"])
+    assert any(s["entity_id"] == "caldero_burbujeante_de_tasha_en" and s["expansion_tag"] == "tce" for s in tce_spells)
+    cauldron_en = next(s for s in tce_spells if s["entity_id"] == "caldero_burbujeante_de_tasha_en")
+    assert cauldron_en["source"] == "Tasha's Cauldron of Everything"
+    assert "You conjure a claw-footed cauldron" in cauldron_en["description"]
+
