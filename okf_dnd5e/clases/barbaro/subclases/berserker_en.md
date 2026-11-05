@@ -20,4 +20,4 @@ nombre_original: Senda del Bersérker
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-El bersérker canaliza su furia hacia una vorágine destructiva de violencia incontrolable, asestando golpes adicionales devastadores.
+The Berserker channels their rage into a destructive whirlwind of uncontrollable violence, striking with devastating extra blows.

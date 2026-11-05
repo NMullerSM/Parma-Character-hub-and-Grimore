@@ -5,7 +5,7 @@ nombre_ingles: Hexblade Patron
 tipo: subclase
 clase_padre: Warlock
 nivel_desbloqueo: 3
-fuente: Guia de Xanathar Para Todo
+fuente: Xanathar's Guide to Everything
 tags:
 - english
 - en
@@ -16,8 +16,8 @@ nombre_original: El Filo Maldito
 
 # Hexblade Patron
 **Base Class:** Warlock  
-**Source:** Guia de Xanathar Para Todo  
+**Source:** Xanathar's Guide to Everything  
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Forjado por entidades del Páramo Sombrío, ataca con armas cuerpo a cuerpo usando su Carisma, equipa armaduras medias y maldice objetivos.
+Forged by entities of the Shadowfell, they attack with melee weapons using Charisma, wear medium armor, and curse their targets.

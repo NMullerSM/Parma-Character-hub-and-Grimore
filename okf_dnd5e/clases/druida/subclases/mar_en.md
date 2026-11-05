@@ -20,4 +20,4 @@ nombre_original: Círculo del Mar
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Canalizan la furia del océano y la tempestad, rodeándose de una tormenta de spray y olas que empuja enemigos y absorbe frío/rayo.
+They channel the fury of the ocean and the storm, surrounding themselves with a tempest of spray and waves that pushes enemies and absorbs cold and lightning damage.

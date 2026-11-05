@@ -20,4 +20,4 @@ nombre_original: Escuela de Evocación
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-El maestro de la artillería arcana elemental, esculpe zonas seguras para sus aliados dentro de Bolas de Fuego y maximiza el daño.
+The master of elemental arcane artillery, they carve safe zones for their allies within Fireballs and maximize damage.

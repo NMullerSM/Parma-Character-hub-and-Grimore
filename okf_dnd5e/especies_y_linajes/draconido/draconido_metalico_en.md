@@ -2,7 +2,7 @@
 id: draconido_metalico_en
 nombre: Metallic Dragonborn
 nombre_ingles: Metallic Dragonborn
-fuente: Manual del Jugador 2024
+fuente: PHB 2024
 pagina: 184
 tipo: especie_linaje
 velocidad: 9 m (30 pies)
@@ -18,10 +18,10 @@ nombre_original: Dracónido Metálico
 
 # Metallic Dragonborn
 
-Descendientes de los nobles dragones metálicos (Latón, Bronce, Cobre, Oro o Plata).
+Descendants of the noble metallic dragons (Brass, Bronze, Copper, Gold, or Silver).
 
-## Rasgos de Linaje
-- **Arma de Aliento Metálico:** Cono de 4.5m que inflige 1d10 de daño elemental (Fuego, Relámpago, Ácido o Frío).
-- **Resistencia Dracónica:** Resistencia al daño de tu metal asociado.
-- **Aliento Incapacitante Secundario (Nivel 5):** 1 vez por Long Rest, puedes exhalar una segunda ráfaga que empuja e incapacita a las criaturas que fallen su salvación (fuerza o letargo).
-- **darkvision:** 18 metros (60 pies).
+## Lineage Traits
+- **Metallic Breath Weapon:** A 15-foot (4.5 m) cone that deals 1d10 elemental damage (fire, lightning, acid, or cold).
+- **Draconic Resistance:** Resistance to the damage type associated with your metal.
+- **Secondary Incapacitating Breath (Level 5):** Once per Long Rest, you can exhale a second blast that pushes and incapacitates creatures that fail their saving throw (Strength or Lethargy).
+- **Darkvision:** 60 feet (18 m).

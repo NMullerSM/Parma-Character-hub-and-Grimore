@@ -11,7 +11,7 @@ tags:
 - en
 - subclase
 idioma: en
-nombre_original: Juramento de los Antiguos
+nombre_original: Oath of the Ancients
 ---
 
 # Oath of the Ancients
@@ -20,4 +20,4 @@ nombre_original: Juramento de los Antiguos
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Caballeros verdes dedicados a preservar la luz y la alegría, su Aura de Custodia otorga resistencia al daño de todos los conjuros.
+Green knights dedicated to preserving light and joy; their Aura of Warding grants resistance to damage from all spells.

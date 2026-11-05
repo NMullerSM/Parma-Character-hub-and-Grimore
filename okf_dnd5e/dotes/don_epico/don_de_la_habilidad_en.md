@@ -17,13 +17,12 @@ nombre_original: Don De La Habilidad
 
 # Boon of Skill
 
-*Dote de don épico (requisito: nivel 19 o más)*
+*Epic Boon Feat (Prerequisite: Level 19+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta una puntuación de 
-característica de tu elección en 1, hasta un máximo de 30. 
-Experto polifacético. Ganas competencia en todas las 
-habilidades. 
-Pericia. Elige una habilidad en la que no tengas pericia. 
-Ganas pericia en esa habilidad. 
-CAPÍTULO 5 | DOTES
+You gain the following benefits.
+
+Ability Score Improvement. Increase one ability score of your choice by 1, to a maximum of 30.
+
+Versatile Expert. You gain proficiency in all skills.
+
+Expertise. Choose a skill in which you lack expertise. You gain expertise in that skill.

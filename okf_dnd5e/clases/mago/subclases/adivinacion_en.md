@@ -20,4 +20,4 @@ nombre_original: Escuela de Adivinación
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Vislumbra el tejido del futuro; tira 2 dados d20 al amanecer (Portento) y sustituye cualquier tirada aliada o enemiga por estos resultados.
+Glimpses the fabric of the future: they roll two d20s at dawn (Portent) and substitute those results for any ally's or enemy's roll.

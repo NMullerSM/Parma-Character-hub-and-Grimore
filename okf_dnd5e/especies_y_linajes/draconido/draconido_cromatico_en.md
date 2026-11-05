@@ -2,7 +2,7 @@
 id: draconido_cromatico_en
 nombre: Chromatic Dragonborn
 nombre_ingles: Chromatic Dragonborn
-fuente: Manual del Jugador 2024
+fuente: PHB 2024
 pagina: 184
 tipo: especie_linaje
 velocidad: 9 m (30 pies)
@@ -18,10 +18,10 @@ nombre_original: Dracónido Cromático
 
 # Chromatic Dragonborn
 
-Descendientes de los dragones cromáticos (Negro, Azul, Verde, Rojo o Blanco).
+Descendants of the chromatic dragons (Black, Blue, Green, Red, or White).
 
-## Rasgos de Linaje
-- **Arma de Aliento Cromático:** Puedes exhalar energía destructiva en una línea de 9m o un cono de 4.5m. Inflige 1d10 de daño (aumenta a niveles 5, 11 y 17) según el color elegido (Ácido, Relámpago, Veneno, Fuego o Frío).
-- **Resistencia Dracónica:** Resistencia al tipo de daño correspondiente a tu color de dragón.
-- **Inmunidad Cromática (Nivel 5):** 1 vez por Long Rest, As a bonus action puedes volverte inmune al tipo de daño de tu color durante 1 minuto.
-- **darkvision:** 18 metros (60 pies).
+## Lineage Traits
+- **Chromatic Breath Weapon:** You can exhale destructive energy in a 30-foot (9 m) line or a 15-foot (4.5 m) cone. It deals 1d10 damage (increasing at levels 5, 11, and 17) of the type matching your chosen color (acid, lightning, poison, fire, or cold).
+- **Draconic Resistance:** Resistance to the damage type matching your dragon color.
+- **Chromatic Immunity (Level 5):** Once per Long Rest, as a bonus action you can become immune to the damage type of your color for 1 minute.
+- **Darkvision:** 60 feet (18 m).

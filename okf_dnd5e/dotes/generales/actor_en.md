@@ -17,17 +17,12 @@ nombre_original: Actor
 
 # Actor
 
-*Dote general (requisitos: nivel 4 o más, Carisma 13 o más)*
+*General Feat (Prerequisite: Level 4+, Charisma 13+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación 
-de Carisma en 1, hasta un máximo de 20. 
-Suplantación. Mientras te disfraces de alguien real 
-o ficticio, tendrás ventaja en las pruebas de Carisma 
-(Engaño o Interpretación) para convencer a los demás 
-de que eres esa persona. 
-Imitación. Puedes imitar el sonido de otras criaturas, 
-incluida el habla. Una criatura que escuche la imitación 
-deberá superar una prueba de Sabiduría (Perspicacia) para 
-darse cuenta de que es una farsa (CD 8 más tu modificador 
-por Carisma y tu bonificador por competencia).
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Charisma score by 1, to a maximum of 20.
+
+Impersonation. While you are disguised as a real or fictional person, you have advantage on Charisma (Deception or Performance) checks to convince others that you are that person.
+
+Mimicry. You can mimic the sounds of other creatures, including speech. A creature that hears the mimicry must succeed on a Wisdom (Insight) check to realize it is a fake. The DC is 8 plus your Charisma modifier and your Proficiency Bonus.

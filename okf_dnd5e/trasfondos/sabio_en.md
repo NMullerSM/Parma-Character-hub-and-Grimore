@@ -19,5 +19,5 @@ nombre_original: Sabio
 # Sage
 
 - **Ability Scores**: Constitution, Intelligence, Wisdom
-- **Origin Feat**: Magic Initiate (Mago)
+- **Origin Feat**: Magic Initiate (Wizard)
 - **Skill Proficiencies**: Arcana, History

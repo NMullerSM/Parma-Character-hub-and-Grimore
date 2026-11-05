@@ -15,23 +15,12 @@ nombre_ingles: Influencia Sombría
 nombre_original: Influencia Sombría
 ---
 
-# Influencia Sombría
+# Shadowy Influence
 
-*Dote general (requisitos: nivel 4 o más)*
+*General Feat (Prerequisite: Level 4+)*
 
-Tu exposición a la magia del Páramo Sombrío te otorga 
-los siguientes beneficios. 
-Mejora de característica. Aumenta tu puntuación de 
-Inteligencia, Sabiduría o Carisma en 1, hasta un máximo 
-de 20. 
-Magia de las sombras. Elige un conjuro de nivel 1 de las 
-escuelas mágicas de ilusionismo o nigromancia. Siempre 
-tendrás ese conjuro y el conjuro invisibilidad preparados. 
-Puedes lanzar cada uno de estos conjuros sin gastar un 
-espacio de conjuro. Cuando lances cualquiera de esos 
-conjuros de esta forma, no podrás volver a lanzar ese 
-conjuro de este modo hasta que finalices un descanso 
-largo. También puedes lanzar estos conjuros usando 
-espacios de conjuro que tengas del nivel apropiado, 
-La aptitud mágica de los conjuros es la característica 
-aumentada por esta dote.
+Your exposure to the magic of the Shadowfell grants you the following benefits.
+
+Ability Score Improvement. Increase your Intelligence, Wisdom, or Charisma score by 1, to a maximum of 20.
+
+Shadow Magic. Choose a 1st-level spell from the Illusion or Necromancy school. You always have that spell and the Invisibility spell prepared. You can cast each of these spells without expending a spell slot. Once you cast either of them this way, you can't do so again until you finish a Long Rest. You can also cast these spells using spell slots of the appropriate level that you have. The spellcasting ability for these spells is the ability increased by this feat.

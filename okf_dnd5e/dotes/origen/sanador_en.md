@@ -15,22 +15,12 @@ nombre_ingles: Sanador
 nombre_original: Sanador
 ---
 
-# Sanador
+# Healer
 
 *Origin Feat*
 
-Obtienes los siguientes beneficios: 
-Médico de batalla. Si tienes útiles de sanador, puedes 
-gastar un uso y tratar a una criatura que esté within 5 feet 
-'o menos de ti As an action de utilizar. La criatura puede 
-gastar uno de sus dados de hit points y luego 
-tirarás ese dado. La criatura recupera una cantidad de 
-hit points igual al resultado más tu bonificador 
-por competencia. 
-Repetir tiradas de curación. Siempre que tires un dado 
-para determinar cuántos hit points restableces con 
-un conjuro o con el beneficio de médico de batalla de esta 
-dote, podrás volver a tirarlo si sacas un 1 y deberás utilizar 
-el nuevo resultado. 
-DOTES GENERALES 
-Estas dotes pertenecen a la categoría general.
+You gain the following benefits.
+
+Battle Medic. If you have a healer's kit, you can expend one use of it to tend to a creature within 5 feet (1.5 m) of you as an action. The creature can spend one of its Hit Dice, and then you roll that die. The creature regains hit points equal to the result plus your Proficiency Bonus.
+
+Reroll Healing. Whenever you roll a die to determine how many hit points you restore with a spell or with this feat's Battle Medic benefit, you can reroll it if you roll a 1, and you must use the new result.

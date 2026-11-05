@@ -20,4 +20,4 @@ nombre_original: Colegio del Glamour
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Tejido con la belleza hipnótica de las Tierras Feéricas, cautiva a multitudes, reposiciona a sus aliados en combate y comanda voluntades.
+Woven with the hypnotic beauty of the Feywild, they captivate crowds, reposition their allies in combat, and command wills.

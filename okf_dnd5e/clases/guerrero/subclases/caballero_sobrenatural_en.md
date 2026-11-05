@@ -20,4 +20,4 @@ nombre_original: Caballero Sobrenatural
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Combina pericia marcial con magia de mago, vinculándose a sus armas para invocarlas al instante y sustituyendo ataques por trucos ofensivos.
+Combines martial prowess with wizardry, bonding with their weapons to summon them instantly and replacing attacks with offensive cantrips.

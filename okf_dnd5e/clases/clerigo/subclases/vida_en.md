@@ -20,4 +20,4 @@ nombre_original: Dominio de la Vida
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-El conducto supremo de energía restauradora divina, maximiza cada conjuro curativo y protege con armaduras pesadas.
+The supreme conduit of divine restorative energy, they maximize every healing spell and protect with heavy armor.

@@ -13,8 +13,16 @@ import { Search, Shield, Heart, Zap, Sparkles, Sword, Crosshair } from "lucide-r
 import { MarkdownViewer } from "../components/MarkdownViewer";
 
 export const CompendiumView: React.FC = () => {
-  const { t, language, translateCategory, translateSpellName } = useTranslation();
+  const { t, language, translateCategory, translateSpellName, translateClass } = useTranslation();
   const { dndEdition, activeExpansions, toggleExpansion } = useCharacter();
+
+  // `spell.classes` is a shared comma-separated string stored in Spanish; map each class name to the active language.
+  const formatSpellClasses = (raw: string): string =>
+    raw
+      .split(",")
+      .map((c) => translateClass(c.trim()))
+      .filter(Boolean)
+      .join(", ");
 
   const [categories, setCategories] = useState<CompendiumCategory[]>([]);
   const [selectedCat, setSelectedCat] = useState<string>("");
@@ -519,7 +527,7 @@ export const CompendiumView: React.FC = () => {
                     )}
                     {selectedEntry.spell.classes && (
                       <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-surface text-muted border border-border-iron">
-                        {selectedEntry.spell.classes}
+                        {formatSpellClasses(selectedEntry.spell.classes)}
                       </span>
                     )}
                   </div>

@@ -17,15 +17,12 @@ nombre_original: Rebanador
 
 # Slasher
 
-*Dote general (requisitos: nivel 4 o más)*
+*General Feat (Prerequisite: Level 4+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación 
-de Fuerza o Destreza en 1, hasta un máximo de 20. 
-Lacerar. once per turn, cuando aciertes a una 
-criatura con un ataque que cause slashing damage, podrás 
-reducir la velocidad del objetivo en 3 m hasta el principio 
-de tu siguiente turno. 
-Crítico potenciado. Cuando causes un crítico que haga 
-slashing damage a una criatura, esta tendrá desventaja en las 
-attack rolls hasta el principio de tu siguiente turno.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Strength or Dexterity score by 1, to a maximum of 20.
+
+Lacerate. Once per turn, when you hit a creature with an attack that deals slashing damage, you can reduce the target's Speed by 10 feet (3 m) until the start of your next turn.
+
+Enhanced Critical. When you score a critical hit that deals slashing damage to a creature, that creature has disadvantage on attack rolls until the start of your next turn.

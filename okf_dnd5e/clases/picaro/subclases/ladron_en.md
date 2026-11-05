@@ -20,4 +20,4 @@ nombre_original: Ladrón
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-El maestro de la infiltración y el pillaje, utiliza objetos mágicos y herramientas de ladrones As a bonus action veloz.
+The master of infiltration and plunder, who uses magic items and thieves' tools and acts swiftly with a bonus action.

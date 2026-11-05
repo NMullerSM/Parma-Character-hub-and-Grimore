@@ -20,4 +20,4 @@ nombre_original: Señor de las Bestias
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Vinculado espiritualmente a un Compañero Primitivo (Tierra, Cielo o Mar) que combate sincronizadamente con él en el turno.
+Spiritually bonded to a Primal Companion (Land, Sky, or Sea), fighting in sync with it on each turn.

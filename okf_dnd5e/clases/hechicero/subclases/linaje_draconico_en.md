@@ -20,4 +20,4 @@ nombre_original: Linaje Dracónico
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-La sangre de los dragones antiguos late en sus venas, otorgando CA 13+DES sin armadura, hit points extra y alas mágicas.
+The blood of ancient dragons runs in their veins, granting AC 13 + Dexterity modifier without armor, extra hit points, and magical wings.

@@ -28,30 +28,19 @@ nombre_original: Gnomo
 - **Senses**: darkvision 18 m
 
 ## Species Traits
-GNOMO 
-Los gnomos son un pueblo mágico creado por los dioses 
-de la inventiva, las ilusiones y la vida en el subsuelo. 
-Los otros pueblos rara vez veían a los primeros gnomos 
-debido a su naturaleza reservada y su propensión a vivir 
-en bosques y madrigueras. Lo que les faltaba en tamaño, 
-lo compensaban con su astucia, ya que confundían a los 
-depredadores con trampas y túneles laberínticos. También 
-aprendieron magia de dioses como Garl Oro Reluciente, 
-Baervan Viajero Indómito y Baravar Capa de Sombras, 
-que los visitaban disfrazados. Esa magia acabó originando 
-los linajes de los gnomos de las rocas y los gnomos de los 
-bosques. 
-Los gnomos son seres pequeños de grandes ojos y orejas 
-puntiagudas que viven unos 425 años. A muchos gnomos 
-les gusta la sensación de tener un techo sobre la cabeza, 
-incluso aunque ese supuesto techo no sea más que un 
-simple gorro. 
-ATRIBUTOS DE LOS GNOMOS 
-Tipo de criatura: humanoide 
-Tamaño: Pequeño (entre 90 cm y 1,2 m de altura) 
-Velocidad: 9 m 
-Como gnomo, tienes estos atributos especiales: 
-Astucia gnoma. Tienes ventaja en las tiradas de 
-salvación de Inteligencia, Sabiduría y Carisma. 
-Linaje gnomo. Formas parte de un linaje que te otorga 
-c
+
+### Gnome
+Gnomes are a magical people created by the gods of invention, illusion, and life underground. Other peoples rarely saw the first gnomes, given their reserved nature and their tendency to live in forests and burrows. What they lacked in size, they made up for in cunning, since they confused predators with traps and labyrinthine tunnels. They also learned magic from gods such as Garl Glittergold, Baervan Wildwanderer, and Baravar Cloakshadow, who visited them in disguise. That magic eventually gave rise to the rock gnome and forest gnome lineages.
+
+Gnomes are small beings with large eyes and pointed ears who live about 425 years. Many gnomes enjoy the feeling of having a roof over their heads, even when that roof is nothing more than a simple cap.
+
+### Gnome Attributes
+Creature Type: Humanoid
+
+Size: Small (between 3 and 4 feet tall)
+
+Speed: 9 m (30 feet)
+
+As a gnome, you have the following special traits.
+
+Gnome Cunning. You have advantage on Intelligence, Wisdom, and Charisma saving throws.

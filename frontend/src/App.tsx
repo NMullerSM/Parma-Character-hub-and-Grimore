@@ -108,9 +108,9 @@ export const AppContent: React.FC = () => {
       await executeRoll({
         dice: { "20": 1 },
         modifier: 3,
-        label: t("onboarding.demoRollLabel") || "Tirada de prueba del Tour",
+        label: t("onboarding.demoRollLabel"),
       });
-      showToast(t("onboarding.demoRollLabel") || "¡Tirada d20 ejecutada!", "info");
+      showToast(t("onboarding.demoRollLabel"), "info");
     } catch (err) {
       console.warn("Error en tirada demo del tour:", err);
     }
@@ -122,70 +122,56 @@ export const AppContent: React.FC = () => {
       return [
         {
           targetId: "tour-logo",
-          title: t("onboarding.globalStep1Title") || "¡Bienvenido a Parma!",
-          description:
-            t("onboarding.globalStep1Desc") ||
-            "Tu suite táctica de escritorio 100% offline para jugadores y DMs de D&D 2024 y 5e. Todo se guarda de forma local y privada en tu máquina.",
-          badge: t("onboarding.globalStep1Badge") || "Bienvenida",
+          title: t("onboarding.globalStep1Title"),
+          description: t("onboarding.globalStep1Desc"),
+          badge: t("onboarding.globalStep1Badge"),
           placement: "bottom",
         },
         {
           targetId: "tour-edition",
-          title: t("onboarding.globalStep2Title") || "Reglas D&D 2024 y 5e",
-          description:
-            t("onboarding.globalStep2Desc") ||
-            "Alterna al instante entre las nuevas reglas oficiales 2024 (5.5e) y las clásicas de 5e. Las dotes, conjuros y razas se adaptan en tiempo real.",
-          badge: t("onboarding.globalStep2Badge") || "Reglas Oficiales",
+          title: t("onboarding.globalStep2Title"),
+          description: t("onboarding.globalStep2Desc"),
+          badge: t("onboarding.globalStep2Badge"),
           placement: "bottom",
         },
         {
           targetId: "tour-character-select",
-          title: t("onboarding.globalStep3Title") || "Tus Héroes y la Forja",
-          description:
-            t("onboarding.globalStep3Desc") ||
-            "Selecciona a tu aventurero activo o accede a la Forja de Héroes para crear personajes paso a paso, en 60 segundos o con tiradas aleatorias.",
-          badge: t("onboarding.globalStep3Badge") || "Gestión de Héroes",
+          title: t("onboarding.globalStep3Title"),
+          description: t("onboarding.globalStep3Desc"),
+          badge: t("onboarding.globalStep3Badge"),
           placement: "bottom",
         },
         {
           targetId: "tour-nav-tabs",
-          title: t("onboarding.globalStep4Title") || "Navegación Táctica",
-          description:
-            t("onboarding.globalStep4Desc") ||
-            "Accede con un clic a tu Hoja, Combate en vivo, Grimorio, Diario de campaña, Conexión en red, Visor de manuales PDF y Compendio OKF.",
-          badge: t("onboarding.globalStep4Badge") || "Secciones",
+          title: t("onboarding.globalStep4Title"),
+          description: t("onboarding.globalStep4Desc"),
+          badge: t("onboarding.globalStep4Badge"),
           placement: "bottom",
         },
         {
           targetId: "tour-dice",
-          title: t("onboarding.globalStep5Title") || "Lanzador de Dados Táctico",
-          description:
-            t("onboarding.globalStep5Desc") ||
-            "Tira dados 2D y 3D cinemáticos con ventaja, desventaja, modificadores automáticos e historial. ¡Haz clic abajo para probar una tirada!",
-          badge: t("onboarding.globalStep5Badge") || "Tiradas de Dados",
+          title: t("onboarding.globalStep5Title"),
+          description: t("onboarding.globalStep5Desc"),
+          badge: t("onboarding.globalStep5Badge"),
           placement: "bottom",
           actionButton: {
-            label: t("onboarding.demoRollBtn") || "¡Probar tirada d20!",
+            label: t("onboarding.demoRollBtn"),
             onClick: handleDemoRoll,
             icon: <Dice5 className="w-3.5 h-3.5" />,
           },
         },
         {
           targetId: "tour-talespire",
-          title: t("onboarding.globalStep6Title") || "TaleSpire 3D y Modo DM",
-          description:
-            t("onboarding.globalStep6Desc") ||
-            "Sincroniza tus tiradas en tableros 3D mediante Symbiote y activa el Modo DM para liderar sesiones multijugador con túnel seguro.",
-          badge: t("onboarding.globalStep6Badge") || "Mesa Virtual",
+          title: t("onboarding.globalStep6Title"),
+          description: t("onboarding.globalStep6Desc"),
+          badge: t("onboarding.globalStep6Badge"),
           placement: "bottom",
         },
         {
           targetId: "tour-settings",
-          title: t("onboarding.globalStep7Title") || "Temas y Configuración",
-          description:
-            t("onboarding.globalStep7Desc") ||
-            "Personaliza la paleta (Obsidian, Parchment, Amethyst, Mithril), efectos de sonido, idioma y repite este tour cuando quieras desde Ajustes.",
-          badge: t("onboarding.globalStep7Badge") || "Personalización",
+          title: t("onboarding.globalStep7Title"),
+          description: t("onboarding.globalStep7Desc"),
+          badge: t("onboarding.globalStep7Badge"),
           placement: "bottom",
         },
       ];
@@ -195,29 +181,23 @@ export const AppContent: React.FC = () => {
       return [
         {
           targetId: "tour-spell-filters",
-          title: t("onboarding.spellsStep1Title") || "Filtro por Nivel de Conjuro",
-          description:
-            t("onboarding.spellsStep1Desc") ||
-            "Organiza rápidamente tus hechizos desde Trucos hasta Nivel 9 para no perder tiempo buscando en mitad del turno de combate.",
-          badge: t("onboarding.spellsStep1Badge") || "Filtros",
+          title: t("onboarding.spellsStep1Title"),
+          description: t("onboarding.spellsStep1Desc"),
+          badge: t("onboarding.spellsStep1Badge"),
           placement: "bottom",
         },
         {
           targetId: "tour-spell-slots",
-          title: t("onboarding.spellsStep2Title") || "Ranuras de Conjuro Gastables",
-          description:
-            t("onboarding.spellsStep2Desc") ||
-            "Haz clic en las gemas doradas para marcar tus espacios mágicos usados. Se recuperan automáticamente tras un descanso largo.",
-          badge: t("onboarding.spellsStep2Badge") || "Ranuras Mágicas",
+          title: t("onboarding.spellsStep2Title"),
+          description: t("onboarding.spellsStep2Desc"),
+          badge: t("onboarding.spellsStep2Badge"),
           placement: "bottom",
         },
         {
           targetId: "tour-spell-manager",
-          title: t("onboarding.spellsStep3Title") || "Gestor Arcano y Compendio",
-          description:
-            t("onboarding.spellsStep3Desc") ||
-            "Añade conjuros oficiales desde el compendio o registra conjuros caseros personalizados (homebrew) para tu personaje.",
-          badge: t("onboarding.spellsStep3Badge") || "Gestor Arcano",
+          title: t("onboarding.spellsStep3Title"),
+          description: t("onboarding.spellsStep3Desc"),
+          badge: t("onboarding.spellsStep3Badge"),
           placement: "bottom",
         },
       ];
@@ -227,29 +207,23 @@ export const AppContent: React.FC = () => {
       return [
         {
           targetId: "tour-sheet-hp",
-          title: t("onboarding.sheetStep1Title") || "Puntos de Vida y Vitales",
-          description:
-            t("onboarding.sheetStep1Desc") ||
-            "Ajusta tus PG al instante con los botones +/-. Las viñetas de pantalla reaccionarán visualmente cuando sufras daño o te cures.",
-          badge: t("onboarding.sheetStep1Badge") || "Salud y Vitales",
+          title: t("onboarding.sheetStep1Title"),
+          description: t("onboarding.sheetStep1Desc"),
+          badge: t("onboarding.sheetStep1Badge"),
           placement: "bottom",
         },
         {
           targetId: "tour-sheet-stats",
-          title: t("onboarding.sheetStep2Title") || "Puntuaciones y Salvaciones",
-          description:
-            t("onboarding.sheetStep2Desc") ||
-            "Haz clic sobre cualquier característica o tirada de salvación para lanzar los dados automáticamente con los bonificadores calculados.",
-          badge: t("onboarding.sheetStep2Badge") || "Características",
+          title: t("onboarding.sheetStep2Title"),
+          description: t("onboarding.sheetStep2Desc"),
+          badge: t("onboarding.sheetStep2Badge"),
           placement: "bottom",
         },
         {
           targetId: "tour-sheet-actions",
-          title: t("onboarding.sheetStep3Title") || "Acciones de Ataque y Armas",
-          description:
-            t("onboarding.sheetStep3Desc") ||
-            "Calcula impacto y daño con un solo toque. Consulta el alcance en casillas para moverte con precisión en el mapa táctico.",
-          badge: t("onboarding.sheetStep3Badge") || "Combate Táctico",
+          title: t("onboarding.sheetStep3Title"),
+          description: t("onboarding.sheetStep3Desc"),
+          badge: t("onboarding.sheetStep3Badge"),
           placement: "top",
         },
       ];
@@ -259,20 +233,16 @@ export const AppContent: React.FC = () => {
       return [
         {
           targetId: "tour-compendium-search",
-          title: t("onboarding.compendiumStep1Title") || "Búsqueda Atómica Universal",
-          description:
-            t("onboarding.compendiumStep1Desc") ||
-            "Escribe cualquier término (monstruo, dote, condición o regla) para consultar de inmediato su ficha oficial sin conexión.",
-          badge: t("onboarding.compendiumStep1Badge") || "Buscador Universal",
+          title: t("onboarding.compendiumStep1Title"),
+          description: t("onboarding.compendiumStep1Desc"),
+          badge: t("onboarding.compendiumStep1Badge"),
           placement: "bottom",
         },
         {
           targetId: "tour-compendium-categories",
-          title: t("onboarding.compendiumStep2Title") || "Índice de Categorías",
-          description:
-            t("onboarding.compendiumStep2Desc") ||
-            "Filtra por linajes, clases, equipo o trasfondos para explorar el compendio de reglas Open Knowledge Fantasy.",
-          badge: t("onboarding.compendiumStep2Badge") || "Índice de Reglas",
+          title: t("onboarding.compendiumStep2Title"),
+          description: t("onboarding.compendiumStep2Desc"),
+          badge: t("onboarding.compendiumStep2Badge"),
           placement: "bottom",
         },
       ];
@@ -282,11 +252,9 @@ export const AppContent: React.FC = () => {
       return [
         {
           targetId: "tour-forge-modes",
-          title: t("onboarding.forgeStep1Title") || "Elige tu Método de Creación",
-          description:
-            t("onboarding.forgeStep1Desc") ||
-            "Asistente guiado paso a paso, generador rápido optimizado en 60 segundos, o tirada aleatoria clásica con 4d6 descartando el menor.",
-          badge: t("onboarding.forgeStep1Badge") || "Forja de Héroes",
+          title: t("onboarding.forgeStep1Title"),
+          description: t("onboarding.forgeStep1Desc"),
+          badge: t("onboarding.forgeStep1Badge"),
           placement: "bottom",
         },
       ];
@@ -417,7 +385,7 @@ export const AppContent: React.FC = () => {
       safeStorage.setItem("parma_has_completed_onboarding", "true");
       safeStorage.setItem("parma_tour_skipped_all", "true");
       safeStorage.setItem("parma_completed_section_tours", JSON.stringify(allSections));
-      showToast(t("onboarding.btnSkipAll") || "Onboarding completado", "info");
+      showToast(t("onboarding.btnSkipAll"), "info");
     } catch (err) {
       console.error("Error al persistir skip all:", err);
     }

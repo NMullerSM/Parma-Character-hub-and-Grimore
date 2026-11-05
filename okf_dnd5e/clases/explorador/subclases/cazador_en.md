@@ -20,4 +20,4 @@ nombre_original: Cazador
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Especialista consumado en abatir las amenazas más peligrosas del mundo, castigando presas heridas con daño d8 adicional continuo.
+A consummate specialist in defeating the most dangerous threats in the world, punishing wounded prey with continuous extra d8 damage.

@@ -19,5 +19,5 @@ nombre_original: Acólito
 # Acolyte
 
 - **Ability Scores**: Wisdom, Intelligence, Charisma
-- **Origin Feat**: Magic Initiate (Clérigo)
+- **Origin Feat**: Magic Initiate (Cleric)
 - **Skill Proficiencies**: Insight, Religion

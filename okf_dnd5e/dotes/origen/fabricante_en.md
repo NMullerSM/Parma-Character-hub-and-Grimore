@@ -15,38 +15,25 @@ nombre_ingles: Fabricante
 nombre_original: Fabricante
 ---
 
-# Fabricante
+# Crafter
 
 *Origin Feat*
 
-Obtienes los siguientes beneficios: 
-Competencia con herramientas. Ganas competencia 
-con tres herramientas de artesano que elijas de la tabla 
-“Fabricación rápida”. 
-Descuento. Cuando compres un objeto no mágico, 
-conseguirás un 20 % de descuento. 
-Fabricación rápida. Tras finalizar un Long Rest, 
-puedes fabricar un objeto de la tabla “Fabricación rápida” 
-si posees las herramientas de artesano asociadas a ese 
-objeto y tienes competencia con ellas. El objeto durará 
-hasta que acabes otro Long Rest; en ese momento, 
-se deshará. 
-FABRICACIÓN RÁPIDA 
-Herramientas de artesano Equipo fabricado 
-Herramientas de albañil. 
-Polipasto 
-Herramientas de alfarero 
-Jarro, lámpara 
-Herramientas de carpintero Antorcha, escalera 
-Herramientas de curtidor 
-Bolsa, estuche 
-Herramientas de ebanista 
-Bastón, garrote, garrote grande 
-Abrojos, bolas de metal, 
-cubo, garfio de escalada, 
-olla de hierro 
-Herramientas de herrero 
-Herramientas de manitas 
-Campana, pala, yesca 
-Herramientas de tejedor 
-Cesta, cuerda, red, tienda
+You gain the following benefits.
+
+Tool Proficiency. You gain proficiency with three artisan's tools of your choice from the Rapid Crafting table below.
+
+Discount. When you buy a nonmagical item, you get a 20 percent discount.
+
+Rapid Crafting. After you finish a Long Rest, you can craft an item from the Rapid Crafting table if you have the artisan's tools associated with that item and are proficient with them. The item lasts until you finish another Long Rest, at which point it falls apart.
+
+| Artisan's Tools | Crafted Item |
+|---|---|
+| Mason's Tools | Pulley |
+| Potter's Tools | Jug, lamp |
+| Carpenter's Tools | Torch, ladder |
+| Tanner's Tools | Pouch, case |
+| Cabinetmaker's Tools | Club, greatclub |
+| Smith's Tools | Caltrops, ball bearings, bucket, climbing hook, iron pot |
+| Tinker's Tools | Bell, shovel, tinderbox |
+| Weaver's Tools | Basket, rope, net, tent |

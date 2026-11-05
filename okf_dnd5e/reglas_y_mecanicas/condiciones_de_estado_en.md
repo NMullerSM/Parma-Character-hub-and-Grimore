@@ -1,7 +1,7 @@
 ---
 id: regla_condiciones_en
 nombre: Conditions & States
-fuente: Manual del Jugador 2024
+fuente: PHB 2024
 pagina: 364
 tipo: regla
 tags:
@@ -15,107 +15,107 @@ nombre_original: Condiciones de Estado
 
 # Conditions & States
 
-Las condiciones alteran las capacidades de una criatura de diversas maneras y pueden ser el resultado de un conjuro, un rasgo de clase, el ataque de un monstruo u otro efecto.
+Conditions alter a creature's capabilities in various ways. They can be the result of a spell, a class feature, a monster's attack, or another effect.
 
 ---
 
-### 1. Cegado (Blinded)
-- Una criatura cegada no puede ver y falla automáticamente cualquier prueba de característica que requiera la vista.
-- Las attack rolls contra la criatura tienen **ventaja**.
-- Las attack rolls de la criatura tienen **desventaja**.
+### 1. Blinded
+- A Blinded creature can't see and automatically fails any ability check that requires sight.
+- Attack rolls against the creature have **advantage**.
+- The creature's attack rolls have **disadvantage**.
 
 ---
 
-### 2. Hechizado (Charmed)
-- Una criatura hechizada no puede atacar al causante del hechizo ni marcarlo como objetivo de habilidades o efectos dañinos.
-- El causante del hechizo tiene **ventaja** en cualquier prueba de característica para interactuar socialmente con la criatura.
+### 2. Charmed
+- A Charmed creature can't attack the charmer or target the charmer with harmful abilities or effects.
+- The charmer has **advantage** on any ability check to interact socially with the creature.
 
 ---
 
-### 3. Ensordecido (Deafened)
-- Una criatura ensordecida no puede oír y falla automáticamente cualquier prueba de característica que requiera el oído.
+### 3. Deafened
+- A Deafened creature can't hear and automatically fails any ability check that requires hearing.
 
 ---
 
-### 4. Asustado (Frightened)
-- Una criatura asustada tiene **desventaja** en pruebas de característica y attack rolls mientras la fuente de su miedo esté dentro de su línea de visión.
-- La criatura no puede acercarse voluntariamente a la fuente de su miedo.
+### 4. Frightened
+- A Frightened creature has **disadvantage** on ability checks and attack rolls while the source of its fear is within line of sight.
+- The creature can't willingly move closer to the source of its fear.
 
 ---
 
-### 5. Agarrado (Grappled)
-- La velocidad de una criatura agarrada se reduce a **0** y no puede beneficiarse de ningún bonificador a su velocidad.
-- La condición termina si quien la agarra queda incapacitado o si un efecto mueve a la criatura fuera del alcance del agarre.
+### 5. Grappled
+- The creature's Speed becomes **0**, and it can't benefit from any bonus to its Speed.
+- The condition ends if the creature that grapples it becomes Incapacitated, or if an effect moves the creature out of the grapple's reach.
 
 ---
 
-### 6. Incapacitado (Incapacitated)
-- Una criatura incapacitada **no puede realizar acciones ni reacciones**.
-- Su concentración en cualquier conjuro se interrumpe de inmediato.
+### 6. Incapacitated
+- An Incapacitated creature **can't take actions or reactions**.
+- Its concentration on any spell is broken immediately.
 
 ---
 
-### 7. Invisible (Invisible)
-- Una criatura invisible es imposible de ver sin la ayuda de magia o un sentido especial. A efectos de esconderse, se considera que está en un área de pesada ocultación.
-- Los ataques contra la criatura tienen **desventaja**.
-- Los ataques de la criatura tienen **ventaja**.
+### 7. Invisible
+- An Invisible creature is impossible to see without the aid of magic or a special sense. For the purpose of hiding, the creature is considered to be in a heavily obscured area.
+- Attacks against the creature have **disadvantage**.
+- The creature's attacks have **advantage**.
 
 ---
 
-### 8. Paralizado (Paralyzed)
-- Una criatura paralizada está **incapacitada** y no puede moverse ni hablar.
-- Falla automáticamente las saving throws de **Fuerza** y **Destreza**.
-- Las attack rolls contra la criatura tienen **ventaja**.
-- Cualquier ataque que impacte a la criatura es un **impacto crítico** si el atacante se encuentra a 1.5 metros (5 pies) de ella.
+### 8. Paralyzed
+- A Paralyzed creature is **Incapacitated** and can't move or speak.
+- It automatically fails Strength and Dexterity saving throws.
+- Attack rolls against the creature have **advantage**.
+- Any attack that hits the creature is a **critical hit** if the attacker is within 5 feet (1.5 m) of it.
 
 ---
 
-### 9. Petrificado (Petrified)
-- La criatura queda transformada en una sustancia inanimada sólida (generalmente piedra). Su peso se multiplica por diez y deja de envejecer.
-- Está **incapacitada**, no puede moverse ni hablar y no es consciente de sus alrededores.
-- Falla automáticamente salvaciones de Fuerza y Destreza.
-- Tiene resistencia a todo tipo de daño y es inmune a veneno y enfermedad.
+### 9. Petrified
+- The creature is transformed into a solid, inanimate substance (usually stone). Its weight increases by a factor of ten, and it stops aging.
+- It is **Incapacitated**, can't move or speak, and is unaware of its surroundings.
+- It automatically fails Strength and Dexterity saving throws.
+- It has resistance to all damage and is immune to poison and disease.
 
 ---
 
-### 10. Envenenado (Poisoned)
-- Una criatura envenenada tiene **desventaja** en attack rolls y pruebas de característica.
+### 10. Poisoned
+- A Poisoned creature has **disadvantage** on attack rolls and ability checks.
 
 ---
 
-### 11. Derribado (Prone)
-- La única opción de movimiento de una criatura derribada es arrastrarse (cuesta 1 metro adicional por cada metro recorrido), a menos que se levante.
-- Levantarse cuesta la mitad de su velocidad total de movimiento.
-- La criatura tiene **desventaja** en sus attack rolls.
-- Las attack rolls contra la criatura tienen **ventaja** si el atacante está a 1.5 metros (5 pies); de lo contrario, el ataque tiene **desventaja**.
+### 11. Prone
+- A Prone creature's only movement option is to crawl, which costs 1 extra foot of movement for every foot moved, unless it stands up.
+- Standing up costs half of its total movement Speed.
+- The creature has **disadvantage** on its attack rolls.
+- Attack rolls against the creature have **advantage** if the attacker is within 5 feet (1.5 m) of it; otherwise, the attack has **disadvantage**.
 
 ---
 
-### 12. Restringido (Restrained)
-- La velocidad de una criatura restringida se reduce a **0**.
-- Las attack rolls contra la criatura tienen **ventaja**, y los ataques de la criatura tienen **desventaja**.
-- La criatura tiene **desventaja** en saving throws de **Destreza**.
+### 12. Restrained
+- A Restrained creature's Speed becomes **0**.
+- Attack rolls against the creature have **advantage**, and the creature's attacks have **disadvantage**.
+- The creature has **disadvantage** on Dexterity saving throws.
 
 ---
 
-### 13. Aturdido (Stunned)
-- Una criatura aturdida está **incapacitada**, no puede moverse y solo puede balbucear con dificultad.
-- Falla automáticamente salvaciones de Fuerza y Destreza.
-- Las attack rolls contra ella tienen **ventaja**.
+### 13. Stunned
+- A Stunned creature is **Incapacitated**, can't move, and can speak only falteringly.
+- It automatically fails Strength and Dexterity saving throws.
+- Attack rolls against it have **advantage**.
 
 ---
 
-### 14. Inconsciente (Unconscious)
-- La criatura está **incapacitada**, no puede moverse ni hablar y no es consciente de sus alrededores.
-- Suelta lo que esté sosteniendo y queda **derribada**.
-- Falla automáticamente salvaciones de Fuerza y Destreza.
-- Las attack rolls contra ella tienen **ventaja**. Cualquier ataque que impacte a la criatura es un **impacto crítico** si el atacante está a 1.5 metros.
+### 14. Unconscious
+- The creature is **Incapacitated**, can't move or speak, and is unaware of its surroundings.
+- It drops whatever it is holding and falls **Prone**.
+- It automatically fails Strength and Dexterity saving throws.
+- Attack rolls against it have **advantage**. Any attack that hits the creature is a **critical hit** if the attacker is within 5 feet (1.5 m) of it.
 
 ---
 
-### 15. Agotamiento (Exhaustion - PHB 2024)
-- El agotamiento se mide en niveles acumulativos del 1 al 10.
-- Por cada nivel de agotamiento, la criatura resta **-1 a todas las tiradas de d20** (ataques, salvaciones y pruebas).
-- Por cada nivel de agotamiento, su velocidad se reduce en **1.5 metros (5 pies)**.
-- Al alcanzar el **nivel 10 de agotamiento**, la criatura muere de inmediato.
-- Un Long Rest completado con comida y bebida reduce el nivel de agotamiento en 1.
+### 15. Exhaustion (PHB 2024)
+- Exhaustion is measured in cumulative levels from 1 to 10.
+- For each level of exhaustion, the creature takes **-1 to all d20 Tests** (attack rolls, saving throws, and ability checks).
+- For each level of exhaustion, its Speed is reduced by **5 feet (1.5 m)**.
+- Upon reaching **exhaustion level 10**, the creature dies immediately.
+- A Long Rest completed with food and drink reduces the exhaustion level by 1.

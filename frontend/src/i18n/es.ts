@@ -677,6 +677,7 @@ export const es = {
       Paladín: "Paladín",
       Pícaro: "Pícaro",
       Brujo: "Brujo",
+      "Toque Feérico": "Toque Feérico",
     },
     races: {
       Humano: "Humano",

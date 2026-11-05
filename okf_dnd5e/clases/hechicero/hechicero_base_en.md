@@ -9,8 +9,8 @@ salvaciones_competentes:
 subclases_oficiales:
 - Wild Magic
 - Draconic Sorcery
-- Hechicería Aberrante
-- Hechicería Mecánica
+- Aberrant Mind
+- Clockwork Soul
 fuente: PHB 2024
 pagina: 128
 tags:
@@ -32,5 +32,5 @@ nombre_original: Hechicero
 ## Available Subclasses
 - Wild Magic
 - Draconic Sorcery
-- Hechicería Aberrante
-- Hechicería Mecánica
+- Aberrant Mind
+- Clockwork Soul

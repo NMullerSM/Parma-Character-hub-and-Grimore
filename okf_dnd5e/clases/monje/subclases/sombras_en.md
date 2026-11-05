@@ -20,4 +20,4 @@ nombre_original: Camino de las Sombras
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Asesinos y espías silenciosos que se teletransportan entre zonas de penumbra y conjuran mantos de oscuridad sobrenatural.
+Silent assassins and spies who teleport between areas of dim light and conjure mantles of supernatural darkness.

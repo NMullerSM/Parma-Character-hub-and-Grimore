@@ -20,4 +20,4 @@ nombre_original: Dominio de la Luz
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Portadores del fuego solar purificador, ciegan ataques hostiles con Destello Protector y desatan Bolas de Fuego benditas.
+Bearers of purifying solar fire, they blind hostile attacks with Warding Flare and unleash blessed Fireballs.

@@ -20,4 +20,4 @@ nombre_original: Dominio de la Guerra
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Paladines de la disciplina marcial sagrada, obtienen ataques adicionales de acción adicional y añaden +10 a tiradas de impacto.
+Paladins of sacred martial discipline, they gain additional attacks with their bonus action and add +10 to their attack rolls.

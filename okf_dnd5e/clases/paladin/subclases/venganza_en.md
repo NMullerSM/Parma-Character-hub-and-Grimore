@@ -20,4 +20,4 @@ nombre_original: Juramento de Venganza
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Jura castigar a los culpables sin piedad, marcando a un enemigo con Voto de Enemistad para ganar ventaja permanente en ataques.
+Swears to punish the guilty without mercy, marking an enemy with a Vow of Enmity to gain permanent advantage on attacks.

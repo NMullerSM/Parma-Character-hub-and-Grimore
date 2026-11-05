@@ -17,12 +17,6 @@ nombre_original: Protección
 
 # Protection
 
-*Dote de estilo de combate (requisitos: rasgo Estilo de combate)*
+*Fighting Style Feat (Prerequisite: Fighting Style feature)*
 
-Cuando una criatura que puedas ver ataque a un objetivo 
-que no seas tú y esté within 5 feet o menos de ti, puedes llevar 
-a cabo una reacción para interponer tu escudo si estás 
-embrazando uno. Impones desventaja a la attack roll 
-ala que reaccionas y al resto de attack rolls contra 
-el objetivo hasta el principio de tu siguiente turno si 
-permaneces within 5 feet o menos del objetivo.
+When a creature you can see attacks a target other than you that is within 5 feet (1.5 m) of you, you can use your reaction to interpose your shield if you are holding one. You impose disadvantage on the triggering attack roll and on the target's other attack rolls until the start of your next turn, provided you remain within 5 feet (1.5 m) of the target.

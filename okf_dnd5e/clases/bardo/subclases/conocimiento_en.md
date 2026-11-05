@@ -20,4 +20,4 @@ nombre_original: Colegio del Conocimiento
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Buscadores de secretos antiguos y verdades ocultas, dominan las Palabras Cortantes para sabotear tiradas enemigas y roban conjuros de cualquier clase.
+Seekers of ancient secrets and hidden truths, they master Cutting Words to sabotage enemy rolls and steal spells from any class.

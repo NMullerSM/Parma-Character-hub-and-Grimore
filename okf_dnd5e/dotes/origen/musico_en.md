@@ -19,12 +19,8 @@ nombre_original: Músico
 
 *Origin Feat*
 
-Obtienes los siguientes beneficios: 
-Formación instrumental. Ganas competencia con tres 
-instrumentos musicales de tu elección. 
-Canción alentadora. Cuando termines un Short Rest 
-o largo, puedes tocar una canción con un instrumento 
-musical con el que seas competente y darles inspiración 
-heroica a los aliados que te escuchen. La cantidad de 
-aliados a los que puedas influir de esta forma es igual 
-a tu bonificador por competencia.
+You gain the following benefits.
+
+Instrument Training. You gain proficiency with three musical instruments of your choice.
+
+Encouraging Song. When you finish a Short or Long Rest, you can play a song on a musical instrument you are proficient with and inspire heroism in allies who hear you. The number of allies you can affect this way equals your Proficiency Bonus.

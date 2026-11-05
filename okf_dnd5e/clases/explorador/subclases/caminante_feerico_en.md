@@ -20,4 +20,4 @@ nombre_original: Caminante Feérico
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Bendecido con la magia de las cortes feéricas, suma Sabiduría a pruebas de Carisma e infunde sus flechas con psychic damage.
+Blessed with the magic of the fey courts, they add Wisdom to Charisma checks and infuse their arrows with psychic damage.

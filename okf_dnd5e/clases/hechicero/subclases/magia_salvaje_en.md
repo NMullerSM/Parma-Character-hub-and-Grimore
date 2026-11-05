@@ -20,4 +20,4 @@ nombre_original: Magia Salvaje
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Canaliza las fuerzas caóticas e impredecibles del multiverso, disparando oleadas de magia salvaje con efectos asombrosos o devastadores.
+Channels the chaotic and unpredictable forces of the multiverse, unleashing waves of wild magic with astonishing or devastating effects.

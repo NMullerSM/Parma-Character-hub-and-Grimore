@@ -2,7 +2,7 @@
 id: tiefling_infernal_en
 nombre: Infernal Tiefling
 nombre_ingles: Infernal Tiefling
-fuente: Manual del Jugador 2024
+fuente: PHB 2024
 pagina: 198
 tipo: especie_linaje
 velocidad: 9 m (30 pies)
@@ -18,13 +18,13 @@ nombre_original: Tiefling (Linaje Infernal)
 
 # Infernal Tiefling
 
-Vinculados al poder de los Nueve Infiernos de Baator y al señorío de Asmodeo.
+Bound to the power of the Nine Hells of Baator and the lordship of Asmodeus.
 
-## Rasgos de Linaje
-- **Resistencia Infernal:** Resistencia al fire damage.
-- **Legado Infernal:**
-  - Nivel 1: Truco *Taumaturgia*.
-  - Nivel 3: Conjuro *Reprensión Infernal* (1/Long Rest como conjuro de nivel 2).
-  - Nivel 5: Conjuro *Oscuridad* (1/Long Rest).
-  - Aptitud mágica: Carisma, Inteligencia o Sabiduría (a elegir).
-- **darkvision:** 18 metros (60 pies).
+## Lineage Traits
+- **Infernal Resistance:** Resistance to fire damage.
+- **Infernal Legacy:**
+  - Level 1: *Thaumaturgy* cantrip.
+  - Level 3: *Hellish Rebuke* spell (once per Long Rest as a 2nd-level spell).
+  - Level 5: *Darkness* spell (once per Long Rest).
+  - Spellcasting ability: Charisma, Intelligence, or Wisdom (your choice).
+- **Darkvision:** 60 feet (18 m).

@@ -15,26 +15,14 @@ nombre_ingles: Maestro En Escudos
 nombre_original: Maestro En Escudos
 ---
 
-# Maestro En Escudos
+# Shield Master
 
-*Dote general (requisitos: nivel 4 o más, entrenamiento*
+*General Feat (Prerequisite: Level 4+, Shield Training)*
 
-con escudos) 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación 
-de Fuerza en 1, hasta un máximo de 20. 
-Golpe con escudo. Si atacas a una criatura que 
-esté within 5 feet o menos de ti como parte de la acción 
-de atacar y le aciertas con un arma cuerpo a cuerpo, 
-inmediatamente podrás golpearla con tu escudo si lo 
-llevas equipado y obligarla a realizar una tirada de 
-salvación de Fuerza (CD 8 más tu modificador por Fuerza 
-y tu bonificador por competencia). Si la falla, podrás 
-empujar al objetivo 1,5 m respecto a ti o hacer que tenga 
-el estado de derribado (a tu elección). Puedes usar este 
-beneficio solo una vez en cada uno de tus turnos. 
-Interponer escudo. Si sufres un efecto que te permita 
-hacer una Destreza saving throw para sufrir solo 
-la mitad de daño, podrás llevar a cabo una reacción para 
-no recibir daño alguno si la superas y estás embrazando 
-un escudo.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Strength score by 1, to a maximum of 20.
+
+Shield Bash. If you attack a creature within 5 feet (1.5 m) of you as part of the Attack action and hit it with a melee weapon, you can immediately bash it with your shield, if you have one equipped, and force it to make a Strength saving throw (DC 8 plus your Strength modifier and your Proficiency Bonus). If it fails, you can push the target 5 feet (1.5 m) away from you or knock it Prone, your choice. You can use this benefit only once on each of your turns.
+
+Shield Block. If you are subjected to an effect that allows you to make a Dexterity saving throw to take only half damage, you can use your reaction to take no damage if you succeed, provided you are wielding a shield.

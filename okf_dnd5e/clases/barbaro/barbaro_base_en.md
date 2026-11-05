@@ -10,7 +10,7 @@ subclases_oficiales:
 - Path of the Berserker
 - Path of the Wild Heart
 - Path of the World Tree
-- Camino del Fanático
+- Path of the Zealot
 fuente: PHB 2024
 pagina: 48
 tags:
@@ -33,4 +33,4 @@ nombre_original: Bárbaro
 - Path of the Berserker
 - Path of the Wild Heart
 - Path of the World Tree
-- Camino del Fanático
+- Path of the Zealot

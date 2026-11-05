@@ -20,4 +20,4 @@ nombre_original: Acechador Sombrío
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Cazador implacable del Inframundo, es totalmente invisible para criaturas con darkvision y embosca con ataques letales en turno 1.
+A relentless hunter of the Underdark, fully invisible to creatures with darkvision, who ambushes with lethal attacks on turn 1.

@@ -20,4 +20,4 @@ nombre_original: Asesino
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Especialista en la muerte rápida y silenciosa, inflige impactos críticos automáticos contra objetivos sorprendidos en el primer asalto.
+Specialist in swift, silent killing, who scores automatic critical hits against targets surprised in the first round.

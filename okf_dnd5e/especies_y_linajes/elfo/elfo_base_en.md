@@ -30,27 +30,12 @@ nombre_original: Elfo
 - **Senses**: darkvision 18 m (Drow 36 m)
 
 ## Species Traits
-188 
-ELFO 
-Los primeros elfos, creados por el dios Corellon, podían 
-cambiar de forma a su antojo. Perdieron esta capacidad 
-cuando la deidad los maldijo por conspirar con la diosa 
-Lolth, que trató de usurpar el poder de Corellon, pero 
-fracasó. Cuando Lolth fue desterrada al Abismo, la mayoría 
-de elfos le dieron la espalda y obtuvieron el perdón de 
-Corellon, pero aquello que el dios les había arrebatado 
-se perdió para siempre. 
-Al no poder cambiar ya de forma at will, los elfos se 
-retiraron a los Parajes Feéricos, donde su pesar se agravó 
-por la influencia del plano. Con el tiempo, la curiosidad 
-condujo a muchos a explorar otros planos de existencia, 
-incluidos los mundos del Plano Material. 
-Los elfos tienen orejas puntiagudas y carecen de vello 
-facial y corporal. Viven unos 750 años y no duermen, 
-sino que entran en trance cuando necesitan descansar. 
-En ese estado, siguen siendo conscientes de lo que les 
-rodea mientras se sumergen en recuerdos y meditaciones. 
-El entorno transforma sutilmente a los elfos si lo habitan 
-durante un milenio o más y les otorga determinados 
-tipos de magia. Los altos elfos, los drows y los elfos de los 
-bosques son ejemplos de elfos que
+
+### Elf
+The first elves, created by the god Corellon, could change shape at will. They lost this ability when the deity cursed them for conspiring with the goddess Lolth, who tried to usurp Corellon's power and failed. When Lolth was banished to the Abyss, most elves turned their backs on her and obtained Corellon's forgiveness, but what the god had taken from them was lost forever.
+
+Unable to change shape at will, the elves withdrew to the Feywild, where their grief deepened under the influence of the plane. Over time, curiosity led many of them to explore other planes of existence, including the worlds of the Material Plane.
+
+Elves have pointed ears and lack facial and body hair. They live about 750 years and do not sleep; instead, they enter a trance when they need to rest. In that state they remain aware of their surroundings while immersed in memories and meditation.
+
+The environment subtly transforms elves who inhabit it for a millennium or more, granting them certain kinds of magic.

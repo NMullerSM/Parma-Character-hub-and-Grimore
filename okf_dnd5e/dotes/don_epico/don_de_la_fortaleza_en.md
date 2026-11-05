@@ -17,15 +17,10 @@ nombre_original: Don De La Fortaleza
 
 # Boon of Fortitude
 
-*Dote de don épico (requisito: nivel 19 o más)*
+*Epic Boon Feat (Prerequisite: Level 19+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta una puntuación de 
-característica de tu elección en 1, hasta un máximo de 30. 
-Salud fortalecida. Tus hit points máximos 
-aumentan en 40. Además, cada vez que recuperes puntos 
-de golpe, podrás recuperar una cantidad de puntos de 
-golpe adicionales igual a tu modificador por Constitución. 
-Cuando hayas recuperado esos hit points adicionales, 
-no podrás volver a hacerlo hasta el principio de tu siguiente 
-turno.
+You gain the following benefits.
+
+Ability Score Improvement. Increase one ability score of your choice by 1, to a maximum of 30.
+
+Fortified Health. Your hit point maximum increases by 40. In addition, whenever you regain hit points, you can regain additional hit points equal to your Constitution modifier. Once you have regained those additional hit points, you can't do so again until the start of your next turn.

@@ -10,7 +10,7 @@ subclases_oficiales:
 - Battle Master
 - Champion
 - Eldritch Knight
-- Guerrero Psiónico
+- Psi Warrior
 fuente: PHB 2024
 pagina: 108
 tags:
@@ -33,4 +33,4 @@ nombre_original: Guerrero
 - Battle Master
 - Champion
 - Eldritch Knight
-- Guerrero Psiónico
+- Psi Warrior

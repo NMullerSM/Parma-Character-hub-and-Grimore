@@ -15,13 +15,12 @@ nombre_ingles: Muy Acorazado
 nombre_original: Muy Acorazado
 ---
 
-# Muy Acorazado
+# Heavily Armored
 
-*Dote general (requisitos: nivel 4 o más, entrenamiento*
+*General Feat (Prerequisite: Level 4+, Medium Armor Training)*
 
-con armaduras medias) 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación 
-de Constitución o Fuerza en 1, hasta un máximo de 20. 
-Entrenamiento con armaduras. Obtienes entrenamiento 
-con armaduras pesadas.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Constitution or Strength score by 1, to a maximum of 20.
+
+Armor Training. You gain training with heavy armor.

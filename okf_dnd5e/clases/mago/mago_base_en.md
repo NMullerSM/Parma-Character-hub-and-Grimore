@@ -30,7 +30,7 @@ nombre_original: Mago
 - **Saving Throw Proficiencies**: INT, WIS
 
 ## Available Subclasses
-- Escuela de Abjuración
-- Escuela de Adivinación
-- Escuela de Evocación
-- Escuela de Ilusionismo
+- School of Abjuration
+- School of Divination
+- School of Evocation
+- School of Illusion

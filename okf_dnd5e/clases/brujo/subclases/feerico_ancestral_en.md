@@ -20,4 +20,4 @@ nombre_original: El Feérico Ancestral
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Pacto con un señor de las Cortes Feéricas, teleportándose con Paso Brumoso continuo y fascinando a grupos enteros de criaturas.
+A pact with a lord of the Feywild Courts, teleporting with a continuous Misty Step and charming entire groups of creatures.

@@ -15,29 +15,14 @@ nombre_ingles: Lanzador Ritual
 nombre_original: Lanzador Ritual
 ---
 
-# Lanzador Ritual
+# Ritual Caster
 
-*Dote general (requisitos: nivel 4 o más; Inteligencia,*
+*General Feat (Prerequisite: Level 4+; Intelligence, Wisdom, or Charisma 13+)*
 
-Sabiduría o Carisma 13 o más) 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación de 
-Inteligencia, Sabiduría o Carisma en 1, hasta un máximo 
-de 20. 
-Conjuros rituales. Elige una cantidad de conjuros igual 
-a tu bonificador por competencia; deben ser de nivel 1 
-y estar marcados como “ritual”. Siempre tendrás esos 
-conjuros preparados y podrás lanzarlos con cualquier 
-espacio de conjuro que tengas. La aptitud mágica de los 
-conjuros es la característica aumentada por esta dote. 
-Siempre que tu bonificador por competencia aumente, 
-puedes añadir otro conjuro de nivel 1 marcado como 
-“ritual” a los conjuros que siempre tienes preparados 
-con este rasgo. 
-Ritual rápido. Con este beneficio, puedes lanzar un 
-conjuro ritual que tengas preparado usando su tiempo 
-de lanzamiento habitual en lugar del plazo más largo para 
-un ritual. Hacer esto no requiere un espacio de conjuro. 
-Cuando lances el conjuro de esta forma, no podrás volver 
-a utilizar este beneficio hasta que finalices un descanso 
-largo.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Intelligence, Wisdom, or Charisma score by 1, to a maximum of 20.
+
+Ritual Spells. Choose a number of spells equal to your Proficiency Bonus. They must be 1st-level spells with the ritual tag. You always have those spells prepared, and you can cast them using any spell slot you have. The spellcasting ability for these spells is the ability increased by this feat. Whenever your Proficiency Bonus increases, you can add another 1st-level ritual spell to the spells you always have prepared with this feat.
+
+Quick Ritual. With this benefit, you can cast a ritual spell you have prepared using its normal casting time instead of the longer time normally required for a ritual. Doing so doesn't require a spell slot. Once you cast a spell this way, you can't use this benefit again until you finish a Long Rest.

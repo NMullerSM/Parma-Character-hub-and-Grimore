@@ -20,4 +20,4 @@ nombre_original: Campeón
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-La cúspide de la potencia física bruta, obtiene golpes críticos con 19 y 20 natural, inspiración heroica adicional y regeneración en combate.
+The pinnacle of raw physical power, they score critical hits on a roll of 19 or 20, gain additional Heroic Inspiration, and regenerate in combat.

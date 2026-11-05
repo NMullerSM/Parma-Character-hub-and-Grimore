@@ -5,7 +5,7 @@ nombre_ingles: Order of Scribes
 tipo: subclase
 clase_padre: Wizard
 nivel_desbloqueo: 3
-fuente: Caldero de Tasha para Todo
+fuente: Tasha's Cauldron of Everything
 tags:
 - english
 - en
@@ -16,8 +16,8 @@ nombre_original: Orden de los Escribas
 
 # Order of Scribes
 **Base Class:** Wizard  
-**Source:** Caldero de Tasha para Todo  
+**Source:** Tasha's Cauldron of Everything  
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Despierta la consciencia mágica de su grimorio, cambiando el tipo de daño de sus conjuros al vuelo y proyectando un avatar espectral.
+Awakens the magical consciousness of their grimoire, changing the damage type of their spells on the fly and projecting a spectral avatar.

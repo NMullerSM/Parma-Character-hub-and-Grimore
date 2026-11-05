@@ -1,7 +1,7 @@
 ---
 id: equipo_aventuras_en
 nombre: Equipo de Aventuras, Pociones y Focos Mágicos
-fuente: Manual del Jugador 2024
+fuente: PHB 2024
 pagina: 218
 tipo: equipo
 subtipo: Aventuras

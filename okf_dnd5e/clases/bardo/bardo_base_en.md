@@ -7,9 +7,9 @@ salvaciones_competentes:
 - DEX
 - CHA
 subclases_oficiales:
-- Colegio de la Danza
+- College of Dance
 - College of Glamour
-- Colegio del Saber
+- College of Lore
 - College of Valor
 - College of Whispers
 fuente: PHB 2024
@@ -31,8 +31,8 @@ nombre_original: Bardo
 - **Saving Throw Proficiencies**: DEX, CHA
 
 ## Available Subclasses
-- Colegio de la Danza
+- College of Dance
 - College of Glamour
-- Colegio del Saber
+- College of Lore
 - College of Valor
 - College of Whispers

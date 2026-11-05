@@ -17,12 +17,10 @@ nombre_original: Resiliente
 
 # Resilient
 
-*Dote general (requisitos: nivel 4 o más)*
+*General Feat (Prerequisite: Level 4+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Elige una característica 
-en la que no tengas competencia en saving throws. 
-Aumenta la puntuación de característica en 1, hasta un 
-máximo de 20. 
-Competencia en saving throws. Ganas competencia 
-en las saving throws de la característica elegida.
+You gain the following benefits.
+
+Ability Score Improvement. Choose an ability for which you lack saving throw proficiency. Increase that ability score by 1, to a maximum of 20.
+
+Saving Throw Proficiency. You gain proficiency in saving throws using the chosen ability.

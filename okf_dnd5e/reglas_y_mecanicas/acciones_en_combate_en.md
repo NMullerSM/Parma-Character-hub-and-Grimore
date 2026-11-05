@@ -1,7 +1,7 @@
 ---
 id: regla_acciones_combate_en
 nombre: Actions in Combat
-fuente: Manual del Jugador 2024
+fuente: PHB 2024
 pagina: 362
 tipo: regla
 tags:
@@ -15,63 +15,63 @@ nombre_original: Acciones en Combate
 
 # Actions in Combat
 
-En tu turno de combate puedes moverte una distancia hasta tu velocidad y realizar **una acción**. Muchas habilidades y conjuros también te permiten realizar una **acción adicional** o una **reacción**.
+On your turn in combat, you can move up to your Speed and take **one action**. Many abilities and spells also allow you to take a **bonus action** or a **reaction**.
 
 ---
 
-### 1. Atacar (Attack)
-- La acción más común. Realizas un ataque cuerpo a cuerpo o a distancia con un arma o sin armas.
-- Ciertos rasgos de clase (como *Ataque Adicional* de Guerreros, Paladines y Bárbaros a nivel 5) te permiten hacer más de un ataque con esta misma acción.
+### 1. Attack
+- The most common action. You make a melee or ranged attack with a weapon, or an unarmed strike.
+- Certain class features, such as *Extra Attack* for Barbarians, Fighters, Paladins, Monks, and Rangers at level 5, let you make more than one attack with this action.
 
 ---
 
-### 2. Lanzar un Conjuro (Cast a Spell)
-- Lanzas un truco o conjuro que tenga un tiempo de lanzamiento de **1 acción**.
-- Regla de lanzamiento múltiple: Si lanzas un conjuro As a bonus action en tu turno, el único conjuro que puedes lanzar con tu acción principal debe ser un truco de 1 acción.
+### 2. Cast a Spell
+- You cast a cantrip or a spell that has a casting time of **1 action**.
+- Multiple casting rule: If you cast a spell as a **bonus action** on your turn, the only spell you can cast with your action on that turn must be a cantrip with a casting time of 1 action.
 
 ---
 
-### 3. Correr (Dash)
-- Obtienes movimiento adicional para el turno en curso igual a tu velocidad (después de aplicar cualquier modificador).
-- Si tu velocidad es 9m, tras Correr puedes moverte hasta 18m ese turno.
+### 3. Dash
+- You gain additional movement for the current turn equal to your Speed (after applying any modifiers).
+- If your Speed is 30 feet (9 m), after you Dash you can move up to 60 feet (18 m) that turn.
 
 ---
 
-### 4. Destrabarse (Disengage)
-- Si realizas esta acción, tu movimiento no provoca **ataques de oportunidad** durante el resto del turno.
+### 4. Disengage
+- If you take this action, your movement doesn't provoke **opportunity attacks** for the rest of the turn.
 
 ---
 
-### 5. Esquivar (Dodge)
-- Hasta el inicio de tu siguiente turno, cualquier attack roll realizada contra ti tiene **desventaja** si puedes ver al atacante.
-- Tienes **ventaja** en saving throws de **Destreza**.
-- Pierdes este beneficio si quedas incapacitado o si tu velocidad se reduce a 0.
+### 5. Dodge
+- Until the start of your next turn, any attack roll made against you has **disadvantage** if you can see the attacker.
+- You have **advantage** on Dexterity saving throws.
+- You lose this benefit if you become Incapacitated or if your Speed drops to 0.
 
 ---
 
-### 6. Ayudar (Help)
-- Puedes prestar tu ayuda a un aliado para realizar una tarea (otorgándole **ventaja** en su siguiente prueba de característica antes de tu próximo turno).
-- Alternativamente, puedes distraer a un enemigo a 1.5 metros de ti para otorgar ventaja al primer ataque de un aliado contra ese objetivo.
+### 6. Help
+- You lend aid to an ally on a task, giving them **advantage** on their next ability check before your next turn.
+- Alternatively, you can distract an enemy within 5 feet (1.5 m) of you to give an ally advantage on that ally's first attack against that target.
 
 ---
 
-### 7. Esconderse (Hide)
-- Realizas una prueba de Destreza (**Sigilo**) para intentar ocultarte de los enemigos.
-- Debes estar fuera de la vista directa de los enemigos o tras cobertura pesada.
+### 7. Hide
+- You make a Dexterity (**Stealth**) check to try to conceal yourself from enemies.
+- You must be out of the direct sight of enemies or behind heavy cover.
 
 ---
 
-### 8. Preparar una Acción (Ready)
-- Decides actuar en respuesta a un desencadenante específico antes de tu próximo turno.
-- Eliges la acción que realizarás y defines la circunstancia que la activará (ej. *"Si el goblin cruza la puerta, dispararé mi ballesta"*).
-- Cuando ocurre el desencadenante, usas tu **reacción** para ejecutar la acción preparada.
+### 8. Ready
+- You decide to act in response to a specific trigger before your next turn.
+- You choose the action you will take and define the circumstance that triggers it (for example, *"If the goblin crosses the door, I'll shoot my crossbow"*).
+- When the trigger occurs, you use your **reaction** to perform the readied action.
 
 ---
 
-### 9. Buscar (Search)
-- Dedicas tu atención a encontrar algo. El DM puede pedirte una prueba de Sabiduría (**Percepción**) o Inteligencia (**Investigación**).
+### 9. Search
+- You focus your attention on finding something. The DM may ask for a Wisdom (**Perception**) or Intelligence (**Investigation**) check.
 
 ---
 
-### 10. Usar un Objeto (Use an Object)
-- Interactúas con un segundo objeto durante tu turno (beber una poción, activar un artefacto mágico, abrir una cerradura compleja o tirar de una palanca reforzada).
+### 10. Use an Object
+- You interact with a second object during your turn, such as drinking a potion, activating a magic item, opening a complex lock, or pulling a reinforced lever.

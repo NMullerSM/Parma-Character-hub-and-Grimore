@@ -20,4 +20,4 @@ nombre_original: Juramento de Devoción
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-El arquetipo del caballero de armadura brillante; su Arma Sagrada resplandece sumando Carisma al impacto e impidiendo el hechizo.
+The archetype of the shining-armor knight; their Sacred Weapon blazes, adding Charisma to attack rolls and impeding spellcasting.

@@ -17,16 +17,12 @@ nombre_original: Mente Aguda
 
 # Keen Mind
 
-*Dote general (requisitos: nivel 4 o más, Inteligencia 13 o más)*
+*General Feat (Prerequisite: Level 4+, Intelligence 13+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación 
-de Inteligencia en 1, hasta un máximo de 20. 
-Sabiduría popular. Elige una de las siguientes 
-habilidades: Conocimiento arcano, Historia, Investigación, 
-Naturaleza o Religión. Si no tienes competencia en la 
-habilidad elegida, la consigues, y si ya la tienes, ganas 
-pericia en ella. 
-S 
-Estudio rápido. Puedes llevar a cabo la acción de 
-estudiar As a bonus action.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Intelligence score by 1, to a maximum of 20.
+
+Folk Wisdom. Choose one of the following skills: Arcana, History, Investigation, Nature, or Religion. If you lack proficiency in the chosen skill, you gain it. If you already have proficiency in it, you gain expertise in it.
+
+Quick Study. You can take the Study action as a bonus action.

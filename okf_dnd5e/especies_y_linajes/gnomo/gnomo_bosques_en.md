@@ -2,7 +2,7 @@
 id: gnomo_bosques_en
 nombre: Forest Gnome
 nombre_ingles: Forest Gnome
-fuente: Manual del Jugador 2024
+fuente: PHB 2024
 pagina: 193
 tipo: especie_linaje
 velocidad: 9 m (30 pies)
@@ -18,9 +18,9 @@ nombre_original: Gnomo de los Bosques
 
 # Forest Gnome
 
-Dotados de afinidad innata con las ilusiones y las pequeñas criaturas del bosque.
+Gifted with an innate affinity for illusions and the small creatures of the forest.
 
-## Rasgos de Linaje
-- **Ilusionista Nato:** Conoces el truco *Ilusión Menor*. La Inteligencia es tu aptitud mágica para lanzarlo.
-- **Hablar con Bestias Pequeñas:** Mediante sonidos y gestos puedes comunicar ideas simples a bestias pequeñas o diminutas (como ardillas, erizos y tejones).
-- **Astucia Gnoma:** Ventaja en salvaciones de INT, SAB y CAR contra efectos mágicos.
+## Lineage Traits
+- **Natural Illusionist:** You know the *Minor Illusion* cantrip. Intelligence is your spellcasting ability for it.
+- **Speak with Small Beasts:** Through sounds and gestures, you can communicate simple ideas to Small or Tiny beasts, such as squirrels, hedgehogs, and badgers.
+- **Gnome Cunning:** You have advantage on Intelligence, Wisdom, and Charisma saving throws against magical effects.

@@ -17,30 +17,14 @@ nombre_original: Chef
 
 # Chef
 
-*Dote general (requisitos: nivel 4 o más)*
+*General Feat (Prerequisite: Level 4+)*
 
-Obtienes los siguientes beneficios: 
-Í
-Mejora de característica. Aumenta tu puntuación de 
-Constitución o Sabiduría en 1, hasta un máximo de 20. 
-Útiles de cocinero. También obtienes competencia con 
-útiles de cocinero si aún no la tienes. 
-Comida reconstituyente. Como parte de un descanso 
-Í 
-corto, puedes preparar una comida especial, siempre 
-que tengas a mano los ingredientes y útiles de cocinero. 
-Puedes preparar suficiente de esta comida como para 
-una cantidad de criaturas igual a 4 más tu bonificador 
-por competencia. Al final del Short Rest, cualquier 
-criatura que coma la comida y gaste uno o más dados 
-de golpe para recuperar hit points recuperará 1d8 
-hit points adicionales. 
-Tentempiés tonificantes. Con 1 hora de trabajo o tras 
-finalizar un Long Rest, puedes preparar una cantidad 
-de tentempiés igual a tu bonificador por competencia si 
-tienes ingredientes y útiles de cocinero a mano. Estos 
-aperitivos especiales duran 8 horas una vez preparados. 
-Una criatura puede usar una acción adicional para 
-comerse uno de estos refrigerios y obtener una cantidad 
-de temporary hit points igual a tu bonificador por 
-competencia.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Constitution or Wisdom score by 1, to a maximum of 20.
+
+Cook's Utensils. You also gain proficiency with cook's utensils if you don't already have it.
+
+Restorative Food. As part of a Short Rest, you can prepare a special meal, provided you have ingredients and cook's utensils on hand. You can prepare enough of this food for a number of creatures equal to 4 plus your Proficiency Bonus. At the end of the Short Rest, any creature that eats the food and spends one or more Hit Dice to regain hit points regains an additional 1d8 hit points.
+
+Invigorating Snacks. With 1 hour of work, or after you finish a Long Rest, you can prepare a number of snacks equal to your Proficiency Bonus, provided you have ingredients and cook's utensils on hand. These special snacks last 8 hours once prepared. A creature can use a bonus action to eat one of them and gain a number of temporary hit points equal to your Proficiency Bonus.

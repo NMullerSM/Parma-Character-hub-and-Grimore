@@ -5,7 +5,7 @@ nombre_ingles: College of Eloquence
 tipo: subclase
 clase_padre: Bard
 nivel_desbloqueo: 3
-fuente: Caldero de Tasha para Todo
+fuente: Tasha's Cauldron of Everything
 tags:
 - english
 - en
@@ -16,8 +16,8 @@ nombre_original: Colegio de la Elocuencia
 
 # College of Eloquence
 **Base Class:** Bard  
-**Source:** Caldero de Tasha para Todo  
+**Source:** Tasha's Cauldron of Everything  
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Maestros absolutos de la retórica, jamás obtienen menos de 10 en Persuasión o Engaño y sus dados de inspiración no se gastan si el receptor falla.
+Absolute masters of rhetoric, they never roll below 10 on Persuasion or Deception, and their Bardic Inspiration dice aren't spent if the recipient fails.

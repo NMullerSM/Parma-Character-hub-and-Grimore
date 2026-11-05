@@ -20,4 +20,4 @@ nombre_original: Senda del Zelote
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Imbuido del fervor de una deidad, inflige radiant damage o necrótico en cada embate y es prácticamente imposible de matar mientras ruge de furia.
+Imbued with the fervor of a deity, the Zealot deals radiant or necrotic damage with every strike and is nearly impossible to kill while raging.

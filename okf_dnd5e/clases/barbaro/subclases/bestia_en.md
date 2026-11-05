@@ -5,7 +5,7 @@ nombre_ingles: Path of the Beast
 tipo: subclase
 clase_padre: Barbarian
 nivel_desbloqueo: 3
-fuente: Caldero de Tasha para Todo
+fuente: Tasha's Cauldron of Everything
 tags:
 - english
 - en
@@ -16,8 +16,8 @@ nombre_original: Senda de la Bestia
 
 # Path of the Beast
 **Base Class:** Barbarian  
-**Source:** Caldero de Tasha para Todo  
+**Source:** Tasha's Cauldron of Everything  
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Transforma su cuerpo durante la furia manifestando armas naturales: fauces devoradoras de vida, garras desgarradoras o cola espinosa.
+Transforms their body during rage, manifesting natural weapons: devouring jaws that drain life, rending claws, or a spiked tail.

@@ -20,4 +20,4 @@ nombre_original: Cuchilla del Alma
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Materializa dagas de energía psíquica pura que no dejan marcas físicas, establece telepatía grupal y altera el destino con dados psiónicos.
+Materializes daggers of pure psychic energy that leave no physical marks, establishes group telepathy, and alters fate with psionic dice.

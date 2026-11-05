@@ -7,10 +7,10 @@ salvaciones_competentes:
 - WIS
 - CHA
 subclases_oficiales:
-- Patrón Feérico
-- Patrón Infernal
-- Patrón Celestial
-- Patrón de los Grandes Antiguos
+- Archfey Patron
+- Fiend Patron
+- Celestial Patron
+- Great Old One Patron
 fuente: PHB 2024
 pagina: 66
 tags:
@@ -30,7 +30,7 @@ nombre_original: Brujo
 - **Saving Throw Proficiencies**: WIS, CHA
 
 ## Available Subclasses
-- Patrón Feérico
-- Patrón Infernal
-- Patrón Celestial
-- Patrón de los Grandes Antiguos
+- Archfey Patron
+- Fiend Patron
+- Celestial Patron
+- Great Old One Patron

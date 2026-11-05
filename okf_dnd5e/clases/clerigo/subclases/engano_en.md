@@ -20,4 +20,4 @@ nombre_original: Dominio del Engaño
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Sirvientes de los dioses bromistas y de la sombra, proyectan un duplicado ilusorio perfecto para lanzar conjuros a distancia.
+Servants of the mischievous and shadow gods, they project a perfect illusory duplicate that lets them cast spells at a distance.

@@ -20,4 +20,4 @@ nombre_original: Guerrero Psíquico
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Manipula energía psiónica para impulsar sus golpes con telequinesis, proyectar escudos de fuerza y mover objetos o criaturas con la mente.
+Manipulates psionic energy to power their strikes with telekinesis, project force shields, and move objects or creatures with the mind.

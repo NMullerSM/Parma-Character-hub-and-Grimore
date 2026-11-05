@@ -15,21 +15,14 @@ nombre_ingles: Atacante A La Carga
 nombre_original: Atacante A La Carga
 ---
 
-# Atacante A La Carga
+# Charger
 
-*Dote general (requisitos: nivel 4 o más, Fuerza o Destreza 13*
+*General Feat (Prerequisite: Level 4+, Strength or Dexterity 13+)*
 
-o más) 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación 
-de Fuerza o Destreza en 1, hasta un máximo de 20. 
-Carrera mejorada. Cuando realizas la acción de correr, 
-tu velocidad aumenta 3 m para esa acción. 
-Ataque con carga. Si te mueves al menos 3 m en línea 
-recta hacia un objetivo justo antes de acertarle con una 
-attack roll cuerpo a cuerpo como parte de la acción 
-de atacar, elige uno de los siguientes efectos: consigues 
-un 1d8 adicional en la tirada de daño del ataque o empujas 
-al objetivo hasta 3 m si su tamaño está, como mucho, 
-una categoría por encima de la tuya. Puedes usar este 
-beneficio solo una vez en cada uno de tus turnos.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Strength or Dexterity score by 1, to a maximum of 20.
+
+Improved Dash. When you take the Dash action, your Speed increases by 10 feet (3 m) for that action.
+
+Charging Attack. If you move at least 10 feet (3 m) in a straight line toward a target right before you hit it with a melee attack roll as part of the Attack action, choose one of the following effects. You can deal an extra 1d8 damage on that attack's damage roll, or you can push the target up to 10 feet (3 m) away if its size is no more than one size larger than yours. You can use this benefit only once on each of your turns.

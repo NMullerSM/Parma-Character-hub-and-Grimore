@@ -20,4 +20,4 @@ nombre_original: Círculo de las Estrellas
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Lectores de las constelaciones celestiales, manifiestan tres formas estrelladas (Arquero, Cáliz, Dragón) para disparar luz o sanar sin gastar recursos.
+Readers of the celestial constellations, they manifest three starry forms (Archer, Chalice, Dragon) to fire light or heal without spending resources.

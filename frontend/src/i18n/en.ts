@@ -679,6 +679,7 @@ export const en: Translations = {
       Paladín: "Paladin",
       Pícaro: "Rogue",
       Brujo: "Warlock",
+      "Toque Feérico": "Fey Touched",
     },
     races: {
       Humano: "Human",

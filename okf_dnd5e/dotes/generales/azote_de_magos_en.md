@@ -15,17 +15,14 @@ nombre_ingles: Azote De Magos
 nombre_original: Azote De Magos
 ---
 
-# Azote De Magos
+# Mage Slayer
 
-*Dote general (requisitos: nivel 4 o más)*
+*General Feat (Prerequisite: Level 4+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación 
-de Fuerza o Destreza en 1, hasta un máximo de 20. 
-Anticoncentración. Cuando dañes a una criatura que 
-se esté concentrando, tendrá desventaja en la tirada de 
-salvación que haga para mantener la concentración. 
-Mente robusta. Si fallas una saving throw de 
-Inteligencia, Sabiduría o Carisma, puedes hacer que la 
-superes. Cuando uses este beneficio, no podrás volver 
-a hacerlo hasta que finalices un Short or Long Rest.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Strength or Dexterity score by 1, to a maximum of 20.
+
+Anti-Concentration. When you damage a creature that is concentrating, it has disadvantage on the saving throw it makes to maintain its concentration.
+
+Robust Mind. If you fail a saving throw using Intelligence, Wisdom, or Charisma, you can make it succeed. Once you use this benefit, you can't use it again until you finish a Short or Long Rest.

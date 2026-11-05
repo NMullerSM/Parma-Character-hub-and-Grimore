@@ -20,4 +20,4 @@ nombre_original: Camino de la Mano Abierta
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Perfecciona el control físico absoluto, empujando y derribando enemigos con ráfagas de golpes y dominando el legendario Golpe de Palma Vibrante.
+Perfects absolute physical control, pushing and knocking enemies Prone with flurries of blows, and mastering the legendary Quivering Palm.

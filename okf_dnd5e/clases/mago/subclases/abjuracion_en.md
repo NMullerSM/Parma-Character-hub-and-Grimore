@@ -20,4 +20,4 @@ nombre_original: Escuela de Abjuración
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Defensor arcano por excelencia, crea una Custodia Arcana que absorbe daño dirigido a él o sus aliados y domina contraconjuros.
+The arcane defender par excellence, they create an Arcane Ward that absorbs damage aimed at them or their allies, and they master counterspells.

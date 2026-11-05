@@ -15,29 +15,14 @@ nombre_ingles: Envenenador
 nombre_original: Envenenador
 ---
 
-# Envenenador
+# Poisoner
 
-*Dote general (requisitos: nivel 4 o más)*
+*General Feat (Prerequisite: Level 4+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación 
-de Destreza o Inteligencia en 1, hasta un máximo de 20. 
-Veneno potente. Cuando hagas una tirada de daño que 
-cause poison damage, esta ignorará la resistencia a ese 
-daño. 
-Preparar veneno. Ganas competencia con los útiles 
-de envenenador. Con 1 hora de trabajo usando los útiles 
-y gastando materiales por un valor de 50 po, puedes crear 
-una cantidad de dosis de veneno igual a tu bonificador 
-por competencia. As a bonus action, puedes aplicar 
-una dosis de veneno en un arma o unidad de munición. 
-CAPÍTULO 5 | DOTES 
-Una vez aplicado el veneno, este conserva su potencia 
-durante 1 minuto o hasta que inflijas daño con el objeto 
-envenenado, lo que suceda antes. Cuando una criatura 
-reciba daño del objeto envenenado, deberá superar 
-una saving throw de Constitución (CD 8 más el 
-modificador de la característica aumentada por esta dote 
-y tu bonificador por competencia) o recibirá 2d8 de daño 
-de veneno y tendrá el estado de envenenada hasta el final 
-de tu siguiente turno.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Dexterity or Intelligence score by 1, to a maximum of 20.
+
+Potent Poison. When you make a damage roll that deals poison damage, the damage ignores resistance to poison damage.
+
+Prepare Poison. You gain proficiency with poisoner's kits. With 1 hour of work using the kit and spending materials worth 50 gp, you can create a number of doses of poison equal to your Proficiency Bonus. As a bonus action, you can apply one dose of poison to a weapon or piece of ammunition. Once applied, the poison retains its potency for 1 minute or until you damage a creature with the poisoned object, whichever comes first. When a creature takes damage from the poisoned object, it must succeed on a Constitution saving throw (DC 8 plus the modifier of the ability increased by this feat and your Proficiency Bonus) or take 2d8 poison damage and have the Poisoned condition until the end of your next turn.

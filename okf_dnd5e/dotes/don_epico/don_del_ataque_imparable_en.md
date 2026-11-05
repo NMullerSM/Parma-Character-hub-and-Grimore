@@ -17,15 +17,12 @@ nombre_original: Don Del Ataque Imparable
 
 # Boon of the Unstoppable Attack
 
-*Dote de don épico (requisito: nivel 19 o más)*
+*Epic Boon Feat (Prerequisite: Level 19+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación 
-de Fuerza o Destreza en 1, hasta un máximo de 30. 
-Superar las defensas. El bludgeoning damage, cortante 
-y perforante que causas siempre ignora la resistencia. 
-Golpe arrollador. Cuando saques un 20 en el d20 
-en una attack roll, puedes infligir una cantidad 
-de daño adicional al objetivo igual a la puntuación de 
-característica aumentada con esta dote. El daño adicional 
-es del mismo tipo que el del ataque.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Strength or Dexterity score by 1, to a maximum of 30.
+
+Overcome Defenses. The bludgeoning, piercing, and slashing damage you deal always ignores resistance.
+
+Overwhelming Blow. When you roll a 20 on the d20 for an attack roll, you can deal extra damage to the target equal to the ability score increased by this feat. The extra damage is of the same type as the attack's damage.

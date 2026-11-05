@@ -20,4 +20,4 @@ nombre_original: Maestro de Batalla
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Táctico consumado que emplea dados de superioridad d8 para ejecutar maniobras: derribar, desarmar, contraatacar y dirigir a sus compañeros.
+A consummate tactician who uses d8 Superiority Dice to perform maneuvers: knocking enemies down, disarming them, riposting, and directing their allies.

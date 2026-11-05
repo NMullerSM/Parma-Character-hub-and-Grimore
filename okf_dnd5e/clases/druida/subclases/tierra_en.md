@@ -20,4 +20,4 @@ nombre_original: Círculo de la Tierra
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Conectados a un bioma específico (Montaña, Pantano, Bosque), recuperan espacios de conjuro en Short Rest y dominan magia elemental.
+Connected to a specific biome (Mountain, Swamp, or Forest), they recover spell slots during a Short Rest and master elemental magic.

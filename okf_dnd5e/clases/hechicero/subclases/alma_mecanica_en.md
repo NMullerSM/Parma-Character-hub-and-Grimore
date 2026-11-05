@@ -20,4 +20,4 @@ nombre_original: Alma Mecánica
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Conectado al plano de Mechanus y el orden cósmico absoluto, anula ventajas/desventajas enemigas y proyecta escudos de fuerza ordenados.
+Connected to the plane of Mechanus and absolute cosmic order, they cancel enemy advantages and disadvantages and project ordered force shields.

@@ -17,22 +17,12 @@ nombre_original: Don De La Resistencia A Energías
 
 # Boon of Energy Resistance
 
-*Dote de don épico (requisito: nivel 19 o más)*
+*Epic Boon Feat (Prerequisite: Level 19+)*
 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta una puntuación de 
-característica de tu elección en 1, hasta un máximo de 30. 
-Resistencias a energías. Ganas resistencia a dos de los 
-siguientes tipos de daño, a tu elección: ácido, frío, fuego, 
-necrótico, psíquico, radiante, relámpago, trueno o veneno. 
-Tras finalizar un Long Rest, puedes cambiar de 
-opciones. 
-Redirigir la energía. Cuando recibas daño de uno de los 
-tipos elegidos con el beneficio de resistencias a energías, 
-puedes llevar a cabo una reacción para dirigir un daño 
-del mismo tipo hacia otra criatura que puedas ver within 60 feet 
-o menos de ti que no esté tras cobertura completa. Si lo 
-haces, esa criatura deberá superar una saving throw 
-de Destreza (CD 8 más tu modificador por Constitución 
-y tu bonificador por competencia) o recibirá una cantidad 
-de daño igual a 2d12 más tu modificador por Constitución.
+You gain the following benefits.
+
+Ability Score Improvement. Increase one ability score of your choice by 1, to a maximum of 30.
+
+Energy Resistance. You gain resistance to two of the following damage types of your choice: acid, cold, fire, lightning, necrotic, poison, psychic, radiant, or thunder. After you finish a Long Rest, you can change your choices.
+
+Redirect Energy. When you take damage of one of the chosen types while you have Energy Resistance, you can use your reaction to redirect that damage, of the same type, to another creature you can see within 60 feet (18 m) of you that doesn't have total cover. If you do, that creature must succeed on a Dexterity saving throw (DC 8 plus your Constitution modifier and your Proficiency Bonus) or take damage equal to 2d12 plus your Constitution modifier.

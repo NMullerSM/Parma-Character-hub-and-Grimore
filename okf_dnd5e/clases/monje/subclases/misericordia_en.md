@@ -20,4 +20,4 @@ nombre_original: Camino de la Misericordia
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Médicos errantes de máscara enigmática que manipulan el ki vital para sanar aliados o infligir muerte y aflicción con Mano del Daño.
+Wandering healers in enigmatic masks who manipulate vital ki to heal allies, or inflict death and affliction with the Hand of Harm.

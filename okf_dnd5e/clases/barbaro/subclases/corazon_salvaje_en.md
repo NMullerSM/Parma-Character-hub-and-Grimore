@@ -20,4 +20,4 @@ nombre_original: Senda del Corazón Salvaje
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Sintonizado con los espíritus totémicos de la naturaleza (Oso, Águila, Lobo), adquiere resistencias elementales y sentidos agudos.
+Attuned to the totemic spirits of nature (Bear, Eagle, Wolf), this Path gains elemental resistances and keen senses.

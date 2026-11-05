@@ -20,4 +20,4 @@ nombre_original: Colegio del Valor
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Héroes del frente de batalla que cantan hazañas heroicas, ganan competencia con armaduras medias, escudos y armas marciales con Ataque Adicional.
+Front-line heroes who sing of heroic deeds, they gain proficiency with medium armor, shields, and martial weapons, and they get Extra Attack.

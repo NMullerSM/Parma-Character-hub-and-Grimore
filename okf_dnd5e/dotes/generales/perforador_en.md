@@ -17,19 +17,12 @@ nombre_original: Perforador
 
 # Piercer
 
-*Dote general (requisitos: nivel*
+*General Feat (Prerequisite: Level 4+)*
 
-4 o más) 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación 
-de Fuerza o Destreza en 1, hasta un máximo de 20. 
-Horadar. once per turn, cuando aciertes a una 
-criatura con un ataque que cause piercing damage, 
-podrás volver a tirar uno de los dados de daño del ataque 
-y deberás utilizar el nuevo resultado. 
-Crítico potenciado. Cuando causes un crítico que inflija 
-piercing damage a una criatura, podrás tirar un dado de 
-daño más al determinar el piercing damage adicional que 
-recibe el objetivo. 
-CAPÍTULO 5 | DOTES 
-207
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Strength or Dexterity score by 1, to a maximum of 20.
+
+Puncture. Once per turn, when you hit a creature with an attack that deals piercing damage, you can reroll one of the attack's damage dice, and you must use the new roll.
+
+Enhanced Critical. When you score a critical hit that deals piercing damage to a creature, you can roll one additional damage die when determining the extra piercing damage the target takes.

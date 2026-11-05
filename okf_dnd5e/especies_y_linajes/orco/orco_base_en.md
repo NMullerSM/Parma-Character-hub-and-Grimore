@@ -29,35 +29,15 @@ nombre_original: Orco
 - **Senses**: darkvision 36 m
 
 ## Species Traits
-Orco 
-Los orcos deben su creación a Gruumsh, un dios poderoso 
-que vagaba por los amplios espacios abiertos del Plano 
-Material. Gruumsh concedió dones a sus hijos para 
-ayudarles a recorrer grandes llanuras, extensas cavernas 
-y mares turbulentos para enfrentarse a los monstruos 
-que en ellos acechaban. Incluso aunque se consagren 
-a otros dioses, los orcos conservan los dones de Gruumsh: 
-la resistencia, la determinación y la capacidad de ver en la 
-oscuridad. 
-. 
-Por lo general, los orcos son altos y fornidos. Su piel 
-es de color gris y tienen orejas muy puntiagudas y unos 
-colmillos inferiores prominentes. A los orcos jóvenes 
-de algunos mundos se les habla de los grandes viajes 
-y penurias de sus antepasados. Muchos de estos orcos, 
-inspirados por esos relatos, se preguntan cuándo los 
-convocará Gruumsh para igualar las hazañas heroicas 
-de antaño y demostrar que son merecedores de su favor. 
-Otros orcos, sin embargo, prefieren dejar atrás esas 
-historias y labrar su propio camino. 
-“=> EN 
-Yo 
-> 
-as 
-7 
-ATRIBUTOS DE LOS ORCOS 
-Tipo de criatura: humanoide 
-Tamaño: Mediano (entre 1,8 y 2,1 m de altura) 
-Velocidad: 9 m 
-Como orco, tienes estos atributos especiales: 
-Aguante inc
+
+### Orc
+Orcs owe their creation to Gruumsh, a powerful god who wandered the vast open spaces of the Material Plane. Gruumsh granted gifts to his children to help them cross great plains, vast caverns, and turbulent seas to confront the monsters that lurked there. Even when they dedicate themselves to other gods, orcs keep the gifts of Gruumsh: endurance, determination, and the ability to see in the dark.
+
+Orcs are generally tall and muscular. Their skin is gray, and they have very pointed ears and prominent lower tusks. Young orcs in some worlds hear tales of the great journeys and hardships of their ancestors. Many of these orcs, inspired by those stories, wonder when Gruumsh will call them to match the heroic deeds of old and prove they are worthy of his favor. Other orcs, however, prefer to leave those stories behind and forge their own path.
+
+### Orc Attributes
+Creature Type: Humanoid
+
+Size: Medium (between 6 and 7 feet tall)
+
+Speed: 9 m (30 feet)

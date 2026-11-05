@@ -1,7 +1,7 @@
 ---
 id: equipo_armas_simples_en
 nombre: Armas Simples (Cuerpo a Cuerpo y Distancia)
-fuente: Manual del Jugador 2024
+fuente: PHB 2024
 pagina: 213
 tipo: equipo
 subtipo: Armas

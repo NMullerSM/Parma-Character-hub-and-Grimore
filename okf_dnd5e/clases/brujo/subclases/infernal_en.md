@@ -20,4 +20,4 @@ nombre_original: El Infernal
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Pacto jurado con un señor de los Nueve Infiernos o el Abismo; gana PG temporales al abatir enemigos y desata llamas infernales.
+A pact sworn with a lord of the Nine Hells or the Abyss; they gain temporary hit points when they slay enemies and unleash infernal flames.

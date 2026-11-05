@@ -19,5 +19,5 @@ nombre_original: Guía
 # Guide
 
 - **Ability Scores**: Dexterity, Constitution, Wisdom
-- **Origin Feat**: Magic Initiate (Druida)
+- **Origin Feat**: Magic Initiate (Druid)
 - **Skill Proficiencies**: Stealth, Survival

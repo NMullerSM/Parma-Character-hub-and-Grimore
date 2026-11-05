@@ -5,7 +5,7 @@ nombre_ingles: Twilight Domain
 tipo: subclase
 clase_padre: Cleric
 nivel_desbloqueo: 3
-fuente: Caldero de Tasha para Todo
+fuente: Tasha's Cauldron of Everything
 tags:
 - english
 - en
@@ -16,8 +16,8 @@ nombre_original: Dominio del Crepúsculo
 
 # Twilight Domain
 **Base Class:** Cleric  
-**Source:** Caldero de Tasha para Todo  
+**Source:** Tasha's Cauldron of Everything  
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Vigilantes del umbral entre el día y la noche, otorgan visión en oscuridad de 90 m a su grupo y un santuario de temporary hit points continuos.
+Guardians of the threshold between day and night, they grant 300 feet (90 m) of darkvision to their group and a sanctuary of continuous temporary hit points.

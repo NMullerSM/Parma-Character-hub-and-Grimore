@@ -5,7 +5,7 @@ nombre_ingles: Forge Domain
 tipo: subclase
 clase_padre: Cleric
 nivel_desbloqueo: 3
-fuente: Guia de Xanathar Para Todo
+fuente: Xanathar's Guide to Everything
 tags:
 - english
 - en
@@ -16,8 +16,8 @@ nombre_original: Dominio de la Forja
 
 # Forge Domain
 **Base Class:** Cleric  
-**Source:** Guia de Xanathar Para Todo  
+**Source:** Xanathar's Guide to Everything  
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Discípulos de los dioses artesanos, encantan armas y armaduras con magia perenne y obtienen inmunidad absoluta al fire damage.
+Disciples of the artisan gods, they enchant weapons and armor with lasting magic and gain absolute immunity to fire damage.

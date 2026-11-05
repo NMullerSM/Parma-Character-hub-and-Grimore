@@ -2,7 +2,7 @@
 id: subclase_colegio_de_susurros_en
 nombre: College of Whispers
 nombre_ingles: College of Whispers
-fuente: Guía de Xanathar para Todo
+fuente: Xanathar's Guide to Everything
 pagina: 17
 clase_padre: Bard
 tipo: subclase
@@ -17,16 +17,16 @@ nombre_original: Colegio de los Susurros
 
 # College of Whispers
 
-La mayoría de la gente se alegra al ver a un bardo, pero los miembros del Colegio de los Susurros infunden temor silencioso. Disfrazados de alegres bufones o poetas, son maestros de secretos, chantaje y terror psíquico.
+Most people are delighted to see a bard, but the members of the College of Whispers instill a silent dread. Disguised as cheerful jesters or poets, they are masters of secrets, blackmail, and psychic terror.
 
 ## Subclass Features
 
-### Level 3: Hojas Psíquicas (*Psychic Blades*)
-Cuando impactas a una criatura con un ataque con arma, puedes gastar 1 uso de Bardic Inspiration para infligir **2d6 de extra psychic damage**. Solo once per round en tu turno.
-- Progresión de daño: **2d6** (Nivel 3-4) ➔ **3d6** (Nivel 5-9) ➔ **5d6** (Nivel 10-14) ➔ **8d6** (Nivel 15-20).
+### Level 3: Psychic Blades
+When you hit a creature with a weapon attack, you can expend 1 use of Bardic Inspiration to deal an extra **2d6 psychic damage**. You can do this only once per round on your turn.
+- Damage progression: **2d6** (Levels 3-4) ➔ **3d6** (Levels 5-9) ➔ **5d6** (Levels 10-14) ➔ **8d6** (Levels 15-20).
 
-### Level 3: Palabras de Terror (*Words of Terror*)
-Si hablas a solas con un humanoide durante al menos 1 minuto, intentas sembrar la semilla de la paranoia. Debe superar una saving throw de Sabiduría contra tu CD de conjuros o quedará **Asustado** de ti o de otra criatura de tu elección durante 1 hora (o hasta recibir daño). Recharges on Short or Long Rest.
+### Level 3: Words of Terror
+If you speak alone with a humanoid for at least 1 minute, you try to sow the seed of paranoia. It must succeed on a Wisdom saving throw against your spell save DC or become **Frightened** of you or of another creature of your choice for 1 hour (or until it takes damage). It recharges on a Short or Long Rest.
 
-### Level 6: Manto de Susurros (*Mantle of Whispers*)
-Cuando un humanoide muere within 30 feet de ti, puedes capturar su sombra mágicamente para transformarte en su apariencia idéntica con recuerdos superficiales y un bono de +5 a Engaño.
+### Level 6: Mantle of Whispers
+When a humanoid dies within 30 feet (9 m) of you, you can magically capture its shadow to transform into its identical appearance, with its surface memories and a +5 bonus to Deception.

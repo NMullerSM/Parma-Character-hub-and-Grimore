@@ -2,7 +2,7 @@
 id: especie_drow_en
 nombre: Drow
 nombre_ingles: Drow
-fuente: Manual del Jugador 2024
+fuente: PHB 2024
 pagina: 189
 tipo: especie_linaje
 velocidad: 9 m (30 pies)
@@ -18,15 +18,15 @@ nombre_original: Drow (Elfo Oscuro)
 
 # Drow
 
-Los drow son descendientes de los elfos que habitan las profundidades de la Infraoscuridad (*Underdark*).
+Drow are descendants of elves who live in the depths of the Underdark.
 
-## Rasgos Raciales
-- **darkvision Superior:** 36 metros (120 pies).
-- **Magia Drow Innata:**
-  - Nivel 1: Truco *Luces Danzantes* at will.
-  - Nivel 3: Conjuro *Fuego Feérico* (1 vez por Long Rest gratis).
-  - Nivel 5: Conjuro *Oscuridad* (1 vez por Long Rest gratis).
-  - Aptitud mágica: Carisma.
-- **Linaje Feérico:** Ventaja en salvaciones para evitar o terminar el estado Hechizado. La magia no puede dormirte.
-- **Trance Élfico:** Long Rest en 4 horas de meditación consciente sin necesidad de dormir.
-- **Sensibilidad a la Luz Solar:** Desventaja en ataques y pruebas de Percepción visual bajo luz solar directa.
+## Racial Traits
+- **Superior Darkvision:** 120 feet (36 m).
+- **Innate Drow Magic:**
+  - Level 1: *Dancing Lights* cantrip, at will.
+  - Level 3: *Faerie Fire* spell (once per Long Rest for free).
+  - Level 5: *Darkness* spell (once per Long Rest for free).
+  - Spellcasting ability: Charisma.
+- **Fey Ancestry:** You have advantage on saving throws to avoid or end the Charmed condition. Magic can't put you to sleep.
+- **Elven Trance:** A Long Rest takes 4 hours of conscious meditation instead of sleep.
+- **Sunlight Sensitivity:** You have disadvantage on attack rolls and on sight-based Wisdom (Perception) checks in direct sunlight.

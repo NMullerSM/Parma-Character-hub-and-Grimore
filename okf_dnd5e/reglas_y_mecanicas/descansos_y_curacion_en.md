@@ -1,7 +1,7 @@
 ---
 id: regla_descansos_en
 nombre: Descansos y Curación
-fuente: Manual del Jugador 2024
+fuente: PHB 2024
 pagina: 366
 tipo: regla
 tags:
@@ -13,15 +13,15 @@ nombre_ingles: Descansos y Curación
 nombre_original: Descansos y Curación
 ---
 
-# Descansos y Curación
+# Rests and Healing
 
-## Short Rest (1 hora)
-- Un personaje puede gastar uno o más de sus Dados de Golpe (DG).
-- Por cada dado gastado, tira el dado y suma su modificador de Constitución. El total recupera hit points.
-- Ciertas habilidades (como Fuente de Inspiración a nivel 5 o Palabras de Terror) se recargan aquí.
+## Short Rest (1 hour)
+- A character can spend one or more of their Hit Dice (HD).
+- For each die spent, roll it and add your Constitution modifier. The total restores hit points.
+- Certain abilities, such as Font of Inspiration at level 5 or Words of Terror, recharge on a Short Rest.
 
-## Long Rest (8 horas / 4 horas para Drow)
-- Recupera el 100% de los hit points máximos.
-- Recupera la mitad del total de Dados de Golpe máximos (mínimo 1).
-- Reinicia todos los Espacios de Conjuro gastados.
-- Reinicia recursos limitados diarios (Puntos de Suerte, Magia Drow, Usos de Dotes).
+## Long Rest (8 hours / 4 hours for Drow)
+- Restores 100% of maximum hit points.
+- Restores half of the maximum Hit Dice (minimum 1).
+- Resets all expended spell slots.
+- Resets daily limited resources (Luck Points, Drow Magic, feat uses).

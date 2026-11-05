@@ -30,7 +30,7 @@ nombre_original: Monje
 - **Saving Throw Proficiencies**: STR, DEX
 
 ## Available Subclasses
-- Guerrero de la Mano Abierta
-- Guerrero de la Sombra
-- Guerrero de los Cuatro Elementos
-- Guerrero de la Misericordia
+- Way of the Open Hand
+- Way of Shadow
+- Warrior of the Elements
+- Way of Mercy

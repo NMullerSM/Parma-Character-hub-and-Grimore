@@ -9,7 +9,7 @@ salvaciones_competentes:
 subclases_oficiales:
 - Oath of Devotion
 - Oath of Glory
-- Juramento de los Antiguos
+- Oath of the Ancients
 - Oath of Vengeance
 fuente: PHB 2024
 pagina: 150
@@ -32,5 +32,5 @@ nombre_original: Paladín
 ## Available Subclasses
 - Oath of Devotion
 - Oath of Glory
-- Juramento de los Antiguos
+- Oath of the Ancients
 - Oath of Vengeance

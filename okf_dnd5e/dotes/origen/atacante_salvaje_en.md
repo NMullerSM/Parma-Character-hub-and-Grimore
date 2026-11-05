@@ -15,12 +15,8 @@ nombre_ingles: Atacante Salvaje
 nombre_original: Atacante Salvaje
 ---
 
-# Atacante Salvaje
+# Savage Attacker
 
 *Origin Feat*
 
-Te has preparado para asestar golpes especialmente 
-dañinos. once per turn, cuando aciertes a un 
-objetivo con un arma, podrás tirar dos veces los 
-dados de daño del arma y usar el resultado que 
-prefieras contra el objetivo.
+You have prepared yourself to deliver especially damaging blows. Once per turn, when you hit a target with a weapon, you can roll the weapon's damage dice twice and use whichever result you prefer against the target.

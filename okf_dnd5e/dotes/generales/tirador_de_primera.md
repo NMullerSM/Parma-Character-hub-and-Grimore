@@ -31,13 +31,14 @@ enemigo no impone desventaja en tus tiradas de ataque
 con armas a distancia. 
 Tiros lejanos. Al atacar con alcance largo, tus tiradas 
 de ataque no tendrán desventaja con las armas a distancia. 
-“TRITURADOR 
-Dote general (requisitos: nivel 4 o más) 
+
+## Triturador
+
+*Dote general (requisitos: nivel 4 o más)*
+
 Obtienes los siguientes beneficios: 
 Mejora de característica. Aumenta tu puntuación de 
 Fuerza o Constitución en 1, hasta un máximo de 20. 
-
-
 Empujar. Una vez por turno, cuando aciertes a una 
 criatura con un ataque que cause daño contundente, 
 podrás moverla 1,5 m a un espacio sin ocupar, siempre que 

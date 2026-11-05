@@ -15,23 +15,14 @@ nombre_ingles: Maestro En Armas De Asta
 nombre_original: Maestro En Armas De Asta
 ---
 
-# Maestro En Armas De Asta
+# Polearm Master
 
-*Dote general (requisitos: nivel 4 o más, Fuerza o Destreza 13*
+*General Feat (Prerequisite: Level 4+, Strength or Dexterity 13+)*
 
-o más) 
-Obtienes los siguientes beneficios: 
-Mejora de característica. Aumenta tu puntuación 
-de Destreza o Fuerza en 1, hasta un máximo de 20. 
-Golpe con asta. Inmediatamente después de que realices 
-la acción de atacar con un bastón, una lanza o un arma 
-que tenga las propiedades “gran alcance” y “pesada”, 
-puedes usar una acción adicional para hacer un ataque 
-cuerpo a cuerpo con el otro extremo del arma. El arma 
-causa bludgeoning damage y su dado de daño para este 
-ataque es un d4. 
-Golpe reactivo. Mientras empuñes un bastón, una lanza 
-o un arma que tenga las propiedades “gran alcance” 
-y “pesada”, podrás llevar a cabo una reacción para hacer 
-un ataque cuerpo a cuerpo contra una criatura que entre 
-dentro del alcance que tengas con esa arma.
+You gain the following benefits.
+
+Ability Score Improvement. Increase your Dexterity or Strength score by 1, to a maximum of 20.
+
+Pole Strike. Immediately after you take the Attack action with a quarterstaff, a spear, or another weapon that has the Reach and Heavy properties, you can use a bonus action to make a melee attack with the other end of the weapon. The weapon deals bludgeoning damage, and its damage die for this attack is a d4.
+
+Reactive Strike. While you wield a quarterstaff, a spear, or another weapon that has the Reach and Heavy properties, you can use your reaction to make a melee attack against a creature that enters the reach you have with that weapon.

@@ -20,4 +20,4 @@ nombre_original: Juramento de Gloria
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Héroes legendarios destinados a la épica, inspiran velocidad a sus aliados con Aura de Presteza y realizan proezas atléticas milagrosas.
+Legendary heroes destined for epic deeds, they inspire speed in their allies with the Aura of Alacrity and perform miraculous athletic feats.

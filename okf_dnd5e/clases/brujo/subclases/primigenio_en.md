@@ -20,4 +20,4 @@ nombre_original: El Primigenio
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Vinculado a una deidad incomprensible del vacío estelar, establece telepatía despierta, proyecta escudos mentales y crea sirvientes.
+Bound to an incomprehensible deity of the starry void, they establish awakened telepathy, project mental shields, and create servants.

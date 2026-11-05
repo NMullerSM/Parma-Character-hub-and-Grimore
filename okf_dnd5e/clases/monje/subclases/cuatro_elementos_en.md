@@ -20,4 +20,4 @@ nombre_original: Camino de los Cuatro Elementos
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Canaliza los cuatro elementos primordiales en su energía desarmada, extendiendo su alcance a 4.5 metros con fire damage, frío, ácido o rayo.
+Channels the four primordial elements into their unarmed energy, extending its reach to 15 feet (4.5 m) with fire, cold, acid, or lightning damage.

@@ -20,4 +20,4 @@ nombre_original: Círculo de la Luna
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Protectores feroces del equilibrio que asumen formas salvajes poderosas As a bonus action, absorbiendo castigo y desgarrando enemigos.
+Fierce protectors of the balance who take on powerful wild forms. As a bonus action, they absorb punishment and tear into enemies.

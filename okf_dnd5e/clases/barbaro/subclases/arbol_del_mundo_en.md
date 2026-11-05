@@ -20,4 +20,4 @@ nombre_original: Senda del Árbol del Mundo
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Conectado a las raíces de Yggdrasil, otorga vitalidad temporal a sus aliados y manipula ramas dimensionales en el campo de batalla.
+Connected to the roots of Yggdrasil, this Path grants temporary hit points to its allies and manipulates dimensional branches on the battlefield.

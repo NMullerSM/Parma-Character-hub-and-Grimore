@@ -20,4 +20,4 @@ nombre_original: Bribón Arcano
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Combina sigilo con encantamientos e ilusiones, manipulando una Mano de Mago invisible para robar cerraduras y distraer objetivos.
+Combines stealth with enchantment and illusion, manipulating an invisible Mage Hand to pick locks and distract targets.

@@ -20,4 +20,4 @@ nombre_original: Escuela de Ilusionismo
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Manipulador supremo de los sentidos y la percepción, es capaz de alterar ilusiones activas e incluso volverlas físicamente sólidas.
+A supreme manipulator of the senses and perception, able to alter active illusions and even make them physically solid.

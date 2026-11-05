@@ -20,4 +20,4 @@ nombre_original: El Celestial
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Alianza con un unicornio, solar o empíreo, disponiendo de una reserva de dados de sanación d6 que no consumen espacios de pacto.
+An alliance with a unicorn, a solar, or an empyrean, granting a pool of d6 healing dice that don't consume Pact Magic spell slots.

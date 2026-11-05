@@ -20,4 +20,4 @@ nombre_original: Mente Aberrante
 **Official Unlock Level:** Level 3
 
 ## Archetype Summary
-Tocado por una entidad del Reino Lejano, lanza conjuros psiónicos sutiles sin componentes verbales o somáticos y transforma su cuerpo.
+Touched by an entity from the Far Realm, they cast subtle psionic spells without verbal or somatic components and transform their body.
