@@ -4,8 +4,8 @@ nombre: Ranger
 caracteristica_principal: DES/SAB
 dado_golpe: 1d10
 salvaciones_competentes:
-- FUE
-- DES
+- STR
+- DEX
 subclases_oficiales:
 - Fey Wanderer
 - Gloom Stalker
@@ -25,9 +25,9 @@ nombre_original: Explorador
 
 # Ranger
 
-- **Primary Ability**: DES/SAB
-- **Hit Die**: 1d10 por nivel de explorador
-- **Saving Throw Proficiencies**: FUE, DES
+- **Primary Ability**: DEX/WIS
+- **Hit Die**: 1d10 per Ranger level
+- **Saving Throw Proficiencies**: STR, DEX
 
 ## Available Subclasses
 - Fey Wanderer

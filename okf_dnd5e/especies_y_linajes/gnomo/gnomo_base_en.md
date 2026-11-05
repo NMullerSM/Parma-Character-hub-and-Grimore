@@ -22,12 +22,12 @@ nombre_original: Gnomo
 
 # Gnome
 
-- **Tipo de Criatura**: humanoide
-- **Tamaño**: Pequeño
-- **Velocidad**: 9 m
-- **Sentidos**: darkvision 18 m
+- **Creature Type**: Humanoid
+- **Size**: Small
+- **Speed**: 9 m
+- **Senses**: darkvision 18 m
 
-## Rasgos de la Especie
+## Species Traits
 GNOMO 
 Los gnomos son un pueblo mágico creado por los dioses 
 de la inventiva, las ilusiones y la vida en el subsuelo. 

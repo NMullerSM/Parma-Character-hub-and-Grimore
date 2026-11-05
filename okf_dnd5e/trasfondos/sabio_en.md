@@ -1,9 +1,9 @@
 ---
 id: sabio_en
-nombre: Sabio
-caracteristicas_clave: Constitución, Inteligencia, Sabiduría
-dote_concedida: Iniciado en la magia (Mago)
-habilidades_competentes: Arcanos, Historia
+nombre: Sage
+caracteristicas_clave: Constitution, Intelligence, Wisdom
+dote_concedida: Magic Initiate (Wizard)
+habilidades_competentes: Arcana, History
 fuente: PHB 2024
 pagina: 187
 tags:
@@ -12,12 +12,12 @@ tags:
 - trasfondo
 tipo: trasfondo
 idioma: en
-nombre_ingles: Sabio
+nombre_ingles: Sage
 nombre_original: Sabio
 ---
 
-# Sabio
+# Sage
 
-- **Puntuaciones de Característica**: Constitución, Inteligencia, Sabiduría
-- **Origin Feat**: Iniciado en la magia (Mago)
-- **Habilidades con Competencia**: Arcanos, Historia
+- **Ability Scores**: Constitution, Intelligence, Wisdom
+- **Origin Feat**: Magic Initiate (Mago)
+- **Skill Proficiencies**: Arcana, History

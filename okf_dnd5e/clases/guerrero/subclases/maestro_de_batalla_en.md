@@ -3,7 +3,7 @@ id: guerrero_maestro_de_batalla_en
 nombre: Battle Master
 nombre_ingles: Battle Master
 tipo: subclase
-clase_padre: Guerrero
+clase_padre: Fighter
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Maestro de Batalla
 ---
 
 # Battle Master
-**Clase Base:** Guerrero  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Fighter  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
+## Archetype Summary
 Táctico consumado que emplea dados de superioridad d8 para ejecutar maniobras: derribar, desarmar, contraatacar y dirigir a sus compañeros.

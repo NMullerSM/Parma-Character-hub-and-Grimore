@@ -1,6 +1,6 @@
 ---
 id: regla_condiciones_en
-nombre: Condiciones de Estado
+nombre: Conditions & States
 fuente: Manual del Jugador 2024
 pagina: 364
 tipo: regla
@@ -9,11 +9,11 @@ tags:
 - en
 - regla
 idioma: en
-nombre_ingles: Condiciones de Estado
+nombre_ingles: Conditions & States
 nombre_original: Condiciones de Estado
 ---
 
-# Condiciones de Estado
+# Conditions & States
 
 Las condiciones alteran las capacidades de una criatura de diversas maneras y pueden ser el resultado de un conjuro, un rasgo de clase, el ataque de un monstruo u otro efecto.
 

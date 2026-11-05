@@ -3,7 +3,7 @@ id: barbaro_arbol_del_mundo_en
 nombre: Path of the World Tree
 nombre_ingles: Path of the World Tree
 tipo: subclase
-clase_padre: Bárbaro
+clase_padre: Barbarian
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Senda del Árbol del Mundo
 ---
 
 # Path of the World Tree
-**Clase Base:** Bárbaro  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Barbarian  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
+## Archetype Summary
 Conectado a las raíces de Yggdrasil, otorga vitalidad temporal a sus aliados y manipula ramas dimensionales en el campo de batalla.

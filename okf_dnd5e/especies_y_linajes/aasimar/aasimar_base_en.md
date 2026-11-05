@@ -23,12 +23,12 @@ nombre_original: Aasimar
 
 # Aasimar
 
-- **Tipo de Criatura**: humanoide
-- **Tamaño**: Mediano o Pequeño
-- **Velocidad**: 9 m
-- **Sentidos**: darkvision 18 m
+- **Creature Type**: Humanoid
+- **Size**: Medium or Small
+- **Speed**: 9 m
+- **Senses**: darkvision 18 m
 
-## Rasgos de la Especie
+## Species Traits
 DESCRIPCIONES 
 DE LAS ESPECIES 
 En esta sección se presentan diez especies ordenadas 

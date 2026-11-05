@@ -14,7 +14,7 @@ tags:
 - español
 tipo: trasfondo
 idioma: es
-nombre_ingles: Vagabundo
+nombre_ingles: Vagrant
 ---
 
 # Trasfondo: Vagabundo

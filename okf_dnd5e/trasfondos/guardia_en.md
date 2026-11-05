@@ -1,9 +1,9 @@
 ---
 id: guardia_en
 nombre: Guard
-caracteristicas_clave: Fuerza, Inteligencia, Sabiduría
-dote_concedida: Alerta
-habilidades_competentes: Atletismo, Percepción
+caracteristicas_clave: Strength, Intelligence, Wisdom
+dote_concedida: Alert
+habilidades_competentes: Athletics, Perception
 fuente: PHB 2024
 pagina: 184
 tags:
@@ -18,6 +18,6 @@ nombre_original: Guardia
 
 # Guard
 
-- **Puntuaciones de Característica**: Fuerza, Inteligencia, Sabiduría
-- **Origin Feat**: Alerta
-- **Habilidades con Competencia**: Atletismo, Percepción
+- **Ability Scores**: Strength, Intelligence, Wisdom
+- **Origin Feat**: Alert
+- **Skill Proficiencies**: Athletics, Perception

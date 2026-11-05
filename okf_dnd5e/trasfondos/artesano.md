@@ -14,7 +14,7 @@ tags:
 - español
 tipo: trasfondo
 idioma: es
-nombre_ingles: Artesano
+nombre_ingles: Artisan
 ---
 
 # Trasfondo: Artesano

@@ -1,16 +1,16 @@
 ---
 id: picaro_en
 nombre: Rogue
-caracteristica_principal: DES
+caracteristica_principal: DEX
 dado_golpe: 1d8
 salvaciones_competentes:
-- DES
+- DEX
 - INT
 subclases_oficiales:
-- Asesino
-- Ladrón
-- Embaucador Arcano
-- Espadachín
+- Assassin
+- Thief
+- Arcane Trickster
+- Swashbuckler
 fuente: PHB 2024
 pagina: 164
 tags:
@@ -25,12 +25,12 @@ nombre_original: Pícaro
 
 # Rogue
 
-- **Primary Ability**: DES
-- **Hit Die**: 1d8 por nivel de pícaro
-- **Saving Throw Proficiencies**: DES, INT
+- **Primary Ability**: DEX
+- **Hit Die**: 1d8 per Rogue level
+- **Saving Throw Proficiencies**: DEX, INT
 
 ## Available Subclasses
-- Asesino
-- Ladrón
-- Embaucador Arcano
-- Espadachín
+- Assassin
+- Thief
+- Arcane Trickster
+- Swashbuckler

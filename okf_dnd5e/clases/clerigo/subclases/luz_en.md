@@ -3,7 +3,7 @@ id: clerigo_luz_en
 nombre: Light Domain
 nombre_ingles: Light Domain
 tipo: subclase
-clase_padre: Clérigo
+clase_padre: Cleric
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Dominio de la Luz
 ---
 
 # Light Domain
-**Clase Base:** Clérigo  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Cleric  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
+## Archetype Summary
 Portadores del fuego solar purificador, ciegan ataques hostiles con Destello Protector y desatan Bolas de Fuego benditas.

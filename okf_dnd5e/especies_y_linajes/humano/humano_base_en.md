@@ -23,12 +23,12 @@ nombre_original: Humano
 
 # Human
 
-- **Tipo de Criatura**: humanoide
-- **Tamaño**: Mediano o Pequeño
-- **Velocidad**: 9 m
-- **Sentidos**: Normal
+- **Creature Type**: Humanoid
+- **Size**: Medium or Small
+- **Speed**: 9 m
+- **Senses**: Normal
 
-## Rasgos de la Especie
+## Species Traits
 HUMANO 
 Los humanos, que están repartidos por todo el multiverso, 
 son tan variados como numerosos y tratan de lograr todo 

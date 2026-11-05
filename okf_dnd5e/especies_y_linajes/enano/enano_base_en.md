@@ -23,12 +23,12 @@ nombre_original: Enano
 
 # Dwarf
 
-- **Tipo de Criatura**: humanoide
-- **Tamaño**: Mediano
-- **Velocidad**: 9 m
-- **Sentidos**: darkvision 36 m
+- **Creature Type**: Humanoid
+- **Size**: Medium
+- **Speed**: 9 m
+- **Senses**: darkvision 36 m
 
-## Rasgos de la Especie
+## Species Traits
 190 
 ENANO 
 Los enanos emergieron de la tierra en los primeros tiempos 

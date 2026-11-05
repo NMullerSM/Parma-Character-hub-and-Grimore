@@ -1,17 +1,17 @@
 ---
 id: bardo_en
 nombre: Bard
-caracteristica_principal: CAR
+caracteristica_principal: CHA
 dado_golpe: 1d8
 salvaciones_competentes:
-- DES
-- CAR
+- DEX
+- CHA
 subclases_oficiales:
 - Colegio de la Danza
-- Colegio del Glamour
+- College of Glamour
 - Colegio del Saber
-- Colegio del Valor
-- Colegio de Susurros
+- College of Valor
+- College of Whispers
 fuente: PHB 2024
 pagina: 58
 tags:
@@ -26,13 +26,13 @@ nombre_original: Bardo
 
 # Bard
 
-- **Primary Ability**: CAR
-- **Hit Die**: 1d8 por nivel de bardo
-- **Saving Throw Proficiencies**: DES, CAR
+- **Primary Ability**: CHA
+- **Hit Die**: 1d8 per Bard level
+- **Saving Throw Proficiencies**: DEX, CHA
 
 ## Available Subclasses
 - Colegio de la Danza
-- Colegio del Glamour
+- College of Glamour
 - Colegio del Saber
-- Colegio del Valor
-- Colegio de Susurros
+- College of Valor
+- College of Whispers

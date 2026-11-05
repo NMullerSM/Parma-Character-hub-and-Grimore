@@ -1,9 +1,9 @@
 ---
 id: charlatan_en
 nombre: Charlatan
-caracteristicas_clave: Destreza, Constitución, Carisma
-dote_concedida: Habilidoso
-habilidades_competentes: Engaño, Juego de Manos
+caracteristicas_clave: Dexterity, Constitution, Charisma
+dote_concedida: Skilled
+habilidades_competentes: Deception, Sleight of Hand
 fuente: PHB 2024
 pagina: 181
 tags:
@@ -18,6 +18,6 @@ nombre_original: Charlatán
 
 # Charlatan
 
-- **Puntuaciones de Característica**: Destreza, Constitución, Carisma
-- **Origin Feat**: Habilidoso
-- **Habilidades con Competencia**: Engaño, Juego de Manos
+- **Ability Scores**: Dexterity, Constitution, Charisma
+- **Origin Feat**: Skilled
+- **Skill Proficiencies**: Deception, Sleight of Hand

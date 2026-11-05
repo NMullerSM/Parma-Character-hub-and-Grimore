@@ -3,7 +3,7 @@ id: mago_abjuracion_en
 nombre: School of Abjuration
 nombre_ingles: School of Abjuration
 tipo: subclase
-clase_padre: Mago
+clase_padre: Wizard
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Escuela de Abjuración
 ---
 
 # School of Abjuration
-**Clase Base:** Mago  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Wizard  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
+## Archetype Summary
 Defensor arcano por excelencia, crea una Custodia Arcana que absorbe daño dirigido a él o sus aliados y domina contraconjuros.

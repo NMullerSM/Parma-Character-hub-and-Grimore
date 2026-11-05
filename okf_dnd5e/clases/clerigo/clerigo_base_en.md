@@ -1,16 +1,16 @@
 ---
 id: clerigo_en
 nombre: Cleric
-caracteristica_principal: SAB
+caracteristica_principal: WIS
 dado_golpe: 1d8
 salvaciones_competentes:
-- SAB
-- CAR
+- WIS
+- CHA
 subclases_oficiales:
-- Dominio de la Vida
-- Dominio de la Luz
-- Dominio del Engaño
-- Dominio de la Guerra
+- Life Domain
+- Light Domain
+- Trickery Domain
+- War Domain
 fuente: PHB 2024
 pagina: 76
 tags:
@@ -25,12 +25,12 @@ nombre_original: Clérigo
 
 # Cleric
 
-- **Primary Ability**: SAB
-- **Hit Die**: 1d8 por nivel de clérigo
-- **Saving Throw Proficiencies**: SAB, CAR
+- **Primary Ability**: WIS
+- **Hit Die**: 1d8 per Cleric level
+- **Saving Throw Proficiencies**: WIS, CHA
 
 ## Available Subclasses
-- Dominio de la Vida
-- Dominio de la Luz
-- Dominio del Engaño
-- Dominio de la Guerra
+- Life Domain
+- Light Domain
+- Trickery Domain
+- War Domain

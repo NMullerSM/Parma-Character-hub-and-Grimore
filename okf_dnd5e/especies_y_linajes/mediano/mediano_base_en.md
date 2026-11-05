@@ -23,12 +23,12 @@ nombre_original: Mediano
 
 # Halfling
 
-- **Tipo de Criatura**: humanoide
-- **Tamaño**: Pequeño
-- **Velocidad**: 9 m
-- **Sentidos**: Normal
+- **Creature Type**: Humanoid
+- **Size**: Small
+- **Speed**: 9 m
+- **Senses**: Normal
 
-## Rasgos de la Especie
+## Species Traits
 MEDIANO 
 Los medianos, valorados y guiados por los dioses que 
 aprecian la vida, el hogar y la tranquilidad, se sienten 

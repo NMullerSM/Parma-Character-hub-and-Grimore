@@ -4,13 +4,13 @@ nombre: Paladin
 caracteristica_principal: FUE/CAR
 dado_golpe: 1d10
 salvaciones_competentes:
-- SAB
-- CAR
+- WIS
+- CHA
 subclases_oficiales:
-- Juramento de Devoción
-- Juramento de Gloria
+- Oath of Devotion
+- Oath of Glory
 - Juramento de los Antiguos
-- Juramento de Venganza
+- Oath of Vengeance
 fuente: PHB 2024
 pagina: 150
 tags:
@@ -25,12 +25,12 @@ nombre_original: Paladín
 
 # Paladin
 
-- **Primary Ability**: FUE/CAR
-- **Hit Die**: 1d10 por nivel de paladín
-- **Saving Throw Proficiencies**: SAB, CAR
+- **Primary Ability**: STR/CHA
+- **Hit Die**: 1d10 per Paladin level
+- **Saving Throw Proficiencies**: WIS, CHA
 
 ## Available Subclasses
-- Juramento de Devoción
-- Juramento de Gloria
+- Oath of Devotion
+- Oath of Glory
 - Juramento de los Antiguos
-- Juramento de Venganza
+- Oath of Vengeance

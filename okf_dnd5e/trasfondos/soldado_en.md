@@ -1,9 +1,9 @@
 ---
 id: soldado_en
 nombre: Soldier
-caracteristicas_clave: Fuerza, Destreza, Constitución
-dote_concedida: Atacante salvaje
-habilidades_competentes: Atletismo, Intimidación
+caracteristicas_clave: Strength, Dexterity, Constitution
+dote_concedida: Savage Attacker
+habilidades_competentes: Athletics, Intimidation
 fuente: PHB 2024
 pagina: 187
 tags:
@@ -18,6 +18,6 @@ nombre_original: Soldado
 
 # Soldier
 
-- **Puntuaciones de Característica**: Fuerza, Destreza, Constitución
-- **Origin Feat**: Atacante salvaje
-- **Habilidades con Competencia**: Atletismo, Intimidación
+- **Ability Scores**: Strength, Dexterity, Constitution
+- **Origin Feat**: Savage Attacker
+- **Skill Proficiencies**: Athletics, Intimidation

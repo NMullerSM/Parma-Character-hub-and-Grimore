@@ -3,7 +3,7 @@ id: picaro_espadachin_en
 nombre: Swashbuckler
 nombre_ingles: Swashbuckler
 tipo: subclase
-clase_padre: Pícaro
+clase_padre: Rogue
 nivel_desbloqueo: 3
 fuente: Guia de Xanathar Para Todo
 tags:
@@ -15,9 +15,9 @@ nombre_original: Espadachín
 ---
 
 # Swashbuckler
-**Clase Base:** Pícaro  
-**Manual / Fuente:** Guia de Xanathar Para Todo  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Rogue  
+**Source:** Guia de Xanathar Para Todo  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
+## Archetype Summary
 Duelista audaz que inflige Ataque Furtivo en duelos uno contra uno sin necesitar ventaja y suma su Carisma a la iniciativa.

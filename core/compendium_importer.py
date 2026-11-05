@@ -174,6 +174,30 @@ MASTERY_TRANSLATIONS = {
     "vex": "Hostigar (Vex)",
 }
 
+WEAPON_PROP_TRANSLATIONS = {
+    "fin": "sutil",
+    "finesse": "sutil",
+    "lgt": "ligera",
+    "light": "ligera",
+    "hvy": "pesada",
+    "heavy": "pesada",
+    "two": "a dos manos",
+    "two-handed": "a dos manos",
+    "ver": "versátil",
+    "versatile": "versátil",
+    "rch": "alcance",
+    "reach": "alcance",
+    "thr": "arrojadiza",
+    "thrown": "arrojadiza",
+    "amm": "munición",
+    "ammunition": "munición",
+    "lod": "recarga",
+    "loading": "recarga",
+    "spc": "especial",
+    "special": "especial",
+    "mgc": "mágica",
+}
+
 ITEM_TYPE_TRANSLATIONS = {
     "martialm": "Arma Marcial CaC",
     "martialr": "Arma Marcial a Distancia",
@@ -562,6 +586,22 @@ def translate_item_description(desc: str) -> str:
     replacements = [
         (r'\*\(Requires attunement\)\*', '*(Requiere sintonización)*'),
         (r'\*\(Requires attunement by a [a-zA-Z\s]+\)\*', '*(Requiere sintonización)*'),
+        (r'\(Requires [aA]ttunement\)', '(Requiere sintonización)'),
+        (r'Requires [aA]ttunement', 'Requiere sintonización'),
+        (r'\*Wondrous Item, Common\*', '*Objeto maravilloso, común*'),
+        (r'\*Wondrous Item, Uncommon\*', '*Objeto maravilloso, poco común*'),
+        (r'\*Wondrous Item, Rare\*', '*Objeto maravilloso, raro*'),
+        (r'\*Wondrous Item, Very Rare\*', '*Objeto maravilloso, muy raro*'),
+        (r'\*Wondrous Item, Legendary\*', '*Objeto maravilloso, legendario*'),
+        (r'\*Wondrous Item, Artifact\*', '*Objeto maravilloso, artefacto*'),
+        (r'\*\*Ability:\*\*', '**Característica:**'),
+        (r'\*\*Utilize:\*\*', '**Utilizar:**'),
+        (r'\*\*Craft:\*\*', '**Fabricar:**'),
+        (r'Discern whether someone is cheating \(DC 10\), or win the game \(DC 20\)', 'Discernir si alguien está haciendo trampa (CD 10) o ganar la partida (CD 20)'),
+        (r'If you are proficient with a gaming set, you can add your proficiency bonus to ability checks you make to play a game with that set\. Each type of gaming set requires a separate proficiency\.', 'Si tienes competencia con un juego de mesa o azar, puedes añadir tu bonificador por competencia a las pruebas de característica que hagas para jugar con él. Cada tipo de juego requiere una competencia por separado.'),
+        (r'This item encompasses a wide range of playing card types, both unmarked and marked\.', 'Este objeto abarca una amplia variedad de barajas de cartas, tanto normales como marcadas.'),
+        (r'This item encompasses a wide range of dice, both straight and weighted\.', 'Este objeto abarca una amplia variedad de dados, tanto normales como cargados.'),
+        (r'This item is a complete set of chess pieces and board\. The board can also be used for variations of draughts and checkers\.', 'Este objeto es un juego completo de piezas y tablero de ajedrez. El tablero también puede usarse para variantes de damas.'),
         (r'You gain a \+(\d+) bonus to attack and damage rolls made with this magic weapon\.', r'Obtienes una bonificación de +\1 a las tiradas de ataque y daño realizadas con esta arma mágica.'),
         (r'You have a \+(\d+) bonus to AC while wearing this armor\.', r'Tienes una bonificación de +\1 a la CA mientras vistes esta armadura.'),
         (r'While holding this shield, you have a \+(\d+) bonus to AC\.', r'Mientras empuñas este escudo, tienes una bonificación de +\1 a la CA.'),
@@ -575,6 +615,12 @@ def translate_item_description(desc: str) -> str:
         (r'While holding this wand,', 'Mientras empuñas esta varita,'),
         (r'While holding this staff,', 'Mientras empuñas este bastón,'),
         (r'While holding this rod,', 'Mientras sostienes este cetro,'),
+        (r'\bWisdom\b', 'Sabiduría'),
+        (r'\bStrength\b', 'Fuerza'),
+        (r'\bDexterity\b', 'Destreza'),
+        (r'\bConstitution\b', 'Constitución'),
+        (r'\bIntelligence\b', 'Inteligencia'),
+        (r'\bCharisma\b', 'Carisma'),
     ]
     for pat, rep in replacements:
         text = re.sub(pat, rep, text, flags=re.IGNORECASE)
@@ -1498,17 +1544,40 @@ def normalize_foundry_item(
     desc_cleaned = clean_foundry_syntax(desc_raw, name_en, name_display, raw, raw, lang)
     desc_final = translate_item_description(desc_cleaned) if is_es else desc_cleaned
 
+    mastery_display = MASTERY_TRANSLATIONS.get(mastery.lower(), mastery) if is_es else mastery
+
+    # Asegurar descripción canónica estructurada si la fuente original carecía de texto
+    if not desc_final or not desc_final.strip():
+        if is_weapon:
+            if is_es:
+                props_es = [WEAPON_PROP_TRANSLATIONS.get(p.lower(), p) for p in sys.get("properties", [])]
+                props_str = ", ".join(props_es) if props_es else "Ninguna"
+                desc_final = f"**Categoría:** {item_type_es}. **Daño:** {dmg_formula or '1'} {dmg_type_es or 'contundente'}. **Maestría:** {mastery_display or 'Ninguna'}. **Propiedades:** {props_str}."
+            else:
+                props_en = [str(p) for p in sys.get("properties", [])]
+                props_str = ", ".join(props_en) if props_en else "None"
+                desc_final = f"**Category:** {item_type_en}. **Damage:** {dmg_formula or '1'} {dmg_type_str or 'bludgeoning'}. **Mastery:** {mastery or 'None'}. **Properties:** {props_str}."
+        elif ac_bonus > 0 or "armadura" in item_type_es.lower() or "armor" in item_type_en.lower():
+            if is_es:
+                desc_final = f"**Categoría:** {item_type_es}. **Bonificador de CA:** +{ac_bonus}. **Coste:** {cost_es or '—'}. **Peso:** {weight_es or '—'}."
+            else:
+                desc_final = f"**Category:** {item_type_en}. **AC Bonus:** +{ac_bonus}. **Cost:** {cost_en or '—'}. **Weight:** {weight_en or '—'}."
+        else:
+            if is_es:
+                desc_final = f"**Categoría:** {item_type_es}. **Coste:** {cost_es or '—'}. **Peso:** {weight_es or '—'}."
+            else:
+                desc_final = f"**Category:** {item_type_en}. **Cost:** {cost_en or '—'}. **Weight:** {weight_en or '—'}."
+
     edition_tag = "2024" if edition in ("5.5e", "2024") else "5e"
     base_slug = re.sub(r'[^a-z0-9]+', '_', name_en.lower()).strip('_')
     entity_id = f"{base_slug}_{edition_tag}_{lang}"
-
-    mastery_display = MASTERY_TRANSLATIONS.get(mastery.lower(), mastery) if is_es else mastery
 
     details = {
         "properties": sys.get("properties", []),
         "source": sys.get("source", {}),
         "equippable": sys.get("equippable", True),
         "attunement": sys.get("attunement"),
+        "description": desc_final,
     }
 
     return {

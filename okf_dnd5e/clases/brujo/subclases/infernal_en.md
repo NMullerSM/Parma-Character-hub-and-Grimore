@@ -3,7 +3,7 @@ id: brujo_infernal_en
 nombre: Fiend Patron
 nombre_ingles: Fiend Patron
 tipo: subclase
-clase_padre: Brujo
+clase_padre: Warlock
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: El Infernal
 ---
 
 # Fiend Patron
-**Clase Base:** Brujo  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Warlock  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
+## Archetype Summary
 Pacto jurado con un señor de los Nueve Infiernos o el Abismo; gana PG temporales al abatir enemigos y desata llamas infernales.

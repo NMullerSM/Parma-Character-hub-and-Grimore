@@ -23,12 +23,12 @@ nombre_original: Orco
 
 # Orc
 
-- **Tipo de Criatura**: humanoide
-- **Tamaño**: Mediano
-- **Velocidad**: 9 m
-- **Sentidos**: darkvision 36 m
+- **Creature Type**: Humanoid
+- **Size**: Medium
+- **Speed**: 9 m
+- **Senses**: darkvision 36 m
 
-## Rasgos de la Especie
+## Species Traits
 Orco 
 Los orcos deben su creación a Gruumsh, un dios poderoso 
 que vagaba por los amplios espacios abiertos del Plano 

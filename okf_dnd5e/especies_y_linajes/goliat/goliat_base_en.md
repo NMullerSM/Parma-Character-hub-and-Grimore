@@ -23,12 +23,12 @@ nombre_original: Goliat
 
 # Goliath
 
-- **Tipo de Criatura**: humanoide
-- **Tamaño**: Mediano
-- **Velocidad**: 10,5 m
-- **Sentidos**: Normal
+- **Creature Type**: Humanoid
+- **Size**: Medium
+- **Speed**: 10,5 m
+- **Senses**: Normal
 
-## Rasgos de la Especie
+## Species Traits
 192 
 GOLIAT 
 Los goliats son descendientes lejanos de los gigantes 

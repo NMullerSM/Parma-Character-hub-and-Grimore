@@ -158,9 +158,14 @@ FEATS_MAP = {
 BACKGROUNDS_MAP = {
     "acólito": "Acolyte",
     "acolito": "Acolyte",
+    "animador": "Entertainer",
+    "artesano": "Artisan",
     "artesano gremial": "Guild Artisan",
+    "campesino": "Peasant",
     "charlatán": "Charlatan",
     "charlatan": "Charlatan",
+    "comerciante": "Merchant",
+    "mercader": "Merchant",
     "criminal": "Criminal",
     "erudito": "Sage",
     "ermitaño": "Hermit",
@@ -176,15 +181,18 @@ BACKGROUNDS_MAP = {
     "huerfano": "Urchin",
     "marinero": "Sailor",
     "noble": "Noble",
+    "sabio": "Sage",
     "salvaje": "Wayfarer",
     "escriba": "Scribe",
+    "escribano": "Scribe",
     "soldado": "Soldier",
-    "mercader": "Merchant",
+    "vagabundo": "Vagrant",
 }
 
 RULES_MAP = {
     "acciones en combate": "Actions in Combat",
     "condiciones y estados": "Conditions & States",
+    "condiciones de estado": "Conditions & States",
     "descansos": "Resting Rules",
     "lanzamiento de conjuros": "Spellcasting Rules",
     "tiradas de salvacion y ataque": "Attack Rolls & Saving Throws",
@@ -196,6 +204,85 @@ EQUIPMENT_MAP = {
     "equipo de aventurero": "Adventuring Gear",
     "herramientas": "Tools & Kits",
 }
+
+ABILITY_NAMES_MAP = {
+    "fuerza": "Strength",
+    "destreza": "Dexterity",
+    "constitución": "Constitution",
+    "constitucion": "Constitution",
+    "inteligencia": "Intelligence",
+    "sabiduría": "Wisdom",
+    "sabiduria": "Wisdom",
+    "carisma": "Charisma",
+    "fue": "STR",
+    "des": "DEX",
+    "con": "CON",
+    "int": "INT",
+    "sab": "WIS",
+    "car": "CHA",
+}
+
+SKILLS_MAP_ES_EN = {
+    "acrobacias": "Acrobatics",
+    "arcanos": "Arcana",
+    "atletismo": "Athletics",
+    "engaño": "Deception",
+    "engano": "Deception",
+    "historia": "History",
+    "interpretación": "Performance",
+    "interpretacion": "Performance",
+    "intimidación": "Intimidation",
+    "intimidacion": "Intimidation",
+    "investigación": "Investigation",
+    "investigacion": "Investigation",
+    "juego de manos": "Sleight of Hand",
+    "medicina": "Medicine",
+    "naturaleza": "Nature",
+    "percepción": "Perception",
+    "percepcion": "Perception",
+    "perspicacia": "Insight",
+    "persuasión": "Persuasion",
+    "persuasion": "Persuasion",
+    "religión": "Religion",
+    "religion": "Religion",
+    "sigilo": "Stealth",
+    "supervivencia": "Survival",
+    "trato con animales": "Animal Handling",
+}
+
+ORIGIN_FEATS_MAP = {
+    "iniciado en la magia": "Magic Initiate",
+    "iniciado en la magia (clérigo)": "Magic Initiate (Cleric)",
+    "iniciado en la magia (clerigo)": "Magic Initiate (Cleric)",
+    "iniciado en la magia (druida)": "Magic Initiate (Druid)",
+    "iniciado en la magia (mago)": "Magic Initiate (Wizard)",
+    "músico": "Musician",
+    "musico": "Musician",
+    "fabricante": "Crafter",
+    "duro": "Tough",
+    "habilidoso": "Skilled",
+    "afortunado": "Lucky",
+    "alerta": "Alert",
+    "sanador": "Healer",
+    "curandero": "Healer",
+    "luchador de taberna": "Tavern Brawler",
+    "atacante salvaje": "Savage Attacker",
+}
+
+def translate_subclass_name(sc: str) -> str:
+    s = sc.strip()
+    s_low = s.lower()
+    if s_low in SUBCLASSES_MAP:
+        return SUBCLASSES_MAP[s_low]
+    # Reemplazo de Camino por Senda
+    s_senda = s_low.replace("camino del ", "senda del ").replace("camino de la ", "senda de la ").replace("camino de los ", "senda de los ").replace("camino de ", "senda de ")
+    if s_senda in SUBCLASSES_MAP:
+        return SUBCLASSES_MAP[s_senda]
+    # Quitar prefijo Senda / Camino
+    cleaned = re.sub(r'^(?:senda|camino)\s+(?:del|de\s+la|de\s+los|de)\s+', '', s_low)
+    if cleaned in SUBCLASSES_MAP:
+        return SUBCLASSES_MAP[cleaned]
+    return SUBCLASSES_MAP.get(s, s)
 
 def load_ts_maps() -> Tuple[Dict[str, str], Dict[str, str]]:
     """Carga los mapas canónicos desde dndTranslations.ts."""
@@ -399,10 +486,12 @@ def translate_markdown_body(body: str, entity_name_en: str, entity_type: str, sr
             t_line = "## Subclass Features"
         elif t_line.startswith("## Rasgos de Clase"):
             t_line = "## Class Features"
-        elif t_line.startswith("## Características de Especie") or t_line.startswith("## Rasgos Principales"):
-            t_line = "## Core Species Traits"
+        elif t_line.startswith("## Características de Especie") or t_line.startswith("## Rasgos Principales") or t_line.startswith("## Rasgos de la Especie"):
+            t_line = "## Species Traits"
         elif t_line.startswith("## Subclases Disponibles"):
             t_line = "## Available Subclasses"
+        elif t_line.startswith("## Resumen del Arquetipo"):
+            t_line = "## Archetype Summary"
         elif t_line.startswith("### Nivel "):
             t_line = re.sub(r"### Nivel (\d+):?", r"### Level \1:", t_line)
 
@@ -413,9 +502,49 @@ def translate_markdown_body(body: str, entity_name_en: str, entity_type: str, sr
         t_line = re.sub(r"- \*\*Competencias con Armaduras\*\*:", "- **Armor Proficiencies**:", t_line)
         t_line = re.sub(r"- \*\*Competencias con Armas\*\*:", "- **Weapon Proficiencies**:", t_line)
         t_line = re.sub(r"- \*\*Habilidades Competentes\*\*:", "- **Skill Proficiencies**:", t_line)
+        t_line = re.sub(r"- \*\*Habilidades con Competencia\*\*:", "- **Skill Proficiencies**:", t_line)
+        t_line = re.sub(r"- \*\*Puntuaciones de Característica\*\*:", "- **Ability Scores**:", t_line)
+        t_line = re.sub(r"- \*\*Dote de Origen\*\*:", "- **Origin Feat**:", t_line)
         t_line = re.sub(r"- \*\*Dote Concedida\*\*:", "- **Granted Feat**:", t_line)
         t_line = re.sub(r"- \*\*Herramientas\*\*:", "- **Tool Proficiencies**:", t_line)
         t_line = re.sub(r"- \*\*Equipo Inicial\*\*:", "- **Equipment**:", t_line)
+        t_line = re.sub(r"- \*\*Tipo de Criatura\*\*:", "- **Creature Type**:", t_line)
+        t_line = re.sub(r"- \*\*Tamaño\*\*:", "- **Size**:", t_line)
+        t_line = re.sub(r"- \*\*Velocidad\*\*:", "- **Speed**:", t_line)
+        t_line = re.sub(r"- \*\*Sentidos\*\*:", "- **Senses**:", t_line)
+
+        # Encabezados de arquetipo / subclase
+        t_line = re.sub(r"\*\*Clase Base:\*\*\s*([A-Za-zÁÉÍÓÚáéíóúñ]+)", lambda m: f"**Base Class:** {CLASSES_MAP.get(m.group(1).lower().strip(), m.group(1))}", t_line)
+        t_line = re.sub(r"\*\*Manual / Fuente:\*\*", "**Source:**", t_line)
+        t_line = re.sub(r"\*\*Nivel de Desbloqueo Oficial:\*\*\s*Nivel\s*(\d+)", r"**Official Unlock Level:** Level \1", t_line)
+
+        # Subclases bajo viñetas de clase
+        if t_line.strip().startswith("- ") and any(prev.startswith("## Available Subclasses") or prev.startswith("## Subclases") for prev in translated_lines[-10:] if prev.startswith("##")):
+            sub_raw = t_line.strip()[2:].strip()
+            sub_trans = translate_subclass_name(sub_raw)
+            t_line = f"- {sub_trans}"
+
+        # Traducciones de valores en viñetas
+        if "**Ability Scores**:" in t_line or "**Primary Ability**:" in t_line or "**Saving Throw Proficiencies**:" in t_line:
+            for es_ab, en_ab in [("Fuerza", "Strength"), ("Destreza", "Dexterity"), ("Constitución", "Constitution"),
+                                 ("Inteligencia", "Intelligence"), ("Sabiduría", "Wisdom"), ("Carisma", "Charisma"),
+                                 ("FUE", "STR"), ("DES", "DEX"), ("CON", "CON"), ("INT", "INT"), ("SAB", "WIS"), ("CAR", "CHA")]:
+                t_line = re.sub(rf"\b{es_ab}\b", en_ab, t_line)
+
+        if "**Origin Feat**:" in t_line or "**Granted Feat**:" in t_line:
+            for es_f, en_f in ORIGIN_FEATS_MAP.items():
+                t_line = re.sub(rf"\b{es_f}\b", en_f, t_line, flags=re.IGNORECASE)
+
+        if "**Skill Proficiencies**:" in t_line:
+            for es_sk, en_sk in SKILLS_MAP_ES_EN.items():
+                t_line = re.sub(rf"\b{es_sk}\b", en_sk, t_line, flags=re.IGNORECASE)
+
+        if "**Creature Type**:" in t_line:
+            t_line = re.sub(r"\bhumanoide\b", "Humanoid", t_line, flags=re.IGNORECASE)
+        if "**Size**:" in t_line:
+            t_line = t_line.replace("Mediano o Pequeño", "Medium or Small").replace("Mediano", "Medium").replace("Pequeño", "Small")
+        if "**Hit Die**:" in t_line:
+            t_line = re.sub(r"por nivel de ([a-záéíóúñ]+)", lambda m: f"per {CLASSES_MAP.get(m.group(1).lower().strip(), m.group(1))} level", t_line, flags=re.IGNORECASE)
 
         # Reglas clave y términos de juego D&D 5e
         t_line = re.sub(r"\*Dote de origen\*", "*Origin Feat*", t_line, flags=re.IGNORECASE)
@@ -631,8 +760,52 @@ def process_entity_file(file_path: str) -> Tuple[Optional[Dict[str, Any]], Optio
             if "componentes" in meta_es:
                 meta_en["componentes"] = translate_components(meta_es["componentes"])
 
+        # Traducir metadatos específicos para clases, subclases y trasfondos
+        if "clase_padre" in meta_es:
+            cp = str(meta_es["clase_padre"]).lower().strip()
+            meta_en["clase_padre"] = CLASSES_MAP.get(cp, meta_es["clase_padre"])
+
+        if "subclases_oficiales" in meta_es and isinstance(meta_es["subclases_oficiales"], list):
+            meta_en["subclases_oficiales"] = [translate_subclass_name(str(sc)) for sc in meta_es["subclases_oficiales"]]
+
+        if "dote_concedida" in meta_es:
+            dc = str(meta_es["dote_concedida"]).strip()
+            dc_low = dc.lower()
+            meta_en["dote_concedida"] = ORIGIN_FEATS_MAP.get(dc_low, FEATS_MAP.get(dc_low, dc))
+
+        if "caracteristicas_clave" in meta_es:
+            cc = str(meta_es["caracteristicas_clave"])
+            for es_ab, en_ab in [("Fuerza", "Strength"), ("Destreza", "Dexterity"), ("Constitución", "Constitution"),
+                                 ("Inteligencia", "Intelligence"), ("Sabiduría", "Wisdom"), ("Carisma", "Charisma")]:
+                cc = re.sub(rf"\b{es_ab}\b", en_ab, cc)
+            meta_en["caracteristicas_clave"] = cc
+
+        if "habilidades_competentes" in meta_es:
+            hc = str(meta_es["habilidades_competentes"])
+            for es_sk, en_sk in SKILLS_MAP_ES_EN.items():
+                hc = re.sub(rf"\b{es_sk}\b", en_sk, hc, flags=re.IGNORECASE)
+            meta_en["habilidades_competentes"] = hc
+
+        if "caracteristica_principal" in meta_es:
+            cp_val = str(meta_es["caracteristica_principal"]).strip().upper()
+            ab_map = {"FUE": "STR", "DES": "DEX", "CON": "CON", "INT": "INT", "SAB": "WIS", "CAR": "CHA"}
+            meta_en["caracteristica_principal"] = ab_map.get(cp_val, cp_val)
+
+        if "salvaciones_competentes" in meta_es and isinstance(meta_es["salvaciones_competentes"], list):
+            ab_map = {"FUE": "STR", "DES": "DEX", "CON": "CON", "INT": "INT", "SAB": "WIS", "CAR": "CHA"}
+            meta_en["salvaciones_competentes"] = [ab_map.get(str(s).upper(), s) for s in meta_es["salvaciones_competentes"]]
+
         # Traducir cuerpo markdown
         body_en = translate_markdown_body(body_es, nombre_en, tipo, srd_entry=srd_entry)
+        if os.path.exists(en_file_path) and not srd_entry:
+            try:
+                with open(en_file_path, "r", encoding="utf-8") as f_ex:
+                    ex_meta, ex_body = parse_frontmatter(f_ex.read())
+                # Si el cuerpo existente ya está en inglés (ej. no contiene frases en español del cuerpo original)
+                if ex_body.strip() and not ("Conjuras" in ex_body or "criatura" in ex_body.lower() and "elección" in ex_body.lower()):
+                    body_en = ex_body
+            except Exception:
+                pass
 
         # Guardar archivo en inglés
         new_frontmatter_en = yaml.dump(meta_en, allow_unicode=True, sort_keys=False).strip()
@@ -654,7 +827,12 @@ def process_entity_file(file_path: str) -> Tuple[Optional[Dict[str, Any]], Optio
             "tags": tags_es,
             "path": rel_path,
         }
-        for k in ["dote_concedida", "caracteristicas_clave", "habilidades_competentes", "dado_golpe", "tiempo_lanzamiento", "alcance", "duracion", "concentracion", "ritual"]:
+        extra_keys = [
+            "dote_concedida", "caracteristicas_clave", "habilidades_competentes", "dado_golpe",
+            "tiempo_lanzamiento", "alcance", "duracion", "concentracion", "ritual",
+            "subclases_oficiales", "caracteristica_principal", "salvaciones_competentes", "clase_padre"
+        ]
+        for k in extra_keys:
             if k in meta_es:
                 entry_es[k] = meta_es[k]
 
@@ -673,7 +851,7 @@ def process_entity_file(file_path: str) -> Tuple[Optional[Dict[str, Any]], Optio
             "tags": tags_en,
             "path": en_rel_path,
         }
-        for k in ["dote_concedida", "caracteristicas_clave", "habilidades_competentes", "dado_golpe", "tiempo_lanzamiento", "alcance", "duracion", "concentracion", "ritual"]:
+        for k in extra_keys:
             if k in meta_en:
                 entry_en[k] = meta_en[k]
 

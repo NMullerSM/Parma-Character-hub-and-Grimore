@@ -3,7 +3,7 @@ id: barbaro_corazon_salvaje_en
 nombre: Path of the Wild Heart
 nombre_ingles: Path of the Wild Heart
 tipo: subclase
-clase_padre: Bárbaro
+clase_padre: Barbarian
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Senda del Corazón Salvaje
 ---
 
 # Path of the Wild Heart
-**Clase Base:** Bárbaro  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Barbarian  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
+## Archetype Summary
 Sintonizado con los espíritus totémicos de la naturaleza (Oso, Águila, Lobo), adquiere resistencias elementales y sentidos agudos.

@@ -1,11 +1,11 @@
 ---
 id: brujo_en
 nombre: Warlock
-caracteristica_principal: CAR
+caracteristica_principal: CHA
 dado_golpe: 1d8
 salvaciones_competentes:
-- SAB
-- CAR
+- WIS
+- CHA
 subclases_oficiales:
 - Patrón Feérico
 - Patrón Infernal
@@ -25,9 +25,9 @@ nombre_original: Brujo
 
 # Warlock
 
-- **Primary Ability**: CAR
-- **Hit Die**: 1d8 por nivel de brujo
-- **Saving Throw Proficiencies**: SAB, CAR
+- **Primary Ability**: CHA
+- **Hit Die**: 1d8 per Warlock level
+- **Saving Throw Proficiencies**: WIS, CHA
 
 ## Available Subclasses
 - Patrón Feérico

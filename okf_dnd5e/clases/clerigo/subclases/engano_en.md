@@ -3,7 +3,7 @@ id: clerigo_engano_en
 nombre: Trickery Domain
 nombre_ingles: Trickery Domain
 tipo: subclase
-clase_padre: Clérigo
+clase_padre: Cleric
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Dominio del Engaño
 ---
 
 # Trickery Domain
-**Clase Base:** Clérigo  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Cleric  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
+## Archetype Summary
 Sirvientes de los dioses bromistas y de la sombra, proyectan un duplicado ilusorio perfecto para lanzar conjuros a distancia.

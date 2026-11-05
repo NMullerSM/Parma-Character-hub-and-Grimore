@@ -24,12 +24,12 @@ nombre_original: Elfo
 
 # Elf
 
-- **Tipo de Criatura**: humanoide
-- **Tamaño**: Mediano
-- **Velocidad**: 9 m
-- **Sentidos**: darkvision 18 m (Drow 36 m)
+- **Creature Type**: Humanoid
+- **Size**: Medium
+- **Speed**: 9 m
+- **Senses**: darkvision 18 m (Drow 36 m)
 
-## Rasgos de la Especie
+## Species Traits
 188 
 ELFO 
 Los primeros elfos, creados por el dios Corellon, podían 

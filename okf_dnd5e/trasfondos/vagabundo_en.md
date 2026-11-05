@@ -1,9 +1,9 @@
 ---
 id: vagabundo_en
-nombre: Vagabundo
-caracteristicas_clave: Destreza, Sabiduría, Carisma
-dote_concedida: Afortunado
-habilidades_competentes: Perspicacia, Sigilo
+nombre: Vagrant
+caracteristicas_clave: Dexterity, Wisdom, Charisma
+dote_concedida: Lucky
+habilidades_competentes: Insight, Stealth
 fuente: PHB 2024
 pagina: 187
 tags:
@@ -12,12 +12,12 @@ tags:
 - trasfondo
 tipo: trasfondo
 idioma: en
-nombre_ingles: Vagabundo
+nombre_ingles: Vagrant
 nombre_original: Vagabundo
 ---
 
-# Vagabundo
+# Vagrant
 
-- **Puntuaciones de Característica**: Destreza, Sabiduría, Carisma
-- **Origin Feat**: Afortunado
-- **Habilidades con Competencia**: Perspicacia, Sigilo
+- **Ability Scores**: Dexterity, Wisdom, Charisma
+- **Origin Feat**: Lucky
+- **Skill Proficiencies**: Insight, Stealth

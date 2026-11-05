@@ -1,16 +1,16 @@
 ---
 id: druida_en
 nombre: Druid
-caracteristica_principal: SAB
+caracteristica_principal: WIS
 dado_golpe: 1d8
 salvaciones_competentes:
 - INT
-- SAB
+- WIS
 subclases_oficiales:
-- Círculo de la Tierra
-- Círculo de la Luna
-- Círculo del Mar
-- Círculo de las Estrellas
+- Circle of the Land
+- Circle of the Moon
+- Circle of the Sea
+- Circle of the Stars
 fuente: PHB 2024
 pagina: 86
 tags:
@@ -25,12 +25,12 @@ nombre_original: Druida
 
 # Druid
 
-- **Primary Ability**: SAB
-- **Hit Die**: 1d8 por nivel de druida
-- **Saving Throw Proficiencies**: INT, SAB
+- **Primary Ability**: WIS
+- **Hit Die**: 1d8 per Druid level
+- **Saving Throw Proficiencies**: INT, WIS
 
 ## Available Subclasses
-- Círculo de la Tierra
-- Círculo de la Luna
-- Círculo del Mar
-- Círculo de las Estrellas
+- Circle of the Land
+- Circle of the Moon
+- Circle of the Sea
+- Circle of the Stars

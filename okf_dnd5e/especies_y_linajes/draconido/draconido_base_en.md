@@ -24,12 +24,12 @@ nombre_original: Dracónido
 
 # Dragonborn
 
-- **Tipo de Criatura**: humanoide
-- **Tamaño**: Mediano
-- **Velocidad**: 9 m
-- **Sentidos**: darkvision 18 m
+- **Creature Type**: Humanoid
+- **Size**: Medium
+- **Speed**: 9 m
+- **Senses**: darkvision 18 m
 
-## Rasgos de la Especie
+## Species Traits
 DRACÓNIDO 
 Los antepasados de los dracónidos eclosionaron de los 
 huevos de los dragones cromáticos y metálicos. Una historia 

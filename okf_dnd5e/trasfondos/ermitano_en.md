@@ -1,9 +1,9 @@
 ---
 id: ermitano_en
 nombre: Hermit
-caracteristicas_clave: Constitución, Sabiduría, Carisma
-dote_concedida: Sanador
-habilidades_competentes: Medicina, Religión
+caracteristicas_clave: Constitution, Wisdom, Charisma
+dote_concedida: Healer
+habilidades_competentes: Medicine, Religion
 fuente: PHB 2024
 pagina: 183
 tags:
@@ -18,6 +18,6 @@ nombre_original: Ermitaño
 
 # Hermit
 
-- **Puntuaciones de Característica**: Constitución, Sabiduría, Carisma
-- **Origin Feat**: Sanador
-- **Habilidades con Competencia**: Medicina, Religión
+- **Ability Scores**: Constitution, Wisdom, Charisma
+- **Origin Feat**: Healer
+- **Skill Proficiencies**: Medicine, Religion

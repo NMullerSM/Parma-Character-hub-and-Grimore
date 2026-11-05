@@ -14,7 +14,7 @@ tags:
 - español
 tipo: trasfondo
 idioma: es
-nombre_ingles: Escribano
+nombre_ingles: Scribe
 ---
 
 # Trasfondo: Escribano

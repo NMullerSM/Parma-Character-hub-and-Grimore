@@ -3,7 +3,7 @@ id: explorador_senor_de_las_bestias_en
 nombre: Beast Master
 nombre_ingles: Beast Master
 tipo: subclase
-clase_padre: Explorador
+clase_padre: Ranger
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Señor de las Bestias
 ---
 
 # Beast Master
-**Clase Base:** Explorador  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Ranger  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
+## Archetype Summary
 Vinculado espiritualmente a un Compañero Primitivo (Tierra, Cielo o Mar) que combate sincronizadamente con él en el turno.

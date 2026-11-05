@@ -3,7 +3,7 @@ id: hechicero_mente_aberrante_en
 nombre: Aberrant Mind
 nombre_ingles: Aberrant Mind
 tipo: subclase
-clase_padre: Hechicero
+clase_padre: Sorcerer
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Mente Aberrante
 ---
 
 # Aberrant Mind
-**Clase Base:** Hechicero  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Sorcerer  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
+## Archetype Summary
 Tocado por una entidad del Reino Lejano, lanza conjuros psiónicos sutiles sin componentes verbales o somáticos y transforma su cuerpo.

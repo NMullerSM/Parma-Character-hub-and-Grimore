@@ -14,7 +14,7 @@ tags:
 - español
 tipo: trasfondo
 idioma: es
-nombre_ingles: Comerciante
+nombre_ingles: Merchant
 ---
 
 # Trasfondo: Comerciante

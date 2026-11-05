@@ -3,7 +3,7 @@ id: barbaro_zelote_en
 nombre: Path of the Zealot
 nombre_ingles: Path of the Zealot
 tipo: subclase
-clase_padre: Bárbaro
+clase_padre: Barbarian
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Senda del Zelote
 ---
 
 # Path of the Zealot
-**Clase Base:** Bárbaro  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Barbarian  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
+## Archetype Summary
 Imbuido del fervor de una deidad, inflige radiant damage o necrótico en cada embate y es prácticamente imposible de matar mientras ruge de furia.

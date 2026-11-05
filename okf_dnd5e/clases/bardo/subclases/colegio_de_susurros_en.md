@@ -4,7 +4,7 @@ nombre: College of Whispers
 nombre_ingles: College of Whispers
 fuente: Guía de Xanathar para Todo
 pagina: 17
-clase_padre: Bardo
+clase_padre: Bard
 tipo: subclase
 nivel_obtencion: 3
 tags:

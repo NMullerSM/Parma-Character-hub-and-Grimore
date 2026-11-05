@@ -4,8 +4,8 @@ nombre: Monk
 caracteristica_principal: DES/SAB
 dado_golpe: 1d8
 salvaciones_competentes:
-- FUE
-- DES
+- STR
+- DEX
 subclases_oficiales:
 - Guerrero de la Mano Abierta
 - Guerrero de la Sombra
@@ -25,9 +25,9 @@ nombre_original: Monje
 
 # Monk
 
-- **Primary Ability**: DES/SAB
-- **Hit Die**: 1d8 por nivel de monje
-- **Saving Throw Proficiencies**: FUE, DES
+- **Primary Ability**: DEX/WIS
+- **Hit Die**: 1d8 per Monk level
+- **Saving Throw Proficiencies**: STR, DEX
 
 ## Available Subclasses
 - Guerrero de la Mano Abierta

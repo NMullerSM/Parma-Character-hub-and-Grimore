@@ -3,7 +3,7 @@ id: guerrero_caballero_sobrenatural_en
 nombre: Eldritch Knight
 nombre_ingles: Eldritch Knight
 tipo: subclase
-clase_padre: Guerrero
+clase_padre: Fighter
 nivel_desbloqueo: 3
 fuente: PHB 2024
 tags:
@@ -15,9 +15,9 @@ nombre_original: Caballero Sobrenatural
 ---
 
 # Eldritch Knight
-**Clase Base:** Guerrero  
-**Manual / Fuente:** PHB 2024  
-**Nivel de Desbloqueo Oficial:** Nivel 3
+**Base Class:** Fighter  
+**Source:** PHB 2024  
+**Official Unlock Level:** Level 3
 
-## Resumen del Arquetipo
+## Archetype Summary
 Combina pericia marcial con magia de mago, vinculándose a sus armas para invocarlas al instante y sustituyendo ataques por trucos ofensivos.
