@@ -39,6 +39,22 @@ class WeaponAction:
 
 
 @dataclass
+class EquipmentItem:
+    id: str = ""
+    name: str = ""
+    name_en: str = ""
+    item_type: str = "equipment"  # weapon, armor, shield, gear, tool, potion, wondrous
+    quantity: int = 1
+    weight: str = ""
+    cost: str = ""
+    rarity: str = "común"
+    description: str = ""
+    notes: str = ""
+    ac_bonus: int = 0
+    equipped: bool = False
+
+
+@dataclass
 class SpellItem:
     id: str = ""
     name: str = ""
@@ -181,6 +197,9 @@ class CharacterSheet:
     # Conjuros
     spells: List[SpellItem] = field(default_factory=list)
 
+    # Inventario y Equipo
+    equipment: List[EquipmentItem] = field(default_factory=list)
+
     # Rasgos y Poderes
     features: List[CharacterFeature] = field(default_factory=list)
 
@@ -259,6 +278,13 @@ class CharacterSheet:
                     else:
                         parsed_spells.append(s)
                 char.spells = parsed_spells
+            elif k == "equipment":
+                eq_fields = {f.name for f in fields(EquipmentItem)}
+                char.equipment = [
+                    EquipmentItem(**{ek: ev for ek, ev in eq.items() if ek in eq_fields})
+                    if isinstance(eq, dict) else eq
+                    for eq in v
+                ]
             elif k == "features":
                 feat_fields = {f.name for f in fields(CharacterFeature)}
                 char.features = [

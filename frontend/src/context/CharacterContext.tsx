@@ -58,6 +58,8 @@ interface CharacterContextType {
   showToast: (text: string, type?: "info" | "success" | "warn") => void;
   addSpell: (spell: SpellItemData) => Promise<boolean>;
   removeSpell: (spellName: string) => Promise<boolean>;
+  addItem: (item: any) => Promise<boolean>;
+  removeItem: (itemName: string, category?: string) => Promise<boolean>;
   syncFeatures: () => Promise<void>;
   setLanguage: (lang: "es" | "en") => void;
 
@@ -530,6 +532,57 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   };
 
+  const addItem = async (item: any): Promise<boolean> => {
+    if (!activeCharacter?.id) {
+      showToast(language === "en" ? "No active character" : "Sin personaje activo", "warn");
+      return false;
+    }
+
+    try {
+      const res = await api.addItemToCharacter(activeCharacter.id, item);
+      if (res.success && res.character) {
+        setActiveCharacter(res.character);
+        latestCharRef.current = res.character;
+        showToast(
+          language === "en"
+            ? `${item.name_en || item.name} added to character`
+            : `${item.name} añadido al personaje`,
+          "success"
+        );
+        return true;
+      } else {
+        showToast(res.error || (language === "en" ? "Error adding item" : "Error al añadir ítem"), "warn");
+        return false;
+      }
+    } catch (e) {
+      showToast(language === "en" ? "Connection error adding item" : "Error de conexión al añadir ítem", "warn");
+      return false;
+    }
+  };
+
+  const removeItem = async (itemName: string, category: string = "all"): Promise<boolean> => {
+    if (!activeCharacter?.id) return false;
+
+    try {
+      const res = await api.removeItemFromCharacter(activeCharacter.id, itemName, category);
+      if (res.success && res.character) {
+        setActiveCharacter(res.character);
+        latestCharRef.current = res.character;
+        showToast(
+          language === "en"
+            ? `${itemName} removed`
+            : `${itemName} eliminado`,
+          "info"
+        );
+        return true;
+      }
+      return false;
+    } catch (e) {
+      showToast(language === "en" ? "Error removing item" : "Error al eliminar ítem", "warn");
+      return false;
+    }
+  };
+
   const syncFeatures = async (lang?: "es" | "en") => {
     if (!activeCharacter?.id) return;
     try {
@@ -580,6 +633,8 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         showToast,
         addSpell,
         removeSpell,
+        addItem,
+        removeItem,
         syncFeatures,
         language,
         setLanguage: (lang: "es" | "en") => {

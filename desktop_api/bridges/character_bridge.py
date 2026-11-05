@@ -5,6 +5,7 @@ import os
 import sys
 import json
 import base64
+import re
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, Dict, Any, List
@@ -14,6 +15,7 @@ import webview
 from core.models import (
     CharacterSheet,
     WeaponAction,
+    EquipmentItem,
     SpellItem,
     SpellSlotTier,
     CharacterFeature,
@@ -183,6 +185,37 @@ class CharacterBridgeMixin:
                 slots_total[str(lvl_str)] = t_tot
                 slots_used[str(lvl_str)] = max(0, t_tot - t_cur)
 
+        # 4b. Equipamiento e Inventario
+        equipment_out = []
+        for eq in getattr(char, "equipment", []) or []:
+            equipment_out.append({
+                "id": getattr(eq, "id", "") or str(getattr(eq, "name", "")).lower().replace(" ", "_"),
+                "name": getattr(eq, "name", ""),
+                "name_en": getattr(eq, "name_en", "") or getattr(eq, "name", ""),
+                "item_type": getattr(eq, "item_type", "Equipo"),
+                "quantity": int(getattr(eq, "quantity", 1) or 1),
+                "weight": getattr(eq, "weight", "") or "",
+                "cost": getattr(eq, "cost", "") or "",
+                "rarity": getattr(eq, "rarity", "común") or "común",
+                "description": getattr(eq, "description", "") or "",
+                "notes": getattr(eq, "notes", "") or "",
+                "ac_bonus": int(getattr(eq, "ac_bonus", 0) or 0),
+                "equipped": bool(getattr(eq, "equipped", False)),
+            })
+
+        # 4c. Límites canónicos de conjuros según clase y nivel
+        prog_limits = get_class_progression_limits(char.char_class, char.level, edition="5.5e")
+        cantrips_max = prog_limits.get("cantrips_limit", prog_limits.get("cantrips_known", 0))
+        spells_prep_max = prog_limits.get("spells_limit", prog_limits.get("spells_prepared", 0))
+        cantrips_current = sum(1 for sp in char.spells if int(getattr(sp, "level", 0)) == 0)
+        spells_prep_current = sum(1 for sp in char.spells if int(getattr(sp, "level", 0)) > 0)
+        spell_limits = {
+            "cantrips_max": cantrips_max,
+            "cantrips_current": cantrips_current,
+            "spells_prepared_max": spells_prep_max,
+            "spells_prepared_current": spells_prep_current,
+        }
+
         spells_out = []
         for sp in char.spells:
             en_spell = self._okf.get_spell_item(sp.id or sp.name, lang="en")
@@ -298,6 +331,8 @@ class CharacterBridgeMixin:
             "abilities": abilities_out,
             "skills": skills_out,
             "spells": spells_out,
+            "equipment": equipment_out,
+            "spell_limits": spell_limits,
             "spell_slots_total": slots_total,
             "spell_slots_used": slots_used,
             "spell_stats": spell_stats,
@@ -498,82 +533,208 @@ class CharacterBridgeMixin:
             "Aasimar": {"CAR": 2, "SAB": 1},
         }
 
-        raw_species = self._okf.get_species(lang=lang)
-        species_out = []
-        for sp in raw_species:
-            sp_name = sp["nombre"]
-            lineages = self._okf.get_lineages(sp["id"], lang=lang) or self._okf.get_lineages(sp_name, lang=lang)
-            subrace_names = [lin["nombre"] for lin in lineages] if lineages else ["Estándar" if lang == "es" else "Standard"]
-            raw_traits = sp.get("rasgos_principales", "")
-            if isinstance(raw_traits, list):
-                trait_items = [{"name": str(t), "desc": "Rasgo de especie oficial." if lang == "es" else "Official species trait."} for t in raw_traits]
-            elif isinstance(raw_traits, str) and raw_traits.strip():
-                trait_items = [{"name": t.strip(), "desc": "Rasgo de especie oficial." if lang == "es" else "Official species trait."} for t in raw_traits.split(",") if t.strip()]
-            else:
-                trait_items = [{"name": f"Herencia de {sp_name}" if lang == "es" else f"{sp_name} Heritage", "desc": sp.get("sentidos", "Visión Normal" if lang == "es" else "Normal Vision")}]
+        # Consultar entidades desde SQLite (compendium_entities) con fallback a OkfEngine
+        db_species = self._db.search_compendium_entities(categories=["especie"], language=lang, limit=100)
+        db_lineages = self._db.search_compendium_entities(categories=["especie_linaje", "linaje"], language=lang, limit=100)
+        db_classes = self._db.search_compendium_entities(categories=["clase"], language=lang, limit=100)
+        db_subclasses = self._db.search_compendium_entities(categories=["subclase"], language=lang, limit=200)
+        db_backgrounds = self._db.search_compendium_entities(categories=["trasfondo"], language=lang, limit=100)
 
-            species_out.append({
-                "id": sp["id"],
-                "name": sp_name,
-                "subraces": subrace_names,
-                "speed": self._parse_speed_feet(sp.get("velocidad", "9 m")),
-                "bonuses": default_bonuses.get(sp_name, {"FUE": 1, "CON": 1}),
-                "traits": trait_items,
-            })
+        # 1. ESPECIES Y LINEAJES
+        species_out = []
+        if db_species:
+            for row in db_species:
+                try:
+                    sp_data = json.loads(row.get("data_json") or "{}")
+                except Exception:
+                    sp_data = {}
+                sp_name = row.get("name") or sp_data.get("nombre") or row.get("entity_id")
+                sp_id = sp_data.get("id") or row.get("entity_id")
+                
+                # Buscar linajes asociados
+                subrace_names = []
+                for lin_row in db_lineages:
+                    try:
+                        lin_data = json.loads(lin_row.get("data_json") or "{}")
+                    except Exception:
+                        lin_data = {}
+                    padre = lin_data.get("especie_padre") or lin_data.get("especie") or ""
+                    if padre.lower() in (sp_name.lower(), str(sp_data.get("nombre_espanol", "")).lower(), str(sp_data.get("nombre_ingles", "")).lower(), sp_id.lower().replace("_en", "")):
+                        subrace_names.append(lin_row.get("name") or lin_data.get("nombre"))
+                if not subrace_names:
+                    subrace_names = ["Estándar" if lang == "es" else "Standard"]
+
+                raw_traits = sp_data.get("rasgos_principales", "")
+                if isinstance(raw_traits, list):
+                    trait_items = [{"name": str(t), "desc": "Rasgo de especie oficial." if lang == "es" else "Official species trait."} for t in raw_traits]
+                elif isinstance(raw_traits, str) and raw_traits.strip():
+                    trait_items = [{"name": t.strip(), "desc": "Rasgo de especie oficial." if lang == "es" else "Official species trait."} for t in raw_traits.split(",") if t.strip()]
+                else:
+                    trait_items = [{"name": f"Herencia de {sp_name}" if lang == "es" else f"{sp_name} Heritage", "desc": sp_data.get("sentidos", "Visión Normal" if lang == "es" else "Normal Vision")}]
+
+                species_out.append({
+                    "id": sp_id,
+                    "name": sp_name,
+                    "subraces": subrace_names,
+                    "speed": self._parse_speed_feet(sp_data.get("velocidad", "9 m")),
+                    "bonuses": default_bonuses.get(sp_name, default_bonuses.get(sp_data.get("nombre_original", ""), {"FUE": 1, "CON": 1})),
+                    "traits": trait_items,
+                })
+        else:
+            raw_species = self._okf.get_species(lang=lang)
+            for sp in raw_species:
+                sp_name = sp["nombre"]
+                lineages = self._okf.get_lineages(sp["id"], lang=lang) or self._okf.get_lineages(sp_name, lang=lang)
+                subrace_names = [lin["nombre"] for lin in lineages] if lineages else ["Estándar" if lang == "es" else "Standard"]
+                raw_traits = sp.get("rasgos_principales", "")
+                if isinstance(raw_traits, list):
+                    trait_items = [{"name": str(t), "desc": "Rasgo de especie oficial." if lang == "es" else "Official species trait."} for t in raw_traits]
+                elif isinstance(raw_traits, str) and raw_traits.strip():
+                    trait_items = [{"name": t.strip(), "desc": "Rasgo de especie oficial." if lang == "es" else "Official species trait."} for t in raw_traits.split(",") if t.strip()]
+                else:
+                    trait_items = [{"name": f"Herencia de {sp_name}" if lang == "es" else f"{sp_name} Heritage", "desc": sp.get("sentidos", "Visión Normal" if lang == "es" else "Normal Vision")}]
+
+                species_out.append({
+                    "id": sp["id"],
+                    "name": sp_name,
+                    "subraces": subrace_names,
+                    "speed": self._parse_speed_feet(sp.get("velocidad", "9 m")),
+                    "bonuses": default_bonuses.get(sp_name, {"FUE": 1, "CON": 1}),
+                    "traits": trait_items,
+                })
 
         all_skill_names = list(SKILLS_MAP.keys())
-        raw_classes = self._okf.get_classes(lang=lang)
         classes_out = []
-        for c in raw_classes:
-            c_name = c["nombre"]
-            sub_lvl = 3 if is_2024 else subclass_lvl_2014.get(c_name, 3)
-            subs = self._okf.get_subclasses(c_name, lang=lang)
-            if expansions and "all" not in [e.lower() for e in expansions]:
-                exp_set = {e.lower() for e in expansions}
-                filtered_subs = []
-                for s in subs:
-                    s_fuente = str(s.get("fuente", "")).lower()
-                    if "tasha" in s_fuente and "tce" not in exp_set and "tasha's cauldron of everything" not in exp_set:
-                        continue
-                    if "xanathar" in s_fuente and "xge" not in exp_set and "xanathar's guide to everything" not in exp_set:
-                        continue
-                    filtered_subs.append(s)
-                subs = filtered_subs
-            sub_names = [s["nombre"] for s in subs] if subs else [f"Arquetipo de {c_name}" if lang == "es" else f"{c_name} Archetype"]
-            preset = CLASS_QUICK_PRESETS.get(c_name, CLASS_QUICK_PRESETS.get("Guerrero", {}))
-            rec_skills = list(preset.get("skills", ["Atletismo", "Percepción"]))
-            extra_skills = [sk for sk in all_skill_names if sk not in rec_skills][:6]
-            skill_opts = rec_skills + extra_skills
-            hit_die_val = int(c.get("hit_dice", CLASS_HIT_DICE.get(c_name, 8)))
-            is_caster = c_name in CLASS_CASTING_ABILITY
 
-            classes_out.append({
-                "id": c["id"],
-                "name": c_name,
-                "hit_die": hit_die_val,
-                "primary_ability": c.get("caracteristica_principal", "FUE"),
-                "saves": list(c.get("saves", ["FUE", "CON"])),
-                "skill_choices_count": 4 if c_name in ("Pícaro", "Rogue") else (3 if c_name in ("Bardo", "Bard", "Explorador", "Ranger") else 2),
-                "skill_options": skill_opts,
-                "subclasses": sub_names,
-                "subclass_unlock_level": sub_lvl,
-                "is_caster": is_caster,
-            })
+        # 2. CLASES Y SUBCLASES
+        if db_classes:
+            for c_row in db_classes:
+                try:
+                    c_data = json.loads(c_row.get("data_json") or "{}")
+                except Exception:
+                    c_data = {}
+                c_name = c_row.get("name") or c_data.get("nombre")
+                c_id = c_data.get("id") or c_row.get("entity_id")
+                sub_lvl = 3 if is_2024 else subclass_lvl_2014.get(c_name, 3)
 
+                # Subclases desde db_subclasses o c_data.subclases_oficiales
+                sub_names = []
+                for sc_row in db_subclasses:
+                    try:
+                        sc_data = json.loads(sc_row.get("data_json") or "{}")
+                    except Exception:
+                        sc_data = {}
+                    padre = sc_data.get("clase_padre") or ""
+                    if padre.lower() in (c_name.lower(), str(c_data.get("nombre_espanol", "")).lower(), str(c_data.get("nombre_ingles", "")).lower(), c_id.lower().replace("_en", "")):
+                        s_fuente = str(sc_data.get("fuente", "")).lower()
+                        if expansions and "all" not in [e.lower() for e in expansions]:
+                            exp_set = {e.lower() for e in expansions}
+                            if "tasha" in s_fuente and "tce" not in exp_set and "tasha's cauldron of everything" not in exp_set:
+                                continue
+                            if "xanathar" in s_fuente and "xge" not in exp_set and "xanathar's guide to everything" not in exp_set:
+                                continue
+                        sub_names.append(sc_row.get("name") or sc_data.get("nombre"))
+
+                if not sub_names and c_data.get("subclases_oficiales"):
+                    sub_names = list(c_data.get("subclases_oficiales", []))
+
+                if not sub_names:
+                    sub_names = [f"Arquetipo de {c_name}" if lang == "es" else f"{c_name} Archetype"]
+
+                preset = CLASS_QUICK_PRESETS.get(c_name, CLASS_QUICK_PRESETS.get("Guerrero", {}))
+                rec_skills = list(preset.get("skills", ["Atletismo", "Percepción"]))
+                extra_skills = [sk for sk in all_skill_names if sk not in rec_skills][:6]
+                skill_opts = rec_skills + extra_skills
+                hit_die_raw = str(c_data.get("dado_golpe", "1d8"))
+                hd_match = re.search(r'd(\d+)', hit_die_raw)
+                hit_die_val = int(hd_match.group(1)) if hd_match else 8
+                is_caster = c_name in CLASS_CASTING_ABILITY or str(c_data.get("nombre_original", "")) in CLASS_CASTING_ABILITY
+
+                classes_out.append({
+                    "id": c_id,
+                    "name": c_name,
+                    "hit_die": hit_die_val,
+                    "primary_ability": c_data.get("caracteristica_principal", "FUE" if lang == "es" else "STR"),
+                    "saves": list(c_data.get("salvaciones_competentes", ["FUE", "CON"] if lang == "es" else ["STR", "CON"])),
+                    "skill_choices_count": 4 if c_name in ("Pícaro", "Rogue") else (3 if c_name in ("Bardo", "Bard", "Explorador", "Ranger") else 2),
+                    "skill_options": skill_opts,
+                    "subclasses": sub_names,
+                    "subclass_unlock_level": sub_lvl,
+                    "is_caster": is_caster,
+                })
+        else:
+            raw_classes = self._okf.get_classes(lang=lang)
+            for c in raw_classes:
+                c_name = c["nombre"]
+                sub_lvl = 3 if is_2024 else subclass_lvl_2014.get(c_name, 3)
+                subs = self._okf.get_subclasses(c_name, lang=lang)
+                if expansions and "all" not in [e.lower() for e in expansions]:
+                    exp_set = {e.lower() for e in expansions}
+                    filtered_subs = []
+                    for s in subs:
+                        s_fuente = str(s.get("fuente", "")).lower()
+                        if "tasha" in s_fuente and "tce" not in exp_set and "tasha's cauldron of everything" not in exp_set:
+                            continue
+                        if "xanathar" in s_fuente and "xge" not in exp_set and "xanathar's guide to everything" not in exp_set:
+                            continue
+                        filtered_subs.append(s)
+                    subs = filtered_subs
+                sub_names = [s["nombre"] for s in subs] if subs else [f"Arquetipo de {c_name}" if lang == "es" else f"{c_name} Archetype"]
+                preset = CLASS_QUICK_PRESETS.get(c_name, CLASS_QUICK_PRESETS.get("Guerrero", {}))
+                rec_skills = list(preset.get("skills", ["Atletismo", "Percepción"]))
+                extra_skills = [sk for sk in all_skill_names if sk not in rec_skills][:6]
+                skill_opts = rec_skills + extra_skills
+                hit_die_val = int(c.get("hit_dice", CLASS_HIT_DICE.get(c_name, 8)))
+                is_caster = c_name in CLASS_CASTING_ABILITY
+
+                classes_out.append({
+                    "id": c["id"],
+                    "name": c_name,
+                    "hit_die": hit_die_val,
+                    "primary_ability": c.get("caracteristica_principal", "FUE"),
+                    "saves": list(c.get("saves", ["FUE", "CON"])),
+                    "skill_choices_count": 4 if c_name in ("Pícaro", "Rogue") else (3 if c_name in ("Bardo", "Bard", "Explorador", "Ranger") else 2),
+                    "skill_options": skill_opts,
+                    "subclasses": sub_names,
+                    "subclass_unlock_level": sub_lvl,
+                    "is_caster": is_caster,
+                })
+
+        # 3. TRASFONDOS
         backgrounds_out = []
-        for b in self._okf.get_backgrounds(lang=lang):
-            raw_sk = b.get("habilidades_competentes", "Atletismo, Percepción")
-            if isinstance(raw_sk, list):
-                sk_list = [str(s).strip() for s in raw_sk if str(s).strip()]
-            else:
-                sk_list = [s.strip() for s in str(raw_sk).split(",") if s.strip()]
-            backgrounds_out.append({
-                "id": b["id"],
-                "name": b["nombre"],
-                "skills": sk_list[:2] if sk_list else ["Atletismo", "Percepción"],
-                "feature_name": b.get("dote_concedida", "Dote de Origen" if lang == "es" else "Origin Feat"),
-                "feature_desc": f"Atributos clave: {b.get('caracteristicas_clave', 'FUE, CON')}." if lang == "es" else f"Key Abilities: {b.get('caracteristicas_clave', 'STR, CON')}.",
-            })
+        if db_backgrounds:
+            for b_row in db_backgrounds:
+                try:
+                    b_data = json.loads(b_row.get("data_json") or "{}")
+                except Exception:
+                    b_data = {}
+                b_name = b_row.get("name") or b_data.get("nombre")
+                raw_sk = b_data.get("habilidades_competentes", "Atletismo, Percepción")
+                if isinstance(raw_sk, list):
+                    sk_list = [str(s).strip() for s in raw_sk if str(s).strip()]
+                else:
+                    sk_list = [s.strip() for s in str(raw_sk).split(",") if s.strip()]
+                backgrounds_out.append({
+                    "id": b_data.get("id") or b_row.get("entity_id"),
+                    "name": b_name,
+                    "skills": sk_list[:2] if sk_list else ["Atletismo", "Percepción"],
+                    "feature_name": b_data.get("dote_concedida", "Dote de Origen" if lang == "es" else "Origin Feat"),
+                    "feature_desc": f"Atributos clave: {b_data.get('caracteristicas_clave', 'FUE, CON')}." if lang == "es" else f"Key Abilities: {b_data.get('caracteristicas_clave', 'STR, CON')}.",
+                })
+        else:
+            for b in self._okf.get_backgrounds(lang=lang):
+                raw_sk = b.get("habilidades_competentes", "Atletismo, Percepción")
+                if isinstance(raw_sk, list):
+                    sk_list = [str(s).strip() for s in raw_sk if str(s).strip()]
+                else:
+                    sk_list = [s.strip() for s in str(raw_sk).split(",") if s.strip()]
+                backgrounds_out.append({
+                    "id": b["id"],
+                    "name": b["nombre"],
+                    "skills": sk_list[:2] if sk_list else ["Atletismo", "Percepción"],
+                    "feature_name": b.get("dote_concedida", "Dote de Origen" if lang == "es" else "Origin Feat"),
+                    "feature_desc": f"Atributos clave: {b.get('caracteristicas_clave', 'FUE, CON')}." if lang == "es" else f"Key Abilities: {b.get('caracteristicas_clave', 'STR, CON')}.",
+                })
 
         return {
             "edition": ed,
@@ -653,6 +814,28 @@ class CharacterBridgeMixin:
             if existing.name.lower().strip() == s_name.lower():
                 return {"success": True, "already_exists": True, "character": self._serialize_character(char)}
 
+        # Validación canónica de límites de conjuros según clase y nivel
+        spell_level = int(spell_data.get("level", 0))
+        prog_limits = get_class_progression_limits(char.char_class, char.level, edition="5.5e")
+        cantrips_max = prog_limits.get("cantrips_limit", prog_limits.get("cantrips_known", 0))
+        spells_prep_max = prog_limits.get("spells_limit", prog_limits.get("spells_prepared", 0))
+
+        cantrips_current = sum(1 for sp in char.spells if int(getattr(sp, "level", 0)) == 0)
+        spells_prep_current = sum(1 for sp in char.spells if int(getattr(sp, "level", 0)) > 0)
+
+        if spell_level == 0:
+            if cantrips_max > 0 and cantrips_current >= cantrips_max:
+                return {
+                    "success": False,
+                    "error": f"Límite de trucos alcanzado ({cantrips_current}/{cantrips_max}) para {char.char_class} nivel {char.level}"
+                }
+        else:
+            if spells_prep_max > 0 and spells_prep_current >= spells_prep_max:
+                return {
+                    "success": False,
+                    "error": f"Límite de conjuros preparados alcanzado ({spells_prep_current}/{spells_prep_max}) para {char.char_class} nivel {char.level}"
+                }
+
         new_spell = SpellItem(
             id=spell_data.get("id", s_name.lower().replace(" ", "_")),
             name=s_name,
@@ -682,6 +865,86 @@ class CharacterBridgeMixin:
 
         s_clean = spell_name.lower().strip()
         char.spells = [s for s in char.spells if s.name.lower().strip() != s_clean]
+        self._db.save_character(char, set_active=self._is_active_character_id(char_id))
+        return {"success": True, "character": self._serialize_character(char)}
+
+    def add_item_to_character(self, char_id: int, item_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Añade un objeto/arma/armadura a la ficha del personaje y lo guarda en SQLite."""
+        char = self._db.get_character_by_id(char_id)
+        if not char:
+            return {"success": False, "error": "Personaje no encontrado"}
+
+        i_name = str(item_data.get("name", "")).strip()
+        if not i_name:
+            return {"success": False, "error": "Nombre de ítem inválido"}
+
+        item_type = str(item_data.get("item_type", "")).lower()
+        is_weapon = "arma" in item_type or "weapon" in item_type or bool(item_data.get("damage"))
+
+        # Si es un arma, añadir también a char.weapons para Acciones de Combate
+        if is_weapon:
+            existing_wpn = next((w for w in char.weapons if w.name.lower().strip() == i_name.lower()), None)
+            if not existing_wpn:
+                dmg = item_data.get("damage") or "1d6"
+                dmg_type = item_data.get("damage_type") or "Cortante"
+                mastery = item_data.get("weapon_mastery") or ""
+                notes = f"Dominio: {mastery}" if mastery else str(item_data.get("notes") or "")
+
+                fue_mod = calc_modifier(char.abilities.get("FUE", 10))
+                des_mod = calc_modifier(char.abilities.get("DES", 10))
+                is_finesse_or_ranged = any(k in str(item_data.get("notes") or "").lower() for k in ("sutil", "finesse", "distancia", "ranged"))
+                best_mod = max(fue_mod, des_mod) if is_finesse_or_ranged else fue_mod
+                atk_bon = best_mod + calc_proficiency_bonus(char.level)
+                atk_bon_str = f"+{atk_bon}" if atk_bon >= 0 else str(atk_bon)
+
+                char.weapons.append(WeaponAction(
+                    name=i_name,
+                    attack_bonus=atk_bon_str,
+                    damage=f"{dmg}+{best_mod}" if best_mod > 0 else dmg,
+                    damage_type=dmg_type,
+                    notes=notes
+                ))
+
+        # Añadir al inventario de equipo
+        if not hasattr(char, "equipment") or char.equipment is None:
+            char.equipment = []
+
+        existing_item = next((eq for eq in char.equipment if eq.name.lower().strip() == i_name.lower()), None)
+        if existing_item:
+            existing_item.quantity = getattr(existing_item, "quantity", 1) + int(item_data.get("quantity", 1) or 1)
+        else:
+            new_item = EquipmentItem(
+                id=item_data.get("id") or item_data.get("entity_id") or i_name.lower().replace(" ", "_"),
+                name=i_name,
+                name_en=item_data.get("name_en", i_name),
+                item_type=item_data.get("item_type", "Equipo"),
+                quantity=int(item_data.get("quantity", 1) or 1),
+                weight=str(item_data.get("weight") or ""),
+                cost=str(item_data.get("cost") or ""),
+                rarity=str(item_data.get("rarity") or "común"),
+                description=str(item_data.get("description") or ""),
+                notes=str(item_data.get("notes") or ""),
+                ac_bonus=int(item_data.get("ac_bonus") or 0),
+                equipped=bool(item_data.get("equipped", False))
+            )
+            char.equipment.append(new_item)
+
+        self._db.save_character(char, set_active=self._is_active_character_id(char_id))
+        return {"success": True, "character": self._serialize_character(char)}
+
+    def remove_item_from_character(self, char_id: int, item_name: str, category: str = "all") -> Dict[str, Any]:
+        """Elimina un objeto/arma del inventario del personaje."""
+        char = self._db.get_character_by_id(char_id)
+        if not char:
+            return {"success": False, "error": "Personaje no encontrado"}
+
+        i_name_clean = item_name.strip().lower()
+        if hasattr(char, "equipment") and char.equipment:
+            char.equipment = [eq for eq in char.equipment if eq.name.strip().lower() != i_name_clean]
+
+        if category in ("all", "weapon"):
+            char.weapons = [w for w in char.weapons if w.name.strip().lower() != i_name_clean]
+
         self._db.save_character(char, set_active=self._is_active_character_id(char_id))
         return {"success": True, "character": self._serialize_character(char)}
 

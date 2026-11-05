@@ -1032,6 +1032,16 @@ export const api = {
     return { success: true, character: mockActiveCharacter };
   },
 
+  async addItemToCharacter(charId: number, item: any): Promise<{ success: boolean; character?: CharacterSheetData; error?: string }> {
+    if (this.isNative()) return await window.pywebview!.api.add_item_to_character(charId, item);
+    return { success: true, character: mockActiveCharacter };
+  },
+
+  async removeItemFromCharacter(charId: number, itemName: string, category: string = "all"): Promise<{ success: boolean; character?: CharacterSheetData; error?: string }> {
+    if (this.isNative()) return await window.pywebview!.api.remove_item_from_character(charId, itemName, category);
+    return { success: true, character: mockActiveCharacter };
+  },
+
   async syncCharacterFeatures(charId: number, lang: string = "es"): Promise<{ success: boolean; character?: CharacterSheetData; error?: string }> {
     if (this.isNative()) return await window.pywebview!.api.sync_character_features(charId, lang);
     return { success: true, character: mockActiveCharacter };

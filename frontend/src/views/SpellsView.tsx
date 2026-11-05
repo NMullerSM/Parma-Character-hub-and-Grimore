@@ -462,6 +462,7 @@ export const SpellsView: React.FC = () => {
         characterClass={char_class || "Bardo"}
         characterLevel={level || 1}
         currentSpells={spells || []}
+        spellLimits={activeCharacter?.spell_limits}
         onAddSpell={addSpell}
         onRemoveSpell={removeSpell}
       />

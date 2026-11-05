@@ -58,6 +58,21 @@ export interface SpellItemData {
   snippet?: string;
 }
 
+export interface EquipmentItemData {
+  id?: string;
+  name: string;
+  name_en?: string;
+  item_type: string;
+  quantity?: number;
+  weight?: string;
+  cost?: string;
+  rarity?: string;
+  description?: string;
+  notes?: string;
+  ac_bonus?: number;
+  equipped?: boolean;
+}
+
 export interface FeatureItemData {
   id?: string;
   name: string;
@@ -152,6 +167,13 @@ export interface CharacterSheetData {
   abilities: Record<string, AbilityScoreData>;
   skills: Record<string, { proficient: boolean; bonus: number; expertise: boolean }>;
   spells: SpellItemData[];
+  equipment?: EquipmentItemData[];
+  spell_limits?: {
+    cantrips_max: number;
+    cantrips_current: number;
+    spells_prepared_max: number;
+    spells_prepared_current: number;
+  };
   spell_slots_total: Record<string, number>;
   spell_slots_used: Record<string, number>;
   spell_stats?: SpellStatsData;
