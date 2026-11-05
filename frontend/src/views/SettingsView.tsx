@@ -505,7 +505,7 @@ export const SettingsView: React.FC<{
             </h3>
             <div className="p-4 rounded-xl border border-border-iron bg-card flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div className="text-xs text-muted max-w-sm">
-                Consulta la guía completa de funcionalidades de Parma o reinicia los tutoriales guiados en cualquier momento.
+                {t("settings.guideSectionDesc")}
               </div>
               <div className="flex flex-wrap items-center gap-2 shrink-0">
                 <button
@@ -653,14 +653,14 @@ export const SettingsView: React.FC<{
                 <span className="p-2 rounded-lg bg-gold/10 text-gold text-base">📖</span>
                 <div>
                   <h3 className="font-display font-bold text-lg text-gold">{t("settings.guideModalTitle") || "Guía Rápida de Parma D&D"}</h3>
-                  <p className="text-xs text-muted">Tu asistente de escritorio para D&D 2024 y 5e</p>
+                  <p className="text-xs text-muted">{t("settings.guideModalSubtitle")}</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setShowGuideModal(false)}
                 className="p-1.5 rounded-lg text-muted hover:text-main hover:bg-card transition-colors cursor-pointer"
-                title="Cerrar Guía (Esc)"
+                title={t("settings.guideCloseTitle")}
               >
                 <X className="w-5 h-5" />
               </button>
@@ -671,56 +671,56 @@ export const SettingsView: React.FC<{
               <div className="p-3.5 rounded-xl bg-card border border-border-iron/80 space-y-1.5">
                 <div className="font-semibold text-main text-sm flex items-center gap-2">
                   <span>🛡️</span>
-                  <span>Hoja de Personaje & Atributos</span>
+                  <span>{t("settings.guideSheetTitle")}</span>
                 </div>
                 <p className="text-muted leading-relaxed">
-                  Calcula automáticamente modificadores de características, bonificador de competencia, tiradas de salvación y ataques. Las 18 habilidades oficiales y armamento se sincronizan con las reglas de D&D.
+                  {t("settings.guideSheetDesc")}
                 </p>
               </div>
 
               <div className="p-3.5 rounded-xl bg-card border border-border-iron/80 space-y-1.5">
                 <div className="font-semibold text-main text-sm flex items-center gap-2">
                   <span>⚡</span>
-                  <span>Reglas Dinámicas 2024 / 5e Clásica</span>
+                  <span>{t("settings.guideRulesTitle")}</span>
                 </div>
                 <p className="text-muted leading-relaxed">
-                  Conmuta en cualquier momento desde la barra superior entre las reglas 2024 (5.5e) y 5e clásicas. Las descripciones de dotes, trasfondos y conjuros se adaptan en tiempo real según la edición seleccionada.
+                  {t("settings.guideRulesDesc")}
                 </p>
               </div>
 
               <div className="p-3.5 rounded-xl bg-card border border-border-iron/80 space-y-1.5">
                 <div className="font-semibold text-main text-sm flex items-center gap-2">
                   <span>🔮</span>
-                  <span>Grimorio Arcano & Ranuras de Conjuro</span>
+                  <span>{t("settings.guideGrimoireTitle")}</span>
                 </div>
                 <p className="text-muted leading-relaxed">
-                  Gestiona tus espacios mágicos con gemas interactivas que se restablecen con descanso largo. Filtra conjuros por nivel o escuela y añade hechizos caseros o del compendio oficial OKF.
+                  {t("settings.guideGrimoireDesc")}
                 </p>
               </div>
 
               <div className="p-3.5 rounded-xl bg-card border border-border-iron/80 space-y-1.5">
                 <div className="font-semibold text-main text-sm flex items-center gap-2">
                   <span>🎲</span>
-                  <span>Bandeja de Dados & TaleSpire 3D</span>
+                  <span>{t("settings.guideDiceTitle")}</span>
                 </div>
                 <p className="text-muted leading-relaxed">
-                  Lanza dados tácticos con ventaja, desventaja y cálculo de éxito contra CD. Si tienes TaleSpire abierto, Parma envía las tiradas a tu mesa 3D mediante el Symbiote oficial con resolución física real.
+                  {t("settings.guideDiceDesc")}
                 </p>
               </div>
 
               <div className="p-3.5 rounded-xl bg-card border border-border-iron/80 space-y-1.5">
                 <div className="font-semibold text-main text-sm flex items-center gap-2">
                   <span>⌨️</span>
-                  <span>Atajos de Teclado Tácticos</span>
+                  <span>{t("settings.guideShortcutsTitle")}</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2 pt-1 text-[11px]">
                   <div className="flex items-center gap-2 bg-surface/50 p-2 rounded-lg border border-border-iron/50">
-                    <kbd className="px-2 py-0.5 rounded bg-card border border-border-iron font-mono text-gold font-bold">Espacio</kbd>
-                    <span className="text-muted">Bandeja de dados</span>
+                    <kbd className="px-2 py-0.5 rounded bg-card border border-border-iron font-mono text-gold font-bold">{t("settings.guideShortcutSpaceKey")}</kbd>
+                    <span className="text-muted">{t("settings.guideShortcutDiceTray")}</span>
                   </div>
                   <div className="flex items-center gap-2 bg-surface/50 p-2 rounded-lg border border-border-iron/50">
                     <kbd className="px-2 py-0.5 rounded bg-card border border-border-iron font-mono text-gold font-bold">Esc</kbd>
-                    <span className="text-muted">Cerrar modales</span>
+                    <span className="text-muted">{t("settings.guideShortcutCloseModals")}</span>
                   </div>
                 </div>
               </div>
