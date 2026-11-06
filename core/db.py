@@ -18,6 +18,77 @@ class DatabaseManager:
     def __init__(self, db_path: Optional[str] = None):
         self.db_path = db_path or get_default_db_path()
         self._init_db()
+        # Después del esquema: el sembrado copia filas a tablas que ya deben existir.
+        self._seed_from_bundle_if_needed()
+
+    # Tablas de compendio que se siembran desde el bundle (CARD-PARMA-26).
+    _COMPENDIUM_SEED_TABLES = ("compendium_monsters", "compendium_spells", "compendium_items", "compendium_entities")
+
+    def _seed_from_bundle_if_needed(self) -> None:
+        """
+        CARD-PARMA-26: si compendium_monsters de la base del usuario está vacío, copia
+        las tablas de compendio ya pobladas desde data/dnd_database.db del bundle de
+        solo lectura.
+
+        NO reemplaza el archivo: el reemplazo completo (shutil.copy2) borraba los
+        personajes del usuario (verificado con tests/test_card_parma_26_db_seeding.py).
+        Solo inserta filas en las tablas compendium_* que estén vacías en el destino,
+        dentro de una transacción; personajes, diarios y ajustes no se tocan.
+        """
+        bundled_db = os.path.join(get_bundle_dir(), "data", "dnd_database.db")
+        if not os.path.isfile(bundled_db):
+            return
+        # Modo desarrollo: la base del bundle es la misma base del usuario. No copiarla sobre sí misma.
+        if os.path.exists(self.db_path) and os.path.samefile(bundled_db, self.db_path):
+            return
+
+        try:
+            # isolation_level=None: control manual de la transacción, necesario para ATTACH.
+            conn = sqlite3.connect(self.db_path, timeout=10.0, isolation_level=None, uri=True)
+        except sqlite3.Error as e:
+            print(f"[DatabaseManager] No se pudo abrir la base para sembrar el compendio: {e}")
+            return
+
+        try:
+            # Solo lectura del bundle; immutable=1 evita depender de -shm/-wal en una ruta de instalación de solo lectura.
+            bundle_uri = Path(bundled_db).resolve().as_uri() + "?mode=ro&immutable=1"
+            conn.execute("ATTACH DATABASE ? AS bundle;", (bundle_uri,))
+            try:
+                main_monsters = conn.execute("SELECT COUNT(*) FROM main.compendium_monsters;").fetchone()[0]
+                bundle_monsters = conn.execute("SELECT COUNT(*) FROM bundle.compendium_monsters;").fetchone()[0]
+                if main_monsters > 0 or bundle_monsters == 0:
+                    return
+
+                copied: List[str] = []
+                conn.execute("BEGIN IMMEDIATE;")
+                try:
+                    for table in self._COMPENDIUM_SEED_TABLES:
+                        main_count = conn.execute(f"SELECT COUNT(*) FROM main.{table};").fetchone()[0]
+                        if main_count > 0:
+                            continue
+                        main_cols = [r[1] for r in conn.execute(f"PRAGMA main.table_info({table});")]
+                        bundle_cols = {r[1] for r in conn.execute(f"PRAGMA bundle.table_info({table});")}
+                        cols = [c for c in main_cols if c in bundle_cols]
+                        if not cols:
+                            continue
+                        col_list = ", ".join(f'"{c}"' for c in cols)
+                        conn.execute(
+                            f"INSERT INTO main.{table} ({col_list}) SELECT {col_list} FROM bundle.{table};"
+                        )
+                        copied.append(table)
+                    conn.execute("COMMIT;")
+                except Exception:
+                    conn.execute("ROLLBACK;")
+                    raise
+                if copied:
+                    print(f"[DatabaseManager] Compendio sembrado desde el bundle de solo lectura: {copied}")
+            finally:
+                conn.execute("DETACH DATABASE bundle;")
+        except sqlite3.Error as e:
+            # El sembrado es best-effort: un fallo aquí no debe impedir abrir la app.
+            print(f"[DatabaseManager] Advertencia: no se pudo sembrar el compendio desde el bundle: {e}")
+        finally:
+            conn.close()
 
     @contextlib.contextmanager
     def _get_connection(self) -> Iterator[sqlite3.Connection]:

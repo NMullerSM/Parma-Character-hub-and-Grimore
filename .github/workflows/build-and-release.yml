@@ -79,6 +79,31 @@ jobs:
       - name: Ejecutar Pruebas Automatizadas (pytest)
         run: pytest tests
 
+      - name: Clonar paquetes SRD de Foundry VTT (foundryvtt/dnd5e)
+        run: git clone --depth 1 https://github.com/foundryvtt/dnd5e.git "${{ runner.temp }}/foundry_dnd5e"
+
+      - name: Ingerir Compendio Completo (SRD + OKF) para Empaquetar
+        run: |
+          python scripts/ingest_compendium_55e.py --db data/dnd_database.db --foundry-packs "${{ runner.temp }}/foundry_dnd5e/packs/_source" --okf-entities
+
+      - name: Verificar Conteos del Compendio Antes de Empaquetar
+        run: |
+          python -c "
+          import sqlite3, sys
+          con = sqlite3.connect('data/dnd_database.db')
+          cur = con.cursor()
+          counts = {}
+          for tbl in ('compendium_monsters', 'compendium_spells', 'compendium_items', 'compendium_entities'):
+              cur.execute(f'SELECT COUNT(*) FROM {tbl}')
+              counts[tbl] = cur.fetchone()[0]
+          print('Conteos del compendio:', counts)
+          minimos = {'compendium_monsters': 500, 'compendium_spells': 500, 'compendium_items': 500, 'compendium_entities': 100}
+          for tbl, minimo in minimos.items():
+              if counts[tbl] < minimo:
+                  print(f'::error::{tbl} tiene solo {counts[tbl]} filas, se esperaban al menos {minimo}. Abortando build.')
+                  sys.exit(1)
+          "
+
       - name: Generar Iconos de Alto Contraste (Escudo Sólido)
         run: python scripts/generate_taskbar_icons.py
 
@@ -172,6 +197,31 @@ jobs:
 
       - name: Ejecutar Pruebas Automatizadas (pytest)
         run: pytest tests
+
+      - name: Clonar paquetes SRD de Foundry VTT (foundryvtt/dnd5e)
+        run: git clone --depth 1 https://github.com/foundryvtt/dnd5e.git "${{ runner.temp }}/foundry_dnd5e"
+
+      - name: Ingerir Compendio Completo (SRD + OKF) para Empaquetar
+        run: |
+          python scripts/ingest_compendium_55e.py --db data/dnd_database.db --foundry-packs "${{ runner.temp }}/foundry_dnd5e/packs/_source" --okf-entities
+
+      - name: Verificar Conteos del Compendio Antes de Empaquetar
+        run: |
+          python -c "
+          import sqlite3, sys
+          con = sqlite3.connect('data/dnd_database.db')
+          cur = con.cursor()
+          counts = {}
+          for tbl in ('compendium_monsters', 'compendium_spells', 'compendium_items', 'compendium_entities'):
+              cur.execute(f'SELECT COUNT(*) FROM {tbl}')
+              counts[tbl] = cur.fetchone()[0]
+          print('Conteos del compendio:', counts)
+          minimos = {'compendium_monsters': 500, 'compendium_spells': 500, 'compendium_items': 500, 'compendium_entities': 100}
+          for tbl, minimo in minimos.items():
+              if counts[tbl] < minimo:
+                  print(f'::error::{tbl} tiene solo {counts[tbl]} filas, se esperaban al menos {minimo}. Abortando build.')
+                  sys.exit(1)
+          "
 
       - name: Generar Iconos de Alto Contraste (Escudo Sólido)
         run: python scripts/generate_taskbar_icons.py
