@@ -3,6 +3,7 @@ import { X, Sparkles, Copy, Check, Wand2, Image as ImageIcon, Settings2, Externa
 import { api } from "../api/client";
 import type { CharacterSheetData } from "../api/types";
 import { useTranslation } from "../i18n";
+import { safeStorage } from "../utils/storage";
 
 interface AiPortraitModalProps {
   isOpen: boolean;
@@ -392,11 +393,11 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
   const genderOptions = getGenderOptions(t);
 
   const [provider, setProvider] = useState<AiProvider>(() => {
-    return (localStorage.getItem("dnd_ai_img_provider") as AiProvider) || "pollinations";
+    return (safeStorage.getItem("dnd_ai_img_provider") as AiProvider) || "pollinations";
   });
-  const [apiKey, setApiKey] = useState<string>(() => localStorage.getItem("dnd_ai_img_api_key") || "");
+  const [apiKey, setApiKey] = useState<string>(() => safeStorage.getItem("dnd_ai_img_api_key") || "");
   const [apiUrl, setApiUrl] = useState<string>(() => {
-    return localStorage.getItem("dnd_ai_img_api_url") || "https://image.pollinations.ai";
+    return safeStorage.getItem("dnd_ai_img_api_url") || "https://image.pollinations.ai";
   });
 
   const [pastedImage, setPastedImage] = useState<string>("");
@@ -443,29 +444,29 @@ export const AiPortraitModal: React.FC<AiPortraitModalProps> = ({
 
   const handleProviderSelect = (newProv: AiProvider) => {
     setProvider(newProv);
-    localStorage.setItem("dnd_ai_img_provider", newProv);
+    safeStorage.setItem("dnd_ai_img_provider", newProv);
     const meta = providerOptions.find((p) => p.id === newProv);
     if (meta && meta.defaultUrl) {
       setApiUrl(meta.defaultUrl);
-      localStorage.setItem("dnd_ai_img_api_url", meta.defaultUrl);
+      safeStorage.setItem("dnd_ai_img_api_url", meta.defaultUrl);
     }
   };
 
   const handleKeyChange = (val: string) => {
     const trimmed = val.trim();
     setApiKey(trimmed);
-    localStorage.setItem("dnd_ai_img_api_key", trimmed);
+    safeStorage.setItem("dnd_ai_img_api_key", trimmed);
 
     if (trimmed.startsWith("AIzaSy") && provider !== "google") {
       setProvider("google");
       setApiUrl("https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict");
-      localStorage.setItem("dnd_ai_img_provider", "google");
-      localStorage.setItem("dnd_ai_img_api_url", "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict");
+      safeStorage.setItem("dnd_ai_img_provider", "google");
+      safeStorage.setItem("dnd_ai_img_api_url", "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict");
     } else if (trimmed.startsWith("sk-") && provider !== "openai") {
       setProvider("openai");
       setApiUrl("https://api.openai.com/v1/images/generations");
-      localStorage.setItem("dnd_ai_img_provider", "openai");
-      localStorage.setItem("dnd_ai_img_api_url", "https://api.openai.com/v1/images/generations");
+      safeStorage.setItem("dnd_ai_img_provider", "openai");
+      safeStorage.setItem("dnd_ai_img_api_url", "https://api.openai.com/v1/images/generations");
     }
   };
 
