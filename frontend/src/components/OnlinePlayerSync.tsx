@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useCharacter } from "../context/CharacterContext";
 import { safeStorage } from "../utils/storage";
+import { clampDelta, computeDmEventUpdate } from "../utils/dmEvents";
 
 /**
  * OnlinePlayerSync:
@@ -10,6 +11,10 @@ import { safeStorage } from "../utils/storage";
  * - Recibe órdenes de Curación del DM -> activa el halo verde cinemático (.vignette-heal) y suma HP.
  * - Recibe objetos Homebrew del DM -> los inyecta en el inventario del personaje activo.
  * - Sincroniza tiradas compartidas.
+ *
+ * Los eventos del DM se aplican con actualizadores funcionales sobre el estado MÁS RECIENTE del
+ * personaje (no sobre un snapshot del momento en que se abrió el socket). El ref `activeCharRef`
+ * permite leer la ficha actual desde los callbacks del WebSocket sin reabrir la conexión.
  */
 export const OnlinePlayerSync: React.FC = () => {
   const {
@@ -21,6 +26,10 @@ export const OnlinePlayerSync: React.FC = () => {
   } = useCharacter();
 
   const socketRef = useRef<WebSocket | null>(null);
+  const activeCharRef = useRef(activeCharacter);
+  useEffect(() => {
+    activeCharRef.current = activeCharacter;
+  }, [activeCharacter]);
 
   useEffect(() => {
     // Solo conectar WebSocket si el entorno tiene soporte de ventanas y redes
@@ -68,12 +77,13 @@ export const OnlinePlayerSync: React.FC = () => {
       socketRef.current = ws;
 
       ws.onopen = () => {
-        // Enviar ficha inicial al DM
-        if (activeCharacter) {
+        // Enviar ficha inicial al DM (versión más reciente, no la del momento de abrir el socket)
+        const current = activeCharRef.current;
+        if (current) {
           ws.send(
             JSON.stringify({
               type: "SHEET_SYNC",
-              character: activeCharacter,
+              character: current,
             })
           );
         }
@@ -86,60 +96,35 @@ export const OnlinePlayerSync: React.FC = () => {
             showToast(data.message || "Esperando aprobación del Dungeon Master...", "warn");
           } else if (data.type === "DM_APPROVAL_GRANTED") {
             showToast(data.message || "¡Aprobado por el Dungeon Master!", "success");
-            if (activeCharacter) {
+            const current = activeCharRef.current;
+            if (current) {
               ws.send(
                 JSON.stringify({
                   type: "SHEET_SYNC",
-                  character: activeCharacter,
+                  character: current,
                 })
               );
             }
           } else if (data.type === "APPROVAL_TIMEOUT") {
             showToast(data.message || "Tiempo de espera agotado sin aprobación del DM.", "warn");
-          } else if (data.type === "DM_APPLY_DAMAGE") {
-            const delta = Number(data.delta) || 1;
-            triggerVignetteFlash("damage");
-            if (activeCharacter) {
-              const nextHp = Math.max(0, (activeCharacter.hp_current || 0) - delta);
-              updateActiveCharacter({ hp_current: nextHp });
+          } else if (
+            data.type === "DM_APPLY_DAMAGE" ||
+            data.type === "DM_APPLY_HEAL" ||
+            data.type === "DM_GIFT_ITEM"
+          ) {
+            if (data.type === "DM_APPLY_DAMAGE") triggerVignetteFlash("damage");
+            if (data.type === "DM_APPLY_HEAL") triggerVignetteFlash("heal");
+            // Actualizador funcional: se aplica sobre el estado más reciente (I5-a, I5-b)
+            updateActiveCharacter((prev) => computeDmEventUpdate(prev, data) ?? {});
+            if (data.type === "DM_APPLY_DAMAGE") {
+              const delta = clampDelta(data.delta);
+              showToast(data.message || `Has recibido ${delta} puntos de daño del DM`, "warn");
+            } else if (data.type === "DM_APPLY_HEAL") {
+              const delta = clampDelta(data.delta);
+              showToast(data.message || `Has sido curado por ${delta} puntos de golpe`, "success");
+            } else {
+              showToast(data.message || `¡Has recibido un objeto mágico del DM!`, "success");
             }
-            showToast(data.message || `Has recibido ${delta} puntos de daño del DM`, "warn");
-          } else if (data.type === "DM_APPLY_HEAL") {
-            const delta = Number(data.delta) || 1;
-            triggerVignetteFlash("heal");
-            if (activeCharacter) {
-              const maxHp = activeCharacter.hp_max || 10;
-              const nextHp = Math.min(maxHp, (activeCharacter.hp_current || 0) + delta);
-              updateActiveCharacter({ hp_current: nextHp });
-            }
-            showToast(data.message || `Has sido curado por ${delta} puntos de golpe`, "success");
-          } else if (data.type === "DM_GIFT_ITEM") {
-            const item = data.item;
-            if (item && activeCharacter) {
-              if (item.category === "weapon") {
-                const currentWeapons = activeCharacter.weapon_actions || [];
-                const newWeapon = {
-                  name: item.name,
-                  type: "Arma Marcial / Mágica",
-                  range_val: "C/C (1.5m)",
-                  hit_dc: item.bonus_attack ? `+${item.bonus_attack}` : "+0",
-                  damage_dice: item.damage_dice || "1d8",
-                  damage_type: item.damage_type || "cortante",
-                  notes: `${item.rarity || "común"}${item.secondary_dice ? ` + ${item.secondary_dice} ${item.secondary_type || ""}` : ""}: ${item.description || ""}`,
-                  proficient: true,
-                };
-                updateActiveCharacter({ weapon_actions: [...currentWeapons, newWeapon] });
-              } else {
-                const currentFeatures = activeCharacter.features || [];
-                const newFeature = {
-                  name: item.name,
-                  source: `Homebrew (${item.category || "Objeto"})`,
-                  description: `${item.rarity || "común"}${item.requires_attunement ? " (Requiere Sintonización)" : ""}: ${item.description || ""}`,
-                };
-                updateActiveCharacter({ features: [...currentFeatures, newFeature] });
-              }
-            }
-            showToast(data.message || `¡Has recibido un objeto mágico del DM!`, "success");
           }
         } catch (e) {
           console.error("Error al procesar mensaje de WebSocket:", e);
@@ -158,6 +143,8 @@ export const OnlinePlayerSync: React.FC = () => {
         socketRef.current.close();
       }
     };
+    // Deliberadamente sin activeCharacter: reabriría el socket en cada cambio de la ficha.
+    // La ficha actual se lee desde activeCharRef.
   }, [activeCharacter?.id, remoteTunnelUrl]);
 
   return null;

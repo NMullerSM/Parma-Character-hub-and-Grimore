@@ -45,7 +45,9 @@ interface CharacterContextType {
   toggleExpansion: (expansionTag: string) => Promise<void>;
   reloadCharacters: () => Promise<void>;
   selectCharacter: (id: number) => Promise<void>;
-  updateActiveCharacter: (updates: Partial<CharacterSheetData>) => void;
+  updateActiveCharacter: (
+    updates: Partial<CharacterSheetData> | ((prev: CharacterSheetData) => Partial<CharacterSheetData>)
+  ) => void;
   saveCurrentCharacter: () => Promise<boolean>;
   openDiceDrawer: (req?: Partial<RollRequest>) => void;
   closeDiceDrawer: () => void;
@@ -149,6 +151,8 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, []);
 
   const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // true mientras haya una racha de autoguardados fallidos (un solo aviso por racha)
+  const autoSaveFailedRef = useRef(false);
   const latestCharRef = useRef<CharacterSheetData | null>(null);
 
   useEffect(() => {
@@ -336,24 +340,29 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   };
 
-  const updateActiveCharacter = (updates: Partial<CharacterSheetData>) => {
+  const updateActiveCharacter = (
+    updates: Partial<CharacterSheetData> | ((prev: CharacterSheetData) => Partial<CharacterSheetData>)
+  ) => {
     setActiveCharacter((prev) => {
       if (!prev) return null;
 
+      // Acepta un parche o un actualizador funcional que recibe el estado MÁS RECIENTE
+      const resolved = typeof updates === "function" ? updates(prev) : updates;
+
       // Disparar destello cinemático de daño (rojo) o curación (verde) en pantalla
       if (
-        updates.hp_current !== undefined &&
+        resolved.hp_current !== undefined &&
         prev.hp_current !== undefined &&
-        updates.hp_current !== prev.hp_current
+        resolved.hp_current !== prev.hp_current
       ) {
-        if (updates.hp_current < prev.hp_current) {
+        if (resolved.hp_current < prev.hp_current) {
           triggerVignetteFlash("damage");
-        } else if (updates.hp_current > prev.hp_current) {
+        } else if (resolved.hp_current > prev.hp_current) {
           triggerVignetteFlash("heal");
         }
       }
 
-      const updated = { ...prev, ...updates };
+      const updated = { ...prev, ...resolved };
       latestCharRef.current = updated;
 
       if (autoSaveTimerRef.current) {
@@ -361,15 +370,28 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       }
       autoSaveTimerRef.current = setTimeout(async () => {
         autoSaveTimerRef.current = null;
-        if (latestCharRef.current) {
-          try {
-            const res = await api.saveCharacter(latestCharRef.current);
-            if (res.success) {
-              const list = await api.listCharacters();
-              setCharacters(list);
+        if (!latestCharRef.current) return;
+        try {
+          const res = await api.saveCharacter(latestCharRef.current);
+          if (res.success) {
+            if (autoSaveFailedRef.current) {
+              autoSaveFailedRef.current = false;
+              showToast("Autoguardado restablecido", "success");
             }
-          } catch (err) {
-            console.error("Auto-save error:", err);
+            const list = await api.listCharacters();
+            setCharacters(list);
+          } else {
+            throw new Error("saveCharacter devolvió success=false");
+          }
+        } catch (err) {
+          console.error("Auto-save error:", err);
+          if (!autoSaveFailedRef.current) {
+            // Un solo aviso por racha de fallos, no uno por tecla. Sin rollback: los cambios siguen en pantalla.
+            autoSaveFailedRef.current = true;
+            showToast(
+              "No se pudo guardar la ficha automáticamente. Tus cambios siguen en pantalla; usá Guardar para reintentar.",
+              "warn"
+            );
           }
         }
       }, 350);
