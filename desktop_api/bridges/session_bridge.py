@@ -37,6 +37,7 @@ class SessionBridgeMixin:
         # 4. Iniciar Cloudflare Quick Tunnel en hilo secundario sin congelar el hilo de renderizado
         def on_url_ready(url: str):
             self._db.update_dm_session_tunnel(sid, url)
+            self._session_server.set_public_origin(url)
 
         self._tunnel_mgr.start_tunnel(port, on_url=on_url_ready)
 
@@ -82,6 +83,7 @@ class SessionBridgeMixin:
             self._db.close_dm_session(current_sess)
 
         self._tunnel_mgr.stop_tunnel()
+        self._session_server.set_public_origin(None)
         self._session_server.stop()
 
         return {"success": True, "is_running": False}

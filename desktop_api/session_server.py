@@ -4,6 +4,7 @@ Ejecuta FastAPI + Uvicorn de forma asíncrona en un hilo daemon, permitiendo
 a jugadores conectarse mediante navegadores web a través de Cloudflare Tunnels.
 """
 import os
+import re
 import json
 import time
 import socket
@@ -20,6 +21,10 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
 
+_RATE_LIMIT_MSG = "Demasiadas solicitudes. Intente nuevamente en un minuto."
+_LOOPBACK_ORIGIN_RE = re.compile(r"^https?://(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$")
+
+
 def is_local_request(client_host: str, headers: Dict[str, str]) -> bool:
     """
     Determina si la conexión se origina en el loopback local sin pasar por proxies/túneles.
@@ -32,10 +37,60 @@ def is_local_request(client_host: str, headers: Dict[str, str]) -> bool:
     return False
 
 
+def resolve_inside_dir(root_dir: str, requested: str) -> Optional[str]:
+    """
+    Devuelve la ruta real de `requested` si queda DENTRO de root_dir; None si escapa,
+    es absoluta, cambia de unidad (Windows) o es inválida (NUL, etc.).
+    """
+    try:
+        raw = (requested or "").replace("\\", "/")
+        if raw.startswith("/"):
+            # Ruta absoluta (p. ej. "//tmp/..." por %2F): nunca se resuelve contra dist.
+            return None
+        root = os.path.normcase(os.path.realpath(root_dir))
+        candidate = os.path.normcase(os.path.realpath(os.path.join(root, raw)))
+        if os.path.commonpath([root, candidate]) != root:
+            return None
+        return candidate
+    except (ValueError, OSError):
+        return None
+
+
+def _safe_int(value: Any, default: int, lo: int, hi: int) -> int:
+    """Convierte a int con rangos; valores no numéricos caen al default (nunca lanza)."""
+    try:
+        n = int(value) if value not in (None, "") else default
+    except (TypeError, ValueError, OverflowError):
+        n = default
+    return max(lo, min(hi, n))
+
+
+def _client_key(client_host: str, headers: Dict[str, str]) -> str:
+    """Identificador de cliente para rate-limit: detrás del túnel la IP real viene en cf-connecting-ip."""
+    return headers.get("cf-connecting-ip") or client_host
+
+
+class _DynamicOriginCORSMiddleware(CORSMiddleware):
+    """CORSMiddleware cuyo chequeo de origen se resuelve en cada request."""
+
+    def __init__(self, app, origin_allowed, **kwargs):
+        super().__init__(app, **kwargs)
+        self._origin_allowed = origin_allowed
+
+    def is_allowed_origin(self, origin: str) -> bool:
+        return self._origin_allowed(origin)
+
+
 class ConnectionManager:
-    """Administra conexiones WebSocket activas entre el DM y los Jugadores."""
+    """
+    Administra conexiones WebSocket activas entre el DM y los Jugadores.
+
+    Las mutaciones de `active_players` y `dm_sockets` se hacen bajo `self._lock`
+    (RLock). Nunca hacer `await` con el lock tomado.
+    """
 
     def __init__(self):
+        self._lock = threading.RLock()
         # player_token -> WebSocket
         self.active_players: Dict[str, WebSocket] = {}
         # Conexiones de consolas DM activas
@@ -45,23 +100,49 @@ class ConnectionManager:
 
     async def connect_player(self, player_token: str, websocket: WebSocket):
         await websocket.accept()
-        self.active_players[player_token] = websocket
+        self.add_player(player_token, websocket)
+
+    def add_player(self, player_token: str, websocket: WebSocket) -> None:
+        with self._lock:
+            self.active_players[player_token] = websocket
+
+    def remove_player(self, player_token: str, websocket: Optional[WebSocket] = None) -> None:
+        """Quita al jugador; si se pasa websocket, solo si sigue siendo ESE socket
+        (evita que el cierre de una conexión vieja borre una reconexión nueva)."""
+        with self._lock:
+            current = self.active_players.get(player_token)
+            if current is not None and (websocket is None or current is websocket):
+                del self.active_players[player_token]
+
+    def snapshot_players(self) -> List[tuple]:
+        with self._lock:
+            return list(self.active_players.items())
+
+    def player_count(self) -> int:
+        with self._lock:
+            return len(self.active_players)
+
+    def _dm_snapshot(self) -> List[WebSocket]:
+        with self._lock:
+            return list(self.dm_sockets)
 
     async def connect_dm(self, websocket: WebSocket):
         await websocket.accept()
-        self.dm_sockets.append(websocket)
+        with self._lock:
+            self.dm_sockets.append(websocket)
 
     async def connect_symbiote(self, websocket: WebSocket):
         await websocket.accept()
         self.symbiote_socket = websocket
 
     def disconnect_player(self, player_token: str):
-        if player_token in self.active_players:
-            del self.active_players[player_token]
+        # Compatibilidad: quita al jugador sin comprobar el socket.
+        self.remove_player(player_token)
 
     def disconnect_dm(self, websocket: WebSocket):
-        if websocket in self.dm_sockets:
-            self.dm_sockets.remove(websocket)
+        with self._lock:
+            if websocket in self.dm_sockets:
+                self.dm_sockets.remove(websocket)
 
     def disconnect_symbiote(self):
         self.symbiote_socket = None
@@ -82,20 +163,21 @@ class ConnectionManager:
     async def broadcast_to_all(self, message: Dict[str, Any]):
         text = json.dumps(message, ensure_ascii=False)
         # Enviar a todos los jugadores
-        for ws in list(self.active_players.values()):
+        for _tok, ws in self.snapshot_players():
             try:
                 await ws.send_text(text)
             except Exception:
                 pass
         # Enviar a consolas DM
-        for ws in list(self.dm_sockets):
+        for ws in self._dm_snapshot():
             try:
                 await ws.send_text(text)
             except Exception:
                 pass
 
     async def send_to_player(self, player_token: str, message: Dict[str, Any]) -> bool:
-        ws = self.active_players.get(player_token)
+        with self._lock:
+            ws = self.active_players.get(player_token)
         if not ws:
             return False
         try:
@@ -106,7 +188,7 @@ class ConnectionManager:
 
     async def send_to_dm(self, message: Dict[str, Any]):
         text = json.dumps(message, ensure_ascii=False)
-        for ws in list(self.dm_sockets):
+        for ws in self._dm_snapshot():
             try:
                 await ws.send_text(text)
             except Exception:
@@ -136,27 +218,47 @@ class DmSessionServer:
         self.server: Optional[uvicorn.Server] = None
         self.thread: Optional[threading.Thread] = None
         self.loop: Optional[asyncio.AbstractEventLoop] = None
-        
+
         # Hardening 1.0.4: Autenticación, invitaciones y rate limiting
         self.current_invite_token: Optional[str] = None
         self.session_approved_hashes: set = set()
         self.pending_approvals: Dict[str, Dict[str, Any]] = {}
         self.approval_events: Dict[str, asyncio.Event] = {}
         self.msg_rate_records: Dict[str, List[float]] = {}
-        
+
+        # Auditoría 2026-11-08 (C2, A1a): límites y lock de estado
+        self.max_pending_approvals: int = 20
+        self.approval_timeout_seconds: float = 120.0
+        self.public_origin: Optional[str] = None
+        self._state_lock = threading.RLock()
+
         self.app = self._create_app()
 
-    def check_rate_limit(self, identifier: str, max_per_second: int = 25) -> bool:
-        """Rate limiter por token/IP para evitar saturación de mensajes."""
+    def check_rate_limit(self, identifier: str, max_events: int = 25, window_seconds: float = 1.0) -> bool:
+        """Ventana deslizante por identificador. Uso: solo desde el hilo asyncio de uvicorn."""
         now = time.time()
-        records = self.msg_rate_records.setdefault(identifier, [])
-        records = [t for t in records if now - t < 1.0]
-        if len(records) >= max_per_second:
+        records = [t for t in self.msg_rate_records.get(identifier, []) if now - t < window_seconds]
+        if len(records) >= max_events:
             self.msg_rate_records[identifier] = records
             return False
         records.append(now)
         self.msg_rate_records[identifier] = records
+        if len(self.msg_rate_records) > 4096:
+            # Poda: identificadores sin actividad en los últimos 120 s
+            self.msg_rate_records = {
+                k: v for k, v in self.msg_rate_records.items() if v and now - v[-1] < 120.0
+            }
         return True
+
+    def set_public_origin(self, url: Optional[str]) -> None:
+        """Registra el origen del túnel activo (o None al cerrar la sesión)."""
+        self.public_origin = url.rstrip("/").lower() if url else None
+
+    def is_allowed_origin(self, origin: str) -> bool:
+        o = (origin or "").rstrip("/").lower()
+        if _LOOPBACK_ORIGIN_RE.match(o):
+            return True
+        return bool(self.public_origin) and o == self.public_origin
 
     def create_invite(self, expires_seconds: int = 7200) -> str:
         """Genera y registra una invitación de un solo uso para la sesión actual."""
@@ -168,32 +270,38 @@ class DmSessionServer:
 
     def approve_player(self, token_hash: str) -> bool:
         """Aprueba un jugador en espera desde la consola del DM."""
-        self.session_approved_hashes.add(token_hash)
         self.db.approve_trusted_player(token_hash)
-        self.pending_approvals.pop(token_hash, None)
-        event = self.approval_events.pop(token_hash, None)
+        with self._state_lock:
+            self.session_approved_hashes.add(token_hash)
+            self.pending_approvals.pop(token_hash, None)
+            event = self.approval_events.pop(token_hash, None)
         if event and self.loop and not self.loop.is_closed():
             self.loop.call_soon_threadsafe(event.set)
         return True
 
     def revoke_player(self, token_hash: str) -> bool:
         """Revoca a un jugador y cierra cualquier conexión activa."""
-        self.session_approved_hashes.discard(token_hash)
         self.db.revoke_trusted_player(token_hash)
-        self.pending_approvals.pop(token_hash, None)
-        event = self.approval_events.pop(token_hash, None)
+        to_close = []
+        with self._state_lock:
+            self.session_approved_hashes.discard(token_hash)
+            self.pending_approvals.pop(token_hash, None)
+            event = self.approval_events.pop(token_hash, None)
+            for tok, ws in self.manager.snapshot_players():
+                if hashlib.sha256(tok.encode("utf-8")).hexdigest() == token_hash:
+                    self.manager.remove_player(tok, ws)
+                    to_close.append(ws)
+        # Despertar al socket pendiente: tras despertar RE-VERIFICA y se cierra con 4403.
         if event and self.loop and not self.loop.is_closed():
             self.loop.call_soon_threadsafe(event.set)
-        for tok, ws in list(self.manager.active_players.items()):
-            h = hashlib.sha256(tok.encode("utf-8")).hexdigest()
-            if h == token_hash:
-                coro = ws.close(code=4403, reason="Acceso revocado por el DM")
-                self.execute_async(coro)
-                self.manager.disconnect_player(tok)
+        for ws in to_close:
+            self.execute_async(ws.close(code=4403, reason="Acceso revocado por el DM"))
         return True
 
     def get_pending_approvals(self) -> List[Dict[str, Any]]:
         """Lista las solicitudes de jugadores pendientes de aprobación."""
+        with self._state_lock:
+            items = list(self.pending_approvals.items())
         return [
             {
                 "token_hash": h,
@@ -201,16 +309,22 @@ class DmSessionServer:
                 "connected_at": data.get("connected_at", 0),
                 "player_token": data.get("token", ""),
             }
-            for h, data in self.pending_approvals.items()
+            for h, data in items
         ]
+
+    def _is_player_approved(self, token_hash: str, trusted: Optional[Dict[str, Any]]) -> bool:
+        with self._state_lock:
+            if token_hash in self.session_approved_hashes:
+                return True
+        return bool(trusted and trusted.get("approved_by_dm") and not trusted.get("is_revoked"))
 
     def _create_app(self) -> FastAPI:
         app = FastAPI(title="Parma DM Online Hub")
 
         app.add_middleware(
-            CORSMiddleware,
-            allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1|.*\.trycloudflare\.com)(:\d+)?$",
-            allow_credentials=True,
+            _DynamicOriginCORSMiddleware,
+            origin_allowed=self.is_allowed_origin,
+            allow_credentials=False,
             allow_methods=["*"],
             allow_headers=["*"],
         )
@@ -244,6 +358,14 @@ class DmSessionServer:
 
             return False
 
+        def _remote_key(request: Request) -> Optional[str]:
+            """Clave de rate-limit para requests no locales; None si la request es local."""
+            client_host = request.client.host if request.client else "unknown"
+            headers = {k.lower(): v for k, v in request.headers.items()}
+            if is_local_request(client_host, headers):
+                return None
+            return _client_key(client_host, headers)
+
         @app.get("/api/session/info")
         async def session_info(
             request: Request,
@@ -251,6 +373,9 @@ class DmSessionServer:
             token: Optional[str] = None,
             invite: Optional[str] = None
         ):
+            rk = _remote_key(request)
+            if rk is not None and not self.check_rate_limit(f"session:{rk}", 30, 60.0):
+                return JSONResponse(status_code=429, content={"error": _RATE_LIMIT_MSG})
             if not _check_remote_access(request, key, token, invite):
                 return JSONResponse(
                     status_code=401,
@@ -261,7 +386,7 @@ class DmSessionServer:
                 "session_name": self.session_name,
                 "campaign_name": self.campaign_name,
                 "is_active": self.current_session_id is not None,
-                "connected_count": len(self.manager.active_players),
+                "connected_count": self.manager.player_count(),
             }
 
         @app.get("/api/session/players")
@@ -271,6 +396,9 @@ class DmSessionServer:
             token: Optional[str] = None,
             invite: Optional[str] = None
         ):
+            rk = _remote_key(request)
+            if rk is not None and not self.check_rate_limit(f"session:{rk}", 30, 60.0):
+                return JSONResponse(status_code=429, content={"error": _RATE_LIMIT_MSG})
             if not _check_remote_access(request, key, token, invite):
                 return JSONResponse(
                     status_code=401,
@@ -286,11 +414,24 @@ class DmSessionServer:
             headers = {k.lower(): v for k, v in request.headers.items()}
             is_local = is_local_request(client_host, headers)
 
-            data = await request.json()
+            if not is_local:
+                key = _client_key(client_host, headers)
+                if not self.check_rate_limit(f"join:{key}", 5, 60.0) or not self.check_rate_limit("join:*", 30, 60.0):
+                    return JSONResponse(status_code=429, content={"success": False, "error": _RATE_LIMIT_MSG})
+
+            try:
+                data = await request.json()
+            except Exception:
+                return JSONResponse(status_code=400, content={"success": False, "error": "JSON inválido"})
+            if not isinstance(data, dict):
+                return JSONResponse(status_code=400, content={"success": False, "error": "JSON inválido"})
+
             token = data.get("token") or f"usr_{secrets.token_hex(4)}"
             invite = data.get("invite")
-            char = data.get("character") or {}
-            char_name = char.get("name") or data.get("character_name") or "Aventurero Desconocido"
+            if not isinstance(token, str) or (invite is not None and not isinstance(invite, str)):
+                return JSONResponse(status_code=400, content={"success": False, "error": "JSON inválido"})
+            char = data.get("character") if isinstance(data.get("character"), dict) else {}
+            char_name = str(char.get("name") or data.get("character_name") or "Aventurero Desconocido")
 
             token_hash = hashlib.sha256(token.encode("utf-8")).hexdigest()
 
@@ -313,11 +454,23 @@ class DmSessionServer:
                     else:
                         return JSONResponse(status_code=401, content={"success": False, "error": "Se requiere invitación válida o credencial registrada"})
 
-            # Sanitización de rangos numéricos
-            lvl = max(1, min(30, int(char.get("level", 1) or 1)))
-            hp_max = max(1, min(9999, int(char.get("hp_max", 10) or 10)))
-            hp_cur = max(0, min(hp_max, int(char.get("hp_current", hp_max) or hp_max)))
-            ac = max(0, min(100, int(char.get("ac", 10) or 10)))
+                # C2: un remoto no aprobado queda registrado como pendiente y NO entra al roster.
+                # Entra a la sesión solo cuando el DM lo apruebe vía el flujo WebSocket
+                # (el cliente envía SHEET_SYNC al recibir DM_APPROVAL_GRANTED).
+                trusted = self.db.get_trusted_player_by_hash(token_hash)
+                if not self._is_player_approved(token_hash, trusted):
+                    return JSONResponse(status_code=202, content={
+                        "success": True,
+                        "pending_approval": True,
+                        "token": token,
+                        "session_id": self.current_session_id,
+                    })
+
+            # Sanitización de rangos numéricos (valores no numéricos -> default, nunca 500)
+            lvl = _safe_int(char.get("level"), 1, 1, 30)
+            hp_max = _safe_int(char.get("hp_max"), 10, 1, 9999)
+            hp_cur = _safe_int(char.get("hp_current"), hp_max, 0, hp_max)
+            ac = _safe_int(char.get("ac"), 10, 0, 100)
 
             if self.current_session_id:
                 self.db.upsert_session_player(
@@ -377,6 +530,13 @@ class DmSessionServer:
                     self.manager.disconnect_dm(websocket)
                 return
 
+            # Límite de handshake para remotos (antes de cualquier consulta a la DB)
+            if not is_local:
+                key = _client_key(client_host, headers)
+                if not self.check_rate_limit(f"ws:{key}", 10, 60.0) or not self.check_rate_limit("ws:*", 60, 60.0):
+                    await websocket.close(code=4429, reason="Demasiadas conexiones")
+                    return
+
             # Para jugadores:
             player_token = token or f"p_{secrets.token_hex(8)}"
             token_hash = hashlib.sha256(player_token.encode("utf-8")).hexdigest()
@@ -403,18 +563,31 @@ class DmSessionServer:
                         await websocket.close(code=4401, reason="Credencial requerida")
                         return
 
-                # Flujo de aprobación obligatoria por el DM
-                if token_hash not in self.session_approved_hashes:
-                    approval_event = asyncio.Event()
-                    self.approval_events[token_hash] = approval_event
-                    self.pending_approvals[token_hash] = {
-                        "websocket": websocket,
-                        "token": player_token,
-                        "token_hash": token_hash,
-                        "name": trusted.get("name") if trusted else "Aventurero",
-                        "connected_at": time.time(),
-                    }
+                # Flujo de aprobación obligatoria por el DM. Registro y tope de pendientes atómicos.
+                with self._state_lock:
+                    already_granted = token_hash in self.session_approved_hashes
+                    cap_reached = (
+                        not already_granted
+                        and token_hash not in self.pending_approvals
+                        and len(self.pending_approvals) >= self.max_pending_approvals
+                    )
+                    approval_event: Optional[asyncio.Event] = None
+                    if not already_granted and not cap_reached:
+                        approval_event = asyncio.Event()
+                        self.approval_events[token_hash] = approval_event
+                        self.pending_approvals[token_hash] = {
+                            "websocket": websocket,
+                            "token": player_token,
+                            "token_hash": token_hash,
+                            "name": trusted.get("name") if trusted else "Aventurero",
+                            "connected_at": time.time(),
+                        }
 
+                if cap_reached:
+                    await websocket.close(code=4429, reason="Demasiadas solicitudes pendientes")
+                    return
+
+                if approval_event is not None:
                     await websocket.accept()
                     await websocket.send_text(json.dumps({
                         "type": "PENDING_DM_APPROVAL",
@@ -429,10 +602,12 @@ class DmSessionServer:
                     })
 
                     try:
-                        await asyncio.wait_for(approval_event.wait(), timeout=120.0)
+                        await asyncio.wait_for(approval_event.wait(), timeout=self.approval_timeout_seconds)
                     except asyncio.TimeoutError:
-                        self.pending_approvals.pop(token_hash, None)
-                        self.approval_events.pop(token_hash, None)
+                        with self._state_lock:
+                            if self.approval_events.get(token_hash) is approval_event:
+                                self.approval_events.pop(token_hash, None)
+                                self.pending_approvals.pop(token_hash, None)
                         try:
                             await websocket.send_text(json.dumps({
                                 "type": "APPROVAL_TIMEOUT",
@@ -443,11 +618,25 @@ class DmSessionServer:
                             pass
                         return
 
-                    self.manager.active_players[player_token] = websocket
-                    await websocket.send_text(json.dumps({
-                        "type": "DM_APPROVAL_GRANTED",
-                        "message": "¡Aprobado por el Dungeon Master! Bienvenido a la sesión.",
-                    }, ensure_ascii=False))
+                    # Despertado por approve_player o revoke_player: RE-VERIFICAR antes de admitir.
+                    with self._state_lock:
+                        granted = token_hash in self.session_approved_hashes
+                        if granted:
+                            self.manager.add_player(player_token, websocket)
+                    if not granted:
+                        try:
+                            await websocket.close(code=4403, reason="Acceso revocado por el DM")
+                        except Exception:
+                            pass
+                        return
+                    try:
+                        await websocket.send_text(json.dumps({
+                            "type": "DM_APPROVAL_GRANTED",
+                            "message": "¡Aprobado por el Dungeon Master! Bienvenido a la sesión.",
+                        }, ensure_ascii=False))
+                    except Exception:
+                        self.manager.remove_player(player_token, websocket)
+                        return
                 else:
                     await self.manager.connect_player(player_token, websocket)
             else:
@@ -467,14 +656,24 @@ class DmSessionServer:
                         continue
                     if not self.check_rate_limit(player_token):
                         continue
-                    msg = json.loads(msg_text)
-                    await self._handle_player_ws_message(player_token, msg)
+                    try:
+                        msg = json.loads(msg_text)
+                    except ValueError:
+                        continue
+                    if isinstance(msg, dict):
+                        await self._handle_player_ws_message(player_token, msg)
             except WebSocketDisconnect:
-                self.manager.disconnect_player(player_token)
-                await self.manager.send_to_dm({
-                    "type": "PLAYER_SOCKET_OFFLINE",
-                    "player_token": player_token,
-                })
+                pass
+            finally:
+                # Limpieza garantizada: también ante JSON inválido o excepciones (sin fantasmas)
+                self.manager.remove_player(player_token, websocket)
+                try:
+                    await self.manager.send_to_dm({
+                        "type": "PLAYER_SOCKET_OFFLINE",
+                        "player_token": player_token,
+                    })
+                except Exception:
+                    pass
 
         @app.websocket("/ws/talespire")
         async def talespire_websocket_endpoint(websocket: WebSocket):
@@ -528,10 +727,14 @@ class DmSessionServer:
             if os.path.isdir(assets_dir):
                 app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
 
+            index_path = os.path.join(dist_dir, "index.html")
+
             @app.get("/{full_path:path}")
             async def serve_spa(full_path: str):
-                index_path = os.path.join(dist_dir, "index.html")
-                target = os.path.join(dist_dir, full_path)
+                # C1: nunca servir nada fuera de dist_dir (traversal, absolutas, symlinks, NUL)
+                target = resolve_inside_dir(dist_dir, full_path)
+                if target is None:
+                    return JSONResponse(status_code=404, content={"error": "No encontrado"})
                 if os.path.isfile(target):
                     return FileResponse(target)
                 if os.path.isfile(index_path):
@@ -567,17 +770,20 @@ class DmSessionServer:
         elif msg_type == "SHEET_SYNC":
             # Actualización de ficha del jugador
             char = msg.get("character", {})
+            if not isinstance(char, dict):
+                char = {}
             if self.current_session_id and char:
+                hp_max = _safe_int(char.get("hp_max"), 10, 1, 9999)
                 self.db.upsert_session_player(
                     session_id=self.current_session_id,
                     player_token=player_token,
                     character_name=char.get("name", "Jugador"),
                     character_id=char.get("id"),
                     character_class=char.get("char_class", ""),
-                    character_level=int(char.get("level", 1)),
-                    hp_current=int(char.get("hp_current", 10)),
-                    hp_max=int(char.get("hp_max", 10)),
-                    ac=int(char.get("ac", 10)),
+                    character_level=_safe_int(char.get("level"), 1, 1, 30),
+                    hp_current=_safe_int(char.get("hp_current"), hp_max, 0, hp_max),
+                    hp_max=hp_max,
+                    ac=_safe_int(char.get("ac"), 10, 0, 100),
                     data_json=json.dumps(char, ensure_ascii=False),
                 )
                 await self.manager.send_to_dm({
