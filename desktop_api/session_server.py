@@ -44,6 +44,10 @@ def resolve_inside_dir(root_dir: str, requested: str) -> Optional[str]:
     """
     try:
         raw = (requested or "").replace("\\", "/")
+        if "\x00" in raw:
+            # Byte NUL: en Windows os.path.realpath no siempre lanza ValueError para esto
+            # (a diferencia de POSIX), así que se rechaza explícitamente antes de tocar el FS.
+            return None
         if raw.startswith("/"):
             # Ruta absoluta (p. ej. "//tmp/..." por %2F): nunca se resuelve contra dist.
             return None
