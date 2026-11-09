@@ -8,6 +8,8 @@ import {
   formatDurationWithTurns,
   formatComponents,
 } from "../utils/formatters";
+import { effectiveCap } from "../utils/spellLimits";
+import type { SpellLimits } from "../utils/spellLimits";
 
 interface SpellBookManagerModalProps {
   isOpen: boolean;
@@ -15,12 +17,7 @@ interface SpellBookManagerModalProps {
   characterClass: string;
   characterLevel: number;
   currentSpells: SpellItemData[];
-  spellLimits?: {
-    cantrips_max: number;
-    cantrips_current: number;
-    spells_prepared_max: number;
-    spells_prepared_current: number;
-  };
+  spellLimits?: SpellLimits;
   onAddSpell: (spell: SpellItemData) => Promise<boolean>;
   onRemoveSpell: (spellName: string) => Promise<boolean>;
 }
@@ -131,11 +128,11 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
 
   const cantripsCurrent = safeCurrentSpells.filter((s) => Number(s.level) === 0).length;
   const preparedCurrent = safeCurrentSpells.filter((s) => Number(s.level) > 0).length;
-  const cantripsMax = spellLimits?.cantrips_max ?? 0;
-  const preparedMax = spellLimits?.spells_prepared_max ?? 0;
+  const cantripsCap = effectiveCap(spellLimits, "cantrips");
+  const preparedCap = effectiveCap(spellLimits, "prepared");
 
-  const isCantripLimitReached = cantripsMax > 0 && cantripsCurrent >= cantripsMax;
-  const isPreparedLimitReached = preparedMax > 0 && preparedCurrent >= preparedMax;
+  const isCantripLimitReached = cantripsCap !== null && cantripsCurrent >= cantripsCap;
+  const isPreparedLimitReached = preparedCap !== null && preparedCurrent >= preparedCap;
 
   return (
     <div
@@ -156,7 +153,7 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
                   {t("modals.spellManager.title")}
                 </h2>
                 <div className="flex items-center gap-1.5">
-                  {cantripsMax > 0 && (
+                  {cantripsCap !== null && (
                     <span
                       className={`text-[10px] px-2 py-0.5 rounded font-stat ${
                         isCantripLimitReached
@@ -165,10 +162,10 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
                       }`}
                     >
                       {language === "en" ? "Cantrips: " : "Trucos: "}
-                      <strong className={isCantripLimitReached ? "text-crimson" : "text-gold"}>{cantripsCurrent}</strong>/{cantripsMax}
+                      <strong className={isCantripLimitReached ? "text-crimson" : "text-gold"}>{cantripsCurrent}</strong>/{cantripsCap}
                     </span>
                   )}
-                  {preparedMax > 0 && (
+                  {preparedCap !== null && (
                     <span
                       className={`text-[10px] px-2 py-0.5 rounded font-stat ${
                         isPreparedLimitReached
@@ -177,7 +174,7 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
                       }`}
                     >
                       {language === "en" ? "Prepared: " : "Preparados: "}
-                      <strong className={isPreparedLimitReached ? "text-crimson" : "text-gold"}>{preparedCurrent}</strong>/{preparedMax}
+                      <strong className={isPreparedLimitReached ? "text-crimson" : "text-gold"}>{preparedCurrent}</strong>/{preparedCap}
                     </span>
                   )}
                 </div>
@@ -360,8 +357,8 @@ export const SpellBookManagerModal: React.FC<SpellBookManagerModalProps> = ({
                               title={
                                 isBlocked
                                   ? (isCantrip
-                                      ? (language === "en" ? `Cantrip limit reached (${cantripsMax})` : `Límite de trucos alcanzado (${cantripsMax})`)
-                                      : (language === "en" ? `Prepared spell limit reached (${preparedMax})` : `Límite de preparados alcanzado (${preparedMax})`))
+                                      ? (language === "en" ? `Cantrip limit reached (${cantripsCap})` : `Límite de trucos alcanzado (${cantripsCap})`)
+                                      : (language === "en" ? `Prepared spell limit reached (${preparedCap})` : `Límite de preparados alcanzado (${preparedCap})`))
                                   : t("modals.spellManager.add")
                               }
                             >

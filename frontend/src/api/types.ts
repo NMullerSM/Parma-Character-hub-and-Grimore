@@ -173,6 +173,7 @@ export interface CharacterSheetData {
     cantrips_current: number;
     spells_prepared_max: number;
     spells_prepared_current: number;
+    is_caster?: boolean;
   };
   spell_slots_total: Record<string, number>;
   spell_slots_used: Record<string, number>;

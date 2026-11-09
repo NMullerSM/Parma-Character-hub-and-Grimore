@@ -215,6 +215,7 @@ class CharacterBridgeMixin:
             "cantrips_current": cantrips_current,
             "spells_prepared_max": spells_prep_max,
             "spells_prepared_current": spells_prep_current,
+            "is_caster": bool(prog_limits.get("is_caster", False)),
         }
 
         spells_out = []
@@ -875,7 +876,10 @@ class CharacterBridgeMixin:
                     "error": f"Límite de trucos alcanzado ({cantrips_current}/{cantrips_max}) para {char.char_class} nivel {char.level}"
                 }
         else:
-            if spells_prep_max > 0 and spells_prep_current >= spells_prep_max:
+            # Lanzador con 0 preparados modelados: tope duro (misma regla que el frontend).
+            # Clases no lanzadoras (is_caster False) no se bloquean (dotes/rasgos no modelados).
+            caster_without_prep = spells_prep_max == 0 and bool(prog_limits.get("is_caster", False))
+            if (spells_prep_max > 0 and spells_prep_current >= spells_prep_max) or caster_without_prep:
                 return {
                     "success": False,
                     "error": f"Límite de conjuros preparados alcanzado ({spells_prep_current}/{spells_prep_max}) para {char.char_class} nivel {char.level}"

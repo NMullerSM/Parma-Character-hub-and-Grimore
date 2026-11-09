@@ -9,6 +9,12 @@ import {
   formatRangeWithTiles,
   formatDurationWithTurns,
 } from "../utils/formatters";
+import {
+  filterSpellsWithIndex,
+  canAddSpell,
+  canTogglePrepared,
+  togglePreparedAt,
+} from "../utils/spellLimits";
 
 /**
  * Quita sintaxis markdown para la vista previa de 2 líneas de la lista.
@@ -85,6 +91,7 @@ export const SpellsView: React.FC = () => {
   } = activeCharacter;
 
   const hasSlots = Object.keys(spell_slots_total).length > 0;
+  const limits = activeCharacter.spell_limits;
 
   const handleToggleSlot = (lvl: string, index: number) => {
     const used = spell_slots_used[lvl] || 0;
@@ -100,6 +107,15 @@ export const SpellsView: React.FC = () => {
   const handleAddSpell = () => {
     if (!newSpell.name.trim()) {
       showToast(t("spells.spellNameRequired"), "warn");
+      return;
+    }
+    if (!canAddSpell(spells, limits, Number(newSpell.level))) {
+      showToast(
+        Number(newSpell.level) === 0
+          ? (language === "en" ? "Cantrip limit reached" : "Límite de trucos alcanzado")
+          : (language === "en" ? "Prepared spell limit reached" : "Límite de conjuros preparados alcanzado"),
+        "warn"
+      );
       return;
     }
     const updatedSpells = [...spells, { ...newSpell, name: newSpell.name.trim() }];
@@ -119,10 +135,15 @@ export const SpellsView: React.FC = () => {
     showToast(t("spells.spellAdded"), "success");
   };
 
-  const filteredSpells = spells.filter((s) => {
-    if (selectedLevel === "all") return true;
-    return s.level === selectedLevel;
-  });
+  const filteredEntries = filterSpellsWithIndex(spells, selectedLevel);
+
+  const handleTogglePrepared = (originalIndex: number) => {
+    if (!canTogglePrepared(spells, limits, originalIndex)) {
+      showToast(language === "en" ? "Prepared spell limit reached" : "Límite de conjuros preparados alcanzado", "warn");
+      return;
+    }
+    updateActiveCharacter({ spells: togglePreparedAt(spells, originalIndex) });
+  };
 
   return (
     <div className="h-full overflow-y-auto p-4 md:p-6 space-y-6 max-w-6xl mx-auto">
@@ -347,14 +368,14 @@ export const SpellsView: React.FC = () => {
       {/* 3. Catálogo de Hechizos */}
       <section className="space-y-3">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {filteredSpells.length > 0 ? (
-            filteredSpells.map((spell: SpellItemData, idx: number) => {
+          {filteredEntries.length > 0 ? (
+            filteredEntries.map(({ spell, originalIndex }) => {
               const spellDisplayName = (language === "en" && spell.name_en && spell.name_en !== spell.name)
                 ? spell.name_en
                 : translateSpellName(spell.name);
               return (
                 <div
-                  key={idx}
+                  key={`${originalIndex}-${spell.name}`}
                   onClick={() => setActiveSpellForModal(spell)}
                   className="bg-card border border-border-iron rounded-lg p-4 space-y-2 hover:border-gold cursor-pointer transition-all hover:scale-[1.01] hover:shadow-[0_4px_16px_rgba(201,164,92,0.15)] group relative"
                 >
@@ -371,12 +392,7 @@ export const SpellsView: React.FC = () => {
                     </div>
                     <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
                       <button
-                        onClick={() => {
-                          const updated = spells.map((s, i) =>
-                            i === idx ? { ...s, prepared: !s.prepared } : s
-                          );
-                          updateActiveCharacter({ spells: updated });
-                        }}
+                        onClick={() => handleTogglePrepared(originalIndex)}
                         className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-colors ${
                           spell.prepared
                             ? "bg-gold text-canvas"
