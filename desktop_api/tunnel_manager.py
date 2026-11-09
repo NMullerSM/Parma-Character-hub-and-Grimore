@@ -52,9 +52,16 @@ class CloudflareTunnelManager:
         self.tunnel_url: Optional[str] = None
         self.is_running = False
         self._on_url_callback: Optional[Callable[[str], None]] = None
+        # Reentrante: un on_status/on_url puede volver a entrar en start/stop.
+        self._lock = threading.RLock()
+
+    def _managed_binary_path(self) -> str:
+        """Única ruta que la app instala/borra/chmodea: user_data_dir/bin."""
+        exe_name = "cloudflared.exe" if self.os_type == "Windows" else "cloudflared"
+        return os.path.join(self.bin_dir, exe_name)
 
     def get_binary_path(self) -> str:
-        """Retorna la ruta hacia el ejecutable de cloudflared."""
+        """Retorna la ruta hacia el ejecutable de cloudflared (resolución para EJECUTAR)."""
         exe_name = "cloudflared.exe" if self.os_type == "Windows" else "cloudflared"
         # 1. Verificar si existe en user_data_dir/bin
         local_bin = os.path.join(self.bin_dir, exe_name)
@@ -66,22 +73,17 @@ class CloudflareTunnelManager:
         if os.path.isfile(local_bin) and os.access(local_bin, os.X_OK if self.os_type != "Windows" else os.R_OK):
             return local_bin
 
-        # 2. Verificar si existe en bundle_dir/data/bin
+        # 2. Verificar si existe en bundle_dir/data/bin (solo lectura: nunca se chmodea)
         bundle_bin = os.path.join(self.base_dir, "data", "bin", exe_name)
-        if self.os_type != "Windows" and os.path.isfile(bundle_bin) and not os.access(bundle_bin, os.X_OK):
-            try:
-                os.chmod(bundle_bin, 0o755)
-            except Exception:
-                pass
         if os.path.isfile(bundle_bin) and os.access(bundle_bin, os.X_OK if self.os_type != "Windows" else os.R_OK):
             return bundle_bin
 
-        # 3. Verificar si está en el PATH del sistema
+        # 3. Verificar si está en el PATH del sistema (se usa tal cual, sin verificar ni modificar)
         which_path = shutil.which("cloudflared")
         if which_path:
             return which_path
 
-        return local_bin
+        return self._managed_binary_path()
 
     def is_binary_available(self) -> bool:
         """Indica si cloudflared ya está disponible localmente."""
@@ -90,7 +92,7 @@ class CloudflareTunnelManager:
 
     def download_binary(self, progress_callback: Optional[Callable[[str], None]] = None) -> bool:
         """Descarga el binario oficial de Cloudflare y valida su hash SHA256 antes de instalar."""
-        dest = self.get_binary_path()
+        dest = self._managed_binary_path()
         expected_hash = self.CLOUDFLARED_SHA256.get(self.os_type)
 
         # Si ya existe en dest, verificar integridad si tenemos hash esperado
@@ -170,98 +172,119 @@ class CloudflareTunnelManager:
         on_status: Optional[Callable[[str], None]] = None,
     ) -> bool:
         """Inicia el subproceso cloudflared para exponer local_port a internet."""
-        if self.is_running and self.tunnel_url:
-            if on_url:
-                on_url(self.tunnel_url)
-            return True
-
-        bin_path = self.get_binary_path()
-        if not self.is_binary_available():
-            if on_status:
-                on_status("Descargando ejecutable de Cloudflare Tunnel...")
-            success = self.download_binary(on_status)
-            if not success or not os.path.exists(bin_path):
-                # Fallback amigable: permitir enlace local si falla descarga
-                fallback_url = f"http://127.0.0.1:{local_port}"
-                self.tunnel_url = fallback_url
-                self.is_running = True
+        with self._lock:
+            proc_alive = self.process is not None and self.process.poll() is None
+            if proc_alive:
+                if self.tunnel_url:
+                    if on_url:
+                        on_url(self.tunnel_url)
+                else:
+                    # La URL todavía no salió por stdout: el último interesado la recibe.
+                    self._on_url_callback = on_url
+                return True
+            if self.is_running and self.tunnel_url and self.process is None:
+                # Modo fallback local ya activo (comportamiento actual, no cambiar)
                 if on_url:
-                    on_url(fallback_url)
-                if on_status:
-                    on_status(f"Modo Red Local / Fallback activo: {fallback_url}")
+                    on_url(self.tunnel_url)
                 return True
 
-        self._on_url_callback = on_url
-        self.tunnel_url = None
+            bin_path = self.get_binary_path()
+            if not self.is_binary_available():
+                if on_status:
+                    on_status("Descargando ejecutable de Cloudflare Tunnel...")
+                success = self.download_binary(on_status)
+                # Tras descargar, la ruta de ejecución debe resolver al binario gestionado.
+                bin_path = self.get_binary_path()
+                if not success or not os.path.exists(bin_path):
+                    # Fallback amigable: permitir enlace local si falla descarga
+                    fallback_url = f"http://127.0.0.1:{local_port}"
+                    self.tunnel_url = fallback_url
+                    self.is_running = True
+                    if on_url:
+                        on_url(fallback_url)
+                    if on_status:
+                        on_status(f"Modo Red Local / Fallback activo: {fallback_url}")
+                    return True
 
-        cmd = [
-            bin_path,
-            "tunnel",
-            "--url",
-            f"http://127.0.0.1:{local_port}",
-            "--no-autoupdate",
-        ]
+            self._on_url_callback = on_url
+            self.tunnel_url = None
 
-        try:
-            # En Windows ocultar ventana de consola
-            creation_flags = 0
-            if self.os_type == "Windows":
-                creation_flags = subprocess.CREATE_NO_WINDOW if hasattr(subprocess, "CREATE_NO_WINDOW") else 0x08000000
+            cmd = [
+                bin_path,
+                "tunnel",
+                "--url",
+                f"http://127.0.0.1:{local_port}",
+                "--no-autoupdate",
+            ]
 
-            self.process = subprocess.Popen(
-                cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-                bufsize=1,
-                creationflags=creation_flags,
-            )
-            self.is_running = True
+            try:
+                # En Windows ocultar ventana de consola
+                creation_flags = 0
+                if self.os_type == "Windows":
+                    creation_flags = subprocess.CREATE_NO_WINDOW if hasattr(subprocess, "CREATE_NO_WINDOW") else 0x08000000
 
-            # Hilo de lectura para capturar la URL pública de trycloudflare.com
-            reader_thread = threading.Thread(
-                target=self._read_tunnel_output,
-                args=(on_status,),
-                daemon=True,
-            )
-            reader_thread.start()
-            return True
-        except Exception as e:
-            if on_status:
-                on_status(f"Error al iniciar túnel: {e}")
-            return False
+                proc = subprocess.Popen(
+                    cmd,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    text=True,
+                    bufsize=1,
+                    creationflags=creation_flags,
+                )
+                self.process = proc
+                self.is_running = True
 
-    def _read_tunnel_output(self, on_status: Optional[Callable[[str], None]]):
+                # Hilo de lectura para capturar la URL pública de trycloudflare.com
+                reader_thread = threading.Thread(
+                    target=self._read_tunnel_output,
+                    args=(proc, on_status),
+                    daemon=True,
+                )
+                reader_thread.start()
+                return True
+            except Exception as e:
+                if on_status:
+                    on_status(f"Error al iniciar túnel: {e}")
+                return False
+
+    def _read_tunnel_output(self, proc: subprocess.Popen, on_status: Optional[Callable[[str], None]]):
         """Monitorea la salida del túnel para extraer la URL HTTPS asignada."""
         url_regex = re.compile(r"https://[a-zA-Z0-9-]+\.trycloudflare\.com")
-        if not self.process or not self.process.stdout:
+        if not proc or not proc.stdout:
             return
 
-        for line in self.process.stdout:
+        for line in proc.stdout:
             match = url_regex.search(line)
-            if match and not self.tunnel_url:
-                self.tunnel_url = match.group(0)
+            if match:
+                with self._lock:
+                    if self.process is not proc or self.tunnel_url:
+                        continue
+                    self.tunnel_url = match.group(0)
+                    cb = self._on_url_callback
                 if on_status:
                     on_status(f"Túnel activo: {self.tunnel_url}")
-                if self._on_url_callback:
-                    self._on_url_callback(self.tunnel_url)
+                if cb:
+                    cb(self.tunnel_url)
 
-        self.is_running = False
+        with self._lock:
+            if self.process is proc:  # un lector viejo no apaga un túnel nuevo
+                self.is_running = False
 
     def stop_tunnel(self):
         """Detiene y termina el proceso del túnel."""
-        if self.process:
-            try:
-                self.process.terminate()
-                self.process.wait(timeout=2.0)
-            except Exception:
+        with self._lock:
+            if self.process:
                 try:
-                    self.process.kill()
+                    self.process.terminate()
+                    self.process.wait(timeout=2.0)
                 except Exception:
-                    pass
-            self.process = None
-        self.is_running = False
-        self.tunnel_url = None
+                    try:
+                        self.process.kill()
+                    except Exception:
+                        pass
+                self.process = None
+            self.is_running = False
+            self.tunnel_url = None
 
     def get_lan_ip(self) -> str:
         """
